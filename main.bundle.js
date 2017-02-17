@@ -2490,7 +2490,7 @@ var SearchSourceNominatim = (function (_super) {
 }(__WEBPACK_IMPORTED_MODULE_1__search_source__["a" /* SearchSource */]));
 
 SearchSourceNominatim.name_ = 'Nominatim';
-SearchSourceNominatim.searchUrl = 'http://nominatim.openstreetmap.org/search';
+SearchSourceNominatim.searchUrl = 'https://nominatim.openstreetmap.org/search';
 //# sourceMappingURL=/srv/apps/igo/src/search-source-nominatim.js.map
 
 /***/ }),
