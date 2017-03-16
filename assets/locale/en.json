@@ -3,6 +3,7 @@
   "Contexts": "Contexts",
   "Description": "Description",
   "Edit Context": "Edit Context",
+  "Edit Layer": "Edit Layer",
   "Map": "Map",
   "Go Back": "Go back",
   "Open Menu": "Show menu",
@@ -11,7 +12,10 @@
   "Main menu": "Go back to main menu",
   "Add Layers": "Add Layers",
   "Directions": "Directions",
+  "Hide Layer": "Hide Layer",
   "Historical Analysis": "Historical Analysis",
+  "Lower Layer": "Bring layer backward",
+  "Opacity": "Opacity",
   "Print": "Print",
   "Private": "Private",
   "Properties": "Properties",
@@ -19,10 +23,15 @@
   "Protected": "Protected",
   "Public": "Public",
   "Measure": "Measure",
+  "Raise Layer": "Bring layer forward",
+  "Remove Layer": "Remove this layer from the map",
   "Save": "Save",
   "Search Results": "Search Results",
   "Search for an address or a place": "Search for an address, a place or a layer",
+  "Search disabled": "The search tool is disabled in this context",
+  "Show Layer": "Show Layer",
   "Title": "Title",
 
-  "contextTitleValidation": "Title is required (minimum 3 characters)."
+  "noLegendText": "No legend available for this layer",
+  "titleRequired": "Title is required (minimum 3 characters)."
 }
