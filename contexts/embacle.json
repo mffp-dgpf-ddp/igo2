@@ -30,6 +30,21 @@
       }
     },
     {
+      "name" : "Bassin (WFS)",
+      "title": "Bassin (WFS)",
+      "type" : "wfs",
+      "source":{
+        "url" : "/cgi-wms/adnInternetV2.fcgi?service=WFS&version=1.1.0&request=GetFeature&typename=adn_bassin_n1_simplify_500&srsname=EPSG:3857"
+      },
+      "style" : {
+        "Stroke" : {
+            "color" : "rgba(140, 140, 255, 1.0)",
+            "width" : 3
+        }
+      },
+      "version" : "1.3.0"
+    },
+    {
       "title": "Embâcle",
       "type": "wms",
       "source": {
@@ -38,8 +53,14 @@
           "layers": "vg_observation_v_inondation_embacle_wmst",
           "version": "1.3.0"
         }
+      },
+      "timeFilter": {
+        "min": "2017-01-01",
+        "max": "2018-01-01",
+        "range": true,
+        "type": "datetime"
       }
-    }
+     }
   ],
   "toolbar": [
     "search",
@@ -47,7 +68,7 @@
     "mapEditor",
     "layers",
     "directions",
-    "historicalAnalysis",
+    "timeAnalyser",
     "print",
     "measure"
   ],
@@ -75,9 +96,7 @@
       "icon": "directions"
     },
     {
-      "name": "historicalAnalysis",
-      "title": "Historical Analysis",
-      "icon": "history"
+      "name": "timeAnalyser"
     },
     {
       "name": "print",
