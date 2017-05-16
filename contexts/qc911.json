@@ -5,7 +5,8 @@
     "view": {
       "projection": "EPSG:3857",
       "center": [-72, 52],
-      "zoom": 6
+      "zoom": 6,
+      "useCurrentView": true
     }
   },
   "layers": [
@@ -20,7 +21,7 @@
       "title": "MSP DESSERTE MUN 911",
       "type": "wms",
       "source": {
-        "url": "/cgi-wms/igo_gouvouvert.fcgi",
+        "url": "/ws/igo_gouvouvert.fcgi",
         "params": {
           "layers": "MSP_DESSERTE_MUN_911",
           "version": "1.3.0"
@@ -33,7 +34,7 @@
       "title": "MSP Tel. Urgence",
       "type": "wms",
       "source": {
-        "url": "/cgi-wms/igo_gouvouvert.fcgi",
+        "url": "/ws/igo_gouvouvert.fcgi",
         "params": {
           "layers": "telephone_urg",
           "version": "1.3.0"
@@ -43,50 +44,26 @@
     }
   ],
   "toolbar": [
-    "search",
-    "context",
-    "mapEditor",
-    "layers",
-    "directions",
-    "timeAnalyser",
-    "print",
-    "measure"
+    "searchResults",
+    "contextManager",
+    "mapDetails",
+    "timeAnalysis"
   ],
   "tools": [
     {
-      "name": "search"
+      "name": "searchResults"
     },
     {
-      "name": "context"
+      "name": "contextManager"
     },
     {
-      "name": "contextEditor"
+      "name": "mapDetails",
+      "options": {
+        "toggleLegendOnVisibilityChange": false
+      }
     },
     {
-      "name": "mapEditor"
-    },
-    {
-      "name": "layers",
-      "title": "Add Layers",
-      "icon": "add_location"
-    },
-    {
-      "name": "directions",
-      "title": "Directions",
-      "icon": "directions"
-    },
-    {
-      "name": "timeAnalyser"
-    },
-    {
-      "name": "print",
-      "title": "Print",
-      "icon": "local_printshop"
-    },
-    {
-      "name": "measure",
-      "title": "Measure",
-      "icon": "straighten"
+      "name": "timeAnalysis"
     }
   ]
 }
