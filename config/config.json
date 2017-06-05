@@ -1,10 +1,11 @@
+
 {
-searchSources: {
-icherche: {
-url: "https://geoegl.msp.gouv.qc.ca/icherche/geopasdecode"
-},
-datasource: {
-enabled: false
-}
-}
+  "searchSources": {
+    "icherche": {
+      "url": "https://geoegl.msp.gouv.qc.ca/icherche/geopasdecode"
+    },
+    "datasource": {
+      "enabled": false
+    }
+  }
 }
