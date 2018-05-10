@@ -163,7 +163,7 @@ THE SOFTWARE.
 MIT
 MIT
 
-@igo2/igo2@0.19.9
+@igo2/igo2@0.19.10
 MIT
 MIT
 
