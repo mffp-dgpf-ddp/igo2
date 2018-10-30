@@ -17,6 +17,8 @@
     }
   ],
   "toolbar": [
+    "about",
+    "directions",
     "searchResults",
     "contextManager",
     "mapDetails",
@@ -26,7 +28,18 @@
   ],
   "tools": [
     {
-      "name": "searchResults"
+      "name": "about",
+      "options": {
+        "html": "<h1>This is a IGO</h1>"
+      }
+    },
+    {
+      "name": "directions"
+    },{
+      "name": "searchResults",
+      "options": {
+        "focusFirst": true
+      }
     },
     {
       "name": "contextManager"
