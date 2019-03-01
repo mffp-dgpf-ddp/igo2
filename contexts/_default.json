@@ -19,26 +19,18 @@
     }
   ],
   "toolbar": [
-    "about",
-    "directions",
     "searchResults",
     "contextManager",
     "mapDetails",
+    "directions",
     "catalog",
     "timeAnalysis",
     "print",
-    "shareMap"
+    "shareMap",
+    "about"
   ],
   "tools": [
     {
-      "name": "about",
-      "options": {
-        "html": "<h1>This is a IGO</h1>"
-      }
-    },
-    {
-      "name": "directions"
-    },{
       "name": "searchResults",
       "options": {
         "focusFirst": true
@@ -46,15 +38,6 @@
     },
     {
       "name": "contextManager"
-    },
-    {
-      "name": "catalog"
-    },
-    {
-      "name": "catalogLayers"
-    },
-    {
-      "name": "shareMap"
     },
     {
       "name": "mapDetails",
@@ -71,10 +54,28 @@
       }
     },
     {
+      "name": "directions"
+    },
+    {
+      "name": "catalog"
+    },
+    {
+      "name": "catalogLayers"
+    },
+    {
       "name": "timeAnalysis"
     },
     {
+      "name": "shareMap"
+    },
+    {
       "name": "print"
+    },
+    {
+      "name": "about",
+      "options": {
+        "html": "<h1>This is a IGO</h1>"
+      }
     }
   ]
 }
