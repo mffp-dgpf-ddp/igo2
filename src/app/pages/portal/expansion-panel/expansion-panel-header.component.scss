@@ -1,0 +1,19 @@
+@import '../portal.variables';
+
+:host {
+  display: block;
+  height: $app-expansion-panel-header-height;
+}
+
+:host > div {
+  display: flex;
+}
+
+.app-expansion-panel-trigger-container,
+.app-expansion-panel-content {
+  display: inline-flex;
+}
+
+button {
+  margin: 4px 6px;
+}

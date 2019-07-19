@@ -16,20 +16,38 @@
       "sourceOptions": {
         "type": "osm"
       }
+    },
+    {
+      "title": "Fond de carte du Québec",
+      "visible": true,
+      "baseLayer": true,
+      "sourceOptions": {
+        "type": "xyz",
+        "url": "https://geoegl.msp.gouv.qc.ca/carto/tms/1.0.0/carte_gouv_qc_public@EPSG_3857/{z}/{x}/{-y}.png"
+      }
     }
   ],
   "toolbar": [
     "searchResults",
     "contextManager",
-    "mapDetails",
+    "map",
     "directions",
-    "catalog",
     "timeAnalysis",
+    "catalog",
     "print",
     "shareMap",
     "about"
   ],
   "tools": [
+    {
+      "name": "about",
+      "options": {
+        "html": "<h1>This is a IGO</h1>"
+      }
+    },
+    {
+      "name": "directions"
+    },
     {
       "name": "searchResults",
       "options": {
@@ -40,7 +58,16 @@
       "name": "contextManager"
     },
     {
-      "name": "mapDetails",
+      "name": "catalogBrowser"
+    },
+    {
+      "name": "catalog"
+    },
+    {
+      "name": "shareMap"
+    },
+    {
+      "name": "map",
       "options": {
         "toggleLegendOnVisibilityChange": false,
         "layerListControls": {
@@ -54,28 +81,10 @@
       }
     },
     {
-      "name": "directions"
-    },
-    {
-      "name": "catalog"
-    },
-    {
-      "name": "catalogLayers"
-    },
-    {
       "name": "timeAnalysis"
     },
     {
-      "name": "shareMap"
-    },
-    {
       "name": "print"
-    },
-    {
-      "name": "about",
-      "options": {
-        "html": "<h1>This is a IGO</h1>"
-      }
     }
   ]
 }

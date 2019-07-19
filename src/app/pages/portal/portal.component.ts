@@ -1,26 +1,63 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+  ViewChild,
+  ElementRef
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
-import { Notification } from 'angular2-notifications';
+import { Subscription, of } from 'rxjs';
+// import { debounceTime } from 'rxjs/operators';
 
-import { MediaService, ConfigService, MessageService, Message } from '@igo2/core';
+import { MapBrowserPointerEvent as OlMapBrowserPointerEvent } from 'ol/MapBrowserEvent';
+import * as olProj from 'ol/proj';
+
+import { MediaService, ConfigService, Media } from '@igo2/core';
+import {
+  // ActionbarMode,
+  // Workspace,
+  // WorkspaceStore,
+  // EntityRecord,
+  ActionStore,
+  EntityStore,
+  // getEntityTitle,
+  Toolbox
+} from '@igo2/common';
 import { AuthService } from '@igo2/auth';
-import { Context, ContextService, ToolService } from '@igo2/context';
+import { DetailedContext } from '@igo2/context';
 import {
   DataSourceService,
   Feature,
-  FeatureService,
+  // FEATURE,
+  FeatureMotion,
+  featureToSearchResult,
+  GoogleLinks,
   IgoMap,
   LayerService,
-  MapService,
-  OverlayAction,
-  OverlayService,
+  QuerySearchSource,
+  Research,
+  SearchResult,
+  SearchSource,
   SearchService,
+  SearchSourceService,
   CapabilitiesService
 } from '@igo2/geo';
 
 import {
+  ContextState,
+  // WorkspaceState,
+  ToolState,
+  MapState,
+  SearchState,
+  QueryState
+} from '@igo2/integration';
+
+import {
+  expansionPanelAnimation,
+  toastPanelAnimation,
+  baselayersAnimation,
+  controlsAnimations,
   controlSlideX,
   controlSlideY,
   mapSlideX,
@@ -31,276 +68,491 @@ import {
   selector: 'app-portal',
   templateUrl: './portal.component.html',
   styleUrls: ['./portal.component.scss'],
-  animations: [controlSlideX(), controlSlideY(), mapSlideX(), mapSlideY()]
+  animations: [
+    expansionPanelAnimation(),
+    toastPanelAnimation(),
+    baselayersAnimation(),
+    controlsAnimations(),
+    controlSlideX(),
+    controlSlideY(),
+    mapSlideX(),
+    mapSlideY()
+  ]
 })
 export class PortalComponent implements OnInit, OnDestroy {
-  static SWIPE_ACTION = {
-    RIGHT: 'swiperight',
-    LEFT: 'swipeleft'
+  public minSearchTermLength = 2;
+  public expansionPanelExpanded = false;
+  public hasExpansionPanel = true;
+  public sidenavOpened = false;
+  public searchBarTerm = '';
+
+  public contextMenuStore = new ActionStore([]);
+  private contextMenuCoord: [number, number];
+
+  private contextLoaded = false;
+
+  // public searchResult: SearchResult;
+  // public queryResults: SearchResult[];
+
+  private context$$: Subscription;
+  private searchResults$$: Subscription;
+  private focusedSearchResult$$: Subscription;
+
+  // True after the initial tool is loaded
+  // private toolLoaded = false;
+
+  public tableStore = new EntityStore([]);
+  public tableTemplate = {
+    selection: true,
+    sort: true,
+    columns: [
+      {
+        name: 'id',
+        title: 'ID'
+      },
+      {
+        name: 'name',
+        title: 'Name'
+      },
+      {
+        name: 'description',
+        title: 'Description'
+      }
+    ]
   };
 
-  public selectedFeature$$: Subscription;
-  public features$$: Subscription;
-  public context$$: Subscription;
+  get map(): IgoMap {
+    return this.mapState.map;
+  }
 
-  public map = new IgoMap({
-    controls: {
-      scaleLine: true,
-      attribution: {
-        collapsed: true
-      }
-    }
-  });
+  get backdropShown(): boolean {
+    return (
+      this.mediaService.media$.value === Media.Mobile && this.sidenavOpened
+    );
+  }
 
-  public sidenavOpened = false;
-  public toastOpened = false;
-  public toastShown = false;
-  public sidenavTitle;
+  get toastPanelShown(): boolean {
+    return true;
+    // return (
+    //   this.mediaService.media$.value === Media.Mobile && !this.sidenavOpened
+    // );
+  }
 
-  // True after the initial context is loaded
-  private contextLoaded = false;
-  // True after the initial tool is loaded
-  private toolLoaded = false;
-  // Reference to last startup message from context
-  // To remove message on context change
-  private contextMessage: Notification;
+  get expansionPanelBackdropShown(): boolean {
+    return false;
+    // return (
+    //   this.expansionPanelExpanded &&
+    //   this.toastPanelOpened &&
+    //   this.mediaService.media$.value !== Media.Mobile
+    // );
+  }
+
+  // get actionbarMode(): ActionbarMode {
+  //   if (this.mediaService.media$.value === Media.Mobile) {
+  //     return ActionbarMode.Overlay;
+  //   }
+  //   return this.expansionPanelExpanded
+  //     ? ActionbarMode.Dock
+  //     : ActionbarMode.Overlay;
+  // }
+  //
+  // get actionbarWithTitle(): boolean {
+  //   return this.actionbarMode === ActionbarMode.Overlay;
+  // }
+
+  get searchStore(): EntityStore<SearchResult> {
+    return this.searchState.store;
+  }
+
+  get queryStore(): EntityStore<SearchResult> {
+    return this.queryState.store;
+  }
+
+  get toolbox(): Toolbox {
+    return this.toolState.toolbox;
+  }
+
+  // get toastPanelContent(): string {
+  //   let content;
+  //   if (this.workspace !== undefined && this.workspace.hasWidget) {
+  //     content = 'workspace';
+  //   } else if (this.searchResult !== undefined) {
+  //     content = this.searchResult.meta.dataType.toLowerCase();
+  //   }
+  //   return content;
+  // }
+
+  // get toastPanelTitle(): string {
+  //   let title;
+  //   if (
+  //     this.toastPanelContent !== 'workspace' &&
+  //     this.searchResult !== undefined
+  //   ) {
+  //     title = getEntityTitle(this.searchResult);
+  //   }
+  //   return title;
+  // }
+
+  // get toastPanelOpened(): boolean {
+  //   const content = this.toastPanelContent;
+  //   if (content === 'workspace') {
+  //     return true;
+  //   }
+  //   return this._toastPanelOpened;
+  // }
+  // set toastPanelOpened(value: boolean) {
+  //   this._toastPanelOpened = value;
+  // }
+  // private _toastPanelOpened = false;
+
+  // get workspaceStore(): WorkspaceStore {
+  //   return this.workspaceState.store;
+  // }
+  //
+  // get workspace(): Workspace {
+  //   return this.workspaceState.workspace$.value;
+  // }
+
+  @ViewChild('mapBrowser', { read: ElementRef }) mapBrowser: ElementRef;
 
   constructor(
     private route: ActivatedRoute,
     private configService: ConfigService,
+    // private workspaceState: WorkspaceState,
     public authService: AuthService,
-    public featureService: FeatureService,
     public mediaService: MediaService,
-    public toolService: ToolService,
-    public searchService: SearchService,
-    public overlayService: OverlayService,
-    public mapService: MapService,
     public layerService: LayerService,
     public dataSourceService: DataSourceService,
-    public contextService: ContextService,
     public cdRef: ChangeDetectorRef,
     public capabilitiesService: CapabilitiesService,
-    public messageService: MessageService
+    private contextState: ContextState,
+    private mapState: MapState,
+    private searchState: SearchState,
+    private queryState: QueryState,
+    private toolState: ToolState,
+    private searchSourceService: SearchSourceService,
+    private searchService: SearchService
   ) {}
 
   ngOnInit() {
     window['IGO'] = this;
 
-    this.sidenavTitle = this.configService.getConfig('sidenavTitle');
+    // this.sidenavTitle = this.configService.getConfig('sidenavTitle');
 
     this.authService.authenticate$.subscribe(
       () => (this.contextLoaded = false)
     );
 
-    this.features$$ = this.featureService.features$.subscribe(features =>
-      this.handleFeaturesChange(features)
+    this.context$$ = this.contextState.context$.subscribe(
+      (context: DetailedContext) => this.onChangeContext(context)
     );
 
-    this.selectedFeature$$ = this.featureService.selectedFeature$.subscribe(
-      feature => this.handleFeatureSelect(feature)
-    );
-
-    this.context$$ = this.contextService.context$.subscribe(context =>
-      this.handleContextChange(context)
-    );
-
-    this.route.queryParams.pipe(debounceTime(500)).subscribe(params => {
-      if (params['sidenav'] === '1') {
-        this.openSidenav();
+    this.contextMenuStore.load([
+      {
+        id: 'coordinates',
+        title: 'coordinates',
+        handler: () => this.searchCoordinate(this.contextMenuCoord)
+      },
+      {
+        id: 'googleMaps',
+        title: 'googleMap',
+        handler: () => this.openGoogleMaps(this.contextMenuCoord)
+      },
+      {
+        id: 'googleStreetView',
+        title: 'googleStreetView',
+        handler: () => this.openGoogleStreetView(this.contextMenuCoord)
       }
-    });
+    ]);
+
+    // this.focusedSearchResult$$ = this.searchStore.stateView
+    //   .firstBy$(
+    //     (record: EntityRecord<SearchResult>) => record.state.focused === true
+    //   )
+    //   .subscribe((record: EntityRecord<SearchResult>) => {
+    //     const result = record ? record.entity : undefined;
+    //     this.onFocusSearchResult(result);
+    //   });
+
+    // this.route.queryParams.pipe(debounceTime(500)).subscribe(params => {
+    //   if (params['sidenav'] === '1') {
+    //     this.openSidenav();
+    //   }
+    // });
+
+    this.tableStore.load([
+      { id: '2', name: 'Name 2', description: 'Description 2' },
+      { id: '1', name: 'Name 1', description: 'Description 1' },
+      { id: '3', name: 'Name 3', description: 'Description 3' },
+      { id: '4', name: 'Name 4', description: 'Description 4' },
+      { id: '5', name: 'Name 5', description: 'Description 5' }
+    ]);
   }
 
   ngOnDestroy() {
-    this.selectedFeature$$.unsubscribe();
-    this.features$$.unsubscribe();
     this.context$$.unsubscribe();
+    this.searchResults$$.unsubscribe();
+    this.focusedSearchResult$$.unsubscribe();
   }
 
-  closeSidenav() {
-    this.sidenavOpened = false;
-    this.toastOpened = false;
-    if (
-      this.mediaService.media$.value === 'mobile' &&
-      this.featureService.focusedFeature$.value
-    ) {
-      this.toastShown = true;
-    }
+  onBackdropClick() {
+    this.closeSidenav();
   }
 
-  openSidenav() {
-    this.sidenavOpened = true;
-    this.toastShown = false;
+  onToggleSidenavClick() {
+    this.toggleSidenav();
   }
 
-  toggleSidenav() {
-    if (this.sidenavOpened) {
-      this.closeSidenav();
-    } else {
-      this.openSidenav();
-    }
-  }
+  onMapQuery(event: { features: Feature[]; event: OlMapBrowserPointerEvent }) {
+    const baseQuerySearchSource = this.getQuerySearchSource();
+    const querySearchSourceArray: QuerySearchSource[] = [];
 
-  updateMapBrowserClass(e) {
-    e.element.classList.remove('toast-shown-offset');
-    e.element.classList.remove('toast-opened-offset');
-    if (this.mediaService.media$.value === 'mobile') {
-      if (this.toastOpened && this.toastShown) {
-        e.element.classList.add('toast-opened-offset');
-        return;
-      }
-      if (this.toastShown) {
-        e.element.classList.add('toast-shown-offset');
-      }
-      return;
-    }
-    if (this.sidenavOpened) {
-      e.element.classList.add('sidenav-offset');
-    } else {
-      e.element.classList.remove('sidenav-offset');
-    }
-  }
-
-  swipe(action: string) {
-    const featuresList = this.featureService.features$.value;
-    const focusedFeature = this.featureService.focusedFeature$.value;
-
-    let index = featuresList.findIndex(f => f.id === focusedFeature.id);
-    if (index < 0) {
-      return;
-    }
-
-    if (action === PortalComponent.SWIPE_ACTION.LEFT) {
-      index += 1;
-    } else if (action === PortalComponent.SWIPE_ACTION.RIGHT) {
-      index -= 1;
-    }
-
-    if (featuresList[index]) {
-      this.featureService.selectFeature(featuresList[index]);
-    }
-  }
-
-  handleQueryResults(results) {
-    const features: Feature[] = results.features;
-    if (features[0]) {
-      this.featureService.updateFeatures(features, features[0].source);
-    }
-  }
-
-  private handleFeaturesChange(features: Feature[]) {
-    if (features.length > 0) {
-      if (this.mediaService.media$.value === 'mobile') {
-        if (
-          features[0].type === 'Feature' &&
-          (features[0].source !== 'Nominatim (OSM)' &&
-            features[0].source !== 'ICherche Québec')
-        ) {
-          this.featureService.selectFeature(features[0]);
-          this.overlayService.setFeatures(
-            [features[0]],
-            OverlayAction.ZoomIfOutMapExtent
-          );
-          this.toastShown = true;
-          return;
-        }
-      }
-
-      this.openSidenav();
-      const tool = this.toolService.getTool('searchResults');
-      this.toolService.selectTool(tool);
-    }
-  }
-
-  private handleFeatureSelect(feature: Feature) {
-    if (feature && this.mediaService.media$.value === 'mobile') {
-      if (this.sidenavOpened) {
-        this.featureService.focusFeature(feature);
-        this.closeSidenav();
-        this.cdRef.detectChanges();
-      }
-    } else {
-      this.toastShown = false;
-    }
-  }
-
-  private handleContextChange(context: Context) {
-
-    if (context !== undefined && this.contextLoaded) {
-      const tool = this.toolService.getTool('mapDetails');
-      this.toolService.selectTool(tool);
-
-      const message = context['message'];
-      if (message) {
-        this.contextMessage = this.messageService.message(<Message>message);
-      } else {
-        if (this.contextMessage) {
-          this.messageService.remove(this.contextMessage.id);
-        }
-      }
-    }
-
-    if (context !== undefined) {
-      this.contextLoaded = true;
-
-      const message = context['message'];
-      if (message) {
-        this.contextMessage = this.messageService.message(<Message>message);
-      } else {
-        if (this.contextMessage) {
-          this.messageService.remove(this.contextMessage.id);
-        }
-      }
-    }
-
-    this.route.queryParams.subscribe(params => {
-      if (params['layers'] && params['wmsUrl']) {
-        const layers = params['layers'].split(',');
-        layers.forEach(layer => {
-          this.addLayerByName(params['wmsUrl'], layer);
+    const results = event.features.map((feature: Feature) => {
+      let querySearchSource = querySearchSourceArray.find(
+        s => s.title === feature.meta.sourceTitle
+      );
+      if (!querySearchSource) {
+        querySearchSource = new QuerySearchSource({
+          title: feature.meta.sourceTitle
         });
+        querySearchSourceArray.push(querySearchSource);
       }
-      if (params['tool'] && !this.toolLoaded) {
-        const toolNameToOpen = params['tool'];
-        if (this.toolService.allowedToolName.indexOf(toolNameToOpen) !== -1) {
-          const tool = this.toolService.getTool(toolNameToOpen);
-          setTimeout(() => {
-            this.toolService.selectTool(tool);
-          }, 250); // add delay for translationservice to be injected
-        }
-        this.toolLoaded = true;
-      }
+      return featureToSearchResult(feature, querySearchSource);
+    });
+
+    const research = {
+      request: of(results),
+      reverse: false,
+      source: baseQuerySearchSource
+    };
+    research.request.subscribe((queryResults: SearchResult<Feature>[]) => {
+      this.queryStore.load(queryResults);
     });
   }
 
-  private addLayerByName(url: string, name: string) {
-    const properties = {
-      type: 'wms' as any,
-      // format: 'wms',
-      url: url,
-      params: {
-        layers: name
-      }
-    };
-
-    this.capabilitiesService
-      .getWMSOptions(properties)
-      .subscribe(capabilities => {
-        this.dataSourceService
-          .createAsyncDataSource(capabilities)
-          .pipe(debounceTime(100))
-          .subscribe(dataSource => {
-            const layerOptions = {
-              source: Object.assign(dataSource, {
-                options: {
-                  optionsFromCapabilities: true,
-                  _layerOptionsFromCapabilities: (capabilities as any)
-                    ._layerOptionsFromCapabilities
-                }
-              })
-            };
-            this.map.addLayer(this.layerService.createLayer(layerOptions));
-          });
-      });
+  onSearchTermChange(term?: string) {
+    if (term === undefined || term === '') {
+      this.onClearSearch();
+      return;
+    }
+    this.onBeforeSearch();
   }
+
+  onSearch(event: { research: Research; results: SearchResult[] }) {
+    const results = event.results;
+
+    // TODO: add property in searchSource
+    const reverseSearch =
+      event.research.source.getId().indexOf('reverse') !== -1;
+    const enabledSources = this.searchSourceService
+      .getEnabledSources()
+      .filter(s => (s.getId().indexOf('reverse') !== -1) === reverseSearch);
+
+    const newResults = this.searchStore.entities$.value
+      .filter(
+        (result: SearchResult) =>
+          result.source !== event.research.source &&
+          enabledSources.includes(result.source)
+      )
+      .concat(results);
+    this.searchStore.load(newResults);
+  }
+
+  private closeSidenav() {
+    this.sidenavOpened = false;
+  }
+
+  private openSidenav() {
+    this.sidenavOpened = true;
+  }
+
+  private toggleSidenav() {
+    this.sidenavOpened ? this.closeSidenav() : this.openSidenav();
+  }
+
+  private onChangeContext(context: DetailedContext) {
+    if (context === undefined) {
+      return;
+    }
+
+    if (this.contextLoaded) {
+      this.toolState.toolbox.activateTool('mapDetails');
+    }
+
+    this.contextLoaded = true;
+  }
+
+  private onBeforeSearch() {
+    // if (this.mediaService.media$.value === Media.Mobile) {
+    //   this.closeToastPanel();
+    // }
+
+    this.toolState.toolbox.activateTool('searchResults');
+    this.openSidenav();
+  }
+
+  // private onSearchMap(results: SearchResult<Feature>[]) {
+  // if (results.length > 0) {
+  //   this.onBeforeSearch();
+  //   this.searchStore.state.update(results[0], { selected: true }, true);
+  // }
+  // }
+
+  // private onFocusSearchResult(result: SearchResult) {
+  // if (result === undefined) {
+  //   this.closeToastPanel();
+  //   this.searchResult = undefined;
+  //   return;
+  // }
+  //
+  // if (result.meta.dataType === FEATURE) {
+  //   if (this.mediaService.media$.value === Media.Mobile) {
+  //     this.closeSidenav();
+  //   }
+  //
+  //   this.searchResult = result;
+  //   this.openToastPanel();
+  // } else {
+  //   this.searchResult = undefined;
+  // }
+  // }
+
+  private addFeatureToMap(result: SearchResult<Feature>) {
+    const feature = result.data;
+
+    // Somethimes features have no geometry. It happens with some GetFeatureInfo
+    if (feature.geometry === undefined) {
+      return;
+    }
+
+    this.map.overlay.setFeatures([feature], FeatureMotion.Default);
+  }
+
+  private onClearSearch() {
+    this.searchStore.clear();
+    // this.closeToastPanel();
+  }
+
+  private getQuerySearchSource(): SearchSource {
+    return this.searchSourceService
+      .getSources()
+      .find(
+        (searchSource: SearchSource) =>
+          searchSource instanceof QuerySearchSource
+      );
+  }
+
+  onContextMenuOpen(event: { x: number; y: number }) {
+    this.contextMenuCoord = this.getClickCoordinate(event);
+  }
+
+  private getClickCoordinate(event: { x: number; y: number }) {
+    const contextmenuPoint = event;
+    const boundingMapBrowser = this.mapBrowser.nativeElement.getBoundingClientRect();
+    contextmenuPoint.y =
+      contextmenuPoint.y - boundingMapBrowser.top + window.scrollY;
+    contextmenuPoint.x =
+      contextmenuPoint.x - boundingMapBrowser.left + window.scrollX;
+    const pixel = [contextmenuPoint.x, contextmenuPoint.y];
+
+    const coord = this.map.ol.getCoordinateFromPixel(pixel);
+    const proj = this.map.projection;
+    return olProj.transform(coord, proj, 'EPSG:4326');
+  }
+
+  private openGoogleMaps(coord: [number, number]) {
+    window.open(GoogleLinks.getGoogleMapsLink(coord[0], coord[1]));
+  }
+
+  private openGoogleStreetView(coord: [number, number]) {
+    window.open(GoogleLinks.getGoogleStreetViewLink(coord[0], coord[1]));
+  }
+
+  private searchCoordinate(coord: [number, number]) {
+    this.searchBarTerm = coord.join(', ');
+    const results = this.searchService.reverseSearch(coord);
+
+    this.onBeforeSearch();
+    for (const i in results) {
+      results[i].request.subscribe((_results: SearchResult<Feature>[]) => {
+        this.onSearch({ research: results[i], results: _results });
+      });
+    }
+  }
+
+  removeMapBrowserClass(e) {
+    e.element.classList.remove('expansion-offset');
+    e.element.classList.remove('sidenav-offset');
+  }
+
+  updateMapBrowserClass(e) {
+    if (this.expansionPanelExpanded) {
+      e.element.classList.add('expansion-offset');
+    }
+
+    if (this.sidenavOpened) {
+      e.element.classList.add('sidenav-offset');
+    }
+  }
+
+  // private handleContextChange(context: Context) {
+  //   if (context !== undefined && this.contextLoaded) {
+  //     const tool = this.toolService.getTool("mapDetails");
+  //     this.toolService.selectTool(tool);
+  //   }
+  //
+  //   if (context !== undefined) {
+  //     this.contextLoaded = true;
+  //   }
+  //
+  //   this.route.queryParams.subscribe(params => {
+  //     if (params["layers"] && params["wmsUrl"]) {
+  //       const layers = params["layers"].split(",");
+  //       layers.forEach(layer => {
+  //         this.addLayerByName(params["wmsUrl"], layer);
+  //       });
+  //     }
+  //     if (params["tool"] && !this.toolLoaded) {
+  //       const toolNameToOpen = params["tool"];
+  //       if (this.toolService.allowedToolName.indexOf(toolNameToOpen) !== -1) {
+  //         const tool = this.toolService.getTool(toolNameToOpen);
+  //         setTimeout(() => {
+  //           this.toolService.selectTool(tool);
+  //         }, 250); // add delay for translationservice to be injected
+  //       }
+  //       this.toolLoaded = true;
+  //     }
+  //   });
+  // }
+
+  // private addLayerByName(url: string, name: string) {
+  //   const properties = {
+  //     type: "wms" as any,
+  //     // format: 'wms',
+  //     url: url,
+  //     params: {
+  //       layers: name
+  //     }
+  //   };
+  //
+  //   this.capabilitiesService
+  //     .getWMSOptions(properties)
+  //     .subscribe(capabilities => {
+  //       this.dataSourceService
+  //         .createAsyncDataSource(capabilities)
+  //         .pipe(debounceTime(100))
+  //         .subscribe(dataSource => {
+  //           const layerOptions = {
+  //             source: Object.assign(dataSource, {
+  //               options: {
+  //                 optionsFromCapabilities: true,
+  //                 _layerOptionsFromCapabilities: (capabilities as any)
+  //                   ._layerOptionsFromCapabilities
+  //               }
+  //             })
+  //           };
+  //           this.map.addLayer(this.layerService.createLayer(layerOptions));
+  //         });
+  //     });
+  // }
 }

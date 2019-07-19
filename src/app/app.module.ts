@@ -12,9 +12,10 @@ import { IgoSpinnerModule, IgoStopPropagationModule } from '@igo2/common';
 import { IgoAuthModule } from '@igo2/auth';
 import {
   provideIChercheSearchSource,
-  provideReseauTransportsQuebecSearchSource,
+  provideIChercheReverseSearchSource,
   provideNominatimSearchSource,
-  provideDataSourceSearchSource,
+  provideCoordinatesReverseSearchSource,
+  provideILayerSearchSource,
   provideOsrmRoutingSource
 } from '@igo2/geo';
 
@@ -42,8 +43,9 @@ import { AppComponent } from './app.component';
     RouteService,
     provideNominatimSearchSource(),
     provideIChercheSearchSource(),
-    provideReseauTransportsQuebecSearchSource(),
-    provideDataSourceSearchSource(),
+    provideIChercheReverseSearchSource(), // TODO: replace by territoire
+    provideCoordinatesReverseSearchSource(),
+    provideILayerSearchSource(),
     provideOsrmRoutingSource()
   ],
   bootstrap: [AppComponent]
