@@ -1,0 +1,47 @@
+<mat-sidenav-container>
+  <igo-map-browser
+    igoQuery
+    igoOverlay
+    igoMapContext
+    igoLayerContext
+    igoDropGeoFile
+    igoMapBrowserBinding
+    (query)="handleQueryResults($event)"
+    [map]="map"
+    [ngClass]="{'igo-attribution-offset': map.getBaseLayers().length > 1}"
+    [@mapStateX]="sidenavOpened ? 'right' : 'left'"
+    (@mapStateX.done)="updateMapBrowserClass($event)"
+    [@mapStateY]="toastShown ? (toastOpened ? 'up' : 'down') : 'close'"
+    (@mapStateY.done)="updateMapBrowserClass($event)">
+
+    <igo-zoom-button [map]="map" color="primary"></igo-zoom-button>
+    <igo-geolocate-button [map]="map" color="primary"
+      [@controlStateY]="toastShown ? (toastOpened ? 'up' : 'down') : 'close'">
+    </igo-geolocate-button>
+    <igo-rotation-button [map]="map" color="primary"></igo-rotation-button>
+    <igo-user-button [map]="map" color="primary"
+      [@controlStateY]="toastShown ? (toastOpened ? 'up' : 'down') : 'close'">
+    </igo-user-button>
+    <igo-baselayers-switcher [map]="map"
+      [@controlStateY]="toastShown ? (toastOpened ? 'up' : 'down') : 'close'"
+      [@controlStateX]="(mediaService.media$ | async) !== 'mobile' &&
+                              sidenavOpened ? 'right' : 'left'">
+    </igo-baselayers-switcher>
+  </igo-map-browser>
+
+  <igo-toast
+    [map]="map"
+    [expanded]="toastOpened"
+    [feature]="featureService.focusedFeature$ | async"
+    (onOpened)="toastOpened=$event"
+    (swipeleft)="swipe($event.type)"
+    (swiperight)="swipe($event.type)"
+    *ngIf="toastShown">
+  </igo-toast>
+
+  <app-map-overlay [@controlStateY]="toastShown ? (toastOpened ? 'up' : 'down') : 'close'"
+    [@controlStateX]="(mediaService.media$ | async) !== 'mobile' &&
+                            sidenavOpened ? 'right' : 'left'">
+  </app-map-overlay>
+
+</mat-sidenav-container>

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -20,24 +20,19 @@ import {
   CapabilitiesService
 } from '@igo2/geo';
 
-import {
-  controlSlideX,
-  controlSlideY,
-  mapSlideX,
-  mapSlideY
-} from './portal.animation';
-
 @Component({
-  selector: 'app-portal',
-  templateUrl: './portal.component.html',
-  styleUrls: ['./portal.component.scss'],
-  animations: [controlSlideX(), controlSlideY(), mapSlideX(), mapSlideY()]
+  selector: 'lib-feature-viewer',
+  templateUrl: './feature-viewer.component.html',
+  styleUrls: ['./feature-viewer.component.css']
 })
-export class PortalComponent implements OnInit, OnDestroy {
+export class FeatureViewerComponent implements OnInit, OnDestroy, OnChanges {
+
   static SWIPE_ACTION = {
     RIGHT: 'swiperight',
     LEFT: 'swipeleft'
   };
+
+  @Input() feature: any;
 
   public selectedFeature$$: Subscription;
   public features$$: Subscription;
@@ -64,7 +59,7 @@ export class PortalComponent implements OnInit, OnDestroy {
   // Reference to last startup message from context
   // To remove message on context change
   private contextMessage: Notification;
-  private _routerSubscription: any;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -83,11 +78,6 @@ export class PortalComponent implements OnInit, OnDestroy {
     public capabilitiesService: CapabilitiesService,
     public messageService: MessageService
   ) {
-    this._routerSubscription = this.route.url.subscribe(url => {
-      setTimeout(() => {
-        this.map.ol.updateSize();
-      }, 1000);
-    });
   }
 
   ngOnInit() {
@@ -120,6 +110,19 @@ export class PortalComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       this.map.ol.updateSize();
     }, 1000);
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    for (const propName in changes) {
+      if (propName === 'feature') {
+        if (
+          this.feature !== undefined &&
+          this.feature !== null
+        ) {
+          this.addFeature(this.feature);
+        }
+      }
+    }
   }
 
   ngOnDestroy() {
@@ -169,26 +172,6 @@ export class PortalComponent implements OnInit, OnDestroy {
       e.element.classList.add('sidenav-offset');
     } else {
       e.element.classList.remove('sidenav-offset');
-    }
-  }
-
-  swipe(action: string) {
-    const featuresList = this.featureService.features$.value;
-    const focusedFeature = this.featureService.focusedFeature$.value;
-
-    let index = featuresList.findIndex(f => f.id === focusedFeature.id);
-    if (index < 0) {
-      return;
-    }
-
-    if (action === PortalComponent.SWIPE_ACTION.LEFT) {
-      index += 1;
-    } else if (action === PortalComponent.SWIPE_ACTION.RIGHT) {
-      index -= 1;
-    }
-
-    if (featuresList[index]) {
-      this.featureService.selectFeature(featuresList[index]);
     }
   }
 
@@ -313,5 +296,20 @@ export class PortalComponent implements OnInit, OnDestroy {
             this.map.addLayer(this.layerService.createLayer(layerOptions));
           });
       });
+  }
+
+  updateMap() {
+    // Sans cela la carte n'affichait pas
+    setTimeout(() => {
+    this.mapService.getMap().ol.updateSize();
+    }, 600);
+  }
+
+  addFeature(feature: any) {
+    this.feature.source = 'Recherche Grif';
+    this.feature.title = 'Dossier : ' + feature.properties.idDossier;
+    this.overlayService.clear();
+    this.overlayService.setFeatures([feature], OverlayAction.ZoomIfOutMapExtent);
+    this.updateMap();
   }
 }

@@ -1,0 +1,15 @@
+{
+  "name": "@jacobramsay/geo",
+  "version": "0.0.6",
+  "peerDependencies": {
+    "@angular/common": "^6.0.0-rc.0 || ^6.0.0",
+    "@angular/core": "^6.0.0-rc.0 || ^6.0.0",
+    "@angular/router": "^7.2.2",
+    "@igo2/core": "^0.27.11",
+    "@igo2/tools": "^0.27.11",
+    "@igo2/context": "^0.27.11",
+    "@igo2/geo": "^0.27.11",
+    "@igo2/auth": "^0.27.11",
+    "@igo2/common": "^0.27.11"
+  }
+}
