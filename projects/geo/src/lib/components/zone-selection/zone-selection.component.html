@@ -1,11 +1,60 @@
-<ion-toolbar>
-  <ion-title>
-    Sélection de la zone de recherche
-  </ion-title>
-</ion-toolbar>
-<ion-content>
-  <app-portal></app-portal>
-</ion-content>
+
+<mat-toolbar class="md-padding">
+    <div class="md-toolbar-tools">
+      <h3  flex>
+        Sélectionner la zone de recherche
+      </h3>
+    </div>
+</mat-toolbar>
+
+    <mat-sidenav-container>
+            <igo-map-browser
+              igoQuery
+              igoOverlay
+              igoMapContext
+              igoLayerContext
+              igoDropGeoFile
+              igoMapBrowserBinding
+              (query)="handleQueryResults($event)"
+              [map]="map"
+              [ngClass]="{'igo-attribution-offset': map.getBaseLayers().length > 1}"
+              [@mapStateX]="sidenavOpened ? 'right' : 'left'"
+              (@mapStateX.done)="updateMapBrowserClass($event)"
+              [@mapStateY]="toastShown ? (toastOpened ? 'up' : 'down') : 'close'"
+              (@mapStateY.done)="updateMapBrowserClass($event)">
+
+              <igo-zoom-button [map]="map" color="primary"></igo-zoom-button>
+              <igo-geolocate-button [map]="map" color="primary"
+                [@controlStateY]="toastShown ? (toastOpened ? 'up' : 'down') : 'close'">
+              </igo-geolocate-button>
+              <igo-rotation-button [map]="map" color="primary"></igo-rotation-button>
+              <igo-user-button [map]="map" color="primary"
+                [@controlStateY]="toastShown ? (toastOpened ? 'up' : 'down') : 'close'">
+              </igo-user-button>
+              <igo-baselayers-switcher [map]="map"
+                [@controlStateY]="toastShown ? (toastOpened ? 'up' : 'down') : 'close'"
+                [@controlStateX]="(mediaService.media$ | async) !== 'mobile' &&
+                                        sidenavOpened ? 'right' : 'left'">
+              </igo-baselayers-switcher>
+            </igo-map-browser>
+
+            <igo-toast
+              [map]="map"
+              [expanded]="toastOpened"
+              [feature]="featureService.focusedFeature$ | async"
+              (onOpened)="toastOpened=$event"
+              (swipeleft)="swipe($event.type)"
+              (swiperight)="swipe($event.type)"
+              *ngIf="toastShown">
+            </igo-toast>
+
+          </mat-sidenav-container>
+
+<mat-toolbar>
+      <button id='btmFooter' mat-stroked-button color="primary">Annuler</button>
+      <button id='btmFooter' mat-stroked-button color="primary">Sélectionner</button>
+</mat-toolbar>
+<!--
 <ion-footer>
   <ion-grid>
     <ion-row>
@@ -17,4 +66,4 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-</ion-footer>
+</ion-footer> -->

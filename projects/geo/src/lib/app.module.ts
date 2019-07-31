@@ -19,8 +19,12 @@ import {
 } from '@igo2/geo';
 
 import { environment } from '../environments/environment';
-import { PortalModule } from './pages';
+import { PortalModule } from './pages/portal/portal.module';
 import { AppComponent } from './app.component';
+import { BboxService } from './services/bbox.service';
+import { FeatureViewerModule } from './components/feature-viewer/feature-viewer.module';
+import { ZoneSelectionModule } from './components/zone-selection/zone-selection.module';
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,7 +36,9 @@ import { AppComponent } from './app.component';
     IgoMessageModule,
     IgoSpinnerModule,
     IgoStopPropagationModule,
-    PortalModule
+    PortalModule,
+    FeatureViewerModule,
+    ZoneSelectionModule
   ],
   providers: [
     provideConfigOptions({
@@ -40,6 +46,7 @@ import { AppComponent } from './app.component';
       path: './config/config.json'
     }),
     RouteService,
+    BboxService,
     provideNominatimSearchSource(),
     provideIChercheSearchSource(),
     provideReseauTransportsQuebecSearchSource(),

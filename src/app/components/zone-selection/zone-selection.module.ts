@@ -4,8 +4,12 @@ import {
   MatTooltipModule,
   MatIconModule,
   MatButtonModule,
-  MatSidenavModule
+  MatSidenavModule,
+  MatToolbarModule,
+  MatGridListModule
 } from '@angular/material';
+
+
 
 import { IgoCoreModule } from '@igo2/core';
 import {
@@ -16,11 +20,8 @@ import {
 import { IgoGeoModule } from '@igo2/geo';
 import { IgoContextModule } from '@igo2/context';
 import { IgoToolsModule } from '@igo2/tools';
-
-import { PortalComponent } from './portal.component';
-
-import { MapOverlayModule } from './map-overlay/map-overlay.module';
-
+import {MapOverlayModule} from '../../pages/portal/map-overlay/map-overlay.module';
+import { ZoneSelectionComponent } from './zone-selection.component';
 
 @NgModule({
   imports: [
@@ -29,6 +30,8 @@ import { MapOverlayModule } from './map-overlay/map-overlay.module';
     MatButtonModule,
     MatIconModule,
     MatSidenavModule,
+    MatToolbarModule,
+    MatGridListModule,
     IgoCoreModule,
     IgoPanelModule,
     IgoBackdropModule,
@@ -36,10 +39,9 @@ import { MapOverlayModule } from './map-overlay/map-overlay.module';
     IgoGeoModule,
     IgoContextModule,
     IgoToolsModule,
-    MapOverlayModule
   ],
-  exports: [PortalComponent],
-  declarations: [PortalComponent],
-  entryComponents: [PortalComponent],
+  exports: [ZoneSelectionComponent],
+  declarations: [ZoneSelectionComponent],
+  entryComponents: [ZoneSelectionComponent]
 })
-export class PortalModule {}
+export class ZoneSelectionModule {}

@@ -16,7 +16,7 @@ gulp.task('geo:fixOL', () => {
 });
 
 gulp.task('geo:clean', done => {
-  return gulp.src('./projects/geo/src/lib', {read: false})
+  return gulp.src('./projects/geo/src/lib', {read: false, allowEmpty: true})
          .pipe(clean());
 });
 

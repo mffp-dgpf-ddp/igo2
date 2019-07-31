@@ -67,8 +67,8 @@ export class PortalComponent implements OnInit, OnDestroy {
   private _routerSubscription: any;
 
   constructor(
-    private route: ActivatedRoute,
-    private configService: ConfigService,
+    public route: ActivatedRoute,
+    protected configService: ConfigService,
     public authService: AuthService,
     public featureService: FeatureService,
     public mediaService: MediaService,

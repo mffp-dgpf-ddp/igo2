@@ -7,6 +7,7 @@ import {
   MatSidenavModule
 } from '@angular/material';
 
+
 import { IgoCoreModule } from '@igo2/core';
 import {
   IgoPanelModule,
@@ -16,12 +17,8 @@ import {
 import { IgoGeoModule } from '@igo2/geo';
 import { IgoContextModule } from '@igo2/context';
 import { IgoToolsModule } from '@igo2/tools';
-
-import { PortalComponent } from './portal.component';
-
-import { MapOverlayModule } from './map-overlay/map-overlay.module';
-
-
+import {FeatureViewerComponent} from './feature-viewer.component';
+import { MapOverlayModule } from 'src/app/pages/portal/map-overlay/map-overlay.module';
 @NgModule({
   imports: [
     CommonModule,
@@ -38,8 +35,8 @@ import { MapOverlayModule } from './map-overlay/map-overlay.module';
     IgoToolsModule,
     MapOverlayModule
   ],
-  exports: [PortalComponent],
-  declarations: [PortalComponent],
-  entryComponents: [PortalComponent],
+  exports: [FeatureViewerComponent],
+  declarations: [FeatureViewerComponent],
+  entryComponents: [FeatureViewerComponent]
 })
-export class PortalModule {}
+export class FeatureViewerModule {}

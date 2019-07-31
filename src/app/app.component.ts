@@ -3,6 +3,8 @@ import { Title } from '@angular/platform-browser';
 
 import { LanguageService, ConfigService, AnalyticsService } from '@igo2/core';
 import { AuthOptions } from '@igo2/auth';
+import { JsonDialogComponent } from '@igo2/common';
+import { Feature } from 'geojson';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +14,21 @@ import { AuthOptions } from '@igo2/auth';
 export class AppComponent {
   public authConfig: AuthOptions;
   private themeClass = 'blue-theme';
+
+
+  public feature: Feature = {
+    type: 'Feature',
+    properties: {
+      id: '6605'
+    },
+    geometry: {
+      type: 'Point',
+      coordinates: [
+        -71.51298611,
+        47.01209722
+      ]
+    }
+  };
 
   constructor(
     protected languageService: LanguageService,

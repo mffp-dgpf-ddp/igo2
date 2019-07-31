@@ -20,50 +20,30 @@ import {
   CapabilitiesService
 } from '@igo2/geo';
 
-@Component({
-  selector: 'lib-feature-viewer',
-  templateUrl: './feature-viewer.component.html',
-  styleUrls: ['./feature-viewer.component.css']
-})
-export class FeatureViewerComponent implements OnInit, OnDestroy, OnChanges {
+import {
+  controlSlideX,
+  controlSlideY,
+  mapSlideX,
+  mapSlideY
+} from '../../pages/portal/portal.animation';
 
-  static SWIPE_ACTION = {
-    RIGHT: 'swiperight',
-    LEFT: 'swipeleft'
-  };
+import { PortalComponent } from '../../pages/portal/portal.component';
+
+@Component({
+  selector: 'app-feature-viewer',
+  templateUrl: './feature-viewer.component.html',
+  styleUrls: ['./feature-viewer.component.scss'],
+  animations: [controlSlideX(), controlSlideY(), mapSlideX(), mapSlideY()]
+})
+export class FeatureViewerComponent extends PortalComponent implements OnChanges, OnDestroy, OnInit {
+
 
   @Input() feature: any;
 
-  public selectedFeature$$: Subscription;
-  public features$$: Subscription;
-  public context$$: Subscription;
-
-  public map = new IgoMap({
-    controls: {
-      scaleLine: true,
-      attribution: {
-        collapsed: true
-      }
-    }
-  });
-
-  public sidenavOpened = false;
-  public toastOpened = false;
-  public toastShown = false;
-  public sidenavTitle;
-
-  // True after the initial context is loaded
-  private contextLoaded = false;
-  // True after the initial tool is loaded
-  private toolLoaded = false;
-  // Reference to last startup message from context
-  // To remove message on context change
-  private contextMessage: Notification;
-
 
   constructor(
-    private route: ActivatedRoute,
-    private configService: ConfigService,
+    public route: ActivatedRoute,
+    protected configService: ConfigService,
     public authService: AuthService,
     public featureService: FeatureService,
     public mediaService: MediaService,
@@ -78,39 +58,37 @@ export class FeatureViewerComponent implements OnInit, OnDestroy, OnChanges {
     public capabilitiesService: CapabilitiesService,
     public messageService: MessageService
   ) {
+    super(
+      route,
+      configService,
+      authService,
+      featureService,
+      mediaService,
+      toolService,
+      searchService,
+      overlayService,
+      mapService,
+      layerService,
+      dataSourceService,
+      contextService,
+      cdRef,
+      capabilitiesService,
+      messageService);
   }
 
-  ngOnInit() {
-    window['IGO'] = this;
 
-    this.sidenavTitle = this.configService.getConfig('sidenavTitle');
-
-    this.authService.authenticate$.subscribe(
-      () => (this.contextLoaded = false)
-    );
-
-    this.features$$ = this.featureService.features$.subscribe(features =>
-      this.handleFeaturesChange(features)
-    );
-
-    this.selectedFeature$$ = this.featureService.selectedFeature$.subscribe(
-      feature => this.handleFeatureSelect(feature)
-    );
-
-    this.context$$ = this.contextService.context$.subscribe(context =>
-      this.handleContextChange(context)
-    );
-
-    this.route.queryParams.pipe(debounceTime(500)).subscribe(params => {
-      if (params['sidenav'] === '1') {
-        this.openSidenav();
+  public mapp = new IgoMap({
+    controls: {
+      attribution: {
+        collapsed: true
       }
-    });
+    }
+  });
 
-    setTimeout(() => {
-      this.map.ol.updateSize();
-    }, 1000);
-  }
+  public vieww = {
+    center: [-73, 47.2],
+    zoom: 15
+  };
 
   ngOnChanges(changes: SimpleChanges) {
     for (const propName in changes) {
@@ -125,177 +103,10 @@ export class FeatureViewerComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-  ngOnDestroy() {
-    this.selectedFeature$$.unsubscribe();
-    this.features$$.unsubscribe();
-    this.context$$.unsubscribe();
-  }
-
-  closeSidenav() {
-    this.sidenavOpened = false;
-    this.toastOpened = false;
-    if (
-      this.mediaService.media$.value === 'mobile' &&
-      this.featureService.focusedFeature$.value
-    ) {
-      this.toastShown = true;
+  ngOnInit() {
+    if (this.feature !== undefined && this.feature !== null) {
+      this.addFeature(this.feature);
     }
-  }
-
-  openSidenav() {
-    this.sidenavOpened = true;
-    this.toastShown = false;
-  }
-
-  toggleSidenav() {
-    if (this.sidenavOpened) {
-      this.closeSidenav();
-    } else {
-      this.openSidenav();
-    }
-  }
-
-  updateMapBrowserClass(e) {
-    e.element.classList.remove('toast-shown-offset');
-    e.element.classList.remove('toast-opened-offset');
-    if (this.mediaService.media$.value === 'mobile') {
-      if (this.toastOpened && this.toastShown) {
-        e.element.classList.add('toast-opened-offset');
-        return;
-      }
-      if (this.toastShown) {
-        e.element.classList.add('toast-shown-offset');
-      }
-      return;
-    }
-    if (this.sidenavOpened) {
-      e.element.classList.add('sidenav-offset');
-    } else {
-      e.element.classList.remove('sidenav-offset');
-    }
-  }
-
-  handleQueryResults(results) {
-    const features: Feature[] = results.features;
-    if (features[0]) {
-      this.featureService.updateFeatures(features, features[0].source);
-    }
-  }
-
-  private handleFeaturesChange(features: Feature[]) {
-    if (features.length > 0) {
-      if (this.mediaService.media$.value === 'mobile') {
-        if (
-          features[0].type === 'Feature' &&
-          (features[0].source !== 'Nominatim (OSM)' &&
-            features[0].source !== 'ICherche Québec')
-        ) {
-          this.featureService.selectFeature(features[0]);
-          this.overlayService.setFeatures(
-            [features[0]],
-            OverlayAction.ZoomIfOutMapExtent
-          );
-          this.toastShown = true;
-          return;
-        }
-      }
-
-      this.openSidenav();
-      const tool = this.toolService.getTool('searchResults');
-      this.toolService.selectTool(tool);
-    }
-  }
-
-  private handleFeatureSelect(feature: Feature) {
-    if (feature && this.mediaService.media$.value === 'mobile') {
-      if (this.sidenavOpened) {
-        this.featureService.focusFeature(feature);
-        this.closeSidenav();
-        this.cdRef.detectChanges();
-      }
-    } else {
-      this.toastShown = false;
-    }
-  }
-
-  private handleContextChange(context: Context) {
-
-    if (context !== undefined && this.contextLoaded) {
-      const tool = this.toolService.getTool('mapDetails');
-      this.toolService.selectTool(tool);
-
-      const message = context['message'];
-      if (message) {
-        this.contextMessage = this.messageService.message(<Message>message);
-      } else {
-        if (this.contextMessage) {
-          this.messageService.remove(this.contextMessage.id);
-        }
-      }
-    }
-
-    if (context !== undefined) {
-      this.contextLoaded = true;
-
-      const message = context['message'];
-      if (message) {
-        this.contextMessage = this.messageService.message(<Message>message);
-      } else {
-        if (this.contextMessage) {
-          this.messageService.remove(this.contextMessage.id);
-        }
-      }
-    }
-
-    this.route.queryParams.subscribe(params => {
-      if (params['layers'] && params['wmsUrl']) {
-        const layers = params['layers'].split(',');
-        layers.forEach(layer => {
-          this.addLayerByName(params['wmsUrl'], layer);
-        });
-      }
-      if (params['tool'] && !this.toolLoaded) {
-        const toolNameToOpen = params['tool'];
-        if (this.toolService.allowedToolName.indexOf(toolNameToOpen) !== -1) {
-          const tool = this.toolService.getTool(toolNameToOpen);
-          setTimeout(() => {
-            this.toolService.selectTool(tool);
-          }, 250); // add delay for translationservice to be injected
-        }
-        this.toolLoaded = true;
-      }
-    });
-  }
-
-  private addLayerByName(url: string, name: string) {
-    const properties = {
-      type: 'wms' as any,
-      // format: 'wms',
-      url: url,
-      params: {
-        layers: name
-      }
-    };
-
-    this.capabilitiesService
-      .getWMSOptions(properties)
-      .subscribe(capabilities => {
-        this.dataSourceService
-          .createAsyncDataSource(capabilities)
-          .pipe(debounceTime(100))
-          .subscribe(dataSource => {
-            const layerOptions = {
-              source: Object.assign(dataSource, {
-                options: {
-                  optionsFromCapabilities: true,
-                  _layerOptionsFromCapabilities: (capabilities as any)
-                    ._layerOptionsFromCapabilities
-                }
-              })
-            };
-            this.map.addLayer(this.layerService.createLayer(layerOptions));
-          });
-      });
   }
 
   updateMap() {
@@ -310,6 +121,8 @@ export class FeatureViewerComponent implements OnInit, OnDestroy, OnChanges {
     this.feature.title = 'Dossier : ' + feature.properties.idDossier;
     this.overlayService.clear();
     this.overlayService.setFeatures([feature], OverlayAction.ZoomIfOutMapExtent);
+    this.vieww.center = feature.geometry.coordinates;
+    this.vieww.zoom = 15;
     this.updateMap();
   }
 }
