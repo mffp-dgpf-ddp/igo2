@@ -8,6 +8,7 @@ import {
   IgoMessageModule,
   RouteService
 } from '@igo2/core';
+
 import { IgoSpinnerModule, IgoStopPropagationModule } from '@igo2/common';
 import { IgoAuthModule } from '@igo2/auth';
 import {
@@ -24,7 +25,7 @@ import { AppComponent } from './app.component';
 import { BboxService } from './services/bbox.service';
 import { FeatureViewerModule } from './components/feature-viewer/feature-viewer.module';
 import { ZoneSelectionModule } from './components/zone-selection/zone-selection.module';
-
+import { MapImageService } from './services/map-image.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -47,6 +48,7 @@ import { ZoneSelectionModule } from './components/zone-selection/zone-selection.
     }),
     RouteService,
     BboxService,
+    MapImageService,
     provideNominatimSearchSource(),
     provideIChercheSearchSource(),
     provideReseauTransportsQuebecSearchSource(),
@@ -55,4 +57,4 @@ import { ZoneSelectionModule } from './components/zone-selection/zone-selection.
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

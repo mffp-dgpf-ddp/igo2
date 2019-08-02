@@ -20,6 +20,8 @@ import { IgoToolsModule } from '@igo2/tools';
 import { PortalComponent } from './portal.component';
 
 import { MapOverlayModule } from './map-overlay/map-overlay.module';
+import { ZoneSelectionModule } from '../../components/zone-selection/zone-selection.module';
+import {FeatureViewerModule} from '../../components/feature-viewer/feature-viewer.module';
 
 
 @NgModule({
@@ -36,7 +38,8 @@ import { MapOverlayModule } from './map-overlay/map-overlay.module';
     IgoGeoModule,
     IgoContextModule,
     IgoToolsModule,
-    MapOverlayModule
+    MapOverlayModule,
+    ZoneSelectionModule
   ],
   exports: [PortalComponent],
   declarations: [PortalComponent],

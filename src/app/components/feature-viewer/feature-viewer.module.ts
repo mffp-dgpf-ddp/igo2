@@ -17,8 +17,8 @@ import {
 import { IgoGeoModule } from '@igo2/geo';
 import { IgoContextModule } from '@igo2/context';
 import { IgoToolsModule } from '@igo2/tools';
-import {FeatureViewerComponent} from './feature-viewer.component';
-import { MapOverlayModule } from 'src/app/pages/portal/map-overlay/map-overlay.module';
+import { FeatureViewerComponent } from './feature-viewer.component';
+import { MapOverlayModule } from '../../pages/portal/map-overlay/map-overlay.module';
 @NgModule({
   imports: [
     CommonModule,
@@ -39,4 +39,4 @@ import { MapOverlayModule } from 'src/app/pages/portal/map-overlay/map-overlay.m
   declarations: [FeatureViewerComponent],
   entryComponents: [FeatureViewerComponent]
 })
-export class FeatureViewerModule {}
+export class FeatureViewerModule { }

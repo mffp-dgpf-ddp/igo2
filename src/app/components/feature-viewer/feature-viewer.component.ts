@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, Input, OnChanges, AfterViewInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
@@ -29,6 +29,7 @@ import {
 } from '../../pages/portal/portal.animation';
 
 import { PortalComponent } from '../../pages/portal/portal.component';
+import { MapImageService } from '../../services/map-image.service';
 
 @Component({
   selector: 'app-feature-viewer',
@@ -36,13 +37,27 @@ import { PortalComponent } from '../../pages/portal/portal.component';
   styleUrls: ['./feature-viewer.component.scss'],
   animations: [controlSlideX(), controlSlideY(), mapSlideX(), mapSlideY()]
 })
-export class FeatureViewerComponent extends PortalComponent implements OnChanges, OnDestroy, OnInit {
+export class FeatureViewerComponent implements OnChanges, OnInit {
 
 
   @Input() feature: any;
 
+  map = new IgoMap({
+    controls: {
+      scaleLine: true,
+      attribution: {
+        collapsed: true
+      }
+    }
+  });
+
+  public view = {
+    center: [-73, 47.2],
+    zoom: 15
+  };
 
   constructor(
+    private mapImageService: MapImageService,
     public route: ActivatedRoute,
     protected configService: ConfigService,
     public authService: AuthService,
@@ -59,30 +74,35 @@ export class FeatureViewerComponent extends PortalComponent implements OnChanges
     public capabilitiesService: CapabilitiesService,
     public messageService: MessageService
   ) {
-    super(
-      route,
-      configService,
-      authService,
-      featureService,
-      mediaService,
-      toolService,
-      searchService,
-      overlayService,
-      mapService,
-      layerService,
-      dataSourceService,
-      contextService,
-      cdRef,
-      capabilitiesService,
-      messageService);
+    /*  super(
+        route,
+        configService,
+        authService,
+        featureService,
+        mediaService,
+        toolService,
+        searchService,
+        overlayService,
+        mapService,
+        layerService,
+        dataSourceService,
+        contextService,
+        cdRef,
+        capabilitiesService,
+        messageService);*/
+    this.dataSourceService
+      .createAsyncDataSource({
+        type: 'osm'
+      })
+      .subscribe(dataSource => {
+        this.map.addLayer(
+          this.layerService.createLayer({
+            title: 'OSM',
+            source: dataSource
+          })
+        );
+      });
   }
-
-  public view = {
-    center: [-73, 47.2],
-    zoom: 15
-  };
-
-
 
   ngOnChanges(changes: SimpleChanges) {
     for (const propName in changes) {
@@ -91,7 +111,7 @@ export class FeatureViewerComponent extends PortalComponent implements OnChanges
           this.feature !== undefined &&
           this.feature !== null
         ) {
-       //   this.addFeature(this.feature);
+          this.addFeature(this.feature);
         }
       }
     }
@@ -99,23 +119,32 @@ export class FeatureViewerComponent extends PortalComponent implements OnChanges
 
   ngOnInit() {
     if (this.feature !== undefined && this.feature !== null) {
-     this.addFeature(this.feature);
+      //this.map = this.mapService.getMap();
+      //this.updateMap();
+      this.addFeature(this.feature);
     }
   }
 
   updateMap() {
     // Sans cela la carte n'affichait pas
     setTimeout(() => {
-    this.mapService.getMap().ol.updateSize();
+      this.map.ol.updateSize();
+      this.view.zoom = 30;
+      //this.mapService.getMap().ol.updateSize();
     }, 600);
   }
 
   addFeature(feature: any) {
 
+    setTimeout(() => {
+      this.featureService.setFeatures([feature]);
+      this.overlayService.clear();
+      this.overlayService.setFeatures([feature], OverlayAction.ZoomIfOutMapExtent)
+      this.map.setView({ center: this.feature.geometry.coordinates, zoom: this.view.zoom });
+      this.mapService.getMap().setView({ center: this.feature.geometry.coordinates, zoom: this.view.zoom });
+      this.mapImageService.setMap(this.map);
+      this.updateMap();
+    }, 1000);
 
-    this.featureService.setFeatures([feature]);
-    this.overlayService.clear();
-    this.overlayService.setFeatures([feature], OverlayAction.ZoomIfOutMapExtent)
-    this.updateMap();
   }
 }

@@ -1,5 +1,4 @@
 
-
 @import '~@igo2/core/style/partial/media';
 @import '../../../style/partial/variables';
 
@@ -8,11 +7,11 @@
   height: 100%; /* Angular material adds "height:100%" to body tag by default. So, ignore this step in real-time application */
 }
 
-button {
+.footer-button {
   max-width: 200px;
   width: 100%;
-  margin-left: 5px;
-  margin-right: 5px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .demo-section {
@@ -38,7 +37,7 @@ footer {
 /*** Main ***/
 :host {
   width: 100%;
-  height: 85%;
+  height: 100%;
   display: block;
 }
 

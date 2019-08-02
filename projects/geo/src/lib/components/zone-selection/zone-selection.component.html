@@ -1,59 +1,65 @@
+<!--<mat-toolbar class="md-padding">
+  <div class="md-toolbar-tools">
+    <h3 flex>
+      Sélectionner la zone de recherche
+    </h3>
+  </div>
+</mat-toolbar> -->
+<mat-sidenav-container>
 
-<mat-toolbar class="md-padding">
-    <div class="md-toolbar-tools">
-      <h3  flex>
-        Sélectionner la zone de recherche
-      </h3>
-    </div>
-</mat-toolbar>
+  <igo-backdrop [shown]="sidenavOpened" (click)="closeSidenav()">
+  </igo-backdrop>
 
-    <mat-sidenav-container>
-            <igo-map-browser
-              igoQuery
-              igoOverlay
-              igoMapContext
-              igoLayerContext
-              igoDropGeoFile
-              igoMapBrowserBinding
-              (query)="handleQueryResults($event)"
-              [map]="map"
-              [ngClass]="{'igo-attribution-offset': map.getBaseLayers().length > 1}"
-              [@mapStateX]="sidenavOpened ? 'right' : 'left'"
-              (@mapStateX.done)="updateMapBrowserClass($event)"
-              [@mapStateY]="toastShown ? (toastOpened ? 'up' : 'down') : 'close'"
-              (@mapStateY.done)="updateMapBrowserClass($event)">
+  <button mat-icon-button id="menu-button" class="menu-button" color="primary" tooltip-position="below"
+    matTooltipShowDelay="500" [matTooltip]="(sidenavOpened ? 'Close Menu' : 'Open Menu') | translate" (click)="toggleSidenav()">
+    <mat-icon>
+      <ng-container *ngIf="!sidenavOpened">menu</ng-container>
+      <ng-container *ngIf="sidenavOpened">keyboard_arrow_left</ng-container>
+    </mat-icon>
+  </button>
 
-              <igo-zoom-button [map]="map" color="primary"></igo-zoom-button>
-              <igo-geolocate-button [map]="map" color="primary"
-                [@controlStateY]="toastShown ? (toastOpened ? 'up' : 'down') : 'close'">
-              </igo-geolocate-button>
-              <igo-rotation-button [map]="map" color="primary"></igo-rotation-button>
-              <igo-user-button [map]="map" color="primary"
-                [@controlStateY]="toastShown ? (toastOpened ? 'up' : 'down') : 'close'">
-              </igo-user-button>
-              <igo-baselayers-switcher [map]="map"
-                [@controlStateY]="toastShown ? (toastOpened ? 'up' : 'down') : 'close'"
-                [@controlStateX]="(mediaService.media$ | async) !== 'mobile' &&
-                                        sidenavOpened ? 'right' : 'left'">
-              </igo-baselayers-switcher>
-            </igo-map-browser>
+  <igo-search-bar igoSearchUrlParam [placeholder]="'Search for an address or a place' | translate" floatLabel="never">
+  </igo-search-bar>
 
-            <igo-toast
-              [map]="map"
-              [expanded]="toastOpened"
-              [feature]="featureService.focusedFeature$ | async"
-              (onOpened)="toastOpened=$event"
-              (swipeleft)="swipe($event.type)"
-              (swiperight)="swipe($event.type)"
-              *ngIf="toastShown">
-            </igo-toast>
+  <igo-sidenav [opened]="sidenavOpened" [feature]="featureService.focusedFeature$ | async" [tool]="toolService.selectedTool$ | async"
+    [map]="map" [title]="sidenavTitle" [media]="mediaService.media$ | async">
+  </igo-sidenav>
 
-          </mat-sidenav-container>
+  <igo-map-browser igoQuery igoOverlay igoMapContext igoLayerContext igoDropGeoFile (query)="handleQueryResults($event)"
+    [map]="map" [ngClass]="{'igo-attribution-offset': map.getBaseLayers().length > 1}" [@mapStateX]="sidenavOpened ? 'right' : 'left'"
+    (@mapStateX.done)="updateMapBrowserClass($event)" [@mapStateY]="toastShown ? (toastOpened ? 'up' : 'down') : 'close'"
+    (@mapStateY.done)="updateMapBrowserClass($event)">
 
+    <igo-zoom-button [map]="map" color="primary"></igo-zoom-button>
+    <igo-geolocate-button [map]="map" color="primary" [@controlStateY]="toastShown ? (toastOpened ? 'up' : 'down') : 'close'">
+    </igo-geolocate-button>
+    <igo-rotation-button [map]="map" color="primary"></igo-rotation-button>
+    <igo-user-button [map]="map" color="primary" [@controlStateY]="toastShown ? (toastOpened ? 'up' : 'down') : 'close'">
+    </igo-user-button>
+    <igo-baselayers-switcher [map]="map" [@controlStateY]="toastShown ? (toastOpened ? 'up' : 'down') : 'close'"
+      [@controlStateX]="(mediaService.media$ | async) !== 'mobile' &&
+                                  sidenavOpened ? 'right' : 'left'">
+    </igo-baselayers-switcher>
+  </igo-map-browser>
+
+  <igo-toast [map]="map" [expanded]="toastOpened" [feature]="featureService.focusedFeature$ | async" (onOpened)="toastOpened=$event"
+    (swipeleft)="swipe($event.type)" (swiperight)="swipe($event.type)" *ngIf="toastShown">
+  </igo-toast>
+
+  <app-map-overlay [@controlStateY]="toastShown ? (toastOpened ? 'up' : 'down') : 'close'" [@controlStateX]="(mediaService.media$ | async) !== 'mobile' &&
+                                sidenavOpened ? 'right' : 'left'">
+  </app-map-overlay>
+
+</mat-sidenav-container>
+<!--
 <mat-toolbar>
-      <button id='btmFooter' mat-stroked-button color="primary">Annuler</button>
-      <button id='btmFooter' mat-stroked-button color="primary">Sélectionner</button>
-</mat-toolbar>
+  <button class="footer-button" id='btmFooter' mat-stroked-button color="primary">Annuler</button>
+  <button class="footer-button " id='btmFooter' mat-stroked-button color="primary">Sélectionner</button>
+</mat-toolbar> -->
+
+
+
+
 <!--
 <ion-footer>
   <ion-grid>

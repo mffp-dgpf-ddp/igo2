@@ -17,8 +17,11 @@ import {
   OverlayAction,
   OverlayService,
   SearchService,
-  CapabilitiesService
+  CapabilitiesService,
+  MapViewOptions
 } from '@igo2/geo';
+
+import olView from 'ol/View';
 
 import {
   controlSlideX,
@@ -51,6 +54,7 @@ export class PortalComponent implements OnInit, OnDestroy {
       }
     }
   });
+
 
   public sidenavOpened = false;
   public toastOpened = false;

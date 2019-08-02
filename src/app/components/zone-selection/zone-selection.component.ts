@@ -74,23 +74,24 @@ export class ZoneSelectionComponent extends PortalComponent {
       cdRef,
       capabilitiesService,
       messageService);
+    this.mapService.setMap(this.map);
   }
 
   updateMap() {
     // Sans cela la carte n'affichait pas
     setTimeout(() => {
-    this.mapService.getMap().ol.updateSize();
+      this.mapService.getMap().ol.updateSize();
     }, 600);
   }
 
   close() {
     // this.modalController.dismiss();
-   }
+  }
 
-   selectZone() {
-     this.bbox = this.mapService.getMap().ol.getView().calculateExtent(this.mapService.getMap().ol.getSize());
-     this.bboxService.setBBOX(this.bbox);
-     this.close();
-   }
+  selectZone() {
+    this.bbox = this.mapService.getMap().ol.getView().calculateExtent(this.mapService.getMap().ol.getSize());
+    this.bboxService.setBBOX(this.bbox);
+    this.close();
+  }
 }
 
