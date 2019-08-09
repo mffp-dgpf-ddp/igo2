@@ -16,8 +16,9 @@ app-zone-selection, app-feature-viewer {
   overflow: hidden;
   position: relative;
   display: block;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  font-size: 16px;
+
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 14px;
 }
 
 :host ::ng-deep {
@@ -38,4 +39,9 @@ igo-spinner {
   top: $igo-margin;
   right: $igo-margin;
   z-index: 5;
+}
+
+/*** Message-center ***/
+igo-message-center ::ng-deep simple-notifications ::ng-deep div.simple-notification-wrapper {
+  right: 10px;
 }

@@ -9,20 +9,37 @@ import {
 
 import { IgoCoreModule } from '@igo2/core';
 import {
+  IgoActionModule,
+  IgoWorkspaceModule,
+  IgoEntityModule,
   IgoPanelModule,
   IgoBackdropModule,
-  IgoFlexibleModule
+  IgoFlexibleModule,
+  IgoContextMenuModule,
+  IgoToolModule,
+  IgoEntityTableModule
 } from '@igo2/common';
-import { IgoGeoModule } from '@igo2/geo';
-import { IgoContextModule } from '@igo2/context';
-import { IgoToolsModule } from '@igo2/tools';
+
+import {
+  IgoGeoWorkspaceModule,
+  IgoFeatureModule,
+  IgoImportExportModule,
+  IgoMapModule,
+  IgoQueryModule,
+  IgoSearchModule
+} from '@igo2/geo';
+import {
+  IgoContextManagerModule,
+  IgoContextMapButtonModule
+} from '@igo2/context';
+
+import { IgoIntegrationModule } from '@igo2/integration';
+
+import { AppExpansionPanelModule } from './expansion-panel/expansion-panel.module';
+import { AppToastPanelModule } from './toast-panel/toast-panel.module';
+import { AppSidenavModule } from './sidenav/sidenav.module';
 
 import { PortalComponent } from './portal.component';
-
-import { MapOverlayModule } from './map-overlay/map-overlay.module';
-import { ZoneSelectionModule } from '../../components/zone-selection/zone-selection.module';
-import {FeatureViewerModule} from '../../components/feature-viewer/feature-viewer.module';
-
 
 @NgModule({
   imports: [
@@ -32,17 +49,29 @@ import {FeatureViewerModule} from '../../components/feature-viewer/feature-viewe
     MatIconModule,
     MatSidenavModule,
     IgoCoreModule,
+    IgoFeatureModule,
+    IgoImportExportModule,
+    IgoMapModule,
+    IgoQueryModule.forRoot(),
+    IgoSearchModule.forRoot(),
+    IgoActionModule,
+    IgoWorkspaceModule,
+    IgoEntityModule,
+    IgoGeoWorkspaceModule,
     IgoPanelModule,
+    IgoToolModule,
+    IgoContextMenuModule,
     IgoBackdropModule,
     IgoFlexibleModule,
-    IgoGeoModule,
-    IgoContextModule,
-    IgoToolsModule,
-    MapOverlayModule,
-    ZoneSelectionModule
+    IgoIntegrationModule,
+    AppExpansionPanelModule,
+    AppToastPanelModule,
+    AppSidenavModule,
+    IgoContextManagerModule,
+    IgoContextMapButtonModule,
+    IgoEntityTableModule
   ],
   exports: [PortalComponent],
-  declarations: [PortalComponent],
-  entryComponents: [PortalComponent],
+  declarations: [PortalComponent]
 })
 export class PortalModule {}

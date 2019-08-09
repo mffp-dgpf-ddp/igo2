@@ -1,6 +1,12 @@
 {
   "welcome": "Welcome to {{title}}",
-  "Close Menu": "Close Menu",
-  "Open Menu": "Open Menu",
-  "Search for an address or a place": "Search for an address or a place"
+  "menu": {
+    "close": "Close Menu",
+    "open": "Open Menu"
+  },
+  "IGO": "IGO",
+  "noEntityStore": "No tables available for this dataset",
+  "coordinates": "Show coordinates,",
+  "googleMap": "Show in Google maps",
+  "googleStreetView": "Show in Google Street view"
 }
