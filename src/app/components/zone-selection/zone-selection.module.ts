@@ -4,23 +4,41 @@ import {
   MatTooltipModule,
   MatIconModule,
   MatButtonModule,
-  MatSidenavModule,
-  MatToolbarModule,
-  MatGridListModule
+  MatSidenavModule
 } from '@angular/material';
-
-
 
 import { IgoCoreModule } from '@igo2/core';
 import {
+  IgoActionModule,
+  IgoWorkspaceModule,
+  IgoEntityModule,
   IgoPanelModule,
   IgoBackdropModule,
-  IgoFlexibleModule
+  IgoFlexibleModule,
+  IgoContextMenuModule,
+  IgoToolModule,
+  IgoEntityTableModule
 } from '@igo2/common';
-import { IgoGeoModule } from '@igo2/geo';
-import { IgoContextModule } from '@igo2/context';
-import { IgoToolsModule } from '@igo2/tools';
-import { MapOverlayModule } from '../../pages/portal/map-overlay/map-overlay.module';
+
+import {
+  IgoGeoWorkspaceModule,
+  IgoFeatureModule,
+  IgoImportExportModule,
+  IgoMapModule,
+  IgoQueryModule,
+  IgoSearchModule
+} from '@igo2/geo';
+import {
+  IgoContextManagerModule,
+  IgoContextMapButtonModule
+} from '@igo2/context';
+
+import { IgoIntegrationModule } from '@igo2/integration';
+
+import { AppExpansionPanelModule } from '../../pages/portal/expansion-panel/expansion-panel.module';
+import { AppToastPanelModule } from '../../pages/portal/toast-panel/toast-panel.module';
+import { AppSidenavModule } from '../../pages/portal/sidenav/sidenav.module';
+
 import { ZoneSelectionComponent } from './zone-selection.component';
 
 @NgModule({
@@ -30,16 +48,28 @@ import { ZoneSelectionComponent } from './zone-selection.component';
     MatButtonModule,
     MatIconModule,
     MatSidenavModule,
-    MatToolbarModule,
-    MatGridListModule,
     IgoCoreModule,
+    IgoFeatureModule,
+    IgoImportExportModule,
+    IgoMapModule,
+    IgoQueryModule.forRoot(),
+    IgoSearchModule.forRoot(),
+    IgoActionModule,
+    IgoWorkspaceModule,
+    IgoEntityModule,
+    IgoGeoWorkspaceModule,
     IgoPanelModule,
+    IgoToolModule,
+    IgoContextMenuModule,
     IgoBackdropModule,
     IgoFlexibleModule,
-    IgoGeoModule,
-    IgoContextModule,
-    IgoToolsModule,
-    MapOverlayModule
+    IgoIntegrationModule,
+    AppExpansionPanelModule,
+    AppToastPanelModule,
+    AppSidenavModule,
+    IgoContextManagerModule,
+    IgoContextMapButtonModule,
+    IgoEntityTableModule
   ],
   exports: [ZoneSelectionComponent],
   declarations: [ZoneSelectionComponent],

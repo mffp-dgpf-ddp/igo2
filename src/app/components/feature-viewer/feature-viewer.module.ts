@@ -16,7 +16,6 @@ import {
 } from '@igo2/common';
 import { IgoGeoModule } from '@igo2/geo';
 import { IgoContextModule } from '@igo2/context';
-import { IgoToolsModule } from '@igo2/tools';
 import { FeatureViewerComponent } from './feature-viewer.component';
 import { MapOverlayModule } from '../../pages/portal/map-overlay/map-overlay.module';
 @NgModule({
@@ -32,7 +31,6 @@ import { MapOverlayModule } from '../../pages/portal/map-overlay/map-overlay.mod
     IgoFlexibleModule,
     IgoGeoModule,
     IgoContextModule,
-    IgoToolsModule,
     MapOverlayModule
   ],
   exports: [FeatureViewerComponent],

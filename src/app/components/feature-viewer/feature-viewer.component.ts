@@ -6,11 +6,11 @@ import { Notification } from 'angular2-notifications';
 
 import { MediaService, ConfigService, MessageService, Message } from '@igo2/core';
 import { AuthService } from '@igo2/auth';
-import { Context, ContextService, ToolService } from '@igo2/context';
+import { Context, ContextService, } from '@igo2/context';
 import {
   DataSourceService,
   Feature,
-  FeatureService,
+
   IgoMap,
   LayerService,
   MapService,
@@ -18,7 +18,7 @@ import {
   OverlayService,
   SearchService,
   CapabilitiesService,
-  FeatureType
+
 } from '@igo2/geo';
 
 import {
@@ -61,9 +61,7 @@ export class FeatureViewerComponent implements OnChanges, OnInit {
     public route: ActivatedRoute,
     protected configService: ConfigService,
     public authService: AuthService,
-    public featureService: FeatureService,
     public mediaService: MediaService,
-    public toolService: ToolService,
     public searchService: SearchService,
     public overlayService: OverlayService,
     public mapService: MapService,
@@ -137,7 +135,7 @@ export class FeatureViewerComponent implements OnChanges, OnInit {
   addFeature(feature: any) {
 
     setTimeout(() => {
-      this.featureService.setFeatures([feature]);
+      //this.featureService.setFeatures([feature]);
       this.overlayService.clear();
       this.overlayService.setFeatures([feature], OverlayAction.ZoomIfOutMapExtent)
       this.map.setView({ center: this.feature.geometry.coordinates, zoom: this.view.zoom });

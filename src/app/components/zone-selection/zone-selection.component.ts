@@ -6,11 +6,10 @@ import { Notification } from 'angular2-notifications';
 
 import { MediaService, ConfigService, MessageService, Message } from '@igo2/core';
 import { AuthService } from '@igo2/auth';
-import { Context, ContextService, ToolService } from '@igo2/context';
+import { Context, ContextService } from '@igo2/context';
 import {
   DataSourceService,
   Feature,
-  FeatureService,
   IgoMap,
   LayerService,
   MapService,
@@ -36,7 +35,7 @@ import { BboxService } from '../../services/bbox.service';
   styleUrls: ['./zone-selection.component.scss'],
   animations: [controlSlideX(), controlSlideY(), mapSlideX(), mapSlideY()]
 })
-export class ZoneSelectionComponent extends PortalComponent {
+export class ZoneSelectionComponent /*extends PortalComponent*/ {
 
   private bbox;
 
@@ -45,9 +44,7 @@ export class ZoneSelectionComponent extends PortalComponent {
     public route: ActivatedRoute,
     protected configService: ConfigService,
     public authService: AuthService,
-    public featureService: FeatureService,
     public mediaService: MediaService,
-    public toolService: ToolService,
     public searchService: SearchService,
     public overlayService: OverlayService,
     public mapService: MapService,
@@ -57,14 +54,11 @@ export class ZoneSelectionComponent extends PortalComponent {
     public cdRef: ChangeDetectorRef,
     public capabilitiesService: CapabilitiesService,
     public messageService: MessageService
-  ) {
+  ) {/*
     super(
       route,
       configService,
       authService,
-      featureService,
-      mediaService,
-      toolService,
       searchService,
       overlayService,
       mapService,
@@ -74,7 +68,7 @@ export class ZoneSelectionComponent extends PortalComponent {
       cdRef,
       capabilitiesService,
       messageService);
-    this.mapService.setMap(this.map);
+    this.mapService.setMap(this.map);*/
   }
 
   updateMap() {

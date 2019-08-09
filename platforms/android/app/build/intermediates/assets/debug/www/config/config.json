@@ -1,0 +1,9 @@
+{
+  "routingSources": {
+    "osrm": {
+      "enabled": true
+    }
+  },
+  "sidenavTitle": "IGO",
+  "theme": "blue-theme"
+}

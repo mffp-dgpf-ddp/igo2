@@ -27,6 +27,7 @@ import { BboxService } from './services/bbox.service';
 import { FeatureViewerModule } from './components/feature-viewer/feature-viewer.module';
 import { ZoneSelectionModule } from './components/zone-selection/zone-selection.module';
 import { MapImageService } from './services/map-image.service';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -55,7 +56,8 @@ import { MapImageService } from './services/map-image.service';
     provideIChercheReverseSearchSource(), // TODO: replace by territoire
     provideCoordinatesReverseSearchSource(),
     provideILayerSearchSource(),
-    provideOsrmRoutingSource()
+    provideOsrmRoutingSource(),
+    AndroidPermissions,
   ],
   bootstrap: [AppComponent]
 })

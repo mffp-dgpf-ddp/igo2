@@ -52,25 +52,37 @@
     "@angular/platform-browser": "^7.2.6",
     "@angular/platform-browser-dynamic": "^7.2.6",
     "@angular/router": "^7.2.6",
-    "@igo2/auth": "^1.0.0-alpha.2",
-    "@igo2/common": "^1.0.0-alpha.2",
-    "@igo2/context": "^1.0.0-alpha.2",
-    "@igo2/core": "^1.0.0-alpha.2",
-    "@igo2/geo": "^1.0.0-alpha.2",
-    "@igo2/integration": "^1.0.0-alpha.2",
-    "@igo2/utils": "^1.0.0-alpha.2",
+    "@igo2/auth": "file:dist/igo-lib/auth",
+    "@igo2/common": "file:dist/igo-lib/common",
+    "@igo2/context": "file:dist/igo-lib/context",
+    "@igo2/core": "file:dist/igo-lib/core",
+    "@igo2/geo": "file:dist/igo-lib/geo",
+    "@igo2/integration": "file:dist/igo-lib/integration",
+    "@igo2/utils": "file:dist/igo-lib/utils",
+    "@ionic-native/android-permissions": "^5.6.0",
+    "@ionic-native/core": "^5.6.0",
+    "@ionic/angular": "^4.7.4",
+    "@ionic/angular-toolkit": "^1.5.1",
     "classlist.js": "^1.1.20150312",
-
+    "cordova-android": "7.1.4",
+    "cordova-plugin-android-permissions": "^1.0.0",
+    "cordova-plugin-device": "^2.0.2",
+    "cordova-plugin-file": "6.0.2",
+    "cordova-plugin-filechooser": "1.2.0",
+    "cordova-plugin-filepath": "1.5.6",
+    "cordova-plugin-ionic-keyboard": "^2.1.3",
+    "cordova-plugin-ionic-webview": "^4.0.1",
+    "cordova-plugin-splashscreen": "^5.0.2",
+    "cordova-plugin-statusbar": "^2.4.2",
+    "cordova-plugin-whitelist": "^1.3.3",
     "core-js": "^2.6.5",
     "file-saver": "^1.3.8",
     "hammerjs": "^2.0.8",
     "html2canvas": "^1.0.0-alpha.12",
     "jszip": "^3.1.5",
     "jwt-decode": "^2.2.0",
-
     "moment": "^2.24.0",
     "natives": "^1.1.6",
- 
     "ngx-cacheable": "^1.0.9",
     "ol": "^5.3.0",
     "proj4": "^2.5.0",
@@ -83,7 +95,6 @@
     "zone.js": "^0.8.29"
   },
   "devDependencies": {
-
     "@angular-devkit/build-angular": "^0.13.2",
     "@angular-devkit/build-ng-packagr": "^0.13.2",
     "@angular/cli": "^7.3.3",
@@ -94,16 +105,13 @@
     "@types/jasminewd2": "~2.0.3",
     "@types/node": "~8.9.4",
     "angular-cli-ghpages": "^0.5.3",
-
     "codelyzer": "~4.5.0",
     "conventional-changelog-cli": "^2.0.12",
-
     "gulp": "^4.0.2",
     "gulp-clean": "^0.4.0",
     "gulp-exec": "^3.0.2",
     "gulp-json-editor": "^2.4.2",
     "gulp-merge-json": "^1.3.1",
-    "gulp-json-editor": "^2.4.2",
     "gulp-sequence": "^1.0.0",
     "jasmine-core": "~2.99.1",
     "jasmine-spec-reporter": "~4.2.1",
@@ -117,12 +125,27 @@
     "npx": "^10.2.0",
     "protractor": "~5.4.2",
     "publish-release": "^1.6.0",
-
     "scss-bundle": "^2.5.0",
     "ts-node": "~8.0.2",
     "tsickle": "^0.34.2",
     "tslint": "^5.12.1",
     "typescript": "~3.2.4"
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-android-permissions": {},
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-statusbar": {},
+      "cordova-plugin-device": {},
+      "cordova-plugin-splashscreen": {},
+      "cordova-plugin-ionic-webview": {},
+      "cordova-plugin-ionic-keyboard": {},
+      "cordova-plugin-file": {},
+      "cordova-plugin-filechooser": {},
+      "cordova-plugin-filepath": {}
+    },
+    "platforms": [
+      "android"
+    ]
   }
-
 }
