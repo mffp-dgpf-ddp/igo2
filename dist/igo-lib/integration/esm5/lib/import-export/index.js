@@ -1,0 +1,7 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { ImportExportToolComponent } from './import-export-tool';
+export { IgoAppImportExportModule } from './import-export.module';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9AaWdvMi9pbnRlZ3JhdGlvbi8iLCJzb3VyY2VzIjpbImxpYi9pbXBvcnQtZXhwb3J0L2luZGV4LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7QUFBQSwwQ0FBYyxzQkFBc0IsQ0FBQztBQUNyQyx5Q0FBYyx3QkFBd0IsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCAqIGZyb20gJy4vaW1wb3J0LWV4cG9ydC10b29sJztcclxuZXhwb3J0ICogZnJvbSAnLi9pbXBvcnQtZXhwb3J0Lm1vZHVsZSc7XHJcbiJdfQ==

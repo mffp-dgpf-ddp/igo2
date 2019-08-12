@@ -1,0 +1,113 @@
+@mixin igo-actionbar-theming($theme) {  
+  .igo-actionbar-overlay {
+    min-width: inherit !important;
+    padding-top: 0;
+    padding-bottom: 0;
+  
+    .mat-list {
+      padding-top: 0
+    }
+  
+    .mat-list .mat-list-item.mat-list-item-with-avatar .mat-list-item-content .mat-list-text {
+      padding-right: 16px;
+    }
+  
+    .mat-menu-content:not(:empty) {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+  }
+}
+
+
+@mixin igo-action-theming($theme) {
+  @include igo-actionbar-theming($theme);
+}
+
+@mixin igo-collapsible-theming($theme) {
+  mat-icon[mat-list-avatar][igocollapse] {
+    &:hover {
+      cursor: pointer;
+    }
+
+    &.igo-chevron {
+      width: auto !important;
+      height: auto;
+      transform: rotateZ(0deg);
+      transition: 300ms ease-in-out;
+
+      &.collapsed {
+        transform: rotateZ(180deg);
+        transition: 300ms ease-in-out;
+      }
+    }
+  }
+
+  div.igo-collapsed {
+    display: none !important;
+  }
+
+}
+
+@mixin igo-entity-table-theming($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+
+  igo-entity-table table.igo-entity-table-with-selection tr.igo-entity-table-row-highlighted {
+    background-color: mat-color($primary, A100);
+    color: mat-color($primary, default-contrast);
+  }
+}
+
+
+@mixin igo-entity-theming($theme) {
+  @include igo-entity-table-theming($theme);
+}
+
+@mixin igo-list-theming($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+
+  igo-list [igolistitem][color="primary"].igo-list-item-selected > mat-list-item {
+    background-color: mat-color($primary);
+    color: mat-color($primary, default-contrast);
+  }
+
+  igo-list [igolistitem][color="accent"].igo-list-item-selected > mat-list-item {
+    background-color: mat-color($accent);
+    color: mat-color($accent, default-contrast);
+  }
+
+  igo-list [igolistitem].igo-list-item-disabled > mat-list-item {
+    color: rgba(0, 0, 0, 0.38);
+  }
+
+  igo-list [igolistitem][color="primary"]:not(.igo-list-item-disabled):hover > mat-list-item {
+    background-color: mat-color($primary, lighter);
+    color: mat-color($primary, default-contrast);
+  }
+
+  igo-list [igolistitem][color="accent"]:not(.igo-list-item-disabled):hover > mat-list-item {
+    background-color: mat-color($accent, lighter);
+    color: mat-color($accent, default-contrast);
+  }
+}
+
+@mixin igo-panel-theming($theme) {
+  $primary: map-get($theme, primary);
+
+  igo-panel > div.igo-panel-header {
+    background-color: mat-color($primary);
+    color: mat-color($primary, default-contrast);
+  }
+
+}
+
+
+@mixin igo-common-theming($theme) {
+  @include igo-action-theming($theme);
+  @include igo-collapsible-theming($theme);
+  @include igo-entity-theming($theme);
+  @include igo-list-theming($theme);
+  @include igo-panel-theming($theme);
+}

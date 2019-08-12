@@ -1,0 +1,17 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/*
+ * Public API Surface of context
+ */
+export { IgoContextModule } from './lib/context.module';
+export { IgoContextManagerModule } from './lib/context-manager/context-manager.module';
+export { IgoContextMapButtonModule } from './lib/context-map-button/context-map-button.module';
+export { IgoShareMapModule } from './lib/share-map/share-map.module';
+export { IgoSidenavModule } from './lib/sidenav/sidenav.module';
+export { ContextService, TypePermission, Scope, LayerContextDirective, MapContextDirective, ContextListComponent, ContextListBindingDirective, ContextItemComponent, ContextFormComponent, ContextEditComponent, ContextEditBindingDirective, ContextPermissionsComponent, ContextPermissionsBindingDirective } from './lib/context-manager';
+export { BookmarkButtonComponent, BookmarkDialogComponent, PoiButtonComponent, PoiDialogComponent, PoiService, UserButtonComponent, UserDialogComponent } from './lib/context-map-button';
+export { ShareMapService, ShareMapComponent, ShareMapBindingDirective } from './lib/share-map';
+export { SidenavComponent } from './lib/sidenav';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHVibGljX2FwaS5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BpZ28yL2NvbnRleHQvIiwic291cmNlcyI6WyJwdWJsaWNfYXBpLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7Ozs7QUFJQSxpQ0FBYyxzQkFBc0IsQ0FBQztBQUNyQyx3Q0FBYyw4Q0FBOEMsQ0FBQztBQUM3RCwwQ0FBYyxvREFBb0QsQ0FBQztBQUNuRSxrQ0FBYyxrQ0FBa0MsQ0FBQztBQUNqRCxpQ0FBYyw4QkFBOEIsQ0FBQztBQUU3QyxxVEFBYyx1QkFBdUIsQ0FBQztBQUN0QywrSkFBYywwQkFBMEIsQ0FBQztBQUN6Qyw2RUFBYyxpQkFBaUIsQ0FBQztBQUNoQyxpQ0FBYyxlQUFlLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyIvKlxyXG4gKiBQdWJsaWMgQVBJIFN1cmZhY2Ugb2YgY29udGV4dFxyXG4gKi9cclxuXHJcbmV4cG9ydCAqIGZyb20gJy4vbGliL2NvbnRleHQubW9kdWxlJztcclxuZXhwb3J0ICogZnJvbSAnLi9saWIvY29udGV4dC1tYW5hZ2VyL2NvbnRleHQtbWFuYWdlci5tb2R1bGUnO1xyXG5leHBvcnQgKiBmcm9tICcuL2xpYi9jb250ZXh0LW1hcC1idXR0b24vY29udGV4dC1tYXAtYnV0dG9uLm1vZHVsZSc7XHJcbmV4cG9ydCAqIGZyb20gJy4vbGliL3NoYXJlLW1hcC9zaGFyZS1tYXAubW9kdWxlJztcclxuZXhwb3J0ICogZnJvbSAnLi9saWIvc2lkZW5hdi9zaWRlbmF2Lm1vZHVsZSc7XHJcblxyXG5leHBvcnQgKiBmcm9tICcuL2xpYi9jb250ZXh0LW1hbmFnZXInO1xyXG5leHBvcnQgKiBmcm9tICcuL2xpYi9jb250ZXh0LW1hcC1idXR0b24nO1xyXG5leHBvcnQgKiBmcm9tICcuL2xpYi9zaGFyZS1tYXAnO1xyXG5leHBvcnQgKiBmcm9tICcuL2xpYi9zaWRlbmF2JztcclxuIl19

@@ -1,0 +1,8 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { EntityOperationType, EntityTableColumnRenderer, EntityTableScrollBehavior, EntityTableSelectionState, getEntityProperty, getEntityId, getEntityTitle, getEntityTitleHtml, getEntityIcon, getEntityRevision, EntityStore, EntityStateManager, EntityStoreWatcher, EntityTransaction, EntityView } from './shared';
+export { EntitySelectorComponent } from './entity-selector/entity-selector.component';
+export { EntityTableComponent } from './entity-table/entity-table.component';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9AaWdvMi9jb21tb24vIiwic291cmNlcyI6WyJsaWIvZW50aXR5L2luZGV4LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7QUFBQSwrU0FBYyxVQUFVLENBQUM7QUFDekIsd0NBQWMsNkNBQTZDLENBQUM7QUFDNUQscUNBQWMsdUNBQXVDLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgKiBmcm9tICcuL3NoYXJlZCc7XHJcbmV4cG9ydCAqIGZyb20gJy4vZW50aXR5LXNlbGVjdG9yL2VudGl0eS1zZWxlY3Rvci5jb21wb25lbnQnO1xyXG5leHBvcnQgKiBmcm9tICcuL2VudGl0eS10YWJsZS9lbnRpdHktdGFibGUuY29tcG9uZW50JztcclxuIl19

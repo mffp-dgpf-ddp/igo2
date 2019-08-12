@@ -1,0 +1,34 @@
+import { ElementRef, Renderer2, EventEmitter } from '@angular/core';
+export declare class ListItemDirective {
+    renderer: Renderer2;
+    private el;
+    static selectedCls: string;
+    static disabledCls: string;
+    color: string;
+    private _color;
+    focused: boolean;
+    private _focused;
+    selected: boolean;
+    private _selected;
+    disabled: boolean;
+    private _disabled;
+    beforeSelect: EventEmitter<ListItemDirective>;
+    beforeFocus: EventEmitter<ListItemDirective>;
+    beforeUnselect: EventEmitter<ListItemDirective>;
+    beforeUnfocus: EventEmitter<ListItemDirective>;
+    beforeDisable: EventEmitter<ListItemDirective>;
+    beforeEnable: EventEmitter<ListItemDirective>;
+    focus: EventEmitter<ListItemDirective>;
+    unfocus: EventEmitter<ListItemDirective>;
+    select: EventEmitter<ListItemDirective>;
+    unselect: EventEmitter<ListItemDirective>;
+    disable: EventEmitter<ListItemDirective>;
+    enable: EventEmitter<ListItemDirective>;
+    onClick(): void;
+    constructor(renderer: Renderer2, el: ElementRef);
+    getOffsetTop(): number;
+    private toggleSelectedClass;
+    private toggleDisabledClass;
+    private addCls;
+    private removeCls;
+}

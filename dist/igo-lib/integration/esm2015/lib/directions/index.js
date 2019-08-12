@@ -1,0 +1,7 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { DirectionsToolComponent } from './directions-tool';
+export { IgoAppDirectionsModule } from './directions.module';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9AaWdvMi9pbnRlZ3JhdGlvbi8iLCJzb3VyY2VzIjpbImxpYi9kaXJlY3Rpb25zL2luZGV4LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7QUFBQSx3Q0FBYyxtQkFBbUIsQ0FBQztBQUNsQyx1Q0FBYyxxQkFBcUIsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCAqIGZyb20gJy4vZGlyZWN0aW9ucy10b29sJztcclxuZXhwb3J0ICogZnJvbSAnLi9kaXJlY3Rpb25zLm1vZHVsZSc7XHJcbiJdfQ==

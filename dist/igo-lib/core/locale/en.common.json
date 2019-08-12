@@ -1,0 +1,19 @@
+{
+  "igo": {
+    "common": {
+      "confirmDialog": {
+        "cancelBtn": "Cancel",
+        "confirmBtn": "Confirm",
+        "title": "Confirm"
+      },
+      "table": {
+        "filter": "Filter"
+      },
+      "form": {
+        "errors": {
+          "required": "This field is required"
+        }
+      }
+    }
+  }
+}

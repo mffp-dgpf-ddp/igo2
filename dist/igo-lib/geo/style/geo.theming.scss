@@ -1,0 +1,113 @@
+/*** IMPORTED FILE NOT FOUND ***/
+@import '~ol/ol';/*** --- ***/
+
+@mixin igo-feature-details-theming($theme) {
+  $is-dark: map-get($theme, is-dark);
+  $foreground: map-get($theme, foreground);
+  $background: map-get($theme, background);
+
+  igo-feature-details > table.igo-striped tbody tr:nth-child(odd) {
+    background-color: mat-color($background, if($is-dark, app-bar, status-bar));
+    color: mat-color($foreground, text);
+  }
+
+}
+
+
+@mixin igo-feature-theming($theme) {
+  @include igo-feature-details-theming($theme);
+}
+
+@mixin igo-time-filter-form-theming($theme) {
+  $primary: map-get($theme, primary);
+
+  mat-datetimepicker-calendar > div.mat-datetimepicker-calendar-header {
+    color: mat-color($primary);
+  }
+
+}
+
+
+@mixin igo-filter-theming($theme) {
+  @include igo-time-filter-form-theming($theme);
+}
+
+@mixin igo-map-browser-theming($theme) {
+  $primary: map-get($theme, primary);
+  $is-dark: map-get($theme, is-dark);
+
+  igo-map-browser div.ol-attribution button {
+    color: mat-color($primary, if($is-dark, default-contrast, default));
+    background-color: mat-color($primary, if($is-dark, default, default-contrast));
+  }
+
+}
+
+@mixin igo-zoom-button-theming($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $is-dark: map-get($theme, is-dark);
+
+  igo-zoom-button > div.igo-zoom-button-container > button {
+    &.mat-primary {
+      color: mat-color($primary, if($is-dark, default-contrast, default));
+      background-color: mat-color($primary, if($is-dark, default, default-contrast));
+    }
+
+    &.mat-accent {
+      color: mat-color($accent, if($is-dark, default-contrast, default));
+      background-color: mat-color($accent, if($is-dark, default, default-contrast));
+    }
+  }
+
+}
+
+
+@mixin igo-map-theming($theme) {
+  @include igo-map-browser-theming($theme);
+  @include igo-zoom-button-theming($theme);
+}
+
+@mixin igo-measurer-theming($theme) {
+  .igo-map-tooltip {
+    position: relative;
+    border-radius: 4px;
+    padding: 4px 8px;
+    white-space: nowrap;
+  }
+  
+  .igo-map-tooltip-measure {
+    background-color: rgba(255, 204, 51, 0.7);
+    border: 1px solid rgb(255, 205, 51);
+    color: black;
+    font-weight: bold;
+    font-size: 14px;
+  }
+}
+
+
+@mixin igo-measure-theming($theme) {
+  @include igo-measurer-theming($theme);
+}
+
+@mixin igo-routing-form-theming($theme) {
+  $accent: map-get($theme, accent);
+
+  igo-routing-form > mat-list-item:hover {
+    background-color: mat-color($accent, lighter);
+  }
+}
+
+
+@mixin igo-routing-theming($theme) {
+  @include igo-routing-form-theming($theme);
+}
+
+
+@mixin igo-geo-theming($theme) {
+  @include igo-feature-theming($theme);
+  @include igo-filter-theming($theme);
+  @include igo-map-theming($theme);
+  @include igo-measure-theming($theme);
+  @include igo-routing-theming($theme);
+}

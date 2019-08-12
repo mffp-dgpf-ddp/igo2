@@ -1,0 +1,19 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material';
+import { SpinnerActivityDirective } from './spinner-activity.directive';
+import { SpinnerComponent } from './spinner.component';
+export class IgoSpinnerModule {
+}
+IgoSpinnerModule.decorators = [
+    { type: NgModule, args: [{
+                imports: [CommonModule, MatProgressSpinnerModule],
+                declarations: [SpinnerActivityDirective, SpinnerComponent],
+                exports: [SpinnerActivityDirective, SpinnerComponent]
+            },] }
+];
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic3Bpbm5lci5tb2R1bGUuanMiLCJzb3VyY2VSb290Ijoibmc6Ly9AaWdvMi9jb21tb24vIiwic291cmNlcyI6WyJsaWIvc3Bpbm5lci9zcGlubmVyLm1vZHVsZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQUEsT0FBTyxFQUFFLFFBQVEsRUFBRSxNQUFNLGVBQWUsQ0FBQztBQUN6QyxPQUFPLEVBQUUsWUFBWSxFQUFFLE1BQU0saUJBQWlCLENBQUM7QUFDL0MsT0FBTyxFQUFFLHdCQUF3QixFQUFFLE1BQU0sbUJBQW1CLENBQUM7QUFFN0QsT0FBTyxFQUFFLHdCQUF3QixFQUFFLE1BQU0sOEJBQThCLENBQUM7QUFDeEUsT0FBTyxFQUFFLGdCQUFnQixFQUFFLE1BQU0scUJBQXFCLENBQUM7QUFPdkQsTUFBTSxPQUFPLGdCQUFnQjs7O1lBTDVCLFFBQVEsU0FBQztnQkFDUixPQUFPLEVBQUUsQ0FBQyxZQUFZLEVBQUUsd0JBQXdCLENBQUM7Z0JBQ2pELFlBQVksRUFBRSxDQUFDLHdCQUF3QixFQUFFLGdCQUFnQixDQUFDO2dCQUMxRCxPQUFPLEVBQUUsQ0FBQyx3QkFBd0IsRUFBRSxnQkFBZ0IsQ0FBQzthQUN0RCIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IE5nTW9kdWxlIH0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7XHJcbmltcG9ydCB7IENvbW1vbk1vZHVsZSB9IGZyb20gJ0Bhbmd1bGFyL2NvbW1vbic7XHJcbmltcG9ydCB7IE1hdFByb2dyZXNzU3Bpbm5lck1vZHVsZSB9IGZyb20gJ0Bhbmd1bGFyL21hdGVyaWFsJztcclxuXHJcbmltcG9ydCB7IFNwaW5uZXJBY3Rpdml0eURpcmVjdGl2ZSB9IGZyb20gJy4vc3Bpbm5lci1hY3Rpdml0eS5kaXJlY3RpdmUnO1xyXG5pbXBvcnQgeyBTcGlubmVyQ29tcG9uZW50IH0gZnJvbSAnLi9zcGlubmVyLmNvbXBvbmVudCc7XHJcblxyXG5ATmdNb2R1bGUoe1xyXG4gIGltcG9ydHM6IFtDb21tb25Nb2R1bGUsIE1hdFByb2dyZXNzU3Bpbm5lck1vZHVsZV0sXHJcbiAgZGVjbGFyYXRpb25zOiBbU3Bpbm5lckFjdGl2aXR5RGlyZWN0aXZlLCBTcGlubmVyQ29tcG9uZW50XSxcclxuICBleHBvcnRzOiBbU3Bpbm5lckFjdGl2aXR5RGlyZWN0aXZlLCBTcGlubmVyQ29tcG9uZW50XVxyXG59KVxyXG5leHBvcnQgY2xhc3MgSWdvU3Bpbm5lck1vZHVsZSB7fVxyXG4iXX0=

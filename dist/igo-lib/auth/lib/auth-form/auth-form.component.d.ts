@@ -1,0 +1,33 @@
+import { OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { ConfigService } from '@igo2/core';
+import { AuthOptions } from '../shared/auth.interface';
+import { AuthService } from '../shared/auth.service';
+export declare class AuthFormComponent implements OnInit {
+    auth: AuthService;
+    private config;
+    private router;
+    backgroundDisable: boolean;
+    private _backgroundDisable;
+    hasAlreadyConnectedDiv: boolean;
+    private _hasAlreadyConnectedDiv;
+    hasLogoutDiv: boolean;
+    private _hasLogoutDiv;
+    showAlreadyConnectedDiv: boolean;
+    private _showAlreadyConnectedDiv;
+    showLogoutDiv: boolean;
+    private _showLogoutDiv;
+    readonly showLoginDiv: boolean;
+    options: AuthOptions;
+    user: any;
+    visible: boolean;
+    private isLoginRoute;
+    private isLogoutRoute;
+    constructor(auth: AuthService, config: ConfigService, router: Router);
+    ngOnInit(): void;
+    login(): void;
+    logout(): void;
+    home(): void;
+    private getName;
+    private analyzeRoute;
+}

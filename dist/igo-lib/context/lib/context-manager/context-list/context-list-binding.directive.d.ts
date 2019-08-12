@@ -1,0 +1,30 @@
+import { OnInit, OnDestroy } from '@angular/core';
+import { MessageService, LanguageService } from '@igo2/core';
+import { ConfirmDialogService } from '@igo2/common';
+import { MapService } from '@igo2/geo';
+import { Context, DetailedContext } from '../shared/context.interface';
+import { ContextService } from '../shared/context.service';
+import { ContextListComponent } from './context-list.component';
+export declare class ContextListBindingDirective implements OnInit, OnDestroy {
+    private contextService;
+    private mapService;
+    private languageService;
+    private confirmDialogService;
+    private messageService;
+    private component;
+    private contexts$$;
+    private selectedContext$$;
+    private defaultContextId$$;
+    onSelect(context: Context): void;
+    onEdit(context: Context): void;
+    onSave(context: Context): void;
+    onFavorite(context: Context): void;
+    onManageTools(context: Context): void;
+    onManagePermissions(context: Context): void;
+    onDelete(context: Context): void;
+    onClone(context: DetailedContext): void;
+    constructor(component: ContextListComponent, contextService: ContextService, mapService: MapService, languageService: LanguageService, confirmDialogService: ConfirmDialogService, messageService: MessageService);
+    ngOnInit(): void;
+    ngOnDestroy(): void;
+    private handleContextsChange;
+}

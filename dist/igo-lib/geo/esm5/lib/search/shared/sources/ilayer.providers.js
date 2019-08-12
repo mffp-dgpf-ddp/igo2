@@ -1,0 +1,32 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { HttpClient } from '@angular/common/http';
+import { ConfigService, LanguageService } from '@igo2/core';
+import { SearchSource } from './source';
+import { ILayerSearchSource } from './ilayer';
+/**
+ * ILayer search source factory
+ * @ignore
+ * @param {?} http
+ * @param {?} languageService
+ * @param {?} config
+ * @return {?}
+ */
+export function ilayerSearchSourceFactory(http, languageService, config) {
+    return new ILayerSearchSource(http, languageService, config.getConfig("searchSources." + ILayerSearchSource.id));
+}
+/**
+ * Function that returns a provider for the ILayer search source
+ * @return {?}
+ */
+export function provideILayerSearchSource() {
+    return {
+        provide: SearchSource,
+        useFactory: ilayerSearchSourceFactory,
+        multi: true,
+        deps: [HttpClient, LanguageService, ConfigService]
+    };
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaWxheWVyLnByb3ZpZGVycy5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BpZ28yL2dlby8iLCJzb3VyY2VzIjpbImxpYi9zZWFyY2gvc2hhcmVkL3NvdXJjZXMvaWxheWVyLnByb3ZpZGVycy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQUEsT0FBTyxFQUFFLFVBQVUsRUFBRSxNQUFNLHNCQUFzQixDQUFDO0FBRWxELE9BQU8sRUFBRSxhQUFhLEVBQUUsZUFBZSxFQUFFLE1BQU0sWUFBWSxDQUFDO0FBRTVELE9BQU8sRUFBRSxZQUFZLEVBQUUsTUFBTSxVQUFVLENBQUM7QUFDeEMsT0FBTyxFQUFFLGtCQUFrQixFQUFFLE1BQU0sVUFBVSxDQUFDOzs7Ozs7Ozs7QUFNOUMsTUFBTSxVQUFVLHlCQUF5QixDQUN2QyxJQUFnQixFQUNoQixlQUFnQyxFQUNoQyxNQUFxQjtJQUVyQixPQUFPLElBQUksa0JBQWtCLENBQzNCLElBQUksRUFDSixlQUFlLEVBQ2YsTUFBTSxDQUFDLFNBQVMsQ0FBQyxtQkFBaUIsa0JBQWtCLENBQUMsRUFBSSxDQUFDLENBQzNELENBQUM7QUFDSixDQUFDOzs7OztBQUtELE1BQU0sVUFBVSx5QkFBeUI7SUFDdkMsT0FBTztRQUNMLE9BQU8sRUFBRSxZQUFZO1FBQ3JCLFVBQVUsRUFBRSx5QkFBeUI7UUFDckMsS0FBSyxFQUFFLElBQUk7UUFDWCxJQUFJLEVBQUUsQ0FBQyxVQUFVLEVBQUUsZUFBZSxFQUFFLGFBQWEsQ0FBQztLQUNuRCxDQUFDO0FBQ0osQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IEh0dHBDbGllbnQgfSBmcm9tICdAYW5ndWxhci9jb21tb24vaHR0cCc7XHJcblxyXG5pbXBvcnQgeyBDb25maWdTZXJ2aWNlLCBMYW5ndWFnZVNlcnZpY2UgfSBmcm9tICdAaWdvMi9jb3JlJztcclxuXHJcbmltcG9ydCB7IFNlYXJjaFNvdXJjZSB9IGZyb20gJy4vc291cmNlJztcclxuaW1wb3J0IHsgSUxheWVyU2VhcmNoU291cmNlIH0gZnJvbSAnLi9pbGF5ZXInO1xyXG5cclxuLyoqXHJcbiAqIElMYXllciBzZWFyY2ggc291cmNlIGZhY3RvcnlcclxuICogQGlnbm9yZVxyXG4gKi9cclxuZXhwb3J0IGZ1bmN0aW9uIGlsYXllclNlYXJjaFNvdXJjZUZhY3RvcnkoXHJcbiAgaHR0cDogSHR0cENsaWVudCxcclxuICBsYW5ndWFnZVNlcnZpY2U6IExhbmd1YWdlU2VydmljZSxcclxuICBjb25maWc6IENvbmZpZ1NlcnZpY2VcclxuKSB7XHJcbiAgcmV0dXJuIG5ldyBJTGF5ZXJTZWFyY2hTb3VyY2UoXHJcbiAgICBodHRwLFxyXG4gICAgbGFuZ3VhZ2VTZXJ2aWNlLFxyXG4gICAgY29uZmlnLmdldENvbmZpZyhgc2VhcmNoU291cmNlcy4ke0lMYXllclNlYXJjaFNvdXJjZS5pZH1gKVxyXG4gICk7XHJcbn1cclxuXHJcbi8qKlxyXG4gKiBGdW5jdGlvbiB0aGF0IHJldHVybnMgYSBwcm92aWRlciBmb3IgdGhlIElMYXllciBzZWFyY2ggc291cmNlXHJcbiAqL1xyXG5leHBvcnQgZnVuY3Rpb24gcHJvdmlkZUlMYXllclNlYXJjaFNvdXJjZSgpIHtcclxuICByZXR1cm4ge1xyXG4gICAgcHJvdmlkZTogU2VhcmNoU291cmNlLFxyXG4gICAgdXNlRmFjdG9yeTogaWxheWVyU2VhcmNoU291cmNlRmFjdG9yeSxcclxuICAgIG11bHRpOiB0cnVlLFxyXG4gICAgZGVwczogW0h0dHBDbGllbnQsIExhbmd1YWdlU2VydmljZSwgQ29uZmlnU2VydmljZV1cclxuICB9O1xyXG59XHJcbiJdfQ==

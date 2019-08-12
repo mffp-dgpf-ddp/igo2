@@ -1,0 +1,35 @@
+import { OnInit } from '@angular/core';
+import { Layer } from '../../layer/shared/layers/layer';
+import { DownloadService } from '../../download/shared/download.service';
+import { OgcFilterableDataSource } from '../shared/ogc-filter.interface';
+import { OGCFilterService } from '../shared/ogc-filter.service';
+import { IgoMap } from '../../map';
+export declare class OgcFilterableItemComponent implements OnInit {
+    private ogcFilterService;
+    private downloadService;
+    color: string;
+    private lastRunOgcFilter;
+    private defaultLogicalParent;
+    hasActiveSpatialFilter: boolean;
+    filtersAreEditable: boolean;
+    filtersCollapsed: boolean;
+    layer: Layer;
+    map: IgoMap;
+    readonly refreshFunc: any;
+    showFeatureOnMap: boolean;
+    _showFeatureOnMap: boolean;
+    private _map;
+    private _layer;
+    readonly datasource: OgcFilterableDataSource;
+    ogcFiltersHeaderShown: boolean;
+    private _ogcFiltersHeaderShown;
+    constructor(ogcFilterService: OGCFilterService, downloadService: DownloadService);
+    ngOnInit(): void;
+    private getOverlayByID;
+    toggleShowFeatureOnMap(): void;
+    addFilterToSequence(): void;
+    openDownload(): void;
+    refreshFilters(): void;
+    readonly downloadable: any;
+    setVisible(): void;
+}

@@ -1,0 +1,8 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { strEnum } from '@igo2/utils';
+/** @type {?} */
+export var ExportFormat = strEnum(['GeoJSON', 'GML', 'GPX', 'KML', 'Shapefile']);
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZXhwb3J0LnR5cGUuanMiLCJzb3VyY2VSb290Ijoibmc6Ly9AaWdvMi9nZW8vIiwic291cmNlcyI6WyJsaWIvaW1wb3J0LWV4cG9ydC9zaGFyZWQvZXhwb3J0LnR5cGUudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLE9BQU8sRUFBRSxPQUFPLEVBQUUsTUFBTSxhQUFhLENBQUM7O0FBRXRDLE1BQU0sS0FBTyxZQUFZLEdBQUcsT0FBTyxDQUFDLENBQUMsU0FBUyxFQUFFLEtBQUssRUFBRSxLQUFLLEVBQUUsS0FBSyxFQUFFLFdBQVcsQ0FBQyxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgc3RyRW51bSB9IGZyb20gJ0BpZ28yL3V0aWxzJztcclxuXHJcbmV4cG9ydCBjb25zdCBFeHBvcnRGb3JtYXQgPSBzdHJFbnVtKFsnR2VvSlNPTicsICdHTUwnLCAnR1BYJywgJ0tNTCcsICdTaGFwZWZpbGUnXSk7XHJcbmV4cG9ydCB0eXBlIEV4cG9ydEZvcm1hdCA9IGtleW9mIHR5cGVvZiBFeHBvcnRGb3JtYXQ7XHJcbiJdfQ==

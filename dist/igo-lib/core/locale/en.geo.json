@@ -1,0 +1,286 @@
+{
+  "igo": {
+    "geo": {
+      "catalog": {
+        "baseLayers": "Base Layers",
+        "layer.addToMap": "Add to map",
+        "layer.removeFromMap": "Remove from map",
+        "group.addToMap": "Add all layers from this group to map",
+        "group.removeFromMap": "Remove all layers from this group to map"
+      },
+      "clickOnMap": {
+        "clickedFeature": "Clicked Feature"
+      },
+      "dropGeoFile": {
+        "invalid": {
+          "text": "The file '{{value}}' is invalid ({{mimeType}})",
+          "title": "Invalid file"
+        },
+        "empty": {
+          "text": "The file '{{value}}' contained nothing that could be imported.",
+          "title": "Nothing to import"
+        },
+        "success": {
+          "text": "Imported file",
+          "title": "The layer '{{value}}' was added to the map"
+        },
+        "unreadable": {
+          "text": "Unreadable file",
+          "title": "The file '{{value}}' is unreadable"
+        }
+      },
+      "export": {
+        "nothing": {
+          "text": "No feature could be exported.",
+          "title": "Nothing to export"
+        },
+        "failed": {
+          "text": "Failed to export",
+          "title": "Failed to export features"
+        }
+      },
+      "importExportForm": {
+        "exportButton": "Export",
+        "exportFormatPlaceholder": "Format",
+        "exportLayerPlaceholder": "Layer",
+        "exportTabTitle": "Export",
+        "importButton": "Import",
+        "importProjPlaceholder": "Coordinate system",
+        "importTabTitle": "Import"
+      },
+      "operators": {
+        "And": "And",
+        "Or": "Or",
+        "PropertyIsEqualTo": "=",
+        "PropertyIsNotEqualTo": "!=",
+        "PropertyIsLike": "≈",
+        "PropertyIsGreaterThan": ">",
+        "PropertyIsGreaterThanOrEqualTo": ">=",
+        "PropertyIsLessThan": "<",
+        "PropertyIsLessThanOrEqualTo": "<=",
+        "PropertyIsBetween": "between",
+        "During": "during",
+        "PropertyIsNull": "is null",
+        "Intersects": "intersects",
+        "Within": "within",
+        "Contains": "contains"
+      },
+      "sourceFields": {
+        "selectField": "Choose a field"
+      },
+      "filter": {
+        "addFilter": "Add an empty filter to the current list",
+        "removeFilter": "Remove the current filter from the filters's list",
+        "toggleFilterState": "Enable/disable the current filter",
+        "refreshFilters":
+          "Update this datasource with the active filter(s). To enable this button, the layer must be visible (or in the defined scale ranges) or you must modify the current filter.",
+        "layerFiltered": "This layer is currently filtered",
+        "layerFilterable": "This layer is filterable",
+        "filterBy": "Filter by",
+        "showFeatureExtent": "Show feature used as spatial extent",
+        "hideFeatureExtent": "Hide feature used as spatial extent "
+      },
+      "spatialSelector": {
+        "fixedExtent": "Fixed extent",
+        "btnSetExtent":
+          "Define the extent of the spatial filter to the current view",
+        "snrc": "SNRC (ex:21L14)",
+        "selectFeature": "",
+        "drawFeature": ""
+      },
+      "layer": {
+        "hideLayer": "Hide Layer",
+        "lowerLayer": "Bring layer backward",
+        "loadingLegendText": "Loading legend",
+        "noLegendText": "No legend available for this layer",
+        "opacity": "Opacity",
+        "raiseLayer": "Bring layer forward",
+        "removeLayer": "Remove this layer from the map",
+        "showFeaturesList": "Show features list",
+        "showLayer": "Show Layer",
+        "subsetLayersListKeyword":
+          "Subset the layers's list by title or type (wms, wfs,...)",
+        "deleteKeyword": "Delete the keyword",
+        "subsetLayersListKeywordPlaceholder": "Filter",
+        "subsetLayersListOnlyVisible": "Subset the layers's list by visibility",
+        "subsetLayersListOnlyInRange":
+          "Subset the layers's list by resolution range",
+        "sortAlphabetically": "Sort the layers's list alphabetically",
+        "sortMapOrder":
+          "Sort the layers's list based on layer's order on the map",
+        "resetLayersList": "Remove the current applied filter to layers's list"
+      },
+      "download": {
+        "action": "Download data",
+        "title": "Downloading file",
+        "start": "Started. Check the download progression in your browser",
+        "end": "Completed"
+      },
+      "mapButtons": {
+        "baselayerSwitcher": "Change base layer",
+        "geolocate": "Geolocate",
+        "zoomIn": "Zoom in ({{zoom}})",
+        "zoomOut": "Zoom out ({{zoom}})",
+        "resetRotation": "Set map to north"
+      },
+      "metadata": {
+        "show": "Show metadata"
+      },
+      "printForm": {
+        "corsErrorMessageBody":
+          "Unable to print due to non-owned access rights",
+        "corsErrorMessageHeader": "Print",
+        "comment": "Comment",
+        "doZipFile": "Zip file",
+        "outputFormat": "Output format",
+        "paperFormat": "Paper format",
+        "paperFormats": {
+          "A0": "A0",
+          "A1": "A1",
+          "A2": "A2",
+          "A3": "A3",
+          "A4": "A4",
+          "A5": "A5",
+          "Letter": "Letter",
+          "Legal": "Legal"  
+        },
+        "imageFormat": "Image format",
+        "orientation" : "Orientation",
+        "landscape": "Landscape",
+        "portrait": "Portrait",
+        "projection": "Projection",
+        "resolution": "Resolution",
+        "saveBtn": "Save",
+        "scale": "Scale",
+        "showLegend": "Show legend",
+        "showProjection": "Show projection",
+        "showScale": "Show scale",
+        "title": "Title"
+      },
+      "routingForm": {
+        "start": "Start",
+        "intermediate": "Intermediate",
+        "end": "End",
+        "routingBtn": "Get route",
+        "resetRoutingBtn": "Reset",
+        "zoomRoute": "Zoom on route",
+        "null": "",
+        "directions": "Directions",
+        "raiseStop": "Raise stop's priority",
+        "lowerStop": "Lower stop's priority",
+        "addStop": "Add a stop",
+        "removeStop": "Remove this stop",
+        "drivingOptions": "Options",
+        "summary": "Direction's summary",
+        "stopsList": "Stops's list",
+        "instructions": "Instructions",
+        "copy": "Copy directions",
+        "geolocate": "Use current localisation as stop",
+        "link": "Link",
+        "dialog": {
+          "copyMsg": "Directions copied to clipboard",
+          "copyMsgLink": "Link for directions copied to clipboard",
+          "copyTitle": "Directions"
+        }
+      },
+      "routing": {
+        "uturn": "demi-tour",
+        "sharp right": "fortement à droite",
+        "right": "right",
+        "slight right": "slightly on right",
+        "sharp left": "fortement à gauche",
+        "left": "left",
+        "slight left": "slightly on left",
+        "straight": "forward"
+      },
+      "cardinalPoints": {
+        "n": "north",
+        "ne": "northeast",
+        "e": "east",
+        "se": "Southeast",
+        "s": "south",
+        "sw": "southwest",
+        "w": "west",
+        "nw": "northwest"
+      },
+      "search": {
+        "dataSources": {
+          "name": "Layers",
+          "properties": {
+            "abstract": "Abstract",
+            "group": "Group",
+            "title": "Title",
+            "type": "Type",
+            "url": "URL"
+          }
+        },
+        "menu.tooltip": "Search Options"
+      },
+      "geometry": {
+        "geometry": "Geometry",
+        "point": "Point",
+        "line": "Line",
+        "polygon": "Polygon"
+      },
+      "targetHtmlUrl": "Open the external link",
+      "timeFilter": {
+        "date": "Date",
+        "endDate": "End Date",
+        "startDate": "Start Date"
+      },
+      "measure": {
+        "dialog": {
+          "title": "Sum of the selection",
+          "length.title": "Length",
+          "area.title": "Area",
+          "lengthInMeters": "Length in meters",
+          "lengthInKilometers": "Length in kilometers",
+          "lengthInMiles": "Length in miles",
+          "lengthInFeet": "Length in en feet",
+          "areaInSquareMeters": "Area in meters²",
+          "areaInSquareKilometers": "Area in kilometers²",
+          "areaInSquareMiles": "Area in miles²",
+          "areaInHectares": "Area in hectares",
+          "areaInAcres": "Area in acres",
+          "perimeterInMeters": "Perimeter in meters"
+        },
+        "area": "Area",
+        "areaHeader": "Area",
+        "length": "Length",
+        "lengthHeader": "Length / Perimeter",
+        "perimeter": "Perimeter",
+        "meters": "Meters",
+        "kilometers": "Kilometers",
+        "miles": "Miles",
+        "feet": "Feet",
+        "squareMeters": "Meters²",
+        "squareKilometers": "Kilometers²",
+        "squareMiles": "Miles²",
+        "squareFeet": "Feet²",
+        "hectares": "Hectares",
+        "acres": "Acres",
+        "toggleMeasure": "Measure",
+        "toggleMapTooltips": "Show map tooltips",
+        "toggleAutoUnits": "Auto Units",
+        "actionbar": {
+          "calculate.tooltip": "Calculate",
+          "delete.tooltip": "Delete",
+          "modify.tooltip": "Modify"
+        }
+      },
+      "workspace": {
+        "ogcFilter.close": "Close",
+        "ogcFilter.title": "Filters",
+        "ogcFilter.tooltip": "Apply filters",
+        "wfsDownload.title": "Download",
+        "wfsDownload.tooltip": "Download"
+      }
+    }
+  },
+  "search": {
+    "feature.title": "Localisation",
+    "feature.placeholder": "Search for a place localisation",
+    "layer.title": "Layer",
+    "layer.placeholder": "Search for a layer"
+  }
+}

@@ -1,0 +1,8 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { RoutingSource } from './routing-source';
+export {} from './routing-source.interface';
+export { OsrmRoutingSource } from './osrm-routing-source';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9AaWdvMi9nZW8vIiwic291cmNlcyI6WyJsaWIvcm91dGluZy9yb3V0aW5nLXNvdXJjZXMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLDhCQUFjLGtCQUFrQixDQUFDO0FBQ2pDLGVBQWMsNEJBQTRCLENBQUM7QUFDM0Msa0NBQWMsdUJBQXVCLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgKiBmcm9tICcuL3JvdXRpbmctc291cmNlJztcclxuZXhwb3J0ICogZnJvbSAnLi9yb3V0aW5nLXNvdXJjZS5pbnRlcmZhY2UnO1xyXG5leHBvcnQgKiBmcm9tICcuL29zcm0tcm91dGluZy1zb3VyY2UnO1xyXG4iXX0=

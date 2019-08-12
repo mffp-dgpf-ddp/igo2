@@ -1,0 +1,74 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { HttpClient } from '@angular/common/http';
+import { ConfigService, LanguageService } from '@igo2/core';
+import { SearchSource } from './source';
+import { IChercheSearchSource, IChercheSearchResultFormatter, IChercheReverseSearchSource } from './icherche';
+/**
+ * ICherche search result formatter factory
+ * @ignore
+ * @param {?} languageService
+ * @return {?}
+ */
+export function defaultIChercheSearchResultFormatterFactory(languageService) {
+    return new IChercheSearchResultFormatter(languageService);
+}
+/**
+ * Function that returns a provider for the ICherche search result formatter
+ * @return {?}
+ */
+export function provideDefaultIChercheSearchResultFormatter() {
+    return {
+        provide: IChercheSearchResultFormatter,
+        useFactory: defaultIChercheSearchResultFormatterFactory,
+        deps: [LanguageService]
+    };
+}
+/**
+ * ICherche search source factory
+ * @ignore
+ * @param {?} http
+ * @param {?} config
+ * @param {?} formatter
+ * @return {?}
+ */
+export function ichercheSearchSourceFactory(http, config, formatter) {
+    return new IChercheSearchSource(http, config.getConfig("searchSources." + IChercheSearchSource.id), formatter);
+}
+/**
+ * Function that returns a provider for the ICherche search source
+ * @return {?}
+ */
+export function provideIChercheSearchSource() {
+    return {
+        provide: SearchSource,
+        useFactory: ichercheSearchSourceFactory,
+        multi: true,
+        deps: [HttpClient, ConfigService, IChercheSearchResultFormatter]
+    };
+}
+/**
+ * IChercheReverse search source factory
+ * @ignore
+ * @param {?} http
+ * @param {?} config
+ * @return {?}
+ */
+export function ichercheReverseSearchSourceFactory(http, config) {
+    return new IChercheReverseSearchSource(http, config.getConfig("searchSources." + IChercheReverseSearchSource.id));
+}
+/**
+ * Function that returns a provider for the IChercheReverse search source
+ * @return {?}
+ */
+export function provideIChercheReverseSearchSource() {
+    return {
+        provide: SearchSource,
+        useFactory: ichercheReverseSearchSourceFactory,
+        multi: true,
+        deps: [HttpClient, ConfigService]
+    };
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaWNoZXJjaGUucHJvdmlkZXJzLmpzIiwic291cmNlUm9vdCI6Im5nOi8vQGlnbzIvZ2VvLyIsInNvdXJjZXMiOlsibGliL3NlYXJjaC9zaGFyZWQvc291cmNlcy9pY2hlcmNoZS5wcm92aWRlcnMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLE9BQU8sRUFBRSxVQUFVLEVBQUUsTUFBTSxzQkFBc0IsQ0FBQztBQUVsRCxPQUFPLEVBQUUsYUFBYSxFQUFFLGVBQWUsRUFBRSxNQUFNLFlBQVksQ0FBQztBQUU1RCxPQUFPLEVBQUUsWUFBWSxFQUFFLE1BQU0sVUFBVSxDQUFDO0FBQ3hDLE9BQU8sRUFDTCxvQkFBb0IsRUFDcEIsNkJBQTZCLEVBQzdCLDJCQUEyQixFQUM1QixNQUFNLFlBQVksQ0FBQzs7Ozs7OztBQU1wQixNQUFNLFVBQVUsMkNBQTJDLENBQ3pELGVBQWdDO0lBRWhDLE9BQU8sSUFBSSw2QkFBNkIsQ0FBQyxlQUFlLENBQUMsQ0FBQztBQUM1RCxDQUFDOzs7OztBQUtELE1BQU0sVUFBVSwyQ0FBMkM7SUFDekQsT0FBTztRQUNMLE9BQU8sRUFBRSw2QkFBNkI7UUFDdEMsVUFBVSxFQUFFLDJDQUEyQztRQUN2RCxJQUFJLEVBQUUsQ0FBQyxlQUFlLENBQUM7S0FDeEIsQ0FBQztBQUNKLENBQUM7Ozs7Ozs7OztBQU1ELE1BQU0sVUFBVSwyQkFBMkIsQ0FDekMsSUFBZ0IsRUFDaEIsTUFBcUIsRUFDckIsU0FBd0M7SUFFeEMsT0FBTyxJQUFJLG9CQUFvQixDQUM3QixJQUFJLEVBQ0osTUFBTSxDQUFDLFNBQVMsQ0FBQyxtQkFBaUIsb0JBQW9CLENBQUMsRUFBSSxDQUFDLEVBQzVELFNBQVMsQ0FDVixDQUFDO0FBQ0osQ0FBQzs7Ozs7QUFLRCxNQUFNLFVBQVUsMkJBQTJCO0lBQ3pDLE9BQU87UUFDTCxPQUFPLEVBQUUsWUFBWTtRQUNyQixVQUFVLEVBQUUsMkJBQTJCO1FBQ3ZDLEtBQUssRUFBRSxJQUFJO1FBQ1gsSUFBSSxFQUFFLENBQUMsVUFBVSxFQUFFLGFBQWEsRUFBRSw2QkFBNkIsQ0FBQztLQUNqRSxDQUFDO0FBQ0osQ0FBQzs7Ozs7Ozs7QUFNRCxNQUFNLFVBQVUsa0NBQWtDLENBQ2hELElBQWdCLEVBQ2hCLE1BQXFCO0lBRXJCLE9BQU8sSUFBSSwyQkFBMkIsQ0FDcEMsSUFBSSxFQUNKLE1BQU0sQ0FBQyxTQUFTLENBQUMsbUJBQWlCLDJCQUEyQixDQUFDLEVBQUksQ0FBQyxDQUNwRSxDQUFDO0FBQ0osQ0FBQzs7Ozs7QUFLRCxNQUFNLFVBQVUsa0NBQWtDO0lBQ2hELE9BQU87UUFDTCxPQUFPLEVBQUUsWUFBWTtRQUNyQixVQUFVLEVBQUUsa0NBQWtDO1FBQzlDLEtBQUssRUFBRSxJQUFJO1FBQ1gsSUFBSSxFQUFFLENBQUMsVUFBVSxFQUFFLGFBQWEsQ0FBQztLQUNsQyxDQUFDO0FBQ0osQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IEh0dHBDbGllbnQgfSBmcm9tICdAYW5ndWxhci9jb21tb24vaHR0cCc7XHJcblxyXG5pbXBvcnQgeyBDb25maWdTZXJ2aWNlLCBMYW5ndWFnZVNlcnZpY2UgfSBmcm9tICdAaWdvMi9jb3JlJztcclxuXHJcbmltcG9ydCB7IFNlYXJjaFNvdXJjZSB9IGZyb20gJy4vc291cmNlJztcclxuaW1wb3J0IHtcclxuICBJQ2hlcmNoZVNlYXJjaFNvdXJjZSxcclxuICBJQ2hlcmNoZVNlYXJjaFJlc3VsdEZvcm1hdHRlcixcclxuICBJQ2hlcmNoZVJldmVyc2VTZWFyY2hTb3VyY2VcclxufSBmcm9tICcuL2ljaGVyY2hlJztcclxuXHJcbi8qKlxyXG4gKiBJQ2hlcmNoZSBzZWFyY2ggcmVzdWx0IGZvcm1hdHRlciBmYWN0b3J5XHJcbiAqIEBpZ25vcmVcclxuICovXHJcbmV4cG9ydCBmdW5jdGlvbiBkZWZhdWx0SUNoZXJjaGVTZWFyY2hSZXN1bHRGb3JtYXR0ZXJGYWN0b3J5KFxyXG4gIGxhbmd1YWdlU2VydmljZTogTGFuZ3VhZ2VTZXJ2aWNlXHJcbikge1xyXG4gIHJldHVybiBuZXcgSUNoZXJjaGVTZWFyY2hSZXN1bHRGb3JtYXR0ZXIobGFuZ3VhZ2VTZXJ2aWNlKTtcclxufVxyXG5cclxuLyoqXHJcbiAqIEZ1bmN0aW9uIHRoYXQgcmV0dXJucyBhIHByb3ZpZGVyIGZvciB0aGUgSUNoZXJjaGUgc2VhcmNoIHJlc3VsdCBmb3JtYXR0ZXJcclxuICovXHJcbmV4cG9ydCBmdW5jdGlvbiBwcm92aWRlRGVmYXVsdElDaGVyY2hlU2VhcmNoUmVzdWx0Rm9ybWF0dGVyKCkge1xyXG4gIHJldHVybiB7XHJcbiAgICBwcm92aWRlOiBJQ2hlcmNoZVNlYXJjaFJlc3VsdEZvcm1hdHRlcixcclxuICAgIHVzZUZhY3Rvcnk6IGRlZmF1bHRJQ2hlcmNoZVNlYXJjaFJlc3VsdEZvcm1hdHRlckZhY3RvcnksXHJcbiAgICBkZXBzOiBbTGFuZ3VhZ2VTZXJ2aWNlXVxyXG4gIH07XHJcbn1cclxuXHJcbi8qKlxyXG4gKiBJQ2hlcmNoZSBzZWFyY2ggc291cmNlIGZhY3RvcnlcclxuICogQGlnbm9yZVxyXG4gKi9cclxuZXhwb3J0IGZ1bmN0aW9uIGljaGVyY2hlU2VhcmNoU291cmNlRmFjdG9yeShcclxuICBodHRwOiBIdHRwQ2xpZW50LFxyXG4gIGNvbmZpZzogQ29uZmlnU2VydmljZSxcclxuICBmb3JtYXR0ZXI6IElDaGVyY2hlU2VhcmNoUmVzdWx0Rm9ybWF0dGVyXHJcbikge1xyXG4gIHJldHVybiBuZXcgSUNoZXJjaGVTZWFyY2hTb3VyY2UoXHJcbiAgICBodHRwLFxyXG4gICAgY29uZmlnLmdldENvbmZpZyhgc2VhcmNoU291cmNlcy4ke0lDaGVyY2hlU2VhcmNoU291cmNlLmlkfWApLFxyXG4gICAgZm9ybWF0dGVyXHJcbiAgKTtcclxufVxyXG5cclxuLyoqXHJcbiAqIEZ1bmN0aW9uIHRoYXQgcmV0dXJucyBhIHByb3ZpZGVyIGZvciB0aGUgSUNoZXJjaGUgc2VhcmNoIHNvdXJjZVxyXG4gKi9cclxuZXhwb3J0IGZ1bmN0aW9uIHByb3ZpZGVJQ2hlcmNoZVNlYXJjaFNvdXJjZSgpIHtcclxuICByZXR1cm4ge1xyXG4gICAgcHJvdmlkZTogU2VhcmNoU291cmNlLFxyXG4gICAgdXNlRmFjdG9yeTogaWNoZXJjaGVTZWFyY2hTb3VyY2VGYWN0b3J5LFxyXG4gICAgbXVsdGk6IHRydWUsXHJcbiAgICBkZXBzOiBbSHR0cENsaWVudCwgQ29uZmlnU2VydmljZSwgSUNoZXJjaGVTZWFyY2hSZXN1bHRGb3JtYXR0ZXJdXHJcbiAgfTtcclxufVxyXG5cclxuLyoqXHJcbiAqIElDaGVyY2hlUmV2ZXJzZSBzZWFyY2ggc291cmNlIGZhY3RvcnlcclxuICogQGlnbm9yZVxyXG4gKi9cclxuZXhwb3J0IGZ1bmN0aW9uIGljaGVyY2hlUmV2ZXJzZVNlYXJjaFNvdXJjZUZhY3RvcnkoXHJcbiAgaHR0cDogSHR0cENsaWVudCxcclxuICBjb25maWc6IENvbmZpZ1NlcnZpY2VcclxuKSB7XHJcbiAgcmV0dXJuIG5ldyBJQ2hlcmNoZVJldmVyc2VTZWFyY2hTb3VyY2UoXHJcbiAgICBodHRwLFxyXG4gICAgY29uZmlnLmdldENvbmZpZyhgc2VhcmNoU291cmNlcy4ke0lDaGVyY2hlUmV2ZXJzZVNlYXJjaFNvdXJjZS5pZH1gKVxyXG4gICk7XHJcbn1cclxuXHJcbi8qKlxyXG4gKiBGdW5jdGlvbiB0aGF0IHJldHVybnMgYSBwcm92aWRlciBmb3IgdGhlIElDaGVyY2hlUmV2ZXJzZSBzZWFyY2ggc291cmNlXHJcbiAqL1xyXG5leHBvcnQgZnVuY3Rpb24gcHJvdmlkZUlDaGVyY2hlUmV2ZXJzZVNlYXJjaFNvdXJjZSgpIHtcclxuICByZXR1cm4ge1xyXG4gICAgcHJvdmlkZTogU2VhcmNoU291cmNlLFxyXG4gICAgdXNlRmFjdG9yeTogaWNoZXJjaGVSZXZlcnNlU2VhcmNoU291cmNlRmFjdG9yeSxcclxuICAgIG11bHRpOiB0cnVlLFxyXG4gICAgZGVwczogW0h0dHBDbGllbnQsIENvbmZpZ1NlcnZpY2VdXHJcbiAgfTtcclxufVxyXG4iXX0=

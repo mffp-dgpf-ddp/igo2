@@ -1,0 +1,287 @@
+{
+  "igo": {
+    "geo": {
+      "catalog": {
+        "layer.addToMap": "Ajouter à la carte",
+        "layer.removeFromMap": "Retirer de la carte",
+        "group.addToMap": "Ajouter toutes les couches de ce groupe à la carte",
+        "group.removeFromMap": "Retirer toutes les couches de ce groupe de la carte"
+      },
+      "clickOnMap": {
+        "clickedFeature": "Entités cliquées"
+      },
+      "dropGeoFile": {
+        "invalid": {
+          "text": "Le fichier '{{value}}' est invalide. ({{mimeType}})",
+          "title": "Fichier invalide"
+        },
+        "empty": {
+          "text": "Le fichier '{{value}}' est vide, impossible d'importer.",
+          "title": "Fichier vide"
+        },
+        "success": {
+          "text": "La couche '{{value}}' a été ajoutée à la carte",
+          "title": "Fichier importé"
+        },
+        "unreadable": {
+          "text": "Le fichier '{{value}}' est impossible à lire",
+          "title": "Fichier illisible"
+        }
+      },
+      "export": {
+        "nothing": {
+          "text": "Impossible d’exporter, donnée non valide ou aucune donnée sélectionnée.",
+          "title": "Donnée non valide ou non présente"
+        },
+        "failed": {
+          "text": "Impossible d’exporter, problème de donnée rencontré.",
+          "title": "Problème d’exportation"
+        }
+      },
+      "importExportForm": {
+        "exportButton": "Exporter",
+        "exportFormatPlaceholder": "Format",
+        "exportLayerPlaceholder": "Données géospatiales",
+        "exportTabTitle": "Exporter",
+        "importButton": "Importer",
+        "importProjPlaceholder": "Système de coordonnées",
+        "importTabTitle": "Importer"
+      },
+      "operators": {
+        "And": "Et",
+        "Or": "Ou",
+        "PropertyIsEqualTo": "=",
+        "PropertyIsNotEqualTo": "!=",
+        "PropertyIsLike": "≈",
+        "PropertyIsGreaterThan": ">",
+        "PropertyIsGreaterThanOrEqualTo": ">=",
+        "PropertyIsLessThan": "<",
+        "PropertyIsLessThanOrEqualTo": "<=",
+        "PropertyIsBetween": "entre",
+        "During": "durant",
+        "PropertyIsNull": "est nul",
+        "Intersects": "intersecte",
+        "Within": "contenu dans",
+        "Contains": "contient"
+      },
+      "sourceFields": {
+        "selectField": "Choisir un champ"
+      },
+      "filter": {
+        "addFilter": "Ajouter un filtre vide à la liste courante",
+        "removeFilter": "Supprimer le présent filtre à la liste des filtres",
+        "toggleFilterState": "Activer/désactiver le présent filtre",
+        "refreshFilters":
+          "Mettre à jour la source de donnée avec les filtres actifs de la liste. Pour activer ce boutton, la couche doit etre visible (et dans les échelles permises) ou veillez modifier le présent filtre.",
+        "layerFiltered": "Cette couche d'information est présentement filtrée.",
+        "layerFilterable": "Cette couche d'information est filtrable",
+        "filterBy": "Filtrer par",
+        "showFeatureExtent": "Montrer l'empreinte des étendues",
+        "hideFeatureExtent": "Cacher l'empreinte des étendues"
+      },
+      "spatialSelector": {
+        "fixedExtent": "Étendue fixe",
+        "btnSetExtent":
+          "Définir l'étendue du filtre selon l'étendue courante de la carte",
+        "snrc": "SNRC (ex:21L14)",
+        "selectFeature": "",
+        "drawFeature": ""
+      },
+      "layer": {
+        "hideLayer": "Masquer la couche",
+        "lowerLayer": "Mettre en arrière",
+        "loadingLegendText": "Chargement de la légende",
+        "noLegendText": "Aucune légende disponible pour cette couche",
+        "opacity": "Opacité",
+        "raiseLayer": "Mettre en avant",
+        "removeLayer": "Retirer la couche de la carte",
+        "showFeaturesList": "Afficher la liste des entités",
+        "showLayer": "Afficher la couche",
+        "subsetLayersListKeyword":
+          "Limiter l'affichage de la liste selon le titre ou  par type (wms, wfs,...)",
+        "deleteKeyword": "Supprimer le mot-clé",
+        "subsetLayersListKeywordPlaceholder": "Filtre",
+        "subsetLayersListOnlyVisible":
+          "Conserver que les couches qui sont visible",
+        "subsetLayersListOnlyInRange":
+          "Conserver que les couches qui sont dans la plage de résolution active",
+        "sortAlphabetically": "Trier la liste des couches alphabétiquement.",
+        "sortMapOrder": "Replacer les couches selon l'ordre cartographique.",
+        "resetLayersList": "Supprimer le filtre appliqué à la liste"
+      },
+      "download": {
+        "action": "Télécharger les données associées",
+        "title": "Téléchargement des données",
+        "start":
+          "Vérifiez la progression du téléchargement dans votre navigateur",
+        "end": "Terminé"
+      },
+      "mapButtons": {
+        "baselayerSwitcher": "Changer le fond de carte",
+        "geolocate": "Positionnement GPS",
+        "zoomIn": "Zoomer ({{zoom}})",
+        "zoomOut": "Dézoomer ({{zoom}})",
+        "resetRotation": "Réinitialiser la carte vers le nord"
+      },
+      "metadata": {
+        "show": "Montrer les métadonnées"
+      },
+      "printForm": {
+        "corsErrorMessageBody":
+          "Impossible d'imprimer dû à des droits d'accès non détenus",
+        "corsErrorMessageHeader": "Impression",
+        "comment": "Commentaire",
+        "doZipFile": "Compresser le fichier",
+        "outputFormat": "Format de sortie",
+        "paperFormat": "Format du papier",
+        "paperFormats": {
+          "A0": "A0",
+          "A1": "A1",
+          "A2": "A2",
+          "A3": "A3",
+          "A4": "A4",
+          "A5": "A5",
+          "Letter": "Lettre",
+          "Legal": "Légal"  
+        },
+        "imageFormat": "Format de l'image",
+        "orientation" : "Orientation",
+        "landscape": "Paysage",
+        "portrait": "Portrait",
+        "projection": "Projection",
+        "resolution": "Résolution",
+        "saveBtn": "Sauvegarder",
+        "scale": "Échelle",
+        "showLegend": "Afficher la légende",
+        "showProjection": "Afficher la projection",
+        "showScale": "Afficher l'échelle",
+        "title": "Titre"
+      },
+      "routingForm": {
+        "start": "Début",
+        "intermediate": "Intermédiaire",
+        "end": "Fin",
+        "routingBtn": "Obtenir l'itinéraire",
+        "resetRoutingBtn": "Supprimer l'itinéraire",
+        "zoomRoute": "Zoomer sur l'itinéraire",
+        "null": "",
+        "directions": "Itinéraire",
+        "raiseStop": "Prioriser l'arrêt",
+        "lowerStop": "Reporter l'arrêt plus loin dans le parcours",
+        "addStop": "Ajouter un arrêt",
+        "removeStop": "Supprimer l'arrêt",
+        "drivingOptions": "Choix d'itinéraires",
+        "summary": "Résumé de l'itinéraire",
+        "stopsList": "Liste des lieux d'arrêts",
+        "instructions": "Indications",
+        "copy": "Copier l'itinéraire",
+        "geolocate": "Utiliser sa localisation comme point d'arrêt",
+        "link": "Lien",
+        "dialog": {
+          "copyMsg": "Itinéraire copié dans le presse-papier",
+          "copyMsgLink":
+            "Le lien de l'itinéraire est copié dans le presse-papier",
+          "copyTitle": "Itinéraire"
+        }
+      },
+      "routing": {
+        "uturn": "demi-tour",
+        "sharp right": "fortement à droite",
+        "right": "droite",
+        "slight right": "légèrement à droite",
+        "sharp left": "fortement à gauche",
+        "left": "gauche",
+        "slight left": "légèrement à gauche",
+        "straight": "tout droit"
+      },
+      "cardinalPoints": {
+        "n": "nord",
+        "ne": "nord-est",
+        "e": "est",
+        "se": "sud-est",
+        "s": "sud",
+        "sw": "sud-ouest",
+        "w": "ouest",
+        "nw": "nord-ouest"
+      },
+      "search": {
+        "dataSources": {
+          "name": "Couches",
+          "properties": {
+            "abstract": "Description",
+            "group": "Groupe",
+            "title": "Titre",
+            "type": "Type",
+            "url": "URL"
+          }
+        },
+        "menu.tooltip": "Options de recherche"
+      },
+      "geometry": {
+        "geometry": "Geometrie",
+        "point": "Point",
+        "line": "Ligne",
+        "polygon": "Surface"
+      },
+      "targetHtmlUrl": "Ouvrir le lien externe",
+      "timeFilter": {
+        "date": "Date",
+        "endDate": "Date de fin",
+        "startDate": "Date de début"
+      },
+      "measure": {
+        "dialog": {
+          "title": "Sommes de la sélection",
+          "length.title": "Longueur",
+          "area.title": "Superficie",
+          "lengthInMeters": "Longueur en mètres",
+          "lengthInKilometers": "Longueur en kilomètres",
+          "lengthInMiles": "Longueur en miles",
+          "lengthInFeet": "Longueur en pieds",
+          "areaInSquareMeters": "Superficie en mètres²",
+          "areaInSquareKilometers": "Superficie en kilomètres²",
+          "areaInSquareMiles": "Superficie en miles²",
+          "areaInHectares": "Superficie en hectares",
+          "areaInAcres": "Superficie en acres",
+          "perimeterInMeters": "Périmètre en mètres"
+        },
+        "area": "Superficie",
+        "areaHeader": "Superficie",
+        "length": "Distance",
+        "lengthHeader": "Distance / Périmètre",
+        "perimeter": "Périmètre",
+        "meters": "Mètres",
+        "kilometers": "Kilomètres",
+        "miles": "Miles",
+        "feet": "Pieds",
+        "squareMeters": "Mètres²",
+        "squareKilometers": "Kilomètres²",
+        "squareMiles": "Miles²",
+        "squareFeet": "Pieds²",
+        "hectares": "Hectares",
+        "acres": "Acres",
+        "toggleMeasure": "Mesurage",
+        "toggleMapTooltips": "Mesures sur la carte",
+        "toggleAutoUnits": "Unités automatiques",
+        "actionbar": {
+          "calculate.tooltip": "Calculer",
+          "delete.tooltip": "Supprimer",
+          "modify.tooltip": "Modifier"
+        }
+      },
+      "workspace": {
+        "ogcFilter.close": "Fermer",
+        "ogcFilter.title": "Filtres",
+        "ogcFilter.tooltip": "Appliquer des filtres sur la couche",
+        "wfsDownload.title": "Télécharger les données associées",
+        "wfsDownload.tooltip": "Télécharger les données associées"
+      }
+    }
+  },
+  "search": {
+    "feature.title": "Localisation",
+    "feature.placeholder": "Rechercher une localisation",
+    "layer.title": "Couche de données",
+    "layer.placeholder": "Rechercher une couche de données."
+  }
+}

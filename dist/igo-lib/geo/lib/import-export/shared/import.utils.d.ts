@@ -1,0 +1,10 @@
+import { MessageService, LanguageService } from '@igo2/core';
+import { Feature } from '../../feature/shared/feature.interfaces';
+import { VectorLayer } from '../../layer/shared/layers/vector-layer';
+import { IgoMap } from '../../map/shared/map';
+export declare function addLayerAndFeaturesToMap(features: Feature[], map: IgoMap, layerTitle: string): VectorLayer;
+export declare function handleFileImportSuccess(file: File, features: Feature[], map: IgoMap, messageService: MessageService, languageService: LanguageService): void;
+export declare function handleFileImportError(file: File, error: Error, messageService: MessageService, languageService: LanguageService): void;
+export declare function handleNothingToImportError(file: File, messageService: MessageService, languageService: LanguageService): void;
+export declare function getFileExtension(file: File): string;
+export declare function computeLayerTitleFromFile(file: File): string;

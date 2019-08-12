@@ -1,0 +1,8 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export {} from './dynamic-component.interfaces';
+export { DynamicComponent } from './dynamic-component';
+export { DynamicComponentService } from './dynamic-component.service';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9AaWdvMi9jb21tb24vIiwic291cmNlcyI6WyJsaWIvZHluYW1pYy1jb21wb25lbnQvc2hhcmVkL2luZGV4LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7QUFBQSxlQUFjLGdDQUFnQyxDQUFDO0FBQy9DLGlDQUFjLHFCQUFxQixDQUFDO0FBQ3BDLHdDQUFjLDZCQUE2QixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0ICogZnJvbSAnLi9keW5hbWljLWNvbXBvbmVudC5pbnRlcmZhY2VzJztcclxuZXhwb3J0ICogZnJvbSAnLi9keW5hbWljLWNvbXBvbmVudCc7XHJcbmV4cG9ydCAqIGZyb20gJy4vZHluYW1pYy1jb21wb25lbnQuc2VydmljZSc7XHJcbiJdfQ==

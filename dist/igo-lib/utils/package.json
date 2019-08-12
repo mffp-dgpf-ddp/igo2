@@ -1,0 +1,36 @@
+{
+  "name": "@igo2/utils",
+  "version": "1.0.0-alpha.2",
+  "description": "IGO Library",
+  "author": "MSP",
+  "keywords": [
+    "igo"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/infra-geo-ouverte/igo2-lib#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/infra-geo-ouverte/igo2-lib.git"
+  },
+  "bugs": {
+    "url": "https://github.com/infra-geo-ouverte/igo2-lib/issues"
+  },
+  "dependencies": {
+    "bowser": "^1.9.2",
+    "tslib": "^1.9.0"
+  },
+  "peerDependencies": {
+    "@angular/common": "^7.2.6",
+    "@angular/core": "^7.2.6"
+  },
+  "main": "bundles/igo2-utils.umd.js",
+  "module": "fesm5/igo2-utils.js",
+  "es2015": "fesm2015/igo2-utils.js",
+  "esm5": "esm5/igo2-utils.js",
+  "esm2015": "esm2015/igo2-utils.js",
+  "fesm5": "fesm5/igo2-utils.js",
+  "fesm2015": "fesm2015/igo2-utils.js",
+  "typings": "igo2-utils.d.ts",
+  "metadata": "igo2-utils.metadata.json",
+  "sideEffects": false
+}
