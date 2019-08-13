@@ -8,6 +8,9 @@ import { ActivatedRoute } from '@angular/router';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
 import { BehaviorSubject, throwError, of, combineLatest, fromEvent } from 'rxjs';
 import { finalize, catchError, map, tap, debounceTime, startWith } from 'rxjs/operators';
+import { Network } from '@ionic-native/network/ngx';
+import { Platform } from '@ionic/angular';
+import { Network as Network$1 } from '@ionic-native/network/ngx/index';
 import { Injectable, Injector, Component, Input, NgModule, APP_INITIALIZER, InjectionToken, Inject, Optional, EventEmitter, defineInjectable, inject, INJECTOR } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -1405,14 +1408,34 @@ var MediaService = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var NetworkService = /** @class */ (function () {
-    function NetworkService(messageService, injector) {
+    function NetworkService(messageService, injector, network, platform) {
+        var _this = this;
         this.messageService = messageService;
         this.injector = injector;
+        this.network = network;
+        this.platform = platform;
         this.stateChangeEventEmitter = new EventEmitter();
         this.state = {
             connection: window.navigator.onLine
         };
-        this.checkNetworkState();
+        console.log(this.platform + 'premier');
+        this.platform.ready().then((/**
+         * @return {?}
+         */
+        function () {
+            console.log(_this.platform);
+            if (_this.platform.is('cordova')) {
+                console.log('cordova');
+                if (_this.platform.is('android')) {
+                    console.log('android');
+                    _this.initializeService();
+                }
+            }
+            else {
+                console.log('browser');
+                _this.checkNetworkState();
+            }
+        }));
     }
     /**
      * @private
@@ -1428,7 +1451,6 @@ var NetworkService = /** @class */ (function () {
          * @return {?}
          */
         function () {
-            console.log('allo');
             /** @type {?} */
             var translate = _this.injector.get(LanguageService).translate;
             /** @type {?} */
@@ -1455,6 +1477,63 @@ var NetworkService = /** @class */ (function () {
         }));
     };
     /**
+     * @return {?}
+     */
+    NetworkService.prototype.initializeService = /**
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        if (this.network.type !== this.network.Connection.NONE) {
+            this.connectionType = this.network.type;
+            this.state.connection = true;
+        }
+        this.offlineSubscription = this.network.onDisconnect().subscribe((/**
+         * @return {?}
+         */
+        function () {
+            _this.state.connection = false;
+            setTimeout((/**
+             * @return {?}
+             */
+            function () {
+                if (!_this.state.connection) {
+                    /** @type {?} */
+                    var translate = _this.injector.get(LanguageService).translate;
+                    /** @type {?} */
+                    var message = translate.instant('igo.core.network.offline.message');
+                    /** @type {?} */
+                    var title = translate.instant('igo.core.network.offline.title');
+                    _this.messageService.info(message, title);
+                    _this.state.connection = false;
+                    _this.emitEvent();
+                }
+            }), 10000);
+        }));
+        this.onlineSubscription = this.network.onConnect().subscribe((/**
+         * @return {?}
+         */
+        function () {
+            _this.state.connection = true;
+            setTimeout((/**
+             * @return {?}
+             */
+            function () {
+                if (!_this.state.connection) {
+                    /** @type {?} */
+                    var translate = _this.injector.get(LanguageService).translate;
+                    /** @type {?} */
+                    var message = translate.instant('igo.core.network.online.message');
+                    /** @type {?} */
+                    var title = translate.instant('igo.core.network.online.title');
+                    _this.messageService.info(message, title);
+                    _this.state.connection = true;
+                    _this.emitEvent();
+                }
+            }), 10000);
+        }));
+    };
+    /**
      * @private
      * @return {?}
      */
@@ -1464,24 +1543,6 @@ var NetworkService = /** @class */ (function () {
      */
     function () {
         this.stateChangeEventEmitter.emit(this.state);
-    };
-    /**
-     * @return {?}
-     */
-    NetworkService.prototype.ngAfterViewInit = /**
-     * @return {?}
-     */
-    function () {
-        if (this.state.connection === false) {
-            console.log('yo');
-            /** @type {?} */
-            var translate = this.injector.get(LanguageService).translate;
-            /** @type {?} */
-            var message = translate.instant('igo.core.network.offline.message');
-            /** @type {?} */
-            var title = translate.instant('igo.core.network.offline.title');
-            this.messageService.info(message, title);
-        }
     };
     /**
      * @return {?}
@@ -1520,9 +1581,11 @@ var NetworkService = /** @class */ (function () {
     /** @nocollapse */
     NetworkService.ctorParameters = function () { return [
         { type: MessageService },
-        { type: Injector }
+        { type: Injector },
+        { type: Network },
+        { type: Platform }
     ]; };
-    /** @nocollapse */ NetworkService.ngInjectableDef = defineInjectable({ factory: function NetworkService_Factory() { return new NetworkService(inject(MessageService), inject(INJECTOR)); }, token: NetworkService, providedIn: "root" });
+    /** @nocollapse */ NetworkService.ngInjectableDef = defineInjectable({ factory: function NetworkService_Factory() { return new NetworkService(inject(MessageService), inject(INJECTOR), inject(Network$1), inject(Platform)); }, token: NetworkService, providedIn: "root" });
     return NetworkService;
 }());
 

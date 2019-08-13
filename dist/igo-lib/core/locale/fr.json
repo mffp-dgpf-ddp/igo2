@@ -164,7 +164,8 @@
 				"layer.addToMap": "Ajouter à la carte",
 				"layer.removeFromMap": "Retirer de la carte",
 				"group.addToMap": "Ajouter toutes les couches de ce groupe à la carte",
-				"group.removeFromMap": "Retirer toutes les couches de ce groupe de la carte"
+				"group.removeFromMap": "Retirer toutes les couches de ce groupe de la carte",
+				"baseLayers": "Fonds de carte"
 			},
 			"clickOnMap": {
 				"clickedFeature": "Entités cliquées"
@@ -234,8 +235,7 @@
 				"layerFiltered": "Cette couche d'information est présentement filtrée.",
 				"layerFilterable": "Cette couche d'information est filtrable",
 				"filterBy": "Filtrer par",
-				"showFeatureExtent": "Montrer l'empreinte des étendues",
-				"hideFeatureExtent": "Cacher l'empreinte des étendues"
+				"advancedOgcFilters": "Filtres avancés"
 			},
 			"spatialSelector": {
 				"fixedExtent": "Étendue fixe",
@@ -274,7 +274,8 @@
 				"geolocate": "Positionnement GPS",
 				"zoomIn": "Zoomer ({{zoom}})",
 				"zoomOut": "Dézoomer ({{zoom}})",
-				"resetRotation": "Réinitialiser la carte vers le nord"
+				"resetRotation": "Réinitialiser la carte vers le nord",
+				"tipRotation": "Maintenez les touches Alt et Majuscule (shift) tout en cliquant sur la carte pour faire pivoter la carte"
 			},
 			"metadata": {
 				"show": "Montrer les métadonnées"
@@ -366,7 +367,19 @@
 						"url": "URL"
 					}
 				},
-				"menu.tooltip": "Options de recherche"
+				"menu.tooltip": "Options de recherche",
+				"settings": {
+					"title": "Paramètres"
+				},
+				"searchSources": {
+					"settings": {
+						"results type": "Type de résultat",
+						"trust level": "Niveau de confiance",
+						"results limit": "Limite",
+						"multiple object": "Objet multiple",
+						"country limitation": "Limitation (pays)"
+					}
+				}
 			},
 			"geometry": {
 				"geometry": "Geometrie",

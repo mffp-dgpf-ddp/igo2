@@ -1,28 +1,20 @@
 import olMap from 'ol/Map';
 import olFeature from 'ol/Feature';
 import OlProjection from 'ol/proj/Projection';
-import olCircle from 'ol/geom/Circle';
-import * as olstyle from 'ol/style';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { SubjectStatus } from '@igo2/utils';
 import { Layer } from '../../layer/shared/layers';
 import { Overlay } from '../../overlay/shared/overlay';
 import { MapViewOptions, MapOptions, MapExtent } from './map.interface';
 import { MapViewController } from './controllers/view';
-import { FeatureDataSource } from '../../datasource/shared/datasources/feature-datasource';
 export declare class IgoMap {
     ol: olMap;
     layers$: BehaviorSubject<Layer[]>;
     status$: Subject<SubjectStatus>;
     geolocation$: BehaviorSubject<any>;
     geolocationFeature: olFeature;
-    bufferGeom: olCircle;
-    bufferFeature: olFeature;
-    buffer: Overlay;
     overlay: Overlay;
     viewController: MapViewController;
-    bufferStyle: olstyle.Style;
-    bufferDataSource: FeatureDataSource;
     private layerWatcher;
     private geolocation;
     private geolocation$$;
@@ -58,7 +50,6 @@ export declare class IgoMap {
      * @param push DEPRECATED
      */
     addLayers(layers: Layer[], push?: boolean): void;
-    addBuffer(feature: olFeature): void;
     /**
      * Remove a single layer
      * @param layer Layer to remove

@@ -6,7 +6,6 @@ export declare class OgcFilterComponent implements OnUpdateInputs, WidgetCompone
     private cdRef;
     layer: Layer;
     map: IgoMap;
-    showFeatureOnMap: boolean;
     /**
      * Event emitted on complete
      */

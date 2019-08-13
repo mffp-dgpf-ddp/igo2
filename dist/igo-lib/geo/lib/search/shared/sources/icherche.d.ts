@@ -32,6 +32,17 @@ export declare class IChercheSearchSource extends SearchSource implements TextSe
     private extractResults;
     private dataToResult;
     private computeProperties;
+    /**
+     * Remove hashtag from query
+     * @param term Query with hashtag
+     */
+    private computeTerm;
+    /**
+     * Add hashtag to param if valid
+     * @param term Query with hashtag
+     * @param options TextSearchOptions
+     */
+    private computeOptionsParam;
 }
 /**
  * IChercheReverse search source

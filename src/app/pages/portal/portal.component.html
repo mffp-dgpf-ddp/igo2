@@ -16,10 +16,10 @@
   <app-sidenav [map]="map" [(opened)]="sidenavOpened">
   </app-sidenav>
 
-  <igo-map-browser #mapBrowser igoQuery [waitForAllQueries]="true" igoMapContext igoLayerContext igoDropGeoFile (query)="onMapQuery($event)"
-    [map]="map" [igoContextMenu]=actionbarMenu (menuPosition)="onContextMenuOpen($event)" [ngClass]="{'igo-attribution-offset': map.getBaseLayers().length > 1}"
-    [@mapStateX]="sidenavOpened ? 'right' : 'left'" (@mapStateX.start)="removeMapBrowserClass($event)"
-    (@mapStateX.done)="updateMapBrowserClass($event)" [@mapStateY]="expansionPanelExpanded ? 'up' : 'down'"
+  <igo-map-browser #mapBrowser igoQuery [waitForAllQueries]="true" [queryFeatures]="true" igoMapContext igoLayerContext
+    igoMapOffline igoDropGeoFile (query)="onMapQuery($event)" [map]="map" [igoContextMenu]=actionbarMenu (menuPosition)="onContextMenuOpen($event)"
+    [ngClass]="{'igo-attribution-offset': map.getBaseLayers().length > 1}" [@mapStateX]="sidenavOpened ? 'right' : 'left'"
+    (@mapStateX.start)="removeMapBrowserClass($event)" (@mapStateX.done)="updateMapBrowserClass($event)" [@mapStateY]="expansionPanelExpanded ? 'up' : 'down'"
     (@mapStateY.start)="removeMapBrowserClass($event)" (@mapStateY.done)="updateMapBrowserClass($event)">
 
     <igo-zoom-button [map]="map" color="primary" [@controlsOffsetY]="expansionPanelExpanded">
@@ -27,8 +27,6 @@
     <igo-geolocate-button [map]="map" color="primary" [@controlsOffsetY]="expansionPanelExpanded">
     </igo-geolocate-button>
     <igo-rotation-button [map]="map" color="primary"></igo-rotation-button>
-    <igo-user-button [map]="map" color="primary" [@controlsOffsetY]="expansionPanelExpanded">
-    </igo-user-button>
     <igo-baselayers-switcher [map]="map" [@baselayersStateY]="expansionPanelExpanded ? 'up' : 'down'"
       [@baselayersStateX]="(mediaService.media$ | async) !== 'mobile' && sidenavOpened ? 'right' : 'left'">
     </igo-baselayers-switcher>

@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 import { SearchResult } from '../search.interfaces';
-import { SearchSourceOptions, TextSearchOptions, ReverseSearchOptions } from './source.interfaces';
+import { SearchSourceOptions, TextSearchOptions, ReverseSearchOptions, SearchSourceSettings } from './source.interfaces';
 /**
  * Base search source class
  */
@@ -53,10 +53,25 @@ export declare class SearchSource {
         [key: string]: string;
     };
     /**
+     * Search settings
+     */
+    readonly settings: SearchSourceSettings[];
+    /**
+     * Set params from selected settings
+     */
+    setParamFromSetting(setting: SearchSourceSettings): void;
+    /**
      * Search results display order
      */
     readonly displayOrder: number;
     constructor(options: SearchSourceOptions);
+    /**
+     * Check if hashtag is valid
+     * @param hashtag hashtag from query
+     * @param completeMatch boolean
+     */
+    hashtagValid(searchSourceSetting: SearchSourceSettings, hashtag: string, completeMatch?: boolean): boolean;
+    getSettingsValues(search: string): SearchSourceSettings;
 }
 /**
  * Search sources that allow searching by text implement this class

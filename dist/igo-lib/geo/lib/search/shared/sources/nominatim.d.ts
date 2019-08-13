@@ -26,4 +26,15 @@ export declare class NominatimSearchSource extends SearchSource implements TextS
     private computeProperties;
     private computeGeometry;
     private computeExtent;
+    private computeTerm;
+    /**
+     * Add hashtag from query in Nominatim's format (+[])
+     * @param term Query with hashtag
+     */
+    private computeTermTags;
+    /**
+     * Add hashtag from settings in Nominatim's format (+[])
+     * @param term Query
+     */
+    private computeTermSettings;
 }

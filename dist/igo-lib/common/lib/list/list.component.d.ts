@@ -27,6 +27,7 @@ export declare class ListComponent implements AfterViewInit, OnInit, OnDestroy {
     unselect(): void;
     enableNavigation(): void;
     disableNavigation(): void;
+    scrollToItem(item: ListItemDirective): void;
     private init;
     private subscribe;
     private unsubscribe;
@@ -38,5 +39,4 @@ export declare class ListComponent implements AfterViewInit, OnInit, OnDestroy {
     private findFocusedItem;
     private getFocusedIndex;
     private navigate;
-    private scrollToItem;
 }

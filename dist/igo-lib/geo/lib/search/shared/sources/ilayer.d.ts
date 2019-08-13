@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { LanguageService } from '@igo2/core';
 import { LayerOptions } from '../../../layer';
 import { SearchResult } from '../search.interfaces';
@@ -14,6 +14,7 @@ export declare class ILayerSearchSource extends SearchSource implements TextSear
     private languageService;
     static id: string;
     static type: string;
+    title$: BehaviorSubject<string>;
     readonly title: string;
     constructor(http: HttpClient, languageService: LanguageService, options: ILayerSearchSourceOptions);
     getId(): string;

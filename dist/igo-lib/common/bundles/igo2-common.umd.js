@@ -646,26 +646,26 @@
              * Observable of a sort clause
              */
             this.sort$ = new rxjs.BehaviorSubject(undefined);
-        }
-        Object.defineProperty(EntityView.prototype, "count", {
             /**
              * Number of entities
              */
+            this.count$ = new rxjs.BehaviorSubject(0);
+            /**
+             * Whether the store is empty
+             */
+            this.empty$ = new rxjs.BehaviorSubject(true);
+        }
+        Object.defineProperty(EntityView.prototype, "count", {
             get: /**
-             * Number of entities
              * @return {?}
-             */ function () { return this.values$.value.length; },
+             */ function () { return this.count$.value; },
             enumerable: true,
             configurable: true
         });
         Object.defineProperty(EntityView.prototype, "empty", {
-            /**
-             * Whether there are entities in the view
-             */
             get: /**
-             * Whether there are entities in the view
              * @return {?}
-             */ function () { return this.count === 0; },
+             */ function () { return this.empty$.value; },
             enumerable: true,
             configurable: true
         });
@@ -878,13 +878,15 @@
                 /** @type {?} */
                 var source$ = this.joins.length > 0 ? this.liftJoinedSource() : this.liftSource();
                 this.values$$ = rxjs.combineLatest(source$, this.filter$, this.sort$)
-                    .pipe(operators.skip(1), operators.debounceTime(50))
+                    .pipe(operators.skip(1), operators.debounceTime(25))
                     .subscribe(( /**
              * @param {?} bunch
              * @return {?}
              */function (bunch) {
-                    var _a = __read(bunch, 3), values = _a[0], filter = _a[1], sort = _a[2];
-                    _this.values$.next(_this.processValues(values, filter, sort));
+                    var _a = __read(bunch, 3), _values = _a[0], filter = _a[1], sort = _a[2];
+                    /** @type {?} */
+                    var values = _this.processValues(_values, filter, sort);
+                    _this.setValues(values);
                 }));
             };
         /**
@@ -1062,6 +1064,25 @@
                  */function (v1, v2) {
                     return utils.ObjectUtils.naturalCompare(clause.valueAccessor(v1), clause.valueAccessor(v2), clause.direction);
                 }));
+            };
+        /**
+         * @private
+         * @param {?} values
+         * @return {?}
+         */
+        EntityView.prototype.setValues = /**
+         * @private
+         * @param {?} values
+         * @return {?}
+         */
+            function (values) {
+                this.values$.next(values);
+                /** @type {?} */
+                var count = values.length;
+                /** @type {?} */
+                var empty = count === 0;
+                this.count$.next(count);
+                this.empty$.next(empty);
             };
         return EntityView;
     }());
@@ -2393,9 +2414,11 @@
              */
             this.selected$ = new rxjs.BehaviorSubject(undefined);
             /**
-             * Wheter selecting many entities is allowed
+             * The current multi select option text
+             * \@internal
              */
-            this.many = false;
+            this.multiText$ = new rxjs.BehaviorSubject(undefined);
+            this.multiSelectValue = { id: 'IGO_MULTI_SELECT' };
             /**
              * Title accessor
              */
@@ -2404,6 +2427,18 @@
              * Text to display when nothing is selected
              */
             this.emptyText = undefined;
+            /**
+             * Wheter selecting many entities is allowed
+             */
+            this.multi = false;
+            /**
+             * Text to display for the select all option
+             */
+            this.multiAllText = 'All';
+            /**
+             * Text to display for the select none option
+             */
+            this.multiNoneText = 'None';
             /**
              * Event emitted when the selection changes
              */
@@ -2440,14 +2475,7 @@
                      * @param {?} record
                      * @return {?}
                      */function (record) { return record.entity; }));
-                    if (_this.many === true) {
-                        _this.selected$.next(entities);
-                    }
-                    else {
-                        /** @type {?} */
-                        var entity = entities.length > 0 ? entities[0] : undefined;
-                        _this.selected$.next(entity);
-                    }
+                    _this.onSelectFromStore(entities);
                 }));
             };
         /**
@@ -2485,20 +2513,80 @@
          * @return {?}
          */
             function (event) {
+                var _this = this;
                 /** @type {?} */
-                var entities = event.value instanceof Array ? event.value : [event.value];
+                var values = event.value instanceof Array ? event.value : [event.value];
+                /** @type {?} */
+                var multiSelect = values.find(( /**
+                 * @param {?} _value
+                 * @return {?}
+                 */function (_value) { return _value === _this.multiSelectValue; }));
+                /** @type {?} */
+                var entities = values.filter(( /**
+                 * @param {?} _value
+                 * @return {?}
+                 */function (_value) { return _value !== _this.multiSelectValue; }));
+                if (multiSelect !== undefined) {
+                    if (entities.length === this.store.count) {
+                        entities = [];
+                    }
+                    else if (entities.length < this.store.count) {
+                        entities = this.store.all();
+                    }
+                }
                 if (entities.length === 0) {
                     this.store.state.updateAll({ selected: false });
                 }
                 else {
                     this.store.state.updateMany(entities, { selected: true }, true);
                 }
-                this.selectedChange.emit({ selected: true, value: event.value });
+                /** @type {?} */
+                var value = this.multi ? entities : event.value;
+                this.selectedChange.emit({ selected: true, value: value });
+            };
+        /**
+         * @private
+         * @param {?} entities
+         * @return {?}
+         */
+        EntitySelectorComponent.prototype.onSelectFromStore = /**
+         * @private
+         * @param {?} entities
+         * @return {?}
+         */
+            function (entities) {
+                if (this.multi === true) {
+                    this.selected$.next(entities);
+                }
+                else {
+                    /** @type {?} */
+                    var entity = entities.length > 0 ? entities[0] : undefined;
+                    this.selected$.next(entity);
+                }
+                this.updateMultiToggleWithEntities(entities);
+            };
+        /**
+         * @private
+         * @param {?} entities
+         * @return {?}
+         */
+        EntitySelectorComponent.prototype.updateMultiToggleWithEntities = /**
+         * @private
+         * @param {?} entities
+         * @return {?}
+         */
+            function (entities) {
+                if (entities.length === this.store.count && this.multiText$.value !== this.multiNoneText) {
+                    this.multiText$.next(this.multiNoneText);
+                }
+                else if (entities.length < this.store.count && this.multiText$.value !== this.multiAllText) {
+                    this.multiText$.next(this.multiAllText);
+                }
             };
         EntitySelectorComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'igo-entity-selector',
-                        template: "<mat-form-field class=\"igo-entity-selector\">\r\n  <mat-select\r\n    [value]=\"selected$ | async\"\r\n    [multiple]=\"many\"\r\n    [placeholder]=\"placeholder\"\r\n    (selectionChange)=\"onSelectionChange($event)\">\r\n    <mat-option *ngIf=\"emptyText !== undefined\">{{emptyText}}</mat-option>\r\n    <ng-template ngFor let-entity [ngForOf]=\"store.view.all$() | async\">\r\n      <mat-option [value]=\"entity\">\r\n        {{titleAccessor(entity)}}\r\n      </mat-option>\r\n    </ng-template>\r\n  </mat-select>\r\n</mat-form-field>\r\n",
+                        template: "<mat-form-field class=\"igo-entity-selector\">\r\n  <mat-select\r\n    [value]=\"selected$ | async\"\r\n    [multiple]=\"multi\"\r\n    [placeholder]=\"placeholder\"\r\n    (selectionChange)=\"onSelectionChange($event)\">\r\n    <mat-option *ngIf=\"emptyText !== undefined\">{{emptyText}}</mat-option>\r\n    <mat-option *ngIf=\"multi === true\" [value]=\"multiSelectValue\">{{multiText$ | async}}</mat-option>\r\n    <ng-template ngFor let-entity [ngForOf]=\"store.view.all$() | async\">\r\n      <mat-option [value]=\"entity\">\r\n        {{titleAccessor(entity)}}\r\n      </mat-option>\r\n    </ng-template>\r\n  </mat-select>\r\n</mat-form-field>\r\n",
                         changeDetection: i0.ChangeDetectionStrategy.OnPush,
                         styles: ["mat-form-field{width:100%}"]
                     }] }
@@ -2511,9 +2599,11 @@
         };
         EntitySelectorComponent.propDecorators = {
             store: [{ type: i0.Input }],
-            many: [{ type: i0.Input }],
             titleAccessor: [{ type: i0.Input }],
             emptyText: [{ type: i0.Input }],
+            multi: [{ type: i0.Input }],
+            multiAllText: [{ type: i0.Input }],
+            multiNoneText: [{ type: i0.Input }],
             placeholder: [{ type: i0.Input }],
             selectedChange: [{ type: i0.Output }]
         };
@@ -3160,7 +3250,7 @@
         EntityTableComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'igo-entity-table',
-                        template: "<div class=\"table-container\">\r\n  <table\r\n    mat-table\r\n    matSort\r\n    [ngClass]=\"getTableClass()\"\r\n    [dataSource]=\"dataSource\"\r\n    (matSortChange)=\"onSort($event)\">\r\n\r\n    <ng-container matColumnDef=\"selectionCheckbox\" class=\"mat-cell-checkbox\">\r\n      <th mat-header-cell *matHeaderCellDef>\r\n        <ng-container *ngIf=\"selectMany\">\r\n          <ng-container *ngIf=\"selectionState$ | async as selectionState\">\r\n            <mat-checkbox (change)=\"onToggleRows($event.checked)\"\r\n                          [checked]=\"selectionState === entityTableSelectionState.All\"\r\n                          [indeterminate]=\"selectionState === entityTableSelectionState.Some\">\r\n            </mat-checkbox>\r\n          </ng-container>\r\n        </ng-container>\r\n      </th>\r\n      <td mat-cell *matCellDef=\"let entity\">\r\n        <mat-checkbox (click)=\"$event.stopPropagation()\"\r\n                      (change)=\"onToggleRow($event.checked, entity)\"\r\n                      [checked]=\"rowIsSelected(entity)\">\r\n        </mat-checkbox>\r\n      </td>\r\n    </ng-container>\r\n\r\n    <ng-container [matColumnDef]=\"column.name\" *ngFor=\"let column of template.columns\">\r\n      <ng-container *ngIf=\"columnIsSortable(column)\">\r\n        <th mat-header-cell *matHeaderCellDef mat-sort-header>\r\n          {{column.title}}\r\n        </th>\r\n      </ng-container>\r\n\r\n      <ng-container *ngIf=\"!columnIsSortable(column)\">\r\n        <th mat-header-cell *matHeaderCellDef>\r\n          {{column.title}}\r\n        </th>\r\n      </ng-container>\r\n\r\n      <ng-container *ngIf=\"getColumnRenderer(column) as columnRenderer\">\r\n        <ng-container *ngIf=\"columnRenderer === entityTableColumnRenderer.Default\">\r\n            <td mat-cell *matCellDef=\"let entity\" class=\"mat-cell-text\"\r\n              [ngClass]=\"getCellClass(entity, column)\">\r\n              {{getValue(entity, column)}}\r\n            </td>\r\n          </ng-container>\r\n          <ng-container *ngIf=\"columnRenderer === entityTableColumnRenderer.HTML\">\r\n            <td mat-cell *matCellDef=\"let entity\" class=\"mat-cell-text\"\r\n              [ngClass]=\"getCellClass(entity, column)\"\r\n              [innerHTML]=\"getValue(entity, column)\">\r\n            </td>\r\n          </ng-container>\r\n          <ng-container *ngIf=\"columnRenderer === entityTableColumnRenderer.UnsanitizedHTML\">\r\n              <td mat-cell *matCellDef=\"let entity\" class=\"mat-cell-text\"\r\n                [ngClass]=\"getCellClass(entity, column)\"\r\n                [innerHTML]=\"getValue(entity, column) | sanitizeHtml\">\r\n              </td>\r\n            </ng-container>\r\n          <ng-container *ngIf=\"columnRenderer === entityTableColumnRenderer.Icon\">\r\n            <td mat-cell *matCellDef=\"let entity\" class=\"mat-cell-text\"\r\n              [ngClass]=\"getCellClass(entity, column)\">\r\n              <mat-icon svgIcon=\"{{getValue(entity, column)}}\"></mat-icon>\r\n            </td>\r\n          </ng-container>\r\n          <ng-container *ngIf=\"columnRenderer === entityTableColumnRenderer.ButtonGroup\">\r\n            <td mat-cell *matCellDef=\"let entity\" class=\"mat-cell-text\"\r\n              [ngClass]=\"getCellClass(entity, column)\">\r\n              <button *ngFor=\"let button of getValue(entity, column)\"\r\n                mat-mini-fab\r\n                igoStopPropagation\r\n                [color]=\"button.color\"\r\n                (click)=\"onButtonClick(button.click, entity)\">\r\n                <mat-icon svgIcon=\"{{button.icon}}\"></mat-icon>\r\n              </button>\r\n            </td>\r\n          </ng-container>\r\n      </ng-container>\r\n    </ng-container>\r\n\r\n    <tr\r\n      mat-header-row\r\n      *matHeaderRowDef=\"headers; sticky: fixedHeader;\"\r\n      [ngClass]=\"getHeaderClass()\">\r\n    </tr>\r\n    <tr\r\n      mat-row\r\n      igoEntityTableRow\r\n      *matRowDef=\"let entity; columns: headers;\"\r\n      [scrollBehavior]=\"scrollBehavior\"\r\n      [ngClass]=\"getRowClass(entity)\"\r\n      [selection]=\"selection\"\r\n      [selected]=\"rowIsSelected(entity)\"\r\n      (select)=\"onRowSelect(entity)\"\r\n      (click)=\"onRowClick(entity)\">\r\n    </tr>\r\n\r\n  </table>\r\n</div>\r\n",
+                        template: "<div class=\"table-container\">\r\n  <table\r\n    mat-table\r\n    matSort\r\n    [ngClass]=\"getTableClass()\"\r\n    [dataSource]=\"dataSource\"\r\n    (matSortChange)=\"onSort($event)\">\r\n\r\n    <ng-container matColumnDef=\"selectionCheckbox\" class=\"mat-cell-checkbox\">\r\n      <th mat-header-cell *matHeaderCellDef>\r\n        <ng-container *ngIf=\"selectMany\">\r\n          <ng-container *ngIf=\"selectionState$ | async as selectionState\">\r\n            <mat-checkbox (change)=\"onToggleRows($event.checked)\"\r\n                          [checked]=\"selectionState === entityTableSelectionState.All\"\r\n                          [indeterminate]=\"selectionState === entityTableSelectionState.Some\">\r\n            </mat-checkbox>\r\n          </ng-container>\r\n        </ng-container>\r\n      </th>\r\n      <td mat-cell *matCellDef=\"let entity\">\r\n        <mat-checkbox (click)=\"$event.stopPropagation()\"\r\n                      (change)=\"onToggleRow($event.checked, entity)\"\r\n                      [checked]=\"rowIsSelected(entity)\">\r\n        </mat-checkbox>\r\n      </td>\r\n    </ng-container>\r\n\r\n    <ng-container [matColumnDef]=\"column.name\" *ngFor=\"let column of template.columns\">\r\n      <ng-container *ngIf=\"columnIsSortable(column)\">\r\n        <th mat-header-cell *matHeaderCellDef mat-sort-header>\r\n          {{column.title}}\r\n        </th>\r\n      </ng-container>\r\n\r\n      <ng-container *ngIf=\"!columnIsSortable(column)\">\r\n        <th mat-header-cell *matHeaderCellDef>\r\n          {{column.title}}\r\n        </th>\r\n      </ng-container>\r\n\r\n      <ng-container *ngIf=\"getColumnRenderer(column) as columnRenderer\">\r\n        <ng-container *ngIf=\"columnRenderer === entityTableColumnRenderer.Default\">\r\n            <td mat-cell *matCellDef=\"let entity\" class=\"mat-cell-text\"\r\n              [ngClass]=\"getCellClass(entity, column)\">\r\n              {{getValue(entity, column)}}\r\n            </td>\r\n          </ng-container>\r\n          <ng-container *ngIf=\"columnRenderer === entityTableColumnRenderer.HTML\">\r\n            <td mat-cell *matCellDef=\"let entity\" class=\"mat-cell-text\"\r\n              [ngClass]=\"getCellClass(entity, column)\"\r\n              [innerHTML]=\"getValue(entity, column)\">\r\n            </td>\r\n          </ng-container>\r\n          <ng-container *ngIf=\"columnRenderer === entityTableColumnRenderer.UnsanitizedHTML\">\r\n              <td mat-cell *matCellDef=\"let entity\" class=\"mat-cell-text\"\r\n                [ngClass]=\"getCellClass(entity, column)\"\r\n                [innerHTML]=\"getValue(entity, column) | sanitizeHtml\">\r\n              </td>\r\n            </ng-container>\r\n          <ng-container *ngIf=\"columnRenderer === entityTableColumnRenderer.Icon\">\r\n            <td mat-cell *matCellDef=\"let entity\" class=\"mat-cell-text\"\r\n              [ngClass]=\"getCellClass(entity, column)\">\r\n              <mat-icon svgIcon=\"{{getValue(entity, column)}}\"></mat-icon>\r\n            </td>\r\n          </ng-container>\r\n          <ng-container *ngIf=\"columnRenderer === entityTableColumnRenderer.ButtonGroup\">\r\n            <td mat-cell *matCellDef=\"let entity\" class=\"mat-cell-text\"\r\n              [ngClass]=\"getCellClass(entity, column)\">\r\n              <span *ngFor=\"let button of getValue(entity, column)\">\r\n                <button *ngIf=\"button.style === 'mat-icon-button'\"\r\n                  igoStopPropagation\r\n                  mat-icon-button\r\n                  [color]=\"button.color\"\r\n                  (click)=\"onButtonClick(button.click, entity)\">\r\n                  <mat-icon svgIcon=\"{{button.icon}}\"></mat-icon>\r\n                </button>\r\n                <button *ngIf=\"button.style !== 'mat-icon-button'\"\r\n                  igoStopPropagation\r\n                  mat-mini-fab\r\n                  [color]=\"button.color\"\r\n                  (click)=\"onButtonClick(button.click, entity)\">\r\n                  <mat-icon svgIcon=\"{{button.icon}}\"></mat-icon>\r\n                </button>\r\n              </span>\r\n            </td>\r\n          </ng-container>\r\n      </ng-container>\r\n    </ng-container>\r\n\r\n    <tr\r\n      mat-header-row\r\n      *matHeaderRowDef=\"headers; sticky: fixedHeader;\"\r\n      [ngClass]=\"getHeaderClass()\">\r\n    </tr>\r\n    <tr\r\n      mat-row\r\n      igoEntityTableRow\r\n      *matRowDef=\"let entity; columns: headers;\"\r\n      [scrollBehavior]=\"scrollBehavior\"\r\n      [ngClass]=\"getRowClass(entity)\"\r\n      [selection]=\"selection\"\r\n      [selected]=\"rowIsSelected(entity)\"\r\n      (select)=\"onRowSelect(entity)\"\r\n      (click)=\"onRowClick(entity)\">\r\n    </tr>\r\n\r\n  </table>\r\n</div>\r\n",
                         changeDetection: i0.ChangeDetectionStrategy.OnPush,
                         styles: [":host{width:100%;height:100%;display:block}:host.table-compact ::ng-deep .mat-checkbox .mat-checkbox-ripple,:host.table-compact tr.mat-header-row{height:36px}:host.table-compact ::ng-deep .mat-checkbox .mat-checkbox-ripple,:host.table-compact tr.mat-row{height:28px}.table-container{display:flex;flex-direction:column;height:100%;overflow:auto;flex:1 1 auto}.mat-cell-text{overflow:hidden;word-wrap:break-word}entity-table table.igo-entity-table-with-selection tr:hover{-o-box-shadow:2px 0 2px 0 #ddd;box-shadow:2px 0 2px 0 #ddd;cursor:pointer}table button{margin:7px}"]
                     }] }
@@ -5687,6 +5777,15 @@
         function FormFieldComponent$$1(formFieldService) {
             this.formFieldService = formFieldService;
         }
+        Object.defineProperty(FormFieldComponent$$1.prototype, "fieldOptions", {
+            get: /**
+             * @return {?}
+             */ function () {
+                return this.field.options || {};
+            },
+            enumerable: true,
+            configurable: true
+        });
         /**
          * @return {?}
          */
@@ -5704,10 +5803,10 @@
          */
             function () {
                 /** @type {?} */
-                var errors = this.field.options.errors || {};
+                var errors = this.fieldOptions.errors || {};
                 return Object.assign({
                     placeholder: this.field.title,
-                    disableSwitch: this.field.options.disableSwitch || false
+                    disableSwitch: this.fieldOptions.disableSwitch || false
                 }, Object.assign({}, this.field.inputs || {}), {
                     formControl: this.field.control,
                     errors: Object.assign({}, getDefaultErrorMessages(), errors)
@@ -7217,9 +7316,6 @@
              * @return {?}
              */ function (value) {
                 this._focusedItem = value;
-                if (value !== undefined) {
-                    this.scrollToItem(value);
-                }
             },
             enumerable: true,
             configurable: true
@@ -7413,6 +7509,17 @@
                 this.navigationEnabled = false;
             };
         /**
+         * @param {?} item
+         * @return {?}
+         */
+        ListComponent.prototype.scrollToItem = /**
+         * @param {?} item
+         * @return {?}
+         */
+            function (item) {
+                this.el.nativeElement.scrollTop = item.getOffsetTop();
+            };
+        /**
          * @private
          * @return {?}
          */
@@ -7604,19 +7711,6 @@
                     default:
                         break;
                 }
-            };
-        /**
-         * @private
-         * @param {?} item
-         * @return {?}
-         */
-        ListComponent.prototype.scrollToItem = /**
-         * @private
-         * @param {?} item
-         * @return {?}
-         */
-            function (item) {
-                this.el.nativeElement.scrollTop = item.getOffsetTop();
             };
         ListComponent.decorators = [
             { type: i0.Component, args: [{
@@ -9316,7 +9410,7 @@
         WorkspaceSelectorComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'igo-workspace-selector',
-                        template: "<igo-entity-selector\r\n  [store]=\"store\"\r\n  [many]=\"false\"\r\n  [titleAccessor]=\"getWorkspaceTitle\"\r\n  (selectedChange)=\"onSelectedChange($event)\">\r\n</igo-entity-selector>\r\n",
+                        template: "<igo-entity-selector\r\n  [store]=\"store\"\r\n  [multi]=\"false\"\r\n  [titleAccessor]=\"getWorkspaceTitle\"\r\n  (selectedChange)=\"onSelectedChange($event)\">\r\n</igo-entity-selector>\r\n",
                         changeDetection: i0.ChangeDetectionStrategy.OnPush,
                         styles: ["igo-entity-selector ::ng-deep mat-form-field .mat-form-field-infix{padding:0}igo-entity-selector ::ng-deep mat-form-field .mat-form-field-wrapper{padding-bottom:1.75em}"]
                     }] }
@@ -10106,10 +10200,6 @@
         function Workspace(options) {
             this.options = options;
             /**
-             * Observable of the selected entity
-             */
-            this.entity$ = new rxjs.BehaviorSubject(undefined);
-            /**
              * Observable of the selected widget
              */
             this.widget$ = new rxjs.BehaviorSubject(undefined);
@@ -10128,7 +10218,7 @@
             /**
              * State change that trigger an update of the actions availability
              */
-            this.changes$ = new rxjs.Subject();
+            this.change = new rxjs.Subject();
         }
         Object.defineProperty(Workspace.prototype, "id", {
             /**
@@ -10182,17 +10272,6 @@
              * Actions store (some actions activate a widget)
              * @return {?}
              */ function () { return this.options.actionStore; },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(Workspace.prototype, "entity", {
-            /**
-             * Selected entity
-             */
-            get: /**
-             * Selected entity
-             * @return {?}
-             */ function () { return this.entity$.value; },
             enumerable: true,
             configurable: true
         });
@@ -10254,29 +10333,19 @@
                 }
                 this.active = true;
                 if (this.entityStore !== undefined) {
-                    this.entities$$ = this.entityStore.stateView
-                        .manyBy$(( /**
-                 * @param {?} record
-                 * @return {?}
-                 */function (record) { return record.state.selected === true; }))
+                    this.entities$$ = this.entityStore.stateView.all$()
                         .subscribe(( /**
-                 * @param {?} records
                  * @return {?}
-                 */function (records) {
-                        // If more than one entity is selected, consider that no entity at all is selected.
-                        /** @type {?} */
-                        var entity = (records.length === 0 || records.length > 1) ? undefined : records[0].entity;
-                        _this.onSelectEntity(entity);
-                    }));
+                 */function () { return _this.onStateChange(); }));
                 }
                 if (this.actionStore !== undefined) {
-                    this.changes$$ = this.changes$
-                        .pipe(operators.debounceTime(50))
+                    this.change$ = this.change
+                        .pipe(operators.debounceTime(35))
                         .subscribe(( /**
                  * @return {?}
                  */function () { return _this.actionStore.updateActionsAvailability(); }));
                 }
-                this.changes$.next();
+                this.change.next();
             };
         /**
          * Deactivate the workspace. Unsubcribe to the selected entity.
@@ -10295,8 +10364,8 @@
                 if (this.entities$$ !== undefined) {
                     this.entities$$.unsubscribe();
                 }
-                if (this.changes$$ !== undefined) {
-                    this.changes$$.unsubscribe();
+                if (this.change$ !== undefined) {
+                    this.change$.unsubscribe();
                 }
             };
         /**
@@ -10334,6 +10403,7 @@
                 this.widget$.next(widget);
                 this.widgetInputs$.next(inputs);
                 this.widgetSubscribers$.next(subscribers);
+                this.change.next();
             };
         /**
          * Deactivate a widget.
@@ -10348,33 +10418,23 @@
          */
             function () {
                 this.widget$.next(undefined);
-                this.changes$.next();
+                this.change.next();
             };
         /**
-         * When an entity is selected, keep a reference to that
-         * entity and update the actions availability.
-         * @param entity Entity
+         * When the state changes, update the actions availability.
          */
         /**
-         * When an entity is selected, keep a reference to that
-         * entity and update the actions availability.
+         * When the state changes, update the actions availability.
          * @private
-         * @param {?} entity Entity
          * @return {?}
          */
-        Workspace.prototype.onSelectEntity = /**
-         * When an entity is selected, keep a reference to that
-         * entity and update the actions availability.
+        Workspace.prototype.onStateChange = /**
+         * When the state changes, update the actions availability.
          * @private
-         * @param {?} entity Entity
          * @return {?}
          */
-            function (entity) {
-                if (entity === this.entity$.value) {
-                    return;
-                }
-                this.entity$.next(entity);
-                this.changes$.next();
+            function () {
+                this.change.next();
             };
         return Workspace;
     }());

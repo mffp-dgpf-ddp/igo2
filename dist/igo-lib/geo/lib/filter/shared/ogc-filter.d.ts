@@ -1,4 +1,4 @@
-import { IgoOgcFilterObject, OgcInterfaceFilterOptions } from './ogc-filter.interface';
+import { IgoOgcFilterObject, OgcInterfaceFilterOptions, OgcFilterableDataSourceOptions, OgcFiltersOptions } from './ogc-filter.interface';
 export declare class OgcFilterWriter {
     private filterSequence;
     operators: {
@@ -55,14 +55,15 @@ export declare class OgcFilterWriter {
             fieldRestrict: any[];
         };
     };
-    buildFilter(filters: IgoOgcFilterObject, extent?: [number, number, number, number], proj?: any, fieldNameGeometry?: string): string;
+    defineOgcFiltersDefaultOptions(ogcFiltersOptions: OgcFiltersOptions, fieldNameGeometry: string, srcType?: string): OgcFiltersOptions;
+    buildFilter(filters?: IgoOgcFilterObject, extent?: [number, number, number, number], proj?: any, fieldNameGeometry?: string): string;
     private bundleFilter;
     private createFilter;
     defineInterfaceFilterSequence(filterObject: any, geometryName: any, logical?: string, level?: number): OgcInterfaceFilterOptions[];
-    addInterfaceFilter(igoOgcFilterObject?: {
-        operator: string;
-    }, geometryName?: any, level?: number, parentLogical?: string): OgcInterfaceFilterOptions;
+    addInterfaceFilter(igoOgcFilterObject?: any, geometryName?: any, level?: number, parentLogical?: string): OgcInterfaceFilterOptions;
     checkIgoFiltersProperties(filterObject: any, fieldNameGeometry: any, active?: boolean): any;
     private addFilterProperties;
     rebuiltIgoOgcFilterObjectFromSequence(sequence: OgcInterfaceFilterOptions[]): IgoOgcFilterObject;
+    handleOgcFiltersAppliedValue(options: OgcFilterableDataSourceOptions, fieldNameGeometry: string): string;
+    formatProcessedOgcFilter(processedFilter: string, layersOrTypenames: string): string;
 }

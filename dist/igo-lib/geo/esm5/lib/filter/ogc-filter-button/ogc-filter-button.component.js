@@ -7,74 +7,18 @@ import { Layer } from '../../layer/shared/layers/layer';
 import { IgoMap } from '../../map';
 var OgcFilterButtonComponent = /** @class */ (function () {
     function OgcFilterButtonComponent() {
-        this._color = 'primary';
+        this.color = 'primary';
         this.ogcFilterCollapse = false;
-        this._ogcFiltersInLayers = false;
     }
-    Object.defineProperty(OgcFilterButtonComponent.prototype, "layer", {
+    Object.defineProperty(OgcFilterButtonComponent.prototype, "options", {
         get: /**
          * @return {?}
          */
         function () {
-            return this._layer;
-        },
-        set: /**
-         * @param {?} value
-         * @return {?}
-         */
-        function (value) {
-            this._layer = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(OgcFilterButtonComponent.prototype, "map", {
-        get: /**
-         * @return {?}
-         */
-        function () {
-            return this._map;
-        },
-        set: /**
-         * @param {?} value
-         * @return {?}
-         */
-        function (value) {
-            this._map = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(OgcFilterButtonComponent.prototype, "color", {
-        get: /**
-         * @return {?}
-         */
-        function () {
-            return this._color;
-        },
-        set: /**
-         * @param {?} value
-         * @return {?}
-         */
-        function (value) {
-            this._color = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(OgcFilterButtonComponent.prototype, "ogcFiltersInLayers", {
-        get: /**
-         * @return {?}
-         */
-        function () {
-            return this._ogcFiltersInLayers;
-        },
-        set: /**
-         * @param {?} value
-         * @return {?}
-         */
-        function (value) {
-            this._ogcFiltersInLayers = value;
+            if (!this.layer) {
+                return;
+            }
+            return this.layer.dataSource.options;
         },
         enumerable: true,
         configurable: true
@@ -90,23 +34,10 @@ var OgcFilterButtonComponent = /** @class */ (function () {
             this.ogcFilterCollapse = !this.ogcFilterCollapse;
         }
     };
-    Object.defineProperty(OgcFilterButtonComponent.prototype, "options", {
-        get: /**
-         * @return {?}
-         */
-        function () {
-            if (!this.layer) {
-                return;
-            }
-            return this.layer.dataSource.options;
-        },
-        enumerable: true,
-        configurable: true
-    });
     OgcFilterButtonComponent.decorators = [
         { type: Component, args: [{
                     selector: 'igo-ogc-filter-button',
-                    template: "<button *ngIf=\"ogcFiltersInLayers && options.ogcFilters && (options.ogcFilters.enabled\r\n&& options.ogcFilters.editable)\"\r\n  mat-icon-button\r\n  collapsibleButton\r\n  tooltip-position=\"below\"\r\n  matTooltipShowDelay=\"500\"\r\n  [matTooltip]=\"'igo.geo.filter.filterBy' | translate\"\r\n  [color]=\"color\"\r\n  (click)=\"toggleOgcFilter()\">\r\n  <mat-icon\r\n    [ngClass]='{disabled: !layer.isInResolutionsRange}'>\r\n    filter_list\r\n  </mat-icon>\r\n</button>\r\n\r\n<div #ogcFilter class=\"igo-layer-actions-container\"\r\n*ngIf=\"options.ogcFilters && (options.ogcFilters.enabled\r\n&& options.ogcFilters.editable)\">\r\n  <igo-ogc-filterable-item\r\n    *ngIf=\"ogcFilterCollapse && options.ogcFilters.enabled\"\r\n    igoListItem\r\n    [ogcFiltersHeaderShown]=\"false\"\r\n    [map]=\"layer.map\"\r\n    [layer]=\"layer\">\r\n  </igo-ogc-filterable-item>\r\n</div>\r\n",
+                    template: "<button *ngIf=\"ogcFiltersInLayers && options.ogcFilters && (options.ogcFilters.enabled\r\n&& options.ogcFilters.editable)\"\r\n  mat-icon-button\r\n  collapsibleButton\r\n  tooltip-position=\"below\"\r\n  matTooltipShowDelay=\"500\"\r\n  [matTooltip]=\"'igo.geo.filter.filterBy' | translate\"\r\n  [color]=\"color\"\r\n  (click)=\"toggleOgcFilter()\">\r\n  <mat-icon\r\n    [ngClass]='{disabled: !layer.isInResolutionsRange}'svgIcon=\"filter\"></mat-icon>\r\n</button>\r\n\r\n<div #ogcFilter class=\"igo-layer-actions-container\"\r\n*ngIf=\"options.ogcFilters && (options.ogcFilters.enabled\r\n&& options.ogcFilters.editable)\">\r\n  <igo-ogc-filterable-item\r\n    *ngIf=\"ogcFilterCollapse && options.ogcFilters.enabled\"\r\n    igoListItem\r\n    [ogcFiltersHeaderShown]=\"false\"\r\n    [map]=\"layer.map\"\r\n    [layer]=\"layer\">\r\n  </igo-ogc-filterable-item>\r\n</div>\r\n",
                     changeDetection: ChangeDetectionStrategy.OnPush,
                     styles: [""]
                 }] }
@@ -123,27 +54,15 @@ var OgcFilterButtonComponent = /** @class */ (function () {
 }());
 export { OgcFilterButtonComponent };
 if (false) {
-    /**
-     * @type {?}
-     * @private
-     */
-    OgcFilterButtonComponent.prototype._layer;
-    /**
-     * @type {?}
-     * @private
-     */
-    OgcFilterButtonComponent.prototype._map;
-    /**
-     * @type {?}
-     * @private
-     */
-    OgcFilterButtonComponent.prototype._color;
+    /** @type {?} */
+    OgcFilterButtonComponent.prototype.layer;
+    /** @type {?} */
+    OgcFilterButtonComponent.prototype.map;
+    /** @type {?} */
+    OgcFilterButtonComponent.prototype.color;
+    /** @type {?} */
+    OgcFilterButtonComponent.prototype.ogcFiltersInLayers;
     /** @type {?} */
     OgcFilterButtonComponent.prototype.ogcFilterCollapse;
-    /**
-     * @type {?}
-     * @private
-     */
-    OgcFilterButtonComponent.prototype._ogcFiltersInLayers;
 }
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoib2djLWZpbHRlci1idXR0b24uY29tcG9uZW50LmpzIiwic291cmNlUm9vdCI6Im5nOi8vQGlnbzIvZ2VvLyIsInNvdXJjZXMiOlsibGliL2ZpbHRlci9vZ2MtZmlsdGVyLWJ1dHRvbi9vZ2MtZmlsdGVyLWJ1dHRvbi5jb21wb25lbnQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLE9BQU8sRUFBRSxTQUFTLEVBQUUsS0FBSyxFQUFFLHVCQUF1QixFQUFFLE1BQU0sZUFBZSxDQUFDO0FBRTFFLE9BQU8sRUFBRSxLQUFLLEVBQUUsTUFBTSxpQ0FBaUMsQ0FBQztBQUN4RCxPQUFPLEVBQUUsTUFBTSxFQUFFLE1BQU0sV0FBVyxDQUFDO0FBR25DO0lBNkNFO1FBYlEsV0FBTSxHQUFHLFNBQVMsQ0FBQztRQUVwQixzQkFBaUIsR0FBRyxLQUFLLENBQUM7UUFTekIsd0JBQW1CLEdBQUcsS0FBSyxDQUFDO0lBRXJCLENBQUM7SUF0Q2hCLHNCQUNJLDJDQUFLOzs7O1FBRFQ7WUFFRSxPQUFPLElBQUksQ0FBQyxNQUFNLENBQUM7UUFDckIsQ0FBQzs7Ozs7UUFDRCxVQUFVLEtBQVk7WUFDcEIsSUFBSSxDQUFDLE1BQU0sR0FBRyxLQUFLLENBQUM7UUFDdEIsQ0FBQzs7O09BSEE7SUFNRCxzQkFDSSx5Q0FBRzs7OztRQURQO1lBRUUsT0FBTyxJQUFJLENBQUMsSUFBSSxDQUFDO1FBQ25CLENBQUM7Ozs7O1FBQ0QsVUFBUSxLQUFhO1lBQ25CLElBQUksQ0FBQyxJQUFJLEdBQUcsS0FBSyxDQUFDO1FBQ3BCLENBQUM7OztPQUhBO0lBTUQsc0JBQ0ksMkNBQUs7Ozs7UUFEVDtZQUVFLE9BQU8sSUFBSSxDQUFDLE1BQU0sQ0FBQztRQUNyQixDQUFDOzs7OztRQUNELFVBQVUsS0FBYTtZQUNyQixJQUFJLENBQUMsTUFBTSxHQUFHLEtBQUssQ0FBQztRQUN0QixDQUFDOzs7T0FIQTtJQVFELHNCQUNJLHdEQUFrQjs7OztRQUR0QjtZQUVFLE9BQU8sSUFBSSxDQUFDLG1CQUFtQixDQUFDO1FBQ2xDLENBQUM7Ozs7O1FBQ0QsVUFBdUIsS0FBYztZQUNuQyxJQUFJLENBQUMsbUJBQW1CLEdBQUcsS0FBSyxDQUFDO1FBQ25DLENBQUM7OztPQUhBOzs7O0lBUUQsa0RBQWU7OztJQUFmO1FBQ0UsSUFBSSxJQUFJLENBQUMsS0FBSyxDQUFDLG9CQUFvQixFQUFFO1lBQ25DLElBQUksQ0FBQyxpQkFBaUIsR0FBRyxDQUFDLElBQUksQ0FBQyxpQkFBaUIsQ0FBQztTQUNsRDtJQUNILENBQUM7SUFFRCxzQkFBSSw2Q0FBTzs7OztRQUFYO1lBQ0UsSUFBSSxDQUFDLElBQUksQ0FBQyxLQUFLLEVBQUU7Z0JBQ2YsT0FBTzthQUNSO1lBQ0QsT0FBTyxJQUFJLENBQUMsS0FBSyxDQUFDLFVBQVUsQ0FBQyxPQUFPLENBQUM7UUFDdkMsQ0FBQzs7O09BQUE7O2dCQTFERixTQUFTLFNBQUM7b0JBQ1QsUUFBUSxFQUFFLHVCQUF1QjtvQkFDakMsczRCQUFpRDtvQkFFakQsZUFBZSxFQUFFLHVCQUF1QixDQUFDLE1BQU07O2lCQUNoRDs7Ozs7d0JBRUUsS0FBSztzQkFTTCxLQUFLO3dCQVNMLEtBQUs7cUNBV0wsS0FBSzs7SUF1QlIsK0JBQUM7Q0FBQSxBQTNERCxJQTJEQztTQXJEWSx3QkFBd0I7Ozs7OztJQVFuQywwQ0FBc0I7Ozs7O0lBU3RCLHdDQUFxQjs7Ozs7SUFTckIsMENBQTJCOztJQUUzQixxREFBaUM7Ozs7O0lBU2pDLHVEQUFvQyIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IENvbXBvbmVudCwgSW5wdXQsIENoYW5nZURldGVjdGlvblN0cmF0ZWd5IH0gZnJvbSAnQGFuZ3VsYXIvY29yZSc7XHJcblxyXG5pbXBvcnQgeyBMYXllciB9IGZyb20gJy4uLy4uL2xheWVyL3NoYXJlZC9sYXllcnMvbGF5ZXInO1xyXG5pbXBvcnQgeyBJZ29NYXAgfSBmcm9tICcuLi8uLi9tYXAnO1xyXG5pbXBvcnQgeyBPZ2NGaWx0ZXJhYmxlRGF0YVNvdXJjZU9wdGlvbnMgfSBmcm9tICcuLi9zaGFyZWQvb2djLWZpbHRlci5pbnRlcmZhY2UnO1xyXG5cclxuQENvbXBvbmVudCh7XHJcbiAgc2VsZWN0b3I6ICdpZ28tb2djLWZpbHRlci1idXR0b24nLFxyXG4gIHRlbXBsYXRlVXJsOiAnLi9vZ2MtZmlsdGVyLWJ1dHRvbi5jb21wb25lbnQuaHRtbCcsXHJcbiAgc3R5bGVVcmxzOiBbJy4vb2djLWZpbHRlci1idXR0b24uY29tcG9uZW50LnNjc3MnXSxcclxuICBjaGFuZ2VEZXRlY3Rpb246IENoYW5nZURldGVjdGlvblN0cmF0ZWd5Lk9uUHVzaFxyXG59KVxyXG5leHBvcnQgY2xhc3MgT2djRmlsdGVyQnV0dG9uQ29tcG9uZW50IHtcclxuICBASW5wdXQoKVxyXG4gIGdldCBsYXllcigpOiBMYXllciB7XHJcbiAgICByZXR1cm4gdGhpcy5fbGF5ZXI7XHJcbiAgfVxyXG4gIHNldCBsYXllcih2YWx1ZTogTGF5ZXIpIHtcclxuICAgIHRoaXMuX2xheWVyID0gdmFsdWU7XHJcbiAgfVxyXG4gIHByaXZhdGUgX2xheWVyOiBMYXllcjtcclxuXHJcbiAgQElucHV0KClcclxuICBnZXQgbWFwKCk6IElnb01hcCB7XHJcbiAgICByZXR1cm4gdGhpcy5fbWFwO1xyXG4gIH1cclxuICBzZXQgbWFwKHZhbHVlOiBJZ29NYXApIHtcclxuICAgIHRoaXMuX21hcCA9IHZhbHVlO1xyXG4gIH1cclxuICBwcml2YXRlIF9tYXA6IElnb01hcDtcclxuXHJcbiAgQElucHV0KClcclxuICBnZXQgY29sb3IoKSB7XHJcbiAgICByZXR1cm4gdGhpcy5fY29sb3I7XHJcbiAgfVxyXG4gIHNldCBjb2xvcih2YWx1ZTogc3RyaW5nKSB7XHJcbiAgICB0aGlzLl9jb2xvciA9IHZhbHVlO1xyXG4gIH1cclxuICBwcml2YXRlIF9jb2xvciA9ICdwcmltYXJ5JztcclxuXHJcbiAgcHVibGljIG9nY0ZpbHRlckNvbGxhcHNlID0gZmFsc2U7XHJcblxyXG4gIEBJbnB1dCgpXHJcbiAgZ2V0IG9nY0ZpbHRlcnNJbkxheWVycygpOiBib29sZWFuIHtcclxuICAgIHJldHVybiB0aGlzLl9vZ2NGaWx0ZXJzSW5MYXllcnM7XHJcbiAgfVxyXG4gIHNldCBvZ2NGaWx0ZXJzSW5MYXllcnModmFsdWU6IGJvb2xlYW4pIHtcclxuICAgIHRoaXMuX29nY0ZpbHRlcnNJbkxheWVycyA9IHZhbHVlO1xyXG4gIH1cclxuICBwcml2YXRlIF9vZ2NGaWx0ZXJzSW5MYXllcnMgPSBmYWxzZTtcclxuXHJcbiAgY29uc3RydWN0b3IoKSB7fVxyXG5cclxuICB0b2dnbGVPZ2NGaWx0ZXIoKSB7XHJcbiAgICBpZiAodGhpcy5sYXllci5pc0luUmVzb2x1dGlvbnNSYW5nZSkge1xyXG4gICAgICB0aGlzLm9nY0ZpbHRlckNvbGxhcHNlID0gIXRoaXMub2djRmlsdGVyQ29sbGFwc2U7XHJcbiAgICB9XHJcbiAgfVxyXG5cclxuICBnZXQgb3B0aW9ucygpOiBPZ2NGaWx0ZXJhYmxlRGF0YVNvdXJjZU9wdGlvbnMge1xyXG4gICAgaWYgKCF0aGlzLmxheWVyKSB7XHJcbiAgICAgIHJldHVybjtcclxuICAgIH1cclxuICAgIHJldHVybiB0aGlzLmxheWVyLmRhdGFTb3VyY2Uub3B0aW9ucztcclxuICB9XHJcbn1cclxuIl19
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoib2djLWZpbHRlci1idXR0b24uY29tcG9uZW50LmpzIiwic291cmNlUm9vdCI6Im5nOi8vQGlnbzIvZ2VvLyIsInNvdXJjZXMiOlsibGliL2ZpbHRlci9vZ2MtZmlsdGVyLWJ1dHRvbi9vZ2MtZmlsdGVyLWJ1dHRvbi5jb21wb25lbnQudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLE9BQU8sRUFBRSxTQUFTLEVBQUUsS0FBSyxFQUFFLHVCQUF1QixFQUFFLE1BQU0sZUFBZSxDQUFDO0FBRTFFLE9BQU8sRUFBRSxLQUFLLEVBQUUsTUFBTSxpQ0FBaUMsQ0FBQztBQUN4RCxPQUFPLEVBQUUsTUFBTSxFQUFFLE1BQU0sV0FBVyxDQUFDO0FBR25DO0lBeUJFO1FBYlMsVUFBSyxHQUFXLFNBQVMsQ0FBQztRQVc1QixzQkFBaUIsR0FBRyxLQUFLLENBQUM7SUFFbEIsQ0FBQztJQVRoQixzQkFBSSw2Q0FBTzs7OztRQUFYO1lBQ0UsSUFBSSxDQUFDLElBQUksQ0FBQyxLQUFLLEVBQUU7Z0JBQ2YsT0FBTzthQUNSO1lBQ0QsT0FBTyxJQUFJLENBQUMsS0FBSyxDQUFDLFVBQVUsQ0FBQyxPQUFPLENBQUM7UUFDdkMsQ0FBQzs7O09BQUE7Ozs7SUFNRCxrREFBZTs7O0lBQWY7UUFDRSxJQUFJLElBQUksQ0FBQyxLQUFLLENBQUMsb0JBQW9CLEVBQUU7WUFDbkMsSUFBSSxDQUFDLGlCQUFpQixHQUFHLENBQUMsSUFBSSxDQUFDLGlCQUFpQixDQUFDO1NBQ2xEO0lBQ0gsQ0FBQzs7Z0JBL0JGLFNBQVMsU0FBQztvQkFDVCxRQUFRLEVBQUUsdUJBQXVCO29CQUNqQywrM0JBQWlEO29CQUVqRCxlQUFlLEVBQUUsdUJBQXVCLENBQUMsTUFBTTs7aUJBQ2hEOzs7Ozt3QkFHRSxLQUFLO3NCQUVMLEtBQUs7d0JBRUwsS0FBSztxQ0FFTCxLQUFLOztJQWtCUiwrQkFBQztDQUFBLEFBaENELElBZ0NDO1NBMUJZLHdCQUF3Qjs7O0lBRW5DLHlDQUFzQjs7SUFFdEIsdUNBQXFCOztJQUVyQix5Q0FBbUM7O0lBRW5DLHNEQUFxQzs7SUFTckMscURBQWlDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgQ29tcG9uZW50LCBJbnB1dCwgQ2hhbmdlRGV0ZWN0aW9uU3RyYXRlZ3kgfSBmcm9tICdAYW5ndWxhci9jb3JlJztcclxuXHJcbmltcG9ydCB7IExheWVyIH0gZnJvbSAnLi4vLi4vbGF5ZXIvc2hhcmVkL2xheWVycy9sYXllcic7XHJcbmltcG9ydCB7IElnb01hcCB9IGZyb20gJy4uLy4uL21hcCc7XHJcbmltcG9ydCB7IE9nY0ZpbHRlcmFibGVEYXRhU291cmNlT3B0aW9ucyB9IGZyb20gJy4uL3NoYXJlZC9vZ2MtZmlsdGVyLmludGVyZmFjZSc7XHJcblxyXG5AQ29tcG9uZW50KHtcclxuICBzZWxlY3RvcjogJ2lnby1vZ2MtZmlsdGVyLWJ1dHRvbicsXHJcbiAgdGVtcGxhdGVVcmw6ICcuL29nYy1maWx0ZXItYnV0dG9uLmNvbXBvbmVudC5odG1sJyxcclxuICBzdHlsZVVybHM6IFsnLi9vZ2MtZmlsdGVyLWJ1dHRvbi5jb21wb25lbnQuc2NzcyddLFxyXG4gIGNoYW5nZURldGVjdGlvbjogQ2hhbmdlRGV0ZWN0aW9uU3RyYXRlZ3kuT25QdXNoXHJcbn0pXHJcbmV4cG9ydCBjbGFzcyBPZ2NGaWx0ZXJCdXR0b25Db21wb25lbnQge1xyXG5cclxuICBASW5wdXQoKSBsYXllcjogTGF5ZXI7XHJcblxyXG4gIEBJbnB1dCgpIG1hcDogSWdvTWFwO1xyXG5cclxuICBASW5wdXQoKSBjb2xvcjogc3RyaW5nID0gJ3ByaW1hcnknO1xyXG5cclxuICBASW5wdXQoKSBvZ2NGaWx0ZXJzSW5MYXllcnM6IGJvb2xlYW47XHJcblxyXG4gIGdldCBvcHRpb25zKCk6IE9nY0ZpbHRlcmFibGVEYXRhU291cmNlT3B0aW9ucyB7XHJcbiAgICBpZiAoIXRoaXMubGF5ZXIpIHtcclxuICAgICAgcmV0dXJuO1xyXG4gICAgfVxyXG4gICAgcmV0dXJuIHRoaXMubGF5ZXIuZGF0YVNvdXJjZS5vcHRpb25zO1xyXG4gIH1cclxuXHJcbiAgcHVibGljIG9nY0ZpbHRlckNvbGxhcHNlID0gZmFsc2U7XHJcblxyXG4gIGNvbnN0cnVjdG9yKCkge31cclxuXHJcbiAgdG9nZ2xlT2djRmlsdGVyKCkge1xyXG4gICAgaWYgKHRoaXMubGF5ZXIuaXNJblJlc29sdXRpb25zUmFuZ2UpIHtcclxuICAgICAgdGhpcy5vZ2NGaWx0ZXJDb2xsYXBzZSA9ICF0aGlzLm9nY0ZpbHRlckNvbGxhcHNlO1xyXG4gICAgfVxyXG4gIH1cclxufVxyXG4iXX0=

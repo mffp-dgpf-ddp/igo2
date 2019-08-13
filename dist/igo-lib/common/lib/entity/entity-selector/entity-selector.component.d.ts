@@ -9,6 +9,14 @@ export declare class EntitySelectorComponent implements OnInit, OnDestroy {
      */
     selected$: BehaviorSubject<object>;
     /**
+     * The current multi select option text
+     * @internal
+     */
+    multiText$: BehaviorSubject<string>;
+    readonly multiSelectValue: {
+        id: string;
+    };
+    /**
      * Subscription to the selected entity
      */
     private selected$$;
@@ -21,10 +29,6 @@ export declare class EntitySelectorComponent implements OnInit, OnDestroy {
      */
     store: EntityStore<object>;
     /**
-     * Wheter selecting many entities is allowed
-     */
-    many: boolean;
-    /**
      * Title accessor
      */
     titleAccessor: (object: any) => string;
@@ -32,6 +36,18 @@ export declare class EntitySelectorComponent implements OnInit, OnDestroy {
      * Text to display when nothing is selected
      */
     emptyText: string;
+    /**
+     * Wheter selecting many entities is allowed
+     */
+    multi: boolean;
+    /**
+     * Text to display for the select all option
+     */
+    multiAllText: string;
+    /**
+     * Text to display for the select none option
+     */
+    multiNoneText: string;
     /**
      * Field placeholder
      */
@@ -61,4 +77,6 @@ export declare class EntitySelectorComponent implements OnInit, OnDestroy {
     onSelectionChange(event: {
         value: object | undefined;
     }): void;
+    private onSelectFromStore;
+    private updateMultiToggleWithEntities;
 }

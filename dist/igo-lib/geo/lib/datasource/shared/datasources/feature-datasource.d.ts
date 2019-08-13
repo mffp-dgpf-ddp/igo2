@@ -6,4 +6,5 @@ export declare class FeatureDataSource extends DataSource {
     ol: olSourceVector;
     protected createOlSource(): olSourceVector;
     protected getSourceFormatFromOptions(options: FeatureDataSourceOptions): any;
+    onUnwatch(): void;
 }

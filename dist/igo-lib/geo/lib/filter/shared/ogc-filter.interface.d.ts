@@ -2,12 +2,12 @@ import olGeometry from 'ol/geom/Geometry';
 import olFormatFilter from 'ol/format/filter/Filter';
 import { DataSource } from '../../datasource/shared/datasources/datasource';
 import { DataSourceOptions } from '../../datasource/shared/datasources/datasource.interface';
+import { OgcFilterOperatorType } from './ogc-filter.enum';
 export interface OgcFilter extends olFormatFilter {
 }
 export interface WFSWriteGetFeatureOptions {
-    filter?: olFormatFilter;
-    featureNS: string;
-    featurePrefix: string;
+    featureNS?: string;
+    featurePrefix?: string;
     featureTypes: string[];
     srsName?: string;
     handle?: string;
@@ -18,6 +18,7 @@ export interface WFSWriteGetFeatureOptions {
     startIndex?: number;
     count?: number;
     bbox?: [number, number, number, number];
+    filter?: olFormatFilter;
     resultType?: string;
 }
 export declare type AnyBaseOgcFilterOptions = OgcFilterCondionsArrayOptions | OgcFilterSpatialOptions | OgcFilterDuringOptions | OgcFilterIsBetweenOptions | OgcFilterEqualToOptions | OgcFilterGreaterLessOptions | OgcFilterIsLikeOptions | OgcFilterIsNullOptions;
@@ -26,8 +27,24 @@ export interface OgcFiltersOptions {
     enabled?: boolean;
     editable?: boolean;
     filters?: IgoLogicalArrayOptions | AnyBaseOgcFilterOptions;
+    pushButtons?: OgcPushButtonBundle[];
     interfaceOgcFilters?: OgcInterfaceFilterOptions[];
     filtered?: boolean;
+    advancedOgcFilters?: boolean;
+    geometryName?: string;
+    allowedOperatorsType?: OgcFilterOperatorType;
+}
+export interface OgcPushButtonBundle {
+    logical?: string;
+    vertical?: boolean;
+    ogcPushButtons: OgcPushButton[];
+}
+export interface OgcPushButton {
+    title: string;
+    tooltip?: string;
+    enabled: boolean;
+    filters: IgoOgcFilterObject;
+    color?: string;
 }
 export interface OgcFilterableDataSourceOptions extends DataSourceOptions {
     ogcFilters?: OgcFiltersOptions;

@@ -25,6 +25,10 @@ export declare class CatalogBrowserComponent implements OnInit, OnDestroy {
      * Map to add the catalog items to
      */
     map: IgoMap;
+    /**
+     * Whether a group can be toggled when it's collapsed
+     */
+    toggleCollapsedGroup: boolean;
     constructor(layerService: LayerService, cdRef: ChangeDetectorRef);
     /**
      * @internal

@@ -17,7 +17,7 @@ export declare class CatalogBrowserLayerComponent {
      */
     addedChange: EventEmitter<{
         added: boolean;
-        layer: CatalogItemLayer<import("../../layer").LayerOptions>;
+        layer: CatalogItemLayer<import("../../metadata").MetadataLayerOptions>;
     }>;
     /**
      * @internal

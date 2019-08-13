@@ -22,6 +22,10 @@ export declare class CatalogBrowserToolComponent implements OnInit, OnDestroy {
      */
     private catalog$$;
     /**
+     * Whether a group can be toggled when it's collapsed
+     */
+    toggleCollapsedGroup: boolean;
+    /**
      * Map to add layers to
      * @internal
      */

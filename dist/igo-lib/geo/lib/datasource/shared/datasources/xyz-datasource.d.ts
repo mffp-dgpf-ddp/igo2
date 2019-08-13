@@ -5,4 +5,5 @@ export declare class XYZDataSource extends DataSource {
     options: XYZDataSourceOptions;
     ol: olSourceXYZ;
     protected createOlSource(): olSourceXYZ;
+    onUnwatch(): void;
 }

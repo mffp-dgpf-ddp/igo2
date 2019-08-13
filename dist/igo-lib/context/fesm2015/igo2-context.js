@@ -505,9 +505,11 @@ class ContextService {
             /** @type {?} */
             const opts = {
                 id: layer.options.id ? String(layer.options.id) : undefined,
-                title: layer.options.title,
-                zIndex: layer.zIndex,
-                visible: layer.visible,
+                layerOptions: {
+                    title: layer.options.title,
+                    zIndex: layer.zIndex,
+                    visible: layer.visible
+                },
                 sourceOptions: {
                     type: layer.dataSource.options.type,
                     params: layer.dataSource.options.params,
@@ -520,7 +522,9 @@ class ContextService {
          * @param {?} tool
          * @return {?}
          */
-        tool => String(tool.id)));
+        tool => {
+            return { id: String(tool.id) };
+        }));
         return context;
     }
     /**
@@ -1478,7 +1482,7 @@ ContextFormComponent.decorators = [
     { type: Component, args: [{
                 selector: 'igo-context-form',
                 template: "<form class=\"igo-form\" [formGroup]=\"form\"\r\n  (ngSubmit)=\"handleFormSubmit(form.value)\">\r\n\r\n  <mat-form-field class=\"full-width\">\r\n    <input matInput required\r\n           [placeholder]=\"'igo.context.contextManager.form.title' | translate\"\r\n           formControlName=\"title\">\r\n   <mat-error>\r\n    {{ 'igo.context.contextManager.form.titleRequired' | translate }}\r\n   </mat-error>\r\n  </mat-form-field>\r\n\r\n  <mat-form-field id=\"uriInput\" class=\"full-width\">\r\n    <span *ngIf=\"prefix\" class=\"prefix\">{{prefix}}-</span>\r\n    <span class=\"fieldWrapper\">\r\n      <input matInput\r\n           [placeholder]=\"'igo.context.contextManager.form.uri' | translate\"\r\n           formControlName=\"uri\">\r\n    </span>\r\n  </mat-form-field>\r\n\r\n  <div class=\"igo-form-button-group\">\r\n    <button\r\n      mat-raised-button\r\n      type=\"submit\"\r\n      [disabled]=\"!form.valid || disabled\">\r\n      {{ 'igo.context.contextManager.form.edit' | translate }}\r\n    </button>\r\n  </div>\r\n\r\n</form>\r\n",
-                styles: [".full-width{width:100%}#uriInput .fieldWrapper{display:block;overflow:hidden}#uriInput .prefix{float:left}"]
+                styles: ["form{margin:10px}.full-width{width:100%}#uriInput .fieldWrapper{display:block;overflow:hidden}#uriInput .prefix{float:left}"]
             }] }
 ];
 /** @nocollapse */
@@ -1499,7 +1503,11 @@ ContextFormComponent.propDecorators = {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class ContextEditComponent {
-    constructor() {
+    /**
+     * @param {?} cd
+     */
+    constructor(cd) {
+        this.cd = cd;
         this.submitForm = new EventEmitter();
     }
     /**
@@ -1514,6 +1522,13 @@ class ContextEditComponent {
      */
     set context(value) {
         this._context = value;
+        this.refresh();
+    }
+    /**
+     * @return {?}
+     */
+    refresh() {
+        this.cd.detectChanges();
     }
 }
 ContextEditComponent.decorators = [
@@ -1523,7 +1538,9 @@ ContextEditComponent.decorators = [
             }] }
 ];
 /** @nocollapse */
-ContextEditComponent.ctorParameters = () => [];
+ContextEditComponent.ctorParameters = () => [
+    { type: ChangeDetectorRef }
+];
 ContextEditComponent.propDecorators = {
     context: [{ type: Input }],
     submitForm: [{ type: Output }]
@@ -1677,7 +1694,7 @@ ContextPermissionsComponent.decorators = [
     { type: Component, args: [{
                 selector: 'igo-context-permissions',
                 template: "<div *ngIf=\"context\">\r\n\r\n  <div class=\"scopeForm\">\r\n    <mat-radio-group [(ngModel)]=\"context.scope\"\r\n                    (change)=\"scopeChanged.emit(context)\">\r\n      <mat-radio-button value=\"private\">\r\n        {{ 'igo.context.permission.scope.private' | translate }}\r\n      </mat-radio-button>\r\n      <mat-radio-button value=\"protected\">\r\n        {{ 'igo.context.permission.scope.protected' | translate }}\r\n      </mat-radio-button>\r\n      <mat-radio-button value=\"public\">\r\n        {{ 'igo.context.permission.scope.public' | translate }}\r\n      </mat-radio-button>\r\n    </mat-radio-group>\r\n  </div>\r\n\r\n  <form *ngIf=\"context.scope !== 'private'\" [formGroup]=\"form\"\r\n    (ngSubmit)=\"handleFormSubmit(form.value)\">\r\n\r\n    <mat-form-field class=\"full-width\">\r\n      <input matInput required\r\n             [placeholder]=\"'igo.context.permission.profil' | translate\"\r\n             formControlName=\"profil\">\r\n     <mat-error>\r\n       {{ 'igo.context.permission.profilRequired' | translate }}\r\n     </mat-error>\r\n    </mat-form-field>\r\n\r\n\r\n    <mat-radio-group formControlName=\"typePermission\">\r\n      <mat-radio-button value=\"read\">\r\n        {{ 'igo.context.permission.read' | translate }}\r\n      </mat-radio-button>\r\n      <mat-radio-button value=\"write\">\r\n        {{ 'igo.context.permission.write' | translate }}\r\n      </mat-radio-button>\r\n    </mat-radio-group>\r\n\r\n\r\n    <div class=\"igo-form-button-group\">\r\n      <button\r\n        mat-raised-button\r\n        type=\"submit\"\r\n        [disabled]=\"!form.valid\">\r\n        {{ 'igo.context.permission.addBtn' | translate }}\r\n      </button>\r\n    </div>\r\n\r\n  </form>\r\n\r\n  <igo-list *ngIf=\"permissions && context.scope !== 'private'\">\r\n    <ng-template ngFor let-groupPermissions [ngForOf]=\"permissions | keyvalue\">\r\n      <igo-collapsible\r\n        *ngIf=\"groupPermissions.value.length\"\r\n        [title]=\"'igo.context.permission.' + groupPermissions.key | translate\">\r\n\r\n        <ng-template ngFor let-permission [ngForOf]=\"groupPermissions.value\">\r\n          <mat-list-item>\r\n            <mat-icon mat-list-avatar svgIcon=\"account-outline\"></mat-icon>\r\n            <h4 mat-line>{{permission.profil}}</h4>\r\n\r\n            <div igoStopPropagation\r\n                 class=\"igo-actions-container\">\r\n\r\n               <button\r\n                 mat-icon-button\r\n                 [matTooltip]=\"'igo.context.permission.delete' | translate\"\r\n                 matTooltipShowDelay=\"500\"\r\n                 color=\"warn\"\r\n                 (click)=\"removePermission.emit(permission)\">\r\n                 <mat-icon svgIcon=\"delete\"></mat-icon>\r\n               </button>\r\n            </div>\r\n\r\n          </mat-list-item>\r\n        </ng-template>\r\n      </igo-collapsible>\r\n    </ng-template>\r\n  </igo-list>\r\n\r\n</div>\r\n",
-                styles: [":host{margin:0 10px}.full-width{width:100%}mat-radio-button{padding:14px 14px 14px 0}.scopeForm,form{padding:5px}"]
+                styles: [":host{margin:10px}.full-width{width:100%}mat-radio-button{padding:14px 14px 14px 0}.scopeForm,form{padding:5px}"]
             }] }
 ];
 /** @nocollapse */
@@ -2612,15 +2629,15 @@ class ShareMapService {
         if (!this.route ||
             !this.route.options.visibleOnLayersKey ||
             !this.route.options.visibleOffLayersKey ||
-            !map$$1.getZoom()) {
+            !map$$1.viewController.getZoom()) {
             return;
         }
         /** @type {?} */
         const llc = publicShareOption.layerlistControls.querystring;
         /** @type {?} */
-        const visibleKey = this.route.options.visibleOnLayersKey;
+        let visibleKey = this.route.options.visibleOnLayersKey;
         /** @type {?} */
-        const invisibleKey = this.route.options.visibleOffLayersKey;
+        let invisibleKey = this.route.options.visibleOffLayersKey;
         /** @type {?} */
         const layers = map$$1.layers;
         /** @type {?} */
@@ -2655,6 +2672,12 @@ class ShareMapService {
          * @return {?}
          */
         lay => !lay.visible));
+        if (visibleLayers.length === 0) {
+            visibleKey = '';
+        }
+        if (invisibleLayers.length === 0) {
+            invisibleKey = '';
+        }
         /** @type {?} */
         let layersUrl = '';
         /** @type {?} */
@@ -2674,17 +2697,38 @@ class ShareMapService {
         }
         layersUrl = layersUrl.substr(0, layersUrl.length - 1);
         /** @type {?} */
-        const zoom = 'zoom=' + map$$1.getZoom();
+        let zoom = 'zoom=' + map$$1.viewController.getZoom();
         /** @type {?} */
-        const arrayCenter = map$$1.getCenter('EPSG:4326') || [];
+        const arrayCenter = map$$1.viewController.getCenter('EPSG:4326') || [];
         /** @type {?} */
-        const center = 'center=' + arrayCenter.toString();
+        const long = arrayCenter[0].toFixed(5).replace(/\.([^0]+)0+$/, '.$1');
+        /** @type {?} */
+        const lat = arrayCenter[1].toFixed(5).replace(/\.([^0]+)0+$/, '.$1');
+        /** @type {?} */
+        const center = `center=${long},${lat}`.replace(/.00000/g, '');
         /** @type {?} */
         let context = '';
         if (this.contextService.context$.value) {
-            context = 'context=' + this.contextService.context$.value.uri;
+            if (this.contextService.context$.value.uri !== '_default') {
+                context = 'context=' + this.contextService.context$.value.uri;
+            }
+            if (this.contextService.context$.value.map.view.zoom) {
+                zoom =
+                    this.contextService.context$.value.map.view.zoom ===
+                        map$$1.viewController.getZoom()
+                        ? ''
+                        : 'zoom=' + map$$1.viewController.getZoom();
+            }
         }
-        return `${location.origin}${location.pathname}?${context}&${zoom}&${center}&${layersUrl}&${llc}&${routingUrl}`.replace(/&&/g, '&');
+        /** @type {?} */
+        let url = `${location.origin}${location.pathname}?${context}&${zoom}&${center}&${layersUrl}&${llc}&${routingUrl}`;
+        for (let i = 0; i < 5; i++) {
+            url = url.replace(/&&/g, '&');
+            url = url.endsWith('&') ? url.slice(0, -1) : url;
+        }
+        url = url.endsWith('&') ? url.slice(0, -1) : url;
+        url = url.replace('?&', '?');
+        return url;
     }
 }
 ShareMapService.decorators = [

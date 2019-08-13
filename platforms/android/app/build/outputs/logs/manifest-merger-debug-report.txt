@@ -1,13 +1,13 @@
 -- Merging decision tree log ---
 manifest
-ADDED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:2:1-19:12
-INJECTED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:2:1-19:12
-INJECTED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:2:1-19:12
-INJECTED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:2:1-19:12
+ADDED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:2:1-20:12
+INJECTED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:2:1-20:12
+INJECTED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:2:1-20:12
+INJECTED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:2:1-20:12
 MERGED from [:CordovaLib] C:\Mrnmicro\dev\ion\igo2\platforms\android\CordovaLib\build\intermediates\manifests\full\debug\AndroidManifest.xml:20:1-27:12
-INJECTED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:2:1-19:12
-INJECTED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:2:1-19:12
-INJECTED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:2:1-19:12
+INJECTED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:2:1-20:12
+INJECTED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:2:1-20:12
+INJECTED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:2:1-20:12
 	package
 		ADDED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:2:98-121
 		INJECTED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml
@@ -45,13 +45,15 @@ ADDED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManife
 application
 ADDED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:5:5-12:19
 	android:supportsRtl
-		ADDED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:5:114-140
+		ADDED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:5:175-201
 	android:label
 		ADDED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:5:81-113
 	android:hardwareAccelerated
 		ADDED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:5:18-52
 	android:icon
 		ADDED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:5:53-80
+	android:networkSecurityConfig
+		ADDED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:5:114-174
 activity#io.ionic.igo2.MainActivity
 ADDED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:6:9-11:20
 	android:label
@@ -110,3 +112,7 @@ uses-permission#android.permission.ACCESS_BACKGROUND_LOCATION
 ADDED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:18:5-85
 	android:name
 		ADDED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:18:22-82
+uses-permission#android.permission.ACCESS_NETWORK_STATE
+ADDED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:19:5-79
+	android:name
+		ADDED from C:\Mrnmicro\dev\ion\igo2\platforms\android\app\src\main\AndroidManifest.xml:19:22-76

@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/platform-browser'), require('@angular/material'), require('@igo2/utils'), require('angular2-notifications'), require('@ngx-translate/core'), require('@angular/common/http'), require('@angular/router'), require('@angular/cdk/layout'), require('rxjs'), require('rxjs/operators'), require('@angular/core'), require('@angular/common')) :
-    typeof define === 'function' && define.amd ? define('@igo2/core', ['exports', '@angular/platform-browser', '@angular/material', '@igo2/utils', 'angular2-notifications', '@ngx-translate/core', '@angular/common/http', '@angular/router', '@angular/cdk/layout', 'rxjs', 'rxjs/operators', '@angular/core', '@angular/common'], factory) :
-    (factory((global.igo2 = global.igo2 || {}, global.igo2.core = {}),global.ng.platformBrowser,global.ng.material,global.utils,global.i1,global.i1$1,global.ng.common.http,global.ng.router,global.ng.cdk.layout,global.rxjs,global.rxjs.operators,global.ng.core,global.ng.common));
-}(this, (function (exports,platformBrowser,material,utils,i1,i1$1,http,i1$2,i1$3,rxjs,operators,i0,common) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('@angular/platform-browser'), require('@angular/material'), require('@igo2/utils'), require('angular2-notifications'), require('@ngx-translate/core'), require('@angular/common/http'), require('@angular/router'), require('@angular/cdk/layout'), require('rxjs'), require('rxjs/operators'), require('@ionic-native/network/ngx'), require('@ionic/angular'), require('@ionic-native/network/ngx/index'), require('@angular/core'), require('@angular/common')) :
+    typeof define === 'function' && define.amd ? define('@igo2/core', ['exports', '@angular/platform-browser', '@angular/material', '@igo2/utils', 'angular2-notifications', '@ngx-translate/core', '@angular/common/http', '@angular/router', '@angular/cdk/layout', 'rxjs', 'rxjs/operators', '@ionic-native/network/ngx', '@ionic/angular', '@ionic-native/network/ngx/index', '@angular/core', '@angular/common'], factory) :
+    (factory((global.igo2 = global.igo2 || {}, global.igo2.core = {}),global.ng.platformBrowser,global.ng.material,global.utils,global.i1,global.i1$1,global.ng.common.http,global.ng.router,global.ng.cdk.layout,global.rxjs,global.rxjs.operators,global.ngx,global.i3,global.i2,global.ng.core,global.ng.common));
+}(this, (function (exports,platformBrowser,material,utils,i1,i1$1,http,i1$2,i1$3,rxjs,operators,ngx,i3,i2,i0,common) { 'use strict';
 
     /**
      * @fileoverview added by tsickle
@@ -1376,14 +1376,33 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var NetworkService = /** @class */ (function () {
-        function NetworkService(messageService, injector) {
+        function NetworkService(messageService, injector, network, platform) {
+            var _this = this;
             this.messageService = messageService;
             this.injector = injector;
+            this.network = network;
+            this.platform = platform;
             this.stateChangeEventEmitter = new i0.EventEmitter();
             this.state = {
                 connection: window.navigator.onLine
             };
-            this.checkNetworkState();
+            console.log(this.platform + 'premier');
+            this.platform.ready().then(( /**
+             * @return {?}
+             */function () {
+                console.log(_this.platform);
+                if (_this.platform.is('cordova')) {
+                    console.log('cordova');
+                    if (_this.platform.is('android')) {
+                        console.log('android');
+                        _this.initializeService();
+                    }
+                }
+                else {
+                    console.log('browser');
+                    _this.checkNetworkState();
+                }
+            }));
         }
         /**
          * @private
@@ -1398,7 +1417,6 @@
                 this.onlineSubscription = rxjs.fromEvent(window, 'online').subscribe(( /**
                  * @return {?}
                  */function () {
-                    console.log('allo');
                     /** @type {?} */
                     var translate = _this.injector.get(LanguageService).translate;
                     /** @type {?} */
@@ -1424,6 +1442,59 @@
                 }));
             };
         /**
+         * @return {?}
+         */
+        NetworkService.prototype.initializeService = /**
+         * @return {?}
+         */
+            function () {
+                var _this = this;
+                if (this.network.type !== this.network.Connection.NONE) {
+                    this.connectionType = this.network.type;
+                    this.state.connection = true;
+                }
+                this.offlineSubscription = this.network.onDisconnect().subscribe(( /**
+                 * @return {?}
+                 */function () {
+                    _this.state.connection = false;
+                    setTimeout(( /**
+                     * @return {?}
+                     */function () {
+                        if (!_this.state.connection) {
+                            /** @type {?} */
+                            var translate = _this.injector.get(LanguageService).translate;
+                            /** @type {?} */
+                            var message = translate.instant('igo.core.network.offline.message');
+                            /** @type {?} */
+                            var title = translate.instant('igo.core.network.offline.title');
+                            _this.messageService.info(message, title);
+                            _this.state.connection = false;
+                            _this.emitEvent();
+                        }
+                    }), 10000);
+                }));
+                this.onlineSubscription = this.network.onConnect().subscribe(( /**
+                 * @return {?}
+                 */function () {
+                    _this.state.connection = true;
+                    setTimeout(( /**
+                     * @return {?}
+                     */function () {
+                        if (!_this.state.connection) {
+                            /** @type {?} */
+                            var translate = _this.injector.get(LanguageService).translate;
+                            /** @type {?} */
+                            var message = translate.instant('igo.core.network.online.message');
+                            /** @type {?} */
+                            var title = translate.instant('igo.core.network.online.title');
+                            _this.messageService.info(message, title);
+                            _this.state.connection = true;
+                            _this.emitEvent();
+                        }
+                    }), 10000);
+                }));
+            };
+        /**
          * @private
          * @return {?}
          */
@@ -1433,24 +1504,6 @@
          */
             function () {
                 this.stateChangeEventEmitter.emit(this.state);
-            };
-        /**
-         * @return {?}
-         */
-        NetworkService.prototype.ngAfterViewInit = /**
-         * @return {?}
-         */
-            function () {
-                if (this.state.connection === false) {
-                    console.log('yo');
-                    /** @type {?} */
-                    var translate = this.injector.get(LanguageService).translate;
-                    /** @type {?} */
-                    var message = translate.instant('igo.core.network.offline.message');
-                    /** @type {?} */
-                    var title = translate.instant('igo.core.network.offline.title');
-                    this.messageService.info(message, title);
-                }
             };
         /**
          * @return {?}
@@ -1492,10 +1545,12 @@
         NetworkService.ctorParameters = function () {
             return [
                 { type: MessageService },
-                { type: i0.Injector }
+                { type: i0.Injector },
+                { type: ngx.Network },
+                { type: i3.Platform }
             ];
         };
-        /** @nocollapse */ NetworkService.ngInjectableDef = i0.defineInjectable({ factory: function NetworkService_Factory() { return new NetworkService(i0.inject(MessageService), i0.inject(i0.INJECTOR)); }, token: NetworkService, providedIn: "root" });
+        /** @nocollapse */ NetworkService.ngInjectableDef = i0.defineInjectable({ factory: function NetworkService_Factory() { return new NetworkService(i0.inject(MessageService), i0.inject(i0.INJECTOR), i0.inject(i2.Network), i0.inject(i3.Platform)); }, token: NetworkService, providedIn: "root" });
         return NetworkService;
     }());
 

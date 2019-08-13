@@ -1,10 +1,11 @@
+import { OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { FormFieldSelectChoice } from '../shared/form.interfaces';
 /**
  * This component renders a select field
  */
-export declare class FormFieldSelectComponent {
+export declare class FormFieldSelectComponent implements OnInit {
     choices$: Observable<FormFieldSelectChoice[]>;
     disabled$: BehaviorSubject<boolean>;
     /**

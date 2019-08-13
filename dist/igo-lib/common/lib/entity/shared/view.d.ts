@@ -34,10 +34,12 @@ export declare class EntityView<E extends object, V extends object = E> {
     /**
      * Number of entities
      */
+    readonly count$: BehaviorSubject<number>;
     readonly count: number;
     /**
-     * Whether there are entities in the view
+     * Whether the store is empty
      */
+    readonly empty$: BehaviorSubject<boolean>;
     readonly empty: boolean;
     constructor(source$: BehaviorSubject<E[]>);
     /**
@@ -135,4 +137,5 @@ export declare class EntityView<E extends object, V extends object = E> {
      * @returns Sorted values
      */
     private sortValues;
+    private setValues;
 }

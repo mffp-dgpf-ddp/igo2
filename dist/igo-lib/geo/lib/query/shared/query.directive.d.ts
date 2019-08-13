@@ -39,7 +39,7 @@ export declare class QueryDirective implements AfterViewInit, OnDestroy {
     /**
      * Feature query hit tolerance
      */
-    queryFeaturesCondition: (olLayer: OlLayer) => true;
+    queryFeaturesCondition: (olLayer: OlLayer) => boolean;
     /**
      * Whether all query should complete before emitting an event
      */
@@ -93,6 +93,4 @@ export declare class QueryDirective implements AfterViewInit, OnDestroy {
      * Cancel ongoing requests, if any
      */
     private cancelOngoingQueries;
-    private getTiles;
-    private sameDataTilesFeature;
 }

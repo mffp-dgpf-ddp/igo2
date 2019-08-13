@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('ol/source/OSM'), require('ol/source/XYZ'), require('ol/format/filter'), require('ol/format/WFS'), require('ol/source/ImageWMS'), require('ol/source/WMTS'), require('ol/tilegrid/WMTS'), require('ol/extent.js'), require('ol/source/CartoDB'), require('ol/loadingstrategy'), require('ol/source/TileArcGISRest'), require('ts-md5'), require('ol/source/VectorTile'), require('ol/format/MVT'), require('ol/source/Cluster'), require('ngx-cacheable'), require('ol/source/WMTS.js'), require('ol/Map'), require('ol/View'), require('ol/Geolocation'), require('ol/control/Attribution'), require('ol/control/ScaleLine'), require('ol/geom/Circle'), require('ol/layer/Image'), require('ol/layer/Tile'), require('ol/color'), require('ol/layer/VectorTile'), require('ol/easing'), require('ol/has'), require('proj4'), require('ol/proj/proj4'), require('@angular/animations'), require('ol/format/GML2'), require('ol/format/GML3'), require('ol/format/EsriJSON'), require('ol/proj/Projection'), require('@angular/platform-browser'), require('moment'), require('ol/format/WKT'), require('ol/geom/Point'), require('ol/Overlay'), require('ol/sphere'), require('ol/style/Style'), require('ol/geom/LineString'), require('@turf/line-intersect'), require('@turf/helpers'), require('ol/interaction/Modify'), require('ol/interaction/Translate'), require('ol/interaction/Draw'), require('ol/geom/Polygon'), require('ol/geom/LinearRing'), require('ol/interaction/DragBox'), require('ol/source/Vector'), require('ol/layer/Vector'), require('file-saver'), require('jspdf'), require('html2canvas'), require('jszip'), require('ol/Feature'), require('ol/geom'), require('ol/proj'), require('ol/style'), require('ol/events/condition'), require('ol/interaction'), require('ol/extent'), require('ol/Observable'), require('@angular/forms'), require('rxjs'), require('ol/format/GeoJSON'), require('@angular/material'), require('@angular/common'), require('@igo2/common'), require('ol/format'), require('@angular/core'), require('@angular/common/http'), require('rxjs/operators'), require('@igo2/utils'), require('@igo2/core')) :
-    typeof define === 'function' && define.amd ? define('@igo2/geo', ['exports', 'ol/source/OSM', 'ol/source/XYZ', 'ol/format/filter', 'ol/format/WFS', 'ol/source/ImageWMS', 'ol/source/WMTS', 'ol/tilegrid/WMTS', 'ol/extent.js', 'ol/source/CartoDB', 'ol/loadingstrategy', 'ol/source/TileArcGISRest', 'ts-md5', 'ol/source/VectorTile', 'ol/format/MVT', 'ol/source/Cluster', 'ngx-cacheable', 'ol/source/WMTS.js', 'ol/Map', 'ol/View', 'ol/Geolocation', 'ol/control/Attribution', 'ol/control/ScaleLine', 'ol/geom/Circle', 'ol/layer/Image', 'ol/layer/Tile', 'ol/color', 'ol/layer/VectorTile', 'ol/easing', 'ol/has', 'proj4', 'ol/proj/proj4', '@angular/animations', 'ol/format/GML2', 'ol/format/GML3', 'ol/format/EsriJSON', 'ol/proj/Projection', '@angular/platform-browser', 'moment', 'ol/format/WKT', 'ol/geom/Point', 'ol/Overlay', 'ol/sphere', 'ol/style/Style', 'ol/geom/LineString', '@turf/line-intersect', '@turf/helpers', 'ol/interaction/Modify', 'ol/interaction/Translate', 'ol/interaction/Draw', 'ol/geom/Polygon', 'ol/geom/LinearRing', 'ol/interaction/DragBox', 'ol/source/Vector', 'ol/layer/Vector', 'file-saver', 'jspdf', 'html2canvas', 'jszip', 'ol/Feature', 'ol/geom', 'ol/proj', 'ol/style', 'ol/events/condition', 'ol/interaction', 'ol/extent', 'ol/Observable', '@angular/forms', 'rxjs', 'ol/format/GeoJSON', '@angular/material', '@angular/common', '@igo2/common', 'ol/format', '@angular/core', '@angular/common/http', 'rxjs/operators', '@igo2/utils', '@igo2/core'], factory) :
-    (factory((global.igo2 = global.igo2 || {}, global.igo2.geo = {}),global.olSourceOSM,global.olSourceXYZ,global.olfilter,global.olFormatWFS,global.olSourceImageWMS,global.olSourceWMTS,global.olTileGridWMTS,global.extent_js,global.olSourceCarto,global.olloadingstrategy,global.olSourceTileArcGISRest,global.tsMd5,global.olSourceVectorTile,global.olFormatMVT,global.olSourceCluster,global.ngxCacheable,global.WMTS_js,global.olMap,global.olView,global.olGeolocation,global.olAttribution,global.olControlScaleLine,global.olCircle,global.olLayerImage,global.olLayerTile,global.color,global.olLayerVectorTile,global.oleasing,global.has,global.proj4,global.olproj4,global.ng.animations,global.olFormatGML2,global.olFormatGML3,global.olFormatEsriJSON,global.olProjection,global.ng.platformBrowser,global.moment,global.olWKT,global.OlPoint,global.OlOverlay,global.sphere,global.OlStyle,global.OlLineString,global.lineIntersect,global.helpers,global.OlModify,global.OlTranslate,global.OlDraw,global.OlPolygon,global.OlLinearRing,global.OlDragBoxInteraction,global.OlVectorSource,global.OlVectorLayer,global.fileSaver,global.jsPDF,global._html2canvas,global.JSZip,global.olFeature,global.olgeom,global.olproj,global.olstyle,global.olcondition,global.olinteraction,global.olextent,global.olobservable,global.ng.forms,global.rxjs,global.OlGeoJSON,global.ng.material,global.ng.common,global.common$1,global.olformat,global.ng.core,global.ng.common.http,global.rxjs.operators,global.utils,global.i1$1));
-}(this, (function (exports,olSourceOSM,olSourceXYZ,olfilter,olFormatWFS,olSourceImageWMS,olSourceWMTS,olTileGridWMTS,extent_js,olSourceCarto,olloadingstrategy,olSourceTileArcGISRest,tsMd5,olSourceVectorTile,olFormatMVT,olSourceCluster,ngxCacheable,WMTS_js,olMap,olView,olGeolocation,olAttribution,olControlScaleLine,olCircle,olLayerImage,olLayerTile,color,olLayerVectorTile,oleasing,has,proj4,olproj4,animations,olFormatGML2,olFormatGML3,olFormatEsriJSON,olProjection,platformBrowser,moment,olWKT,OlPoint,OlOverlay,sphere,OlStyle,OlLineString,lineIntersect,helpers,OlModify,OlTranslate,OlDraw,OlPolygon,OlLinearRing,OlDragBoxInteraction,OlVectorSource,OlVectorLayer,fileSaver,jsPDF,_html2canvas,JSZip,olFeature,olgeom,olproj,olstyle,olcondition,olinteraction,olextent,olobservable,forms,rxjs,OlGeoJSON,material,common,common$1,olformat,i0,i1,operators,utils,i1$1) { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('ol/source/OSM'), require('ol/source/XYZ'), require('ol/format/filter'), require('ol/format/WFS'), require('ol/source/ImageWMS'), require('ol/source/WMTS'), require('ol/tilegrid/WMTS'), require('ol/extent.js'), require('ol/source/CartoDB'), require('ol/loadingstrategy'), require('ol/source/TileArcGISRest'), require('ts-md5'), require('ol/source/VectorTile'), require('ol/format/MVT'), require('ol/source/Cluster'), require('ngx-cacheable'), require('ol/source/WMTS.js'), require('ol/Map'), require('ol/View'), require('ol/Geolocation'), require('ol/control/Attribution'), require('ol/control/ScaleLine'), require('ol/layer/Image'), require('ol/layer/Tile'), require('ol/color'), require('ol/layer/VectorTile'), require('ol/easing'), require('ol/has'), require('proj4'), require('ol/proj/proj4'), require('@angular/animations'), require('ol/format/GML2'), require('ol/format/GML3'), require('ol/format/EsriJSON'), require('ol/proj/Projection'), require('@angular/platform-browser'), require('moment'), require('ol/format/WKT'), require('ol/geom/Point'), require('ol/Overlay'), require('ol/sphere'), require('ol/style/Style'), require('ol/geom/LineString'), require('@turf/line-intersect'), require('@turf/helpers'), require('ol/interaction/Modify'), require('ol/interaction/Translate'), require('ol/interaction/Draw'), require('ol/geom/Polygon'), require('ol/geom/LinearRing'), require('ol/interaction/DragBox'), require('ol/source/Vector'), require('ol/layer/Vector'), require('file-saver'), require('jspdf'), require('html2canvas'), require('jszip'), require('ol/Feature'), require('ol/geom'), require('ol/proj'), require('ol/style'), require('ol/events/condition'), require('ol/interaction'), require('ol/extent'), require('ol/Observable'), require('@angular/forms'), require('ol/format/GeoJSON'), require('@angular/material'), require('@angular/common'), require('@igo2/common'), require('rxjs'), require('ol/format'), require('@angular/core'), require('@angular/common/http'), require('rxjs/operators'), require('@igo2/utils'), require('@igo2/core')) :
+    typeof define === 'function' && define.amd ? define('@igo2/geo', ['exports', 'ol/source/OSM', 'ol/source/XYZ', 'ol/format/filter', 'ol/format/WFS', 'ol/source/ImageWMS', 'ol/source/WMTS', 'ol/tilegrid/WMTS', 'ol/extent.js', 'ol/source/CartoDB', 'ol/loadingstrategy', 'ol/source/TileArcGISRest', 'ts-md5', 'ol/source/VectorTile', 'ol/format/MVT', 'ol/source/Cluster', 'ngx-cacheable', 'ol/source/WMTS.js', 'ol/Map', 'ol/View', 'ol/Geolocation', 'ol/control/Attribution', 'ol/control/ScaleLine', 'ol/layer/Image', 'ol/layer/Tile', 'ol/color', 'ol/layer/VectorTile', 'ol/easing', 'ol/has', 'proj4', 'ol/proj/proj4', '@angular/animations', 'ol/format/GML2', 'ol/format/GML3', 'ol/format/EsriJSON', 'ol/proj/Projection', '@angular/platform-browser', 'moment', 'ol/format/WKT', 'ol/geom/Point', 'ol/Overlay', 'ol/sphere', 'ol/style/Style', 'ol/geom/LineString', '@turf/line-intersect', '@turf/helpers', 'ol/interaction/Modify', 'ol/interaction/Translate', 'ol/interaction/Draw', 'ol/geom/Polygon', 'ol/geom/LinearRing', 'ol/interaction/DragBox', 'ol/source/Vector', 'ol/layer/Vector', 'file-saver', 'jspdf', 'html2canvas', 'jszip', 'ol/Feature', 'ol/geom', 'ol/proj', 'ol/style', 'ol/events/condition', 'ol/interaction', 'ol/extent', 'ol/Observable', '@angular/forms', 'ol/format/GeoJSON', '@angular/material', '@angular/common', '@igo2/common', 'rxjs', 'ol/format', '@angular/core', '@angular/common/http', 'rxjs/operators', '@igo2/utils', '@igo2/core'], factory) :
+    (factory((global.igo2 = global.igo2 || {}, global.igo2.geo = {}),global.olSourceOSM,global.olSourceXYZ,global.olfilter,global.olFormatWFS,global.olSourceImageWMS,global.olSourceWMTS,global.olTileGridWMTS,global.extent_js,global.olSourceCarto,global.OlLoadingStrategy,global.olSourceTileArcGISRest,global.tsMd5,global.olSourceVectorTile,global.olFormatMVT,global.olSourceCluster,global.ngxCacheable,global.WMTS_js,global.olMap,global.olView,global.olGeolocation,global.olAttribution,global.olControlScaleLine,global.olLayerImage,global.olLayerTile,global.color,global.olLayerVectorTile,global.oleasing,global.has,global.proj4,global.olproj4,global.ng.animations,global.olFormatGML2,global.olFormatGML3,global.olFormatEsriJSON,global.olProjection,global.ng.platformBrowser,global.moment,global.olWKT,global.OlPoint,global.OlOverlay,global.sphere,global.OlStyle,global.OlLineString,global.lineIntersect,global.helpers,global.OlModify,global.OlTranslate,global.OlDraw,global.OlPolygon,global.OlLinearRing,global.OlDragBoxInteraction,global.OlVectorSource,global.OlVectorLayer,global.fileSaver,global.jsPDF,global._html2canvas,global.JSZip,global.OlFeature,global.olgeom,global.olproj,global.olstyle,global.olcondition,global.olinteraction,global.olextent,global.olobservable,global.ng.forms,global.OlGeoJSON,global.ng.material,global.ng.common,global.common$1,global.rxjs,global.olformat,global.ng.core,global.ng.common.http,global.rxjs.operators,global.utils,global.i1$1));
+}(this, (function (exports,olSourceOSM,olSourceXYZ,olfilter,olFormatWFS,olSourceImageWMS,olSourceWMTS,olTileGridWMTS,extent_js,olSourceCarto,OlLoadingStrategy,olSourceTileArcGISRest,tsMd5,olSourceVectorTile,olFormatMVT,olSourceCluster,ngxCacheable,WMTS_js,olMap,olView,olGeolocation,olAttribution,olControlScaleLine,olLayerImage,olLayerTile,color,olLayerVectorTile,oleasing,has,proj4,olproj4,animations,olFormatGML2,olFormatGML3,olFormatEsriJSON,olProjection,platformBrowser,moment,olWKT,OlPoint,OlOverlay,sphere,OlStyle,OlLineString,lineIntersect,helpers,OlModify,OlTranslate,OlDraw,OlPolygon,OlLinearRing,OlDragBoxInteraction,OlVectorSource,OlVectorLayer,fileSaver,jsPDF,_html2canvas,JSZip,OlFeature,olgeom,olproj,olstyle,olcondition,olinteraction,olextent,olobservable,forms,OlGeoJSON,material,common,common$1,rxjs,olformat,i0,i1,operators,utils,i1$1) { 'use strict';
 
     olSourceOSM = olSourceOSM && olSourceOSM.hasOwnProperty('default') ? olSourceOSM['default'] : olSourceOSM;
     olSourceXYZ = olSourceXYZ && olSourceXYZ.hasOwnProperty('default') ? olSourceXYZ['default'] : olSourceXYZ;
@@ -20,7 +20,6 @@
     olGeolocation = olGeolocation && olGeolocation.hasOwnProperty('default') ? olGeolocation['default'] : olGeolocation;
     olAttribution = olAttribution && olAttribution.hasOwnProperty('default') ? olAttribution['default'] : olAttribution;
     olControlScaleLine = olControlScaleLine && olControlScaleLine.hasOwnProperty('default') ? olControlScaleLine['default'] : olControlScaleLine;
-    olCircle = olCircle && olCircle.hasOwnProperty('default') ? olCircle['default'] : olCircle;
     olLayerImage = olLayerImage && olLayerImage.hasOwnProperty('default') ? olLayerImage['default'] : olLayerImage;
     olLayerTile = olLayerTile && olLayerTile.hasOwnProperty('default') ? olLayerTile['default'] : olLayerTile;
     olLayerVectorTile = olLayerVectorTile && olLayerVectorTile.hasOwnProperty('default') ? olLayerVectorTile['default'] : olLayerVectorTile;
@@ -43,8 +42,157 @@
     OlDragBoxInteraction = OlDragBoxInteraction && OlDragBoxInteraction.hasOwnProperty('default') ? OlDragBoxInteraction['default'] : OlDragBoxInteraction;
     OlVectorSource = OlVectorSource && OlVectorSource.hasOwnProperty('default') ? OlVectorSource['default'] : OlVectorSource;
     OlVectorLayer = OlVectorLayer && OlVectorLayer.hasOwnProperty('default') ? OlVectorLayer['default'] : OlVectorLayer;
-    olFeature = olFeature && olFeature.hasOwnProperty('default') ? olFeature['default'] : olFeature;
+    OlFeature = OlFeature && OlFeature.hasOwnProperty('default') ? OlFeature['default'] : OlFeature;
     OlGeoJSON = OlGeoJSON && OlGeoJSON.hasOwnProperty('default') ? OlGeoJSON['default'] : OlGeoJSON;
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var MetadataService = /** @class */ (function () {
+        function MetadataService() {
+        }
+        /**
+         * @param {?} metadata
+         * @return {?}
+         */
+        MetadataService.prototype.open = /**
+         * @param {?} metadata
+         * @return {?}
+         */
+            function (metadata) {
+                if (metadata.extern) {
+                    window.open(metadata.url, '_blank');
+                }
+            };
+        MetadataService.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
+        ];
+        /** @nocollapse */
+        MetadataService.ctorParameters = function () { return []; };
+        /** @nocollapse */ MetadataService.ngInjectableDef = i0.defineInjectable({ factory: function MetadataService_Factory() { return new MetadataService(); }, token: MetadataService, providedIn: "root" });
+        return MetadataService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var MetadataButtonComponent = /** @class */ (function () {
+        function MetadataButtonComponent(metadataService) {
+            this.metadataService = metadataService;
+            this._color = 'primary';
+        }
+        Object.defineProperty(MetadataButtonComponent.prototype, "layer", {
+            get: /**
+             * @return {?}
+             */ function () {
+                return this._layer;
+            },
+            set: /**
+             * @param {?} value
+             * @return {?}
+             */ function (value) {
+                this._layer = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(MetadataButtonComponent.prototype, "color", {
+            get: /**
+             * @return {?}
+             */ function () {
+                return this._color;
+            },
+            set: /**
+             * @param {?} value
+             * @return {?}
+             */ function (value) {
+                this._color = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * @param {?} metadata
+         * @return {?}
+         */
+        MetadataButtonComponent.prototype.openMetadata = /**
+         * @param {?} metadata
+         * @return {?}
+         */
+            function (metadata) {
+                this.metadataService.open(metadata);
+            };
+        Object.defineProperty(MetadataButtonComponent.prototype, "options", {
+            get: /**
+             * @return {?}
+             */ function () {
+                if (!this.layer) {
+                    return;
+                }
+                return this.layer.options;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        MetadataButtonComponent.decorators = [
+            { type: i0.Component, args: [{
+                        selector: 'igo-metadata-button',
+                        template: "<button\r\n  *ngIf=\"options && options.metadata && options.metadata.url\"\r\n  mat-icon-button\r\n  tooltip-position=\"below\"\r\n  matTooltipShowDelay=\"500\"\r\n  [matTooltip]=\"'igo.geo.metadata.show' | translate\"\r\n  [color]=\"color\"\r\n  (click)=\"openMetadata(options.metadata)\">\r\n  <mat-icon svgIcon=\"information-outline\"></mat-icon>\r\n</button>\r\n",
+                        changeDetection: i0.ChangeDetectionStrategy.OnPush,
+                        styles: [""]
+                    }] }
+        ];
+        /** @nocollapse */
+        MetadataButtonComponent.ctorParameters = function () {
+            return [
+                { type: MetadataService }
+            ];
+        };
+        MetadataButtonComponent.propDecorators = {
+            layer: [{ type: i0.Input }],
+            color: [{ type: i0.Input }]
+        };
+        return MetadataButtonComponent;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var IgoMetadataModule = /** @class */ (function () {
+        function IgoMetadataModule() {
+        }
+        /**
+         * @return {?}
+         */
+        IgoMetadataModule.forRoot = /**
+         * @return {?}
+         */
+            function () {
+                return {
+                    ngModule: IgoMetadataModule,
+                    providers: []
+                };
+            };
+        IgoMetadataModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        imports: [
+                            common.CommonModule,
+                            material.MatIconModule,
+                            material.MatButtonModule,
+                            material.MatTooltipModule,
+                            i1$1.IgoLanguageModule
+                        ],
+                        exports: [MetadataButtonComponent],
+                        declarations: [MetadataButtonComponent]
+                    },] }
+        ];
+        return IgoMetadataModule;
+    }());
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation. All rights reserved.
@@ -248,12 +396,11 @@
     var /**
      * @abstract
      */ DataSource = /** @class */ (function () {
-        function DataSource(options, networkService, dataService) {
+        function DataSource(options, dataService) {
             if (options === void 0) {
                 options = {};
             }
             this.options = options;
-            this.networkService = networkService;
             this.dataService = dataService;
             this.options = options;
             this.id = this.generateId();
@@ -281,15 +428,6 @@
             function (scale) {
                 return this.options.legend ? [this.options.legend] : [];
             };
-        /**
-         * @param {?} status
-         * @return {?}
-         */
-        DataSource.prototype.onLayerStatusChange = /**
-         * @param {?} status
-         * @return {?}
-         */
-            function (status) { };
         return DataSource;
     }());
 
@@ -356,6 +494,13 @@
                 }
                 return format;
             };
+        /**
+         * @return {?}
+         */
+        FeatureDataSource.prototype.onUnwatch = /**
+         * @return {?}
+         */
+            function () { };
         return FeatureDataSource;
     }(DataSource));
 
@@ -380,6 +525,13 @@
                 this.options.url = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
                 return new olSourceOSM(this.options);
             };
+        /**
+         * @return {?}
+         */
+        OSMDataSource.prototype.onUnwatch = /**
+         * @return {?}
+         */
+            function () { };
         return OSMDataSource;
     }(DataSource));
 
@@ -403,6 +555,13 @@
             function () {
                 return new olSourceXYZ(this.options);
             };
+        /**
+         * @return {?}
+         */
+        XYZDataSource.prototype.onUnwatch = /**
+         * @return {?}
+         */
+            function () { };
         return XYZDataSource;
     }(DataSource));
 
@@ -418,10 +577,7 @@
                 PropertyIsNotEqualTo: { spatial: false, fieldRestrict: [] },
                 PropertyIsLike: { spatial: false, fieldRestrict: ['string'] },
                 PropertyIsGreaterThan: { spatial: false, fieldRestrict: ['number'] },
-                PropertyIsGreaterThanOrEqualTo: {
-                    spatial: false,
-                    fieldRestrict: ['number']
-                },
+                PropertyIsGreaterThanOrEqualTo: { spatial: false, fieldRestrict: ['number'] },
                 PropertyIsLessThan: { spatial: false, fieldRestrict: ['number'] },
                 PropertyIsLessThanOrEqualTo: { spatial: false, fieldRestrict: ['number'] },
                 PropertyIsBetween: { spatial: false, fieldRestrict: ['number'] },
@@ -433,14 +589,42 @@
             };
         }
         /**
-         * @param {?} filters
+         * @param {?} ogcFiltersOptions
+         * @param {?} fieldNameGeometry
+         * @param {?=} srcType
+         * @return {?}
+         */
+        OgcFilterWriter.prototype.defineOgcFiltersDefaultOptions = /**
+         * @param {?} ogcFiltersOptions
+         * @param {?} fieldNameGeometry
+         * @param {?=} srcType
+         * @return {?}
+         */
+            function (ogcFiltersOptions, fieldNameGeometry, srcType) {
+                /** @type {?} */
+                var ogcFiltersDefaultValue = true;
+                if (srcType && srcType === 'wms') {
+                    ogcFiltersDefaultValue = false;
+                }
+                ogcFiltersOptions = ogcFiltersOptions || {};
+                ogcFiltersOptions.enabled = ogcFiltersOptions.enabled === undefined ? ogcFiltersDefaultValue : ogcFiltersOptions.enabled;
+                ogcFiltersOptions.editable = ogcFiltersOptions.editable === undefined ? ogcFiltersDefaultValue : ogcFiltersOptions.editable;
+                ogcFiltersOptions.geometryName = fieldNameGeometry;
+                ogcFiltersOptions.advancedOgcFilters = true;
+                if (ogcFiltersOptions.enabled && ogcFiltersOptions.pushButtons) {
+                    ogcFiltersOptions.advancedOgcFilters = false;
+                }
+                return ogcFiltersOptions;
+            };
+        /**
+         * @param {?=} filters
          * @param {?=} extent
          * @param {?=} proj
          * @param {?=} fieldNameGeometry
          * @return {?}
          */
         OgcFilterWriter.prototype.buildFilter = /**
-         * @param {?} filters
+         * @param {?=} filters
          * @param {?=} extent
          * @param {?=} proj
          * @param {?=} fieldNameGeometry
@@ -694,14 +878,14 @@
          * @return {?}
          */
             function (igoOgcFilterObject, geometryName, level, parentLogical) {
-                if (igoOgcFilterObject === void 0) {
-                    igoOgcFilterObject = { operator: 'PropertyIsEqualTo' };
-                }
                 if (level === void 0) {
                     level = 0;
                 }
                 if (parentLogical === void 0) {
                     parentLogical = 'Or';
+                }
+                if (!igoOgcFilterObject) {
+                    igoOgcFilterObject = { operator: 'PropertyIsEqualTo' };
                 }
                 /** @type {?} */
                 var f = {
@@ -870,6 +1054,101 @@
                     return undefined;
                 }
             };
+        /**
+         * @param {?} options
+         * @param {?} fieldNameGeometry
+         * @return {?}
+         */
+        OgcFilterWriter.prototype.handleOgcFiltersAppliedValue = /**
+         * @param {?} options
+         * @param {?} fieldNameGeometry
+         * @return {?}
+         */
+            function (options, fieldNameGeometry) {
+                /** @type {?} */
+                var ogcFilters = options.ogcFilters;
+                if (!ogcFilters) {
+                    return;
+                }
+                /** @type {?} */
+                var filterQueryStringPushButton = '';
+                /** @type {?} */
+                var filterQueryStringAdvancedFilters = '';
+                if (ogcFilters.enabled && ogcFilters.pushButtons) {
+                    /** @type {?} */
+                    var pushButtonBundle = ogcFilters.pushButtons;
+                    /** @type {?} */
+                    var conditions_1 = [];
+                    pushButtonBundle.map(( /**
+                     * @param {?} buttonBundle
+                     * @return {?}
+                     */function (buttonBundle) {
+                        /** @type {?} */
+                        var bundleCondition = [];
+                        buttonBundle.ogcPushButtons
+                            .filter(( /**
+                     * @param {?} ogcpb
+                     * @return {?}
+                     */function (ogcpb) { return ogcpb.enabled === true; }))
+                            .forEach(( /**
+                     * @param {?} enabledPb
+                     * @return {?}
+                     */function (enabledPb) { return bundleCondition.push(enabledPb.filters); }));
+                        if (bundleCondition.length === 1) {
+                            conditions_1.push(bundleCondition[0]);
+                        }
+                        else if (bundleCondition.length > 1) {
+                            conditions_1.push({ logical: buttonBundle.logical, filters: bundleCondition });
+                        }
+                    }));
+                    if (conditions_1.length >= 1) {
+                        filterQueryStringPushButton = this.buildFilter(conditions_1.length === 1 ? conditions_1[0] : { logical: 'And', filters: conditions_1 });
+                    }
+                }
+                if (ogcFilters.enabled && ogcFilters.filters) {
+                    ogcFilters.geometryName = ogcFilters.geometryName || fieldNameGeometry;
+                    /** @type {?} */
+                    var igoFilters = ogcFilters.filters;
+                    filterQueryStringAdvancedFilters = this.buildFilter(igoFilters);
+                }
+                /** @type {?} */
+                var filterQueryString = ogcFilters.advancedOgcFilters ? filterQueryStringAdvancedFilters : filterQueryStringPushButton;
+                if (options.type === 'wms') {
+                    filterQueryString = this.formatProcessedOgcFilter(filterQueryString, (( /** @type {?} */(options))).params.layers);
+                }
+                if (options.type === 'wfs') {
+                    filterQueryString = this.formatProcessedOgcFilter(filterQueryString, (( /** @type {?} */(options))).params.featureTypes);
+                }
+                return filterQueryString;
+            };
+        /**
+         * @param {?} processedFilter
+         * @param {?} layersOrTypenames
+         * @return {?}
+         */
+        OgcFilterWriter.prototype.formatProcessedOgcFilter = /**
+         * @param {?} processedFilter
+         * @param {?} layersOrTypenames
+         * @return {?}
+         */
+            function (processedFilter, layersOrTypenames) {
+                /** @type {?} */
+                var appliedFilter = '';
+                if (processedFilter.length === 0 && layersOrTypenames.indexOf(',') === -1) {
+                    appliedFilter = processedFilter;
+                }
+                else {
+                    layersOrTypenames.split(',').forEach(( /**
+                     * @param {?} layerOrTypenames
+                     * @return {?}
+                     */function (layerOrTypenames) {
+                        appliedFilter = appliedFilter + "(" + processedFilter.replace('filter=', '') + ")";
+                    }));
+                }
+                /** @type {?} */
+                var filterValue = appliedFilter.length > 0 ? appliedFilter.replace('filter=', '') : undefined;
+                return filterValue;
+            };
         return OgcFilterWriter;
     }());
 
@@ -877,16 +1156,147 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @type {?} */
+    var defaultEpsg = 'EPSG:3857';
+    /** @type {?} */
+    var defaultMaxFeatures = 5000;
+    /** @type {?} */
+    var defaultWfsVersion = '2.0.0';
+    /** @type {?} */
+    var defaultFieldNameGeometry = 'geometry';
+    /** @type {?} */
+    var gmlRegex = new RegExp(/.*?gml.*?/gi);
+    /** @type {?} */
+    var jsonRegex = new RegExp(/.*?json.*?/gi);
+    /**
+     * This method build/standardize WFS call query params based on the layer property.
+     * @param {?} wfsDataSourceOptions  WFSDataSourceOptions The common wfs datasource options interface
+     * @param {?=} count  Number: Used to control the number of feature. Used to bypass whe wfs datasource options interface (maxFeatures)
+     * @param {?=} epsg  String: Used to control the EPSG code (es: 'EPSG3857'). Used to bypass whe wfs datasource options interface (srsName)
+     * @param {?=} properties  String: Used to control the queried fields  (WFS service).
+     * @return {?} An array array of {name: '', value: ''} of predefined query params.
+     */
+    function formatWFSQueryString(wfsDataSourceOptions, count, epsg, properties) {
+        /** @type {?} */
+        var versionWfs200 = '2.0.0';
+        // not the same usage as defaultWfsVersion.
+        /** @type {?} */
+        var url = wfsDataSourceOptions.urlWfs;
+        /** @type {?} */
+        var paramsWFS = wfsDataSourceOptions.paramsWFS;
+        /** @type {?} */
+        var effectiveCount = count || defaultMaxFeatures;
+        /** @type {?} */
+        var epsgCode = epsg || defaultEpsg;
+        /** @type {?} */
+        var outputFormat = paramsWFS.outputFormat ? "outputFormat=" + paramsWFS.outputFormat : '';
+        /** @type {?} */
+        var version = paramsWFS.version ? "version=" + paramsWFS.version : "version=" + defaultWfsVersion;
+        /** @type {?} */
+        var paramTypename = paramsWFS.version === versionWfs200 ? 'typenames' : 'typename';
+        /** @type {?} */
+        var featureTypes = paramTypename + "=" + paramsWFS.featureTypes;
+        /** @type {?} */
+        var paramMaxFeatures = paramsWFS.version === versionWfs200 ? 'count' : 'maxFeatures';
+        /** @type {?} */
+        var cnt = count ? paramMaxFeatures + "=" + effectiveCount :
+            paramsWFS.maxFeatures ? paramMaxFeatures + "=" + paramsWFS.maxFeatures : paramMaxFeatures + "=" + effectiveCount;
+        /** @type {?} */
+        var srs = epsg ? "srsname=" + epsgCode : paramsWFS.srsName ? 'srsname=' + paramsWFS.srsName : "srsname=" + epsgCode;
+        /** @type {?} */
+        var propertyName = '';
+        /** @type {?} */
+        var valueReference = '';
+        if (properties) {
+            propertyName = "propertyName=" + properties;
+            valueReference = "valueReference=" + properties;
+        }
+        /** @type {?} */
+        var sourceFields = wfsDataSourceOptions.sourceFields;
+        if (!propertyName && sourceFields && sourceFields.length > 0) {
+            /** @type {?} */
+            var fieldsNames_1 = [];
+            wfsDataSourceOptions.sourceFields.forEach(( /**
+             * @param {?} sourcefield
+             * @return {?}
+             */function (sourcefield) {
+                fieldsNames_1.push(sourcefield.name);
+            }));
+            propertyName = "propertyName=" + fieldsNames_1.join(',') + "," + paramsWFS.fieldNameGeometry;
+        }
+        /** @type {?} */
+        var getCapabilities = url + "?service=wfs&request=GetCapabilities&" + version;
+        /** @type {?} */
+        var getFeature = url + "?service=wfs&request=GetFeature&" + version + "&" + featureTypes + "&";
+        getFeature += outputFormat + "&" + srs + "&" + cnt + "&" + propertyName;
+        /** @type {?} */
+        var getpropertyvalue = url + "?service=wfs&request=GetPropertyValue&version=" + versionWfs200 + "&" + featureTypes + "&";
+        getpropertyvalue += "&" + cnt + "&" + valueReference;
+        return [
+            { name: 'outputformat', value: outputFormat },
+            { name: 'version', value: version },
+            { name: 'typename', value: featureTypes },
+            { name: 'count', value: cnt },
+            { name: 'srsname', value: srs },
+            { name: 'propertyname', value: propertyName },
+            { name: 'valuereference', value: valueReference },
+            { name: 'getcapabilities', value: getCapabilities.replace(/&&/g, '&') },
+            { name: 'getfeature', value: getFeature.replace(/&&/g, '&') },
+            { name: 'getpropertyvalue', value: getpropertyvalue.replace(/&&/g, '&') }
+        ];
+    }
+    /**
+     * Validate/Modify layer's wfs options based on :
+     * 1- an Openlayers's issue with GML provided from WFS. Refer to
+     * https://github.com/openlayers/openlayers/pull/6400
+     * 2- Set default values for optionals parameters.
+     * @param {?} wfsDataSourceOptions  WFSDataSourceOptions The common wfs datasource options interface
+     * @param {?=} srcType
+     * @return {?} An array array of {name: '', value: ''} of predefined query params.
+     */
+    function checkWfsParams(wfsDataSourceOptions, srcType) {
+        if (srcType && srcType === 'wfs') {
+            // reassignation of params to paramsWFS and url to urlWFS to have a common interface with wms-wfs datasources
+            wfsDataSourceOptions.paramsWFS = wfsDataSourceOptions.params;
+        }
+        /** @type {?} */
+        var paramsWFS = wfsDataSourceOptions.paramsWFS;
+        wfsDataSourceOptions.urlWfs = wfsDataSourceOptions.urlWfs || wfsDataSourceOptions.url;
+        paramsWFS.version = paramsWFS.version || defaultWfsVersion;
+        paramsWFS.fieldNameGeometry = paramsWFS.fieldNameGeometry || defaultFieldNameGeometry;
+        paramsWFS.maxFeatures = paramsWFS.maxFeatures || defaultMaxFeatures;
+        /** @type {?} */
+        var outputFormat;
+        if (paramsWFS.outputFormat) {
+            outputFormat = paramsWFS.outputFormat;
+        }
+        if (gmlRegex.test(outputFormat) || !outputFormat) {
+            paramsWFS.version = '1.1.0';
+        }
+        return Object.assign({}, wfsDataSourceOptions);
+    }
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var WFSDataSource = /** @class */ (function (_super) {
         __extends(WFSDataSource, _super);
-        function WFSDataSource(options, networkService, wfsService) {
-            var _this = _super.call(this, options, networkService) || this;
+        function WFSDataSource(options, wfsService) {
+            var _this = _super.call(this, checkWfsParams(options, 'wfs')) || this;
             _this.options = options;
-            _this.networkService = networkService;
             _this.wfsService = wfsService;
-            _this.options = _this.wfsService.checkWfsOptions(options);
-            _this.ogcFilterWriter = new OgcFilterWriter();
-            _this.wfsService.getSourceFieldsFromWFS(_this.options);
+            /** @type {?} */
+            var ogcFilters = (( /** @type {?} */(_this.options))).ogcFilters;
+            /** @type {?} */
+            var fieldNameGeometry = _this.options.paramsWFS.fieldNameGeometry || defaultFieldNameGeometry;
+            /** @type {?} */
+            var ogcFilterWriter = new OgcFilterWriter();
+            (( /** @type {?} */(_this.options))).ogcFilters =
+                ogcFilterWriter.defineOgcFiltersDefaultOptions(ogcFilters, fieldNameGeometry);
+            if ((( /** @type {?} */(_this.options))).ogcFilters.enabled) {
+                _this.wfsService.getSourceFieldsFromWFS(_this.options);
+            }
             return _this;
         }
         /**
@@ -899,64 +1309,6 @@
          */
             function () {
                 var _this = this;
-                // reassignation of params to paramsWFS and url to urlWFS to have a common interface with wms-wfs datasources
-                this.options.paramsWFS = this.options.params;
-                this.options.urlWfs = this.options.url;
-                // default wfs version
-                this.options.paramsWFS.version = this.options.paramsWFS.version
-                    ? this.options.paramsWFS.version
-                    : '2.0.0';
-                /** @type {?} */
-                var ogcFiltersDefaultValue = true;
-                (( /** @type {?} */(this.options))).ogcFilters =
-                    (( /** @type {?} */(this.options))).ogcFilters === undefined
-                        ? {}
-                        : (( /** @type {?} */(this.options))).ogcFilters;
-                (( /** @type {?} */(this.options))).ogcFilters.enabled =
-                    (( /** @type {?} */(this.options))).ogcFilters.enabled ===
-                        undefined
-                        ? ogcFiltersDefaultValue
-                        : (( /** @type {?} */(this.options))).ogcFilters.enabled;
-                (( /** @type {?} */(this.options))).ogcFilters.editable =
-                    (( /** @type {?} */(this.options))).ogcFilters.editable ===
-                        undefined
-                        ? ogcFiltersDefaultValue
-                        : (( /** @type {?} */(this.options))).ogcFilters.editable;
-                /** @type {?} */
-                var baseWfsQuery = 'service=WFS&request=GetFeature';
-                // Mandatory
-                /** @type {?} */
-                var url = this.options.urlWfs;
-                // Optional
-                /** @type {?} */
-                var outputFormat = this.options.paramsWFS.outputFormat
-                    ? 'outputFormat=' + this.options.paramsWFS.outputFormat
-                    : '';
-                /** @type {?} */
-                var wfsVersion = this.options.paramsWFS.version
-                    ? 'version=' + this.options.paramsWFS.version
-                    : 'version=' + '2.0.0';
-                /** @type {?} */
-                var paramTypename = 'typename';
-                /** @type {?} */
-                var paramMaxFeatures = 'maxFeatures';
-                if (this.options.paramsWFS.version === '2.0.0' ||
-                    !this.options.paramsWFS.version) {
-                    paramTypename = 'typenames';
-                    paramMaxFeatures = 'count';
-                }
-                /** @type {?} */
-                var featureTypes = paramTypename + '=' + this.options.paramsWFS.featureTypes;
-                /** @type {?} */
-                var maxFeatures = this.options.paramsWFS.maxFeatures
-                    ? paramMaxFeatures + '=' + this.options.paramsWFS.maxFeatures
-                    : paramMaxFeatures + '=5000';
-                /** @type {?} */
-                var downloadBaseUrl = url + "?" + baseWfsQuery + "&" + wfsVersion + "&" + featureTypes + "&";
-                downloadBaseUrl += outputFormat + "&" + maxFeatures;
-                this.options.download = Object.assign({}, this.options.download, {
-                    dynamicUrl: downloadBaseUrl
-                });
                 return new OlVectorSource({
                     format: this.getFormatFromOptions(),
                     overlaps: false,
@@ -966,32 +1318,58 @@
                      * @param {?} proj
                      * @return {?}
                      */function (extent, resolution, proj) {
-                        /** @type {?} */
-                        var srsname = _this.options.paramsWFS.srsName
-                            ? 'srsname=' + _this.options.paramsWFS.srsName
-                            : 'srsname=' + proj.getCode();
-                        /** @type {?} */
-                        var filters;
-                        if ((( /** @type {?} */(_this.options))).ogcFilters &&
-                            (( /** @type {?} */(_this.options))).ogcFilters.enabled) {
-                            filters = (( /** @type {?} */(_this.options))).ogcFilters.filters;
-                        }
-                        _this.options.paramsWFS.xmlFilter = _this.ogcFilterWriter.buildFilter(filters, extent, proj, _this.options.paramsWFS.fieldNameGeometry);
-                        /** @type {?} */
-                        var baseUrl = url + "?" + baseWfsQuery + "&" + wfsVersion + "&" + featureTypes + "&";
-                        baseUrl += outputFormat + "&" + srsname + "&" + maxFeatures;
-                        /** @type {?} */
-                        var patternFilter = /(filter|bbox)=.*/gi;
-                        if (patternFilter.test(_this.options.paramsWFS.xmlFilter)) {
-                            baseUrl += "&" + _this.options.paramsWFS.xmlFilter;
-                        }
-                        _this.options.download = Object.assign({}, _this.options.download, {
-                            dynamicUrl: baseUrl
-                        });
-                        return baseUrl;
+                        return _this.buildUrl(extent, proj, (( /** @type {?} */(_this.options))).ogcFilters);
                     }),
-                    strategy: olloadingstrategy.bbox
+                    strategy: OlLoadingStrategy.bbox
                 });
+            };
+        /**
+         * @private
+         * @param {?} extent
+         * @param {?} proj
+         * @param {?} ogcFilters
+         * @return {?}
+         */
+        WFSDataSource.prototype.buildUrl = /**
+         * @private
+         * @param {?} extent
+         * @param {?} proj
+         * @param {?} ogcFilters
+         * @return {?}
+         */
+            function (extent, proj, ogcFilters) {
+                /** @type {?} */
+                var paramsWFS = this.options.paramsWFS;
+                /** @type {?} */
+                var queryStringValues = formatWFSQueryString(this.options, undefined, proj.getCode());
+                /** @type {?} */
+                var igoFilters;
+                if (ogcFilters && ogcFilters.enabled) {
+                    igoFilters = ogcFilters.filters;
+                }
+                /** @type {?} */
+                var ogcFilterWriter = new OgcFilterWriter();
+                /** @type {?} */
+                var filterOrBox = ogcFilterWriter.buildFilter(igoFilters, extent, proj, ogcFilters.geometryName);
+                /** @type {?} */
+                var filterOrPush = ogcFilterWriter.handleOgcFiltersAppliedValue(this.options, ogcFilters.geometryName);
+                /** @type {?} */
+                var prefix = 'filter';
+                if (!filterOrPush) {
+                    prefix = 'bbox';
+                    filterOrPush = extent.join(',') + ',' + proj.getCode();
+                }
+                paramsWFS.xmlFilter = ogcFilters.advancedOgcFilters ? filterOrBox : prefix + "=" + filterOrPush;
+                /** @type {?} */
+                var baseUrl = queryStringValues.find(( /**
+                 * @param {?} f
+                 * @return {?}
+                 */function (f) { return f.name === 'getfeature'; })).value;
+                /** @type {?} */
+                var patternFilter = /(filter|bbox)=.*/gi;
+                baseUrl = patternFilter.test(paramsWFS.xmlFilter) ? baseUrl + "&" + paramsWFS.xmlFilter : baseUrl;
+                this.options.download = Object.assign({}, this.options.download, { dynamicUrl: baseUrl });
+                return baseUrl.replace(/&&/g, '&');
             };
         /**
          * @private
@@ -1005,19 +1383,25 @@
                 /** @type {?} */
                 var olFormatCls;
                 /** @type {?} */
-                var outputFormat = this.options.paramsWFS.outputFormat.toLowerCase();
-                /** @type {?} */
-                var patternGml3 = new RegExp('.*?gml.*?');
-                /** @type {?} */
-                var patternGeojson = new RegExp('.*?json.*?');
-                if (patternGeojson.test(outputFormat)) {
+                var outputFormat;
+                if (this.options.paramsWFS.outputFormat) {
+                    outputFormat = this.options.paramsWFS.outputFormat.toLowerCase();
+                }
+                if (jsonRegex.test(outputFormat)) {
                     olFormatCls = olformat.GeoJSON;
                 }
-                if (patternGml3.test(outputFormat)) {
+                if (gmlRegex.test(outputFormat) || !outputFormat) {
                     olFormatCls = olformat.WFS;
                 }
                 return new olFormatCls();
             };
+        /**
+         * @return {?}
+         */
+        WFSDataSource.prototype.onUnwatch = /**
+         * @return {?}
+         */
+            function () { };
         return WFSDataSource;
     }(DataSource));
 
@@ -1051,266 +1435,75 @@
          * @return {?}
          */
             function (datasource) {
-                var _this = this;
-                if (datasource.sourceFields === undefined ||
-                    Object.keys(datasource.sourceFields).length === 0) {
+                if (!datasource.sourceFields || datasource.sourceFields.length === 0) {
                     datasource.sourceFields = [];
-                    this.wfsGetCapabilities(datasource).subscribe(( /**
-                     * @param {?} wfsCapabilities
+                    this.defineFieldAndValuefromWFS(datasource).subscribe(( /**
+                     * @param {?} getfeatureSourceField
                      * @return {?}
-                     */function (wfsCapabilities) {
-                        datasource.paramsWFS.wfsCapabilities = {
-                            xmlBody: wfsCapabilities.body,
-                            GetPropertyValue: /GetPropertyValue/gi.test(wfsCapabilities.body)
-                                ? true
-                                : false
-                        };
-                        _this.defineFieldAndValuefromWFS(datasource).subscribe(( /**
-                         * @param {?} sourceFields
+                     */function (getfeatureSourceField) {
+                        datasource.sourceFields = getfeatureSourceField;
+                    }));
+                }
+                else {
+                    this.defineFieldAndValuefromWFS(datasource).subscribe(( /**
+                     * @param {?} getfeatureSourceField
+                     * @return {?}
+                     */function (getfeatureSourceField) {
+                        datasource.sourceFields.forEach(( /**
+                         * @param {?} sourcefield
                          * @return {?}
-                         */function (sourceFields) {
-                            datasource.sourceFields = sourceFields;
+                         */function (sourcefield) {
+                            if (sourcefield.alias === undefined) {
+                                sourcefield.alias = sourcefield.name; // to allow only a list of sourcefield with names
+                            }
+                            if (sourcefield.values === undefined || sourcefield.values.length === 0) {
+                                sourcefield.values = getfeatureSourceField.find(( /**
+                                 * @param {?} sf
+                                 * @return {?}
+                                 */function (sf) { return sf.name === sourcefield.name; })).values;
+                            }
                         }));
                     }));
                 }
-                else {
-                    datasource.sourceFields.forEach(( /**
-                     * @param {?} sourcefield
-                     * @return {?}
-                     */function (sourcefield) {
-                        if (sourcefield.alias === undefined) {
-                            sourcefield.alias = sourcefield.name; // to allow only a list of sourcefield with names
-                        }
-                    }));
-                    datasource.sourceFields
-                        .filter(( /**
-                 * @param {?} field
-                 * @return {?}
-                 */function (field) { return field.values === undefined || field.values.length === 0; }))
-                        .forEach(( /**
-                 * @param {?} f
-                 * @return {?}
-                 */function (f) {
-                        _this.getValueFromWfsGetPropertyValues(datasource, f.name, 200, 0, 0).subscribe(( /**
-                         * @param {?} rep
-                         * @return {?}
-                         */function (rep) { return (f.values = rep); }));
-                    }));
-                }
             };
         /**
-         * @param {?} wfsDataSourceOptions
-         * @return {?}
-         */
-        WFSService.prototype.checkWfsOptions = /**
-         * @param {?} wfsDataSourceOptions
-         * @return {?}
-         */
-            function (wfsDataSourceOptions) {
-                // Look at https://github.com/openlayers/openlayers/pull/6400
-                /** @type {?} */
-                var patternGml = new RegExp(/.*?gml.*?/gi);
-                if (patternGml.test(wfsDataSourceOptions.paramsWFS.outputFormat)) {
-                    wfsDataSourceOptions.paramsWFS.version = '1.1.0';
-                }
-                return Object.assign({}, wfsDataSourceOptions, {
-                    wfsCapabilities: { xmlBody: '', GetPropertyValue: false }
-                });
-            };
-        /**
-         * @param {?} wfsDataSourceOptions
-         * @param {?} wfsQuery
-         * @return {?}
-         */
-        WFSService.prototype.buildBaseWfsUrl = /**
-         * @param {?} wfsDataSourceOptions
-         * @param {?} wfsQuery
-         * @return {?}
-         */
-            function (wfsDataSourceOptions, wfsQuery) {
-                /** @type {?} */
-                var paramTypename = 'typename';
-                if (wfsDataSourceOptions.paramsWFS.version === '2.0.0' ||
-                    !wfsDataSourceOptions.paramsWFS.version) {
-                    paramTypename = 'typenames';
-                }
-                /** @type {?} */
-                var baseWfsQuery = 'service=wfs&request=' + wfsQuery;
-                /** @type {?} */
-                var wfsTypeName = paramTypename + '=' + wfsDataSourceOptions.paramsWFS.featureTypes;
-                /** @type {?} */
-                var wfsVersion = wfsDataSourceOptions.paramsWFS.version
-                    ? 'version=' + wfsDataSourceOptions.paramsWFS.version
-                    : 'version=' + '2.0.0';
-                return wfsDataSourceOptions.urlWfs + "?" + baseWfsQuery + "&" + wfsVersion + "&" + wfsTypeName;
-            };
-        /**
+         * @private
          * @param {?} wfsDataSourceOptions
          * @param {?=} nb
          * @param {?=} epsgCode
-         * @param {?=} propertyname
+         * @param {?=} propertyName
          * @return {?}
          */
         WFSService.prototype.wfsGetFeature = /**
+         * @private
          * @param {?} wfsDataSourceOptions
          * @param {?=} nb
          * @param {?=} epsgCode
-         * @param {?=} propertyname
+         * @param {?=} propertyName
          * @return {?}
          */
-            function (wfsDataSourceOptions, nb, epsgCode, propertyname) {
+            function (wfsDataSourceOptions, nb, epsgCode, propertyName) {
                 if (nb === void 0) {
-                    nb = 5000;
+                    nb = defaultMaxFeatures;
                 }
                 if (epsgCode === void 0) {
-                    epsgCode = 3857;
-                }
-                if (propertyname === void 0) {
-                    propertyname = '';
+                    epsgCode = defaultEpsg;
                 }
                 /** @type {?} */
-                var baseUrl = this.buildBaseWfsUrl(wfsDataSourceOptions, 'GetFeature');
+                var queryStringValues = formatWFSQueryString(wfsDataSourceOptions, nb, epsgCode, propertyName);
                 /** @type {?} */
-                var outputFormat = wfsDataSourceOptions.paramsWFS.outputFormat
-                    ? 'outputFormat=' + wfsDataSourceOptions.paramsWFS.outputFormat
-                    : '';
-                /** @type {?} */
-                var srsname = wfsDataSourceOptions.paramsWFS.srsName
-                    ? 'srsname=' + wfsDataSourceOptions.paramsWFS.srsName
-                    : 'srsname=EPSG:' + epsgCode;
-                /** @type {?} */
-                var wfspropertyname = propertyname === '' ? propertyname : '&propertyname=' + propertyname;
-                /** @type {?} */
-                var paramMaxFeatures = 'maxFeatures';
-                if (wfsDataSourceOptions.paramsWFS.version === '2.0.0' ||
-                    !wfsDataSourceOptions.paramsWFS.version) {
-                    paramMaxFeatures = 'count';
-                }
-                /** @type {?} */
-                var maxFeatures;
-                if (nb !== 5000) {
-                    maxFeatures = paramMaxFeatures + '=' + nb;
-                }
-                else {
-                    maxFeatures = wfsDataSourceOptions.paramsWFS.maxFeatures
-                        ? paramMaxFeatures + '=' + wfsDataSourceOptions.paramsWFS.maxFeatures
-                        : paramMaxFeatures + '=' + nb;
-                }
-                /** @type {?} */
-                var urlWfs = baseUrl + "&" + outputFormat + "&" + srsname + "&" + maxFeatures + wfspropertyname;
-                /** @type {?} */
-                var patternGml = new RegExp('.*?gml.*?');
-                if (patternGml.test(wfsDataSourceOptions.paramsWFS.outputFormat.toLowerCase())) {
-                    return this.http.get(urlWfs, { responseType: 'text' });
-                }
-                else {
-                    return this.http.get(urlWfs);
-                }
-            };
-        /**
-         * @param {?} wfsDataSourceOptions
-         * @param {?} field
-         * @param {?=} maxFeatures
-         * @param {?=} startIndex
-         * @param {?=} retry
-         * @return {?}
-         */
-        WFSService.prototype.getValueFromWfsGetPropertyValues = /**
-         * @param {?} wfsDataSourceOptions
-         * @param {?} field
-         * @param {?=} maxFeatures
-         * @param {?=} startIndex
-         * @param {?=} retry
-         * @return {?}
-         */
-            function (wfsDataSourceOptions, field, maxFeatures, startIndex, retry) {
-                var _this = this;
-                if (maxFeatures === void 0) {
-                    maxFeatures = 30;
-                }
-                if (startIndex === void 0) {
-                    startIndex = 0;
-                }
-                if (retry === void 0) {
-                    retry = 0;
-                }
-                return new rxjs.Observable(( /**
-                 * @param {?} d
+                var baseUrl = queryStringValues.find(( /**
+                 * @param {?} f
                  * @return {?}
-                 */function (d) {
-                    /** @type {?} */
-                    var nbRetry = 2;
-                    /** @type {?} */
-                    var valueList = [];
-                    _this.wfsGetPropertyValue(wfsDataSourceOptions, field, maxFeatures, startIndex).subscribe(( /**
-                     * @param {?} str
-                     * @return {?}
-                     */function (str) {
-                        str = str.replace(/&#39;/gi, "'"); // tslint:disable-line
-                        // tslint:disable-line
-                        /** @type {?} */
-                        var regexExcp = /exception/gi;
-                        if (regexExcp.test(str)) {
-                            retry++;
-                            if (retry < nbRetry) {
-                                _this.getValueFromWfsGetPropertyValues(wfsDataSourceOptions, field, maxFeatures, startIndex, retry).subscribe(( /**
-                                 * @param {?} rep
-                                 * @return {?}
-                                 */function (rep) { return d.next(rep); }));
-                            }
-                        }
-                        else {
-                            /** @type {?} */
-                            var valueReferenceRegex = new RegExp('<(.+?)' + field + '>(.+?)</(.+?)' + field + '>', 'gi');
-                            /** @type {?} */
-                            var n = valueReferenceRegex.exec(str);
-                            while (n !== null) {
-                                if (n.index === valueReferenceRegex.lastIndex) {
-                                    valueReferenceRegex.lastIndex++;
-                                }
-                                if (valueList.indexOf(n[2]) === -1) {
-                                    valueList.push(n[2]);
-                                }
-                                n = valueReferenceRegex.exec(str);
-                            }
-                            d.next(valueList);
-                            d.complete();
-                        }
-                    }), ( /**
-                     * @param {?} err
-                     * @return {?}
-                     */function (err) {
-                        if (retry < nbRetry) {
-                            retry++;
-                            _this.getValueFromWfsGetPropertyValues(wfsDataSourceOptions, field, maxFeatures, startIndex, retry).subscribe(( /**
-                             * @param {?} rep
-                             * @return {?}
-                             */function (rep) { return d.next(rep); }));
-                        }
-                    }));
-                }));
-            };
-        /**
-         * @param {?} options
-         * @return {?}
-         */
-        WFSService.prototype.wfsGetCapabilities = /**
-         * @param {?} options
-         * @return {?}
-         */
-            function (options) {
+                 */function (f) { return f.name === 'getfeature'; })).value;
                 /** @type {?} */
-                var baseWfsQuery = 'service=wfs&request=GetCapabilities';
-                /** @type {?} */
-                var wfsVersion = options.version
-                    ? 'version=' + options.version
-                    : 'version=' + '2.0.0';
-                /** @type {?} */
-                var wfsGcUrl = options.urlWfs + "?" + baseWfsQuery + "&" + wfsVersion;
-                return this.http.get(wfsGcUrl, {
-                    observe: 'response',
-                    responseType: 'text'
-                });
+                var outputFormat = wfsDataSourceOptions.paramsWFS.outputFormat;
+                if (gmlRegex.test(outputFormat) || !outputFormat) {
+                    return this.http.get(baseUrl, { responseType: 'text' });
+                }
+                else {
+                    return this.http.get(baseUrl);
+                }
             };
         /**
          * @param {?} wfsDataSourceOptions
@@ -1337,118 +1530,45 @@
                     /** @type {?} */
                     var olFormats;
                     /** @type {?} */
-                    var patternGml3 = /gml/gi;
-                    if (wfsDataSourceOptions.paramsWFS.outputFormat.match(patternGml3)) {
+                    var outputFormat = wfsDataSourceOptions.paramsWFS.outputFormat;
+                    if (gmlRegex.test(outputFormat) || !outputFormat) {
                         olFormats = olformat.WFS;
                     }
                     else {
                         olFormats = olformat.GeoJSON;
                     }
-                    if (wfsDataSourceOptions.paramsWFS.wfsCapabilities.GetPropertyValue) {
-                        _this.wfsGetFeature(wfsDataSourceOptions, 1).subscribe(( /**
-                         * @param {?} oneFeature
+                    _this.wfsGetFeature(wfsDataSourceOptions, 1).subscribe(( /**
+                     * @param {?} oneFeature
+                     * @return {?}
+                     */function (oneFeature) {
+                        /** @type {?} */
+                        var features = new olFormats().readFeatures(oneFeature);
+                        fieldList = features[0].getKeys();
+                        fieldListWoGeom = fieldList.filter(( /**
+                         * @param {?} field
                          * @return {?}
-                         */function (oneFeature) {
+                         */function (field) {
+                            return field !== features[0].getGeometryName() &&
+                                !field.match(/boundedby/gi);
+                        }));
+                        fieldListWoGeomStr = fieldListWoGeom.join(',');
+                        _this.wfsGetFeature(wfsDataSourceOptions, wfsDataSourceOptions.paramsWFS.maxFeatures || defaultMaxFeatures, undefined, fieldListWoGeomStr).subscribe(( /**
+                         * @param {?} manyFeatures
+                         * @return {?}
+                         */function (manyFeatures) {
                             /** @type {?} */
-                            var features = new olFormats().readFeatures(oneFeature);
-                            fieldList = features[0].getKeys();
-                            fieldListWoGeom = fieldList.filter(( /**
-                             * @param {?} field
-                             * @return {?}
-                             */function (field) {
-                                return field !== features[0].getGeometryName() &&
-                                    !field.match(/boundedby/gi);
-                            }));
-                            fieldListWoGeomStr = fieldListWoGeom.join(',');
-                            fieldListWoGeom.forEach(( /**
+                            var mfeatures = new olFormats().readFeatures(manyFeatures);
+                            _this.built_properties_value(mfeatures).forEach(( /**
                              * @param {?} element
                              * @return {?}
                              */function (element) {
-                                /** @type {?} */
-                                var fieldType = typeof features[0].get(element) === 'object'
-                                    ? undefined
-                                    : typeof features[0].get(element);
-                                _this.getValueFromWfsGetPropertyValues(wfsDataSourceOptions, element, 200).subscribe(( /**
-                                 * @param {?} valueList
-                                 * @return {?}
-                                 */function (valueList) {
-                                    sourceFields.push({
-                                        name: element,
-                                        alias: element,
-                                        values: valueList
-                                    });
-                                    d.next(sourceFields);
-                                }));
+                                sourceFields.push(element);
                             }));
+                            d.next(sourceFields);
+                            d.complete();
                         }));
-                    }
-                    else {
-                        _this.wfsGetFeature(wfsDataSourceOptions, 1).subscribe(( /**
-                         * @param {?} oneFeature
-                         * @return {?}
-                         */function (oneFeature) {
-                            /** @type {?} */
-                            var features = new olFormats().readFeatures(oneFeature);
-                            fieldList = features[0].getKeys();
-                            fieldListWoGeom = fieldList.filter(( /**
-                             * @param {?} field
-                             * @return {?}
-                             */function (field) {
-                                return field !== features[0].getGeometryName() &&
-                                    !field.match(/boundedby/gi);
-                            }));
-                            fieldListWoGeomStr = fieldListWoGeom.join(',');
-                            _this.wfsGetFeature(wfsDataSourceOptions, 200, 3857, fieldListWoGeomStr).subscribe(( /**
-                             * @param {?} manyFeatures
-                             * @return {?}
-                             */function (manyFeatures) {
-                                /** @type {?} */
-                                var mfeatures = new olFormats().readFeatures(manyFeatures);
-                                _this.built_properties_value(mfeatures).forEach(( /**
-                                 * @param {?} element
-                                 * @return {?}
-                                 */function (element) {
-                                    sourceFields.push(element);
-                                }));
-                                d.next(sourceFields);
-                                d.complete();
-                            }));
-                        }));
-                    }
+                    }));
                 }));
-            };
-        /**
-         * @param {?} wfsDataSourceOptions
-         * @param {?} field
-         * @param {?=} maxFeatures
-         * @param {?=} startIndex
-         * @return {?}
-         */
-        WFSService.prototype.wfsGetPropertyValue = /**
-         * @param {?} wfsDataSourceOptions
-         * @param {?} field
-         * @param {?=} maxFeatures
-         * @param {?=} startIndex
-         * @return {?}
-         */
-            function (wfsDataSourceOptions, field, maxFeatures, startIndex) {
-                if (maxFeatures === void 0) {
-                    maxFeatures = 30;
-                }
-                if (startIndex === void 0) {
-                    startIndex = 0;
-                }
-                /** @type {?} */
-                var baseWfsQuery = 'service=wfs&request=GetPropertyValue&count=' + maxFeatures;
-                /** @type {?} */
-                var wfsTypeName = 'typenames=' + wfsDataSourceOptions.paramsWFS.featureTypes;
-                /** @type {?} */
-                var wfsValueReference = 'valueReference=' + field;
-                /** @type {?} */
-                var wfsVersion = 'version=' + '2.0.0';
-                /** @type {?} */
-                var gfvUrl = wfsDataSourceOptions.urlWfs + "?" + baseWfsQuery + "&" + wfsVersion + "&" + wfsTypeName + "&" + wfsValueReference;
-                return this.http.get(gfvUrl, { responseType: 'text' });
             };
         /**
          * @private
@@ -1537,6 +1657,7 @@
         ESRIJSON: 'esrijson',
         TEXT: 'text',
         HTML: 'html',
+        HTMLGML2: 'htmlgml2',
     };
     /** @enum {string} */
     var QueryHtmlTarget = {
@@ -1550,10 +1671,9 @@
      */
     var WMSDataSource = /** @class */ (function (_super) {
         __extends(WMSDataSource, _super);
-        function WMSDataSource(options, networkService, wfsService) {
-            var _this = _super.call(this, options, networkService) || this;
+        function WMSDataSource(options, wfsService) {
+            var _this = _super.call(this, options) || this;
             _this.options = options;
-            _this.networkService = networkService;
             _this.wfsService = wfsService;
             // Important: To use wms versions smaller than 1.3.0, SRS
             // needs to be supplied in the source "params"
@@ -1581,42 +1701,53 @@
                     _this.refresh();
                 }), options.refreshIntervalSec * 1000); // Convert seconds to MS
             }
+            /** @type {?} */
+            var fieldNameGeometry = defaultFieldNameGeometry;
             // ####   START if paramsWFS
             if (options.paramsWFS) {
                 /** @type {?} */
-                var wfsCheckup = _this.wfsService.checkWfsOptions(options);
-                options.paramsWFS.version = wfsCheckup.paramsWFS.version;
-                options.paramsWFS.wfsCapabilities = wfsCheckup.params.wfsCapabilities;
-                _this.wfsService.getSourceFieldsFromWFS(options);
-                _this.options.download = Object.assign({}, _this.options.download, {
-                    dynamicUrl: _this.buildDynamicDownloadUrlFromParamsWFS(_this.options)
+                var wfsCheckup = checkWfsParams(options, 'wms');
+                utils.ObjectUtils.mergeDeep(options.paramsWFS, wfsCheckup.paramsWFS);
+                fieldNameGeometry = options.paramsWFS.fieldNameGeometry || fieldNameGeometry;
+                options.download = Object.assign({}, options.download, {
+                    dynamicUrl: _this.buildDynamicDownloadUrlFromParamsWFS(options)
                 });
             } //  ####   END  if paramsWFS
-            _this.ogcFilterWriter = new OgcFilterWriter();
             if (!options.sourceFields || options.sourceFields.length === 0) {
                 options.sourceFields = [];
             }
+            else {
+                options.sourceFields.forEach(( /**
+                 * @param {?} sourceField
+                 * @return {?}
+                 */function (sourceField) {
+                    sourceField.alias = sourceField.alias ? sourceField.alias : sourceField.name;
+                    // to allow only a list of sourcefield with names
+                }));
+            }
             /** @type {?} */
-            var initOgcFilters = (( /** @type {?} */(_this.options))).ogcFilters;
-            if (sourceParams.layers.split(',').length > 1 && _this.options && initOgcFilters && initOgcFilters.enabled) {
+            var initOgcFilters = (( /** @type {?} */(options))).ogcFilters;
+            /** @type {?} */
+            var ogcFilterWriter = new OgcFilterWriter();
+            if (!initOgcFilters) {
+                (( /** @type {?} */(options))).ogcFilters =
+                    ogcFilterWriter.defineOgcFiltersDefaultOptions(initOgcFilters, fieldNameGeometry, 'wms');
+            }
+            else {
+                initOgcFilters.advancedOgcFilters = initOgcFilters.pushButtons ? false : true;
+            }
+            if (sourceParams.layers.split(',').length > 1 && options && initOgcFilters.enabled) {
                 console.log('*******************************');
                 console.log('BE CAREFULL, YOUR WMS LAYERS (' + sourceParams.layers
                     + ') MUST SHARE THE SAME FIELDS TO ALLOW ogcFilters TO WORK !! ');
                 console.log('*******************************');
             }
-            if (_this.options && initOgcFilters && initOgcFilters.enabled && initOgcFilters.filters) {
-                /** @type {?} */
-                var filters = initOgcFilters.filters;
-                /** @type {?} */
-                var rebuildFilter = _this.ogcFilterWriter.buildFilter(filters);
-                /** @type {?} */
-                var appliedFilter = _this.formatProcessedOgcFilter(rebuildFilter, sourceParams.layers);
-                /** @type {?} */
-                var wmsFilterValue = appliedFilter.length > 0
-                    ? appliedFilter.replace('filter=', '')
-                    : undefined;
-                _this.ol.updateParams({ filter: wmsFilterValue });
+            if (options.paramsWFS && initOgcFilters.enabled) {
+                _this.wfsService.getSourceFieldsFromWFS(options);
             }
+            /** @type {?} */
+            var filterQueryString = ogcFilterWriter.handleOgcFiltersAppliedValue(options, fieldNameGeometry);
+            _this.ol.updateParams({ filter: filterQueryString });
             return _this;
         }
         Object.defineProperty(WMSDataSource.prototype, "params", {
@@ -1660,32 +1791,6 @@
                 this.ol.updateParams({ igoRefresh: Math.random() });
             };
         /**
-         * @param {?} processedFilter
-         * @param {?} layers
-         * @return {?}
-         */
-        WMSDataSource.prototype.formatProcessedOgcFilter = /**
-         * @param {?} processedFilter
-         * @param {?} layers
-         * @return {?}
-         */
-            function (processedFilter, layers) {
-                /** @type {?} */
-                var appliedFilter = '';
-                if (processedFilter.length === 0 && layers.indexOf(',') === -1) {
-                    appliedFilter = processedFilter;
-                }
-                else {
-                    layers.split(',').forEach(( /**
-                     * @param {?} layerName
-                     * @return {?}
-                     */function (layerName) {
-                        appliedFilter = appliedFilter + "(" + processedFilter.replace('filter=', '') + ")";
-                    }));
-                }
-                return "filter=" + appliedFilter;
-            };
-        /**
          * @private
          * @param {?} asWFSDataSourceOptions
          * @return {?}
@@ -1697,26 +1802,13 @@
          */
             function (asWFSDataSourceOptions) {
                 /** @type {?} */
-                var outputFormat = asWFSDataSourceOptions.paramsWFS.outputFormat !== undefined
-                    ? 'outputFormat=' + asWFSDataSourceOptions.paramsWFS.outputFormat
-                    : '';
+                var queryStringValues = formatWFSQueryString(asWFSDataSourceOptions);
                 /** @type {?} */
-                var paramMaxFeatures = 'maxFeatures';
-                if (asWFSDataSourceOptions.paramsWFS.version === '2.0.0' ||
-                    !asWFSDataSourceOptions.paramsWFS.version) {
-                    paramMaxFeatures = 'count';
-                }
-                /** @type {?} */
-                var maxFeatures = asWFSDataSourceOptions.paramsWFS.maxFeatures
-                    ? paramMaxFeatures + '=' + asWFSDataSourceOptions.paramsWFS.maxFeatures
-                    : paramMaxFeatures + '=5000';
-                /** @type {?} */
-                var srsname = asWFSDataSourceOptions.paramsWFS.srsName
-                    ? 'srsname=' + asWFSDataSourceOptions.paramsWFS.srsName
-                    : 'srsname=EPSG:3857';
-                /** @type {?} */
-                var baseWfsQuery = this.wfsService.buildBaseWfsUrl(asWFSDataSourceOptions, 'GetFeature');
-                return baseWfsQuery + "&" + outputFormat + "&" + srsname + "&" + maxFeatures;
+                var downloadUrl = queryStringValues.find(( /**
+                 * @param {?} f
+                 * @return {?}
+                 */function (f) { return f.name === 'getfeature'; })).value;
+                return downloadUrl;
             };
         /**
          * @protected
@@ -1727,21 +1819,6 @@
          * @return {?}
          */
             function () {
-                if (this.options.paramsWFS) {
-                    this.options.urlWfs = this.options.urlWfs
-                        ? this.options.urlWfs
-                        : this.options.url;
-                    this.options.paramsWFS.version = this.options.paramsWFS.version
-                        ? this.options.paramsWFS.version
-                        : '2.0.0';
-                }
-                /** @type {?} */
-                var initOgcFilters = (( /** @type {?} */(this.options))).ogcFilters;
-                /** @type {?} */
-                var ogcFiltersDefaultValue = false;
-                initOgcFilters = initOgcFilters === undefined ? {} : initOgcFilters;
-                initOgcFilters.enabled = initOgcFilters.enabled === undefined ? ogcFiltersDefaultValue : initOgcFilters.enabled;
-                initOgcFilters.editable = initOgcFilters.editable === undefined ? ogcFiltersDefaultValue : initOgcFilters.editable;
                 return new olSourceImageWMS(this.options);
             };
         /**
@@ -1772,7 +1849,6 @@
                     'REQUEST=GetLegendGraphic',
                     'SERVICE=wms',
                     'FORMAT=image/png',
-                    'LEGEND_OPTIONS=forceLabels:on',
                     'SLD_VERSION=1.1.0',
                     "VERSION=" + (sourceParams.version || '1.3.0')
                 ];
@@ -1790,6 +1866,13 @@
                 }));
                 return legend;
             };
+        /**
+         * @return {?}
+         */
+        WMSDataSource.prototype.onUnwatch = /**
+         * @return {?}
+         */
+            function () { };
         return WMSDataSource;
     }(DataSource));
 
@@ -1829,8 +1912,8 @@
      */
     var WMTSDataSource = /** @class */ (function (_super) {
         __extends(WMTSDataSource, _super);
-        function WMTSDataSource(options, networkService) {
-            return _super.call(this, options, networkService) || this;
+        function WMTSDataSource(options) {
+            return _super.call(this, options) || this;
         }
         /**
          * @protected
@@ -1847,6 +1930,13 @@
                 }, this.options);
                 return new olSourceWMTS(sourceOptions);
             };
+        /**
+         * @return {?}
+         */
+        WMTSDataSource.prototype.onUnwatch = /**
+         * @return {?}
+         */
+            function () { };
         return WMTSDataSource;
     }(DataSource));
 
@@ -1902,7 +1992,7 @@
                 /** @type {?} */
                 var crossOrigin = this.options.crossOrigin
                     ? this.options.crossOrigin
-                    : 'Anonymous';
+                    : 'anonymous';
                 /** @type {?} */
                 var sourceOptions = Object.assign({
                     crossOrigin: crossOrigin
@@ -2021,6 +2111,13 @@
                     return [{ html: htmlString }];
                 }
             };
+        /**
+         * @return {?}
+         */
+        CartoDataSource.prototype.onUnwatch = /**
+         * @return {?}
+         */
+            function () { };
         return CartoDataSource;
     }(DataSource));
 
@@ -2092,7 +2189,7 @@
                         }
                         return baseUrl + "?" + params.join('&');
                     }).bind(this),
-                    strategy: olloadingstrategy.bbox
+                    strategy: OlLoadingStrategy.bbox
                 });
             };
         /**
@@ -2149,6 +2246,13 @@
                 htmlString += '</table>';
                 return [{ html: htmlString }];
             };
+        /**
+         * @return {?}
+         */
+        ArcGISRestDataSource.prototype.onUnwatch = /**
+         * @return {?}
+         */
+            function () { };
         return ArcGISRestDataSource;
     }(DataSource));
 
@@ -2253,6 +2357,13 @@
                 htmlString += '</table>';
                 return [{ html: htmlString }];
             };
+        /**
+         * @return {?}
+         */
+        TileArcGISRestDataSource.prototype.onUnwatch = /**
+         * @return {?}
+         */
+            function () { };
         return TileArcGISRestDataSource;
     }(DataSource));
 
@@ -2362,6 +2473,15 @@
             function (event) {
                 // thrown message to user ?
             };
+        /**
+         * @return {?}
+         */
+        WebSocketDataSource.prototype.onUnwatch = /**
+         * @return {?}
+         */
+            function () {
+                this.ws.close();
+            };
         return WebSocketDataSource;
     }(FeatureDataSource));
 
@@ -2384,7 +2504,7 @@
          */
             function () {
                 /** @type {?} */
-                var mvtFormat = new olFormatMVT({ featureClass: olFeature });
+                var mvtFormat = new olFormatMVT({ featureClass: OlFeature });
                 this.options.format = mvtFormat;
                 return new olSourceVectorTile(this.options);
             };
@@ -2405,14 +2525,12 @@
                 return ( /** @type {?} */(tsMd5.Md5.hashStr(chain)));
             };
         /**
-         * @param {?} status
          * @return {?}
          */
-        MVTDataSource.prototype.onLayerStatusChange = /**
-         * @param {?} status
+        MVTDataSource.prototype.onUnwatch = /**
          * @return {?}
          */
-            function (status) { };
+            function () { };
         return MVTDataSource;
     }(DataSource));
 
@@ -2449,6 +2567,13 @@
             function () {
                 return utils.uuid();
             };
+        /**
+         * @return {?}
+         */
+        ClusterDataSource.prototype.onUnwatch = /**
+         * @return {?}
+         */
+            function () { };
         return ClusterDataSource;
     }(FeatureDataSource));
 
@@ -2880,6 +3005,44 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    var VectorWatcher = /** @class */ (function (_super) {
+        __extends(VectorWatcher, _super);
+        function VectorWatcher(layer) {
+            var _this = _super.call(this) || this;
+            _this.loaded = 0;
+            _this.loading = 0;
+            _this.layer = layer;
+            _this.id = utils.uuid();
+            return _this;
+        }
+        /**
+         * @protected
+         * @return {?}
+         */
+        VectorWatcher.prototype.watch = /**
+         * @protected
+         * @return {?}
+         */
+            function () {
+            };
+        /**
+         * @protected
+         * @return {?}
+         */
+        VectorWatcher.prototype.unwatch = /**
+         * @protected
+         * @return {?}
+         */
+            function () {
+                this.layer.onUnwatch();
+            };
+        return VectorWatcher;
+    }(utils.Watcher));
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     /**
      * Get all the layers legend
      * @param {?} layers
@@ -2914,7 +3077,7 @@
                     // Create an image for the legend
                     /** @type {?} */
                     var legendImage = new Image();
-                    legendImage.crossOrigin = 'Anonymous';
+                    legendImage.crossOrigin = 'anonymous';
                     legendImage.src = legendUrl.url;
                     legendImage.onload = ( /**
                      * @return {?}
@@ -3126,7 +3289,10 @@
     var VectorLayer = /** @class */ (function (_super) {
         __extends(VectorLayer, _super);
         function VectorLayer(options) {
-            return _super.call(this, options) || this;
+            var _this = _super.call(this, options) || this;
+            _this.watcher = new VectorWatcher(_this);
+            _this.status$ = _this.watcher.status$;
+            return _this;
         }
         Object.defineProperty(VectorLayer.prototype, "browsable", {
             get: /**
@@ -3264,6 +3430,49 @@
                     // tell OpenLayers to continue postcompose animation
                     this.map.ol.render();
                 }
+            };
+        /**
+         * @param {?} map
+         * @return {?}
+         */
+        VectorLayer.prototype.setMap = /**
+         * @param {?} map
+         * @return {?}
+         */
+            function (map) {
+                if (map === undefined) {
+                    this.watcher.unsubscribe();
+                }
+                else {
+                    this.watcher.subscribe(( /**
+                     * @return {?}
+                     */function () { }));
+                }
+                _super.prototype.setMap.call(this, map);
+            };
+        /**
+         * @return {?}
+         */
+        VectorLayer.prototype.onUnwatch = /**
+         * @return {?}
+         */
+            function () {
+                this.dataSource.onUnwatch();
+                this.stopAnimation();
+            };
+        /**
+         * @return {?}
+         */
+        VectorLayer.prototype.stopAnimation = /**
+         * @return {?}
+         */
+            function () {
+                this.dataSource.ol.un('addfeature', ( /**
+                 * @param {?} e
+                 * @return {?}
+                 */function (e) {
+                    this.flash(e.feature);
+                }).bind(this));
             };
         return VectorLayer;
     }(Layer));
@@ -3434,15 +3643,18 @@
                     for (var i = 0; i < size; i++) {
                         if (feature.get(attribute) === data[i]) {
                             if (icon) {
-                                style = [new olstyle.Style({
+                                style = [
+                                    new olstyle.Style({
                                         image: new olstyle.Icon({
                                             src: icon[i],
                                             scale: scale ? scale[i] : 1
                                         })
-                                    })];
+                                    })
+                                ];
                                 return style;
                             }
-                            style = [new olstyle.Style({
+                            style = [
+                                new olstyle.Style({
                                     image: new olstyle.Circle({
                                         radius: radius ? radius[i] : 4,
                                         stroke: new olstyle.Stroke({
@@ -3452,12 +3664,14 @@
                                             color: fill ? fill[i] : 'black'
                                         })
                                     })
-                                })];
+                                })
+                            ];
                             return style;
                         }
                     }
                     if (!feature.getStyle()) {
-                        style = [new olstyle.Style({
+                        style = [
+                            new olstyle.Style({
                                 image: new olstyle.Circle({
                                     radius: 4,
                                     stroke: new olstyle.Stroke({
@@ -3467,14 +3681,16 @@
                                         color: '#bbbbf2'
                                     })
                                 })
-                            })];
+                            })
+                        ];
                         return style;
                     }
                 }
                 else if (type === 'regular') {
                     for (var i = 0; i < size; i++) {
                         if (feature.get(attribute) === data[i]) {
-                            style = [new olstyle.Style({
+                            style = [
+                                new olstyle.Style({
                                     stroke: new olstyle.Stroke({
                                         color: stroke ? stroke[i] : 'black',
                                         width: width ? width[i] : 1
@@ -3488,7 +3704,8 @@
                                             color: 'black'
                                         })
                                     })
-                                })];
+                                })
+                            ];
                             return style;
                         }
                     }
@@ -3497,14 +3714,16 @@
                             style = this.createStyle(baseStyle);
                             return style;
                         }
-                        style = [new olstyle.Style({
+                        style = [
+                            new olstyle.Style({
                                 stroke: new olstyle.Stroke({
                                     color: 'black'
                                 }),
                                 fill: new olstyle.Fill({
                                     color: '#bbbbf2'
                                 })
-                            })];
+                            })
+                        ];
                         return style;
                     }
                 }
@@ -3527,7 +3746,7 @@
                 /** @type {?} */
                 var icon = clusterParam.clusterIcon;
                 /** @type {?} */
-                var iconScale = clusterParam.clusterScale;
+                var scale = clusterParam.clusterScale;
                 /** @type {?} */
                 var size = feature.get('features').length;
                 /** @type {?} */
@@ -3544,7 +3763,8 @@
                             color$$1 = 'green';
                         }
                     }
-                    style = [new olstyle.Style({
+                    style = [
+                        new olstyle.Style({
                             image: new olstyle.Circle({
                                 radius: 2 * size + 3.4,
                                 stroke: new olstyle.Stroke({
@@ -3560,19 +3780,23 @@
                                     color: '#fff'
                                 })
                             })
-                        })];
+                        })
+                    ];
                 }
                 else {
                     if (icon) {
-                        style = [new olstyle.Style({
+                        style = [
+                            new olstyle.Style({
                                 image: new olstyle.Icon({
                                     src: icon,
-                                    scale: iconScale
+                                    scale: scale
                                 })
-                            })];
+                            })
+                        ];
                     }
                     else {
-                        style = [new olstyle.Style({
+                        style = [
+                            new olstyle.Style({
                                 image: new olstyle.Circle({
                                     radius: 2 * size + 3.4,
                                     stroke: new olstyle.Stroke({
@@ -3582,7 +3806,8 @@
                                         color: 'blue'
                                     })
                                 })
-                            })];
+                            })
+                        ];
                     }
                 }
                 return style;
@@ -5595,9 +5820,9 @@
                 var features = olFeatures.map(( /**
                  * @param {?} olFeature
                  * @return {?}
-                 */function (olFeature$$1) {
-                    olFeature$$1.set('_featureStore', _this, true);
-                    return featureFromOl(olFeature$$1, _this.layer.map.projection);
+                 */function (olFeature) {
+                    olFeature.set('_featureStore', _this, true);
+                    return featureFromOl(olFeature, _this.layer.map.projection);
                 }));
                 this.load(( /** @type {?} */(features)));
             };
@@ -5666,22 +5891,22 @@
                 olFeatures.forEach(( /**
                  * @param {?} olFeature
                  * @return {?}
-                 */function (olFeature$$1) {
-                    olFeaturesMap.set(olFeature$$1.getId(), olFeature$$1);
+                 */function (olFeature) {
+                    olFeaturesMap.set(olFeature.getId(), olFeature);
                 }));
                 /** @type {?} */
                 var olFeaturesToRemove = [];
                 this.source.ol.forEachFeature(( /**
                  * @param {?} olFeature
                  * @return {?}
-                 */function (olFeature$$1) {
+                 */function (olFeature) {
                     /** @type {?} */
-                    var newOlFeature = olFeaturesMap.get(olFeature$$1.getId());
+                    var newOlFeature = olFeaturesMap.get(olFeature.getId());
                     if (newOlFeature === undefined) {
-                        olFeaturesToRemove.push(olFeature$$1);
+                        olFeaturesToRemove.push(olFeature);
                     }
-                    else if (newOlFeature.get('_entityRevision') !== olFeature$$1.get('_entityRevision')) {
-                        olFeaturesToRemove.push(olFeature$$1);
+                    else if (newOlFeature.get('_entityRevision') !== olFeature.get('_entityRevision')) {
+                        olFeaturesToRemove.push(olFeature);
                     }
                     else {
                         olFeaturesMap.delete(newOlFeature.getId());
@@ -5693,8 +5918,8 @@
                 var olFeaturesToAdd = olFeatures.filter(( /**
                  * @param {?} olFeature
                  * @return {?}
-                 */function (olFeature$$1) {
-                    return olFeaturesToAddIds.indexOf(olFeature$$1.getId()) >= 0;
+                 */function (olFeature) {
+                    return olFeaturesToAddIds.indexOf(olFeature.getId()) >= 0;
                 }));
                 if (olFeaturesToRemove.length > 0) {
                     this.removeOlFeaturesFromLayer(olFeaturesToRemove);
@@ -5732,8 +5957,8 @@
                 olFeatures.forEach(( /**
                  * @param {?} olFeature
                  * @return {?}
-                 */function (olFeature$$1) {
-                    olFeature$$1.set('_featureStore', _this, true);
+                 */function (olFeature) {
+                    olFeature.set('_featureStore', _this, true);
                 }));
                 this.source.ol.addFeatures(olFeatures);
             };
@@ -5758,8 +5983,8 @@
                 olFeatures.forEach(( /**
                  * @param {?} olFeature
                  * @return {?}
-                 */function (olFeature$$1) {
-                    _this.source.ol.removeFeature(olFeature$$1);
+                 */function (olFeature) {
+                    _this.source.ol.removeFeature(olFeature);
                 }));
             };
         return FeatureStore;
@@ -6250,7 +6475,7 @@
                 var overlayFeaturesKeys = olOverlayFeatures.map(( /**
                  * @param {?} olFeature
                  * @return {?}
-                 */function (olFeature$$1) { return olFeature$$1.getId(); }));
+                 */function (olFeature) { return olFeature.getId(); }));
                 /** @type {?} */
                 var featuresKeys = features.map(this.overlayStore.getKey);
                 /** @type {?} */
@@ -6385,9 +6610,9 @@
                 olFeatures.forEach(( /**
                  * @param {?} olFeature
                  * @return {?}
-                 */function (olFeature$$1) {
+                 */function (olFeature) {
                     /** @type {?} */
-                    var store = olFeature$$1.get('_featureStore');
+                    var store = olFeature.get('_featureStore');
                     if (store === undefined) {
                         return;
                     }
@@ -6398,7 +6623,7 @@
                         groupedFeatures.set(store, features);
                     }
                     /** @type {?} */
-                    var feature = store.get(olFeature$$1.getId());
+                    var feature = store.get(olFeature.getId());
                     if (feature !== undefined) {
                         features.push(feature);
                     }
@@ -6513,54 +6738,49 @@
         /** @type {?} */
         var olFormat = new OlGeoJSON();
         /** @type {?} */
-        var olFeature$$1 = olFormat.readFeature(feature, {
+        var olFeature = olFormat.readFeature(feature, {
             dataProjection: feature.projection,
             featureProjection: projectionOut
         });
-        olFeature$$1.setId(getId(feature));
+        olFeature.setId(getId(feature));
         /** @type {?} */
         var title = common$1.getEntityTitle(feature);
         if (title !== undefined) {
-            olFeature$$1.set('_title', title, true);
+            olFeature.set('_title', title, true);
         }
         if (feature.extent !== undefined) {
-            olFeature$$1.set('_extent', feature.extent, true);
+            olFeature.set('_extent', feature.extent, true);
         }
         if (feature.projection !== undefined) {
-            olFeature$$1.set('_projection', feature.projection, true);
+            olFeature.set('_projection', feature.projection, true);
         }
         if (feature.extent !== undefined) {
-            olFeature$$1.set('_extent', feature.extent, true);
+            olFeature.set('_extent', feature.extent, true);
         }
         /** @type {?} */
         var mapTitle = common$1.getEntityProperty(feature, 'meta.mapTitle');
         if (mapTitle !== undefined) {
-            olFeature$$1.set('_mapTitle', mapTitle, true);
+            olFeature.set('_mapTitle', mapTitle, true);
         }
-        olFeature$$1.set('_entityRevision', common$1.getEntityRevision(feature), true);
-        return olFeature$$1;
+        olFeature.set('_entityRevision', common$1.getEntityRevision(feature), true);
+        return olFeature;
     }
     /**
      * Create a feature object out of an OL feature
      * The output object has a reference to the feature id.
      * @param {?} olFeature OL Feature
      * @param {?} projectionIn OL feature projection
-     * @param {?=} olLayer
      * @param {?=} projectionOut Feature projection
      * @return {?} Feature
      */
-    function featureFromOl(olFeature$$1, projectionIn, olLayer, projectionOut) {
+    function featureFromOl(olFeature, projectionIn, projectionOut) {
         if (projectionOut === void 0) {
             projectionOut = 'EPSG:4326';
         }
         /** @type {?} */
-        var title;
-        /** @type {?} */
-        var typeSource;
-        /** @type {?} */
         var olFormat = new OlGeoJSON();
         /** @type {?} */
-        var keys = olFeature$$1.getKeys().filter(( /**
+        var keys = olFeature.getKeys().filter(( /**
          * @param {?} key
          * @return {?}
          */function (key) {
@@ -6572,35 +6792,29 @@
          * @param {?} key
          * @return {?}
          */function (acc, key) {
-            acc[key] = olFeature$$1.get(key);
+            acc[key] = olFeature.get(key);
             return acc;
         }), {});
         /** @type {?} */
-        var geometry = olFormat.writeGeometryObject(olFeature$$1.getGeometry(), {
+        var geometry = olFormat.writeGeometryObject(olFeature.getGeometry(), {
             dataProjection: projectionOut,
             featureProjection: projectionIn
         });
-        if (olLayer) {
-            title = olLayer.get('title');
-            typeSource = olLayer.get('sourceOptions').type;
-        }
-        else {
-            title = olFeature$$1.get('_title');
-        }
         /** @type {?} */
-        var mapTitle = olFeature$$1.get('_mapTitle');
+        var title = olFeature.get('_title');
         /** @type {?} */
-        var id = olFeature$$1.getId();
+        var mapTitle = olFeature.get('_mapTitle');
+        /** @type {?} */
+        var id = olFeature.getId();
         return {
             type: FEATURE,
             projection: projectionOut,
-            extent: olFeature$$1.get('_extent'),
+            extent: olFeature.get('_extent'),
             meta: {
                 id: id,
                 title: title ? title : (mapTitle ? mapTitle : id),
                 mapTitle: mapTitle,
-                typeSource: typeSource,
-                revision: olFeature$$1.getRevision()
+                revision: olFeature.getRevision()
             },
             properties: properties,
             geometry: geometry
@@ -6612,19 +6826,19 @@
      * @param {?} olFeature OL feature
      * @return {?} Extent in the map projection
      */
-    function computeOlFeatureExtent(map, olFeature$$1) {
+    function computeOlFeatureExtent(map, olFeature) {
         /** @type {?} */
         var olExtent = olextent.createEmpty();
         /** @type {?} */
-        var olFeatureExtent = olFeature$$1.get('_extent');
+        var olFeatureExtent = olFeature.get('_extent');
         /** @type {?} */
-        var olFeatureProjection = olFeature$$1.get('_projection');
+        var olFeatureProjection = olFeature.get('_projection');
         if (olFeatureExtent !== undefined && olFeatureProjection !== undefined) {
             olExtent = olproj.transformExtent(olFeatureExtent, olFeatureProjection, map.projection);
         }
         else {
             /** @type {?} */
-            var olGeometry = olFeature$$1.getGeometry();
+            var olGeometry = olFeature.getGeometry();
             if (olGeometry !== null) {
                 olExtent = olGeometry.getExtent();
             }
@@ -6643,9 +6857,9 @@
         olFeatures.forEach(( /**
          * @param {?} olFeature
          * @return {?}
-         */function (olFeature$$1) {
+         */function (olFeature) {
             /** @type {?} */
-            var featureExtent = computeOlFeatureExtent(map, olFeature$$1);
+            var featureExtent = computeOlFeatureExtent(map, olFeature);
             olextent.extend(extent, featureExtent);
         }));
         return extent;
@@ -6749,8 +6963,8 @@
      * @param {?} olFeature OL feature
      * @return {?}
      */
-    function hideOlFeature(olFeature$$1) {
-        olFeature$$1.setStyle(new olstyle.Style({}));
+    function hideOlFeature(olFeature) {
+        olFeature.setStyle(new olstyle.Style({}));
     }
     /**
      * Try to bind a layer to a store if none is bound already.
@@ -6848,26 +7062,16 @@
         var defaultStyle = createOverlayDefaultStyle();
         /** @type {?} */
         var markerStyle = createOverlayMarkerStyle();
-        /** @type {?} */
-        var bufferStyle = createBufferStyle();
-        /** @type {?} */
-        var style;
         return ( /**
          * @param {?} olFeature
          * @return {?}
-         */function (olFeature$$1) {
-            console.log(olFeature$$1.getId());
-            if (olFeature$$1.getId() === 'bufferFeature') {
-                style = createBufferStyle(olFeature$$1.get('bufferStroke'), 2, olFeature$$1.get('bufferFill'), olFeature$$1.get('bufferText'));
-                console.log(style);
-            }
-            else {
-                /** @type {?} */
-                var geometryType = olFeature$$1.getGeometry().getType();
-                style = geometryType === 'Point' ? markerStyle : defaultStyle;
-                style.getText().setText(olFeature$$1.get('_mapTitle'));
-                return style;
-            }
+         */function (olFeature) {
+            /** @type {?} */
+            var geometryType = olFeature.getGeometry().getType();
+            /** @type {?} */
+            var style = geometryType === 'Point' ? markerStyle : defaultStyle;
+            style.getText().setText(olFeature.get('_mapTitle'));
+            return style;
         });
     }
     /**
@@ -6934,48 +7138,6 @@
                 fill: new olstyle.Fill({ color: '#000' }),
                 stroke: new olstyle.Stroke({ color: '#fff', width: 3 }),
                 overflow: true
-            })
-        });
-    }
-    /**
-     * @param {?=} strokeRGBA
-     * @param {?=} strokeWidth
-     * @param {?=} fillRGBA
-     * @param {?=} text
-     * @return {?}
-     */
-    function createBufferStyle(strokeRGBA, strokeWidth, fillRGBA, text) {
-        if (strokeRGBA === void 0) {
-            strokeRGBA = [0, 161, 222, 1];
-        }
-        if (strokeWidth === void 0) {
-            strokeWidth = 2;
-        }
-        if (fillRGBA === void 0) {
-            fillRGBA = [0, 161, 222, 0.15];
-        }
-        /** @type {?} */
-        var stroke = new olstyle.Stroke({
-            color: strokeRGBA,
-            width: strokeWidth
-        });
-        /** @type {?} */
-        var fill = new olstyle.Fill({
-            color: fillRGBA
-        });
-        return new olstyle.Style({
-            stroke: stroke,
-            fill: fill,
-            image: new olstyle.Circle({
-                radius: 5,
-                stroke: stroke,
-                fill: fill
-            }),
-            text: new olstyle.Text({
-                font: '12px Calibri,sans-serif',
-                text: text,
-                fill: new olstyle.Fill({ color: '#000' }),
-                stroke: new olstyle.Stroke({ color: '#fff', width: 3 })
             })
         });
     }
@@ -7114,13 +7276,13 @@
                  * @return {?}
                  */function (feature) {
                     /** @type {?} */
-                    var olFeature$$1 = featureToOl(feature, _this.map.projection);
+                    var olFeature = featureToOl(feature, _this.map.projection);
                     /** @type {?} */
-                    var olGeometry = olFeature$$1.getGeometry();
+                    var olGeometry = olFeature.getGeometry();
                     if (olGeometry === null) {
                         return;
                     }
-                    olFeatures.push(olFeature$$1);
+                    olFeatures.push(olFeature);
                 }));
                 this.addOlFeatures(olFeatures, motion);
             };
@@ -7141,11 +7303,11 @@
          * @param {?=} motion Optional: Apply this motion to the map view
          * @return {?}
          */
-            function (olFeature$$1, motion) {
+            function (olFeature, motion) {
                 if (motion === void 0) {
                     motion = FeatureMotion.Default;
                 }
-                this.addOlFeatures([olFeature$$1], motion);
+                this.addOlFeature([olFeature], motion);
             };
         /**
          * Add OpenLayers features to the overlay and, optionally, move to them
@@ -7279,6 +7441,7 @@
                     this.subscriptions[index].unsubscribe();
                     this.subscriptions.splice(index, 1);
                     this.layers.splice(index, 1);
+                    (( /** @type {?} */(layer))).watcher.unwatch();
                 }
             };
         return LayerWatcher;
@@ -7301,37 +7464,220 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     /**
-     * This method extracts a [lon, lat] tuple from a string.
-     * \@todo Reproject coordinates
+     * This method extracts a coordinate tuple from a string.
      * @param {?} str Any string
-     * @return {?} A [lon, lat] tuple if one is found in the string
+     * @param {?} mapProjection string Map Projection
+     * @return {?} object:
+     *             lonLat: Coordinate,
+     *             message: Message of error,
+     *             radius: radius of the confience of coordinate,
+     *             conf: confidence of the coordinate}
      */
-    function stringToLonLat(str) {
-        var _a;
+    function stringToLonLat(str, mapProjection) {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j;
         /** @type {?} */
-        var coordPattern = '[-+]?[\\d]{1,8}(\\.)?(\\d+)?';
+        var lonLat;
         /** @type {?} */
-        var projectionPattern = '(;[\\d]{4,5})';
+        var coordStr;
         /** @type {?} */
-        var lonLatPattern = "^" + coordPattern + ",(\\s)*" + coordPattern + projectionPattern + "?";
+        var negativeLon;
         /** @type {?} */
-        var lonLatRegex = new RegExp(lonLatPattern, 'g');
-        if (!lonLatRegex.test(str)) {
-            return undefined;
-        }
+        var degreesLon;
         /** @type {?} */
-        var lonLatStr = str;
+        var minutesLon;
+        /** @type {?} */
+        var secondsLon;
+        /** @type {?} */
+        var directionLon;
+        /** @type {?} */
+        var decimalLon;
+        /** @type {?} */
+        var negativeLat;
+        /** @type {?} */
+        var degreesLat;
+        /** @type {?} */
+        var minutesLat;
+        /** @type {?} */
+        var secondsLat;
+        /** @type {?} */
+        var directionLat;
+        /** @type {?} */
+        var decimalLat;
+        /** @type {?} */
+        var pattern;
+        /** @type {?} */
+        var timeZone;
+        /** @type {?} */
+        var radius;
+        /** @type {?} */
+        var conf;
+        /** @type {?} */
+        var lon;
+        /** @type {?} */
+        var lat;
+        /** @type {?} */
+        var projectionPattern = '(;[\\d]{4,6})';
+        /** @type {?} */
+        var toProjection = '4326';
         /** @type {?} */
         var projectionStr;
         /** @type {?} */
         var projectionRegex = new RegExp(projectionPattern, 'g');
-        if (projectionRegex.test(str)) {
-            _a = __read(str.split(';'), 2), lonLatStr = _a[0], projectionStr = _a[1];
-        }
-        var _b = __read(lonLatStr.split(','), 2), lonStr = _b[0], latStr = _b[1];
         /** @type {?} */
-        var lonLat = ( /** @type {?} */([parseFloat(lonStr), parseFloat(latStr)]));
-        return lonLat;
+        var lonlatCoord = '([-+])?([\\d]{1,3})([,.](\\d+))?';
+        /** @type {?} */
+        var lonLatPattern = lonlatCoord + "[\\s,.]\\s*" + lonlatCoord;
+        /** @type {?} */
+        var lonLatRegex = new RegExp("^" + lonLatPattern + "$", 'g');
+        /** @type {?} */
+        var dmsCoord = '([0-9]{1,2})[:|°]?\\s*([0-9]{1,2})?[:|\'|′|’]?\\s*([0-9]{1,2}(?:\.[0-9]+){0,1})?\\s*["|″|”]?\\s*';
+        /** @type {?} */
+        var dmsCoordPattern = dmsCoord + "([N|S]),?\\s*" + dmsCoord + "([E|W])";
+        /** @type {?} */
+        var dmsRegex = new RegExp("^" + dmsCoordPattern, 'gi');
+        /** @type {?} */
+        var patternUtmMtm = '(UTM|MTM)\-?(\\d{1,2})[\\s,.]*(\\d+[\\s.,]?\\d+)[\\s,.]+(\\d+[\\s.,]?\\d+)';
+        /** @type {?} */
+        var utmMtmRegex = new RegExp("^" + patternUtmMtm, 'gi');
+        /** @type {?} */
+        var ddCoord = '([-+])?(\\d{1,3})[,.](\\d+)';
+        /** @type {?} */
+        var patternDd = ddCoord + "[,.]?\\s*" + ddCoord;
+        /** @type {?} */
+        var ddRegex = new RegExp("^" + patternDd, 'g');
+        /** @type {?} */
+        var dmdCoord = '([-+])?(\\d{1,3})[\\s,.]{1}(\\d{1,2})[\\s,.]{1}(\\d{1,2})[.,]?(\\d{1,5})?';
+        /** @type {?} */
+        var patternDmd = dmdCoord + "[,.]?\\s*" + dmdCoord;
+        /** @type {?} */
+        var dmdRegex = new RegExp("^" + patternDmd, 'g');
+        // tslint:disable:max-line-length
+        /** @type {?} */
+        var patternBELL = 'LAT\\s*[\\s:]*\\s*([-+])?(\\d{1,2})[\\s.,]?(\\d+)?[\\s.,]?\\s*(\\d{1,2}([.,]\\d+)?)?\\s*(N|S|E|W)?\\s*LONG\\s*[\\s:]*\\s*([-+])?(\\d{1,3})[\\s.,]?(\\d+)?[\\s.,]?\\s*(\\d{1,2}([.,]\\d+)?)?\\s*(N|S|E|W)?\\s*UNC\\s*[\\s:]?\\s*(\\d+)\\s*CONF\\s*[\\s:]?\\s*(\\d{1,3})';
+        /** @type {?} */
+        var bellRegex = new RegExp("^" + patternBELL + "?", 'gi');
+        /** @type {?} */
+        var mmCoord = '([-+]?\\d+)[,.]?(\\d+)?';
+        /** @type {?} */
+        var mmPattern = mmCoord + "[\\s,.]\\s*" + mmCoord;
+        /** @type {?} */
+        var mmRegex = new RegExp("^" + mmPattern + "$", 'g');
+        str = str.toLocaleUpperCase();
+        // Extract projection
+        if (projectionRegex.test(str)) {
+            _a = __read(str.split(';'), 2), coordStr = _a[0], projectionStr = _a[1];
+        }
+        else {
+            coordStr = str;
+        }
+        if (lonLatRegex.test(coordStr)) {
+            _b = __read(coordStr.match(lonLatPattern), 9), negativeLon = _b[1], lon = _b[2], decimalLon = _b[4], negativeLat = _b[5], lat = _b[6], decimalLat = _b[8];
+            lon = parseFloat((negativeLon ? negativeLon : '') + lon + '.' + decimalLon);
+            lat = parseFloat((negativeLat ? negativeLat : '') + lat + '.' + decimalLat);
+        }
+        else if (dmsRegex.test(coordStr)) {
+            _c = __read(coordStr.match(dmsCoordPattern), 9), degreesLon = _c[1], minutesLon = _c[2], secondsLon = _c[3], directionLon = _c[4], degreesLat = _c[5], minutesLat = _c[6], secondsLat = _c[7], directionLat = _c[8];
+            lon = convertDMSToDD(parseFloat(degreesLon), parseFloat(minutesLon), parseFloat(secondsLon), directionLon);
+            lat = convertDMSToDD(parseFloat(degreesLat), parseFloat(minutesLat), parseFloat(secondsLat), directionLat);
+        }
+        else if (utmMtmRegex.test(coordStr)) {
+            _d = __read(coordStr.match(patternUtmMtm), 5), pattern = _d[1], timeZone = _d[2], lon = _d[3], lat = _d[4];
+            /** @type {?} */
+            var utm = '+proj=' + pattern + ' +zone=' + timeZone;
+            /** @type {?} */
+            var wgs84 = '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs';
+            _e = __read(proj4(utm.toLocaleLowerCase(), wgs84, [parseFloat(lon), parseFloat(lat)]), 2), lon = _e[0], lat = _e[1];
+        }
+        else if (dmdRegex.test(coordStr)) {
+            _f = __read(coordStr.match(patternDmd), 11), negativeLon = _f[1], degreesLon = _f[2], minutesLon = _f[3], secondsLon = _f[4], decimalLon = _f[5], negativeLat = _f[6], degreesLat = _f[7], minutesLat = _f[8], secondsLat = _f[9], decimalLat = _f[10];
+            lon = convertDMSToDD(parseFloat((negativeLon ? negativeLon : '') + degreesLon), parseFloat(minutesLon), parseFloat(secondsLon), directionLon);
+            lat = convertDMSToDD(parseFloat((negativeLat ? negativeLat : '') + degreesLat), parseFloat(minutesLat), parseFloat(secondsLat), directionLat);
+        }
+        else if (ddRegex.test(coordStr)) {
+            _g = __read(coordStr.match(patternDd), 7), negativeLon = _g[1], degreesLon = _g[2], decimalLon = _g[3], negativeLat = _g[4], degreesLat = _g[5], decimalLat = _g[6];
+            lon = convertDMSToDD(parseFloat((negativeLon ? negativeLon : '') + degreesLon), parseFloat(minutesLon), parseFloat(secondsLon), directionLon);
+            lat = convertDMSToDD(parseFloat((negativeLat ? negativeLat : '') + degreesLat), parseFloat(minutesLat), parseFloat(secondsLat), directionLat);
+        }
+        else if (bellRegex.test(coordStr)) {
+            _h = __read(coordStr.match(patternBELL), 15), negativeLat = _h[1], degreesLat = _h[2], minutesLat = _h[3], secondsLat = _h[4], directionLat = _h[6], negativeLon = _h[7], degreesLon = _h[8], minutesLon = _h[9], secondsLon = _h[10], directionLon = _h[12], radius = _h[13], conf = _h[14];
+            // Set default value for North America
+            if (!directionLon) {
+                directionLon = 'W';
+            }
+            // Check if real minutes or decimals
+            if (minutesLon && minutesLon.length > 2) {
+                lon = parseFloat((negativeLon ? negativeLon : '') + degreesLon + '.' + minutesLon);
+            }
+            else {
+                lon = convertDMSToDD(parseFloat(degreesLon), parseFloat(minutesLon), parseFloat(secondsLon), directionLon);
+            }
+            if (minutesLat && minutesLat.length > 2) {
+                lat = parseFloat((negativeLat ? negativeLat : '') + degreesLat + '.' + minutesLat);
+            }
+            else {
+                lat = convertDMSToDD(parseFloat(degreesLat), parseFloat(minutesLat), parseFloat(secondsLat), directionLat);
+            }
+        }
+        else if (mmRegex.test(coordStr)) {
+            _j = __read(coordStr.match(mmPattern), 5), lon = _j[1], decimalLon = _j[2], lat = _j[3], decimalLat = _j[4];
+            if (decimalLon) {
+                lon = parseFloat(lon + '.' + decimalLon);
+            }
+            if (decimalLat) {
+                lat = parseFloat(lat + '.' + decimalLat);
+            }
+        }
+        else {
+            return { lonLat: undefined, message: '', radius: undefined, conf: undefined };
+        }
+        // Set a negative coordinate for North America zone
+        if (lon > 0 && lat > 0) {
+            if (lon > lat) {
+                lon = -lon;
+            }
+            else {
+                lat = -lat;
+            }
+        }
+        // Reverse coordinate to respect lonLat convention
+        if (lon < lat) {
+            lonLat = ( /** @type {?} */([lon, lat]));
+        }
+        else {
+            lonLat = ( /** @type {?} */([lat, lon]));
+        }
+        // Reproject the coordinate if projection parameter have been set and coord is not 4326
+        if ((projectionStr !== undefined && projectionStr !== toProjection) || (lonLat[0] > 180 || lonLat[0] < -180)) {
+            /** @type {?} */
+            var source = projectionStr ? 'EPSG:' + projectionStr : mapProjection;
+            /** @type {?} */
+            var dest = 'EPSG:' + toProjection;
+            try {
+                lonLat = olproj.transform(lonLat, source, dest);
+            }
+            catch (e) {
+                return { lonLat: undefined, message: 'Projection ' + source + ' not supported', radius: undefined, conf: undefined };
+            }
+        }
+        return { lonLat: lonLat, message: '', radius: radius ? parseInt(radius, 10) : undefined, conf: conf ? parseInt(conf, 10) : undefined };
+    }
+    /**
+     * Convert degrees minutes seconds to dd
+     * @param {?} degrees Degrees
+     * @param {?} minutes Minutes
+     * @param {?} seconds Seconds
+     * @param {?} direction Direction
+     * @return {?}
+     */
+    function convertDMSToDD(degrees, minutes, seconds, direction) {
+        minutes = minutes || 0;
+        seconds = seconds || 0;
+        /** @type {?} */
+        var dd = degrees + (minutes / 60) + (seconds / 3600);
+        if (direction === 'S' || direction === 'W') {
+            dd = -dd;
+        } // Don't do anything for N or E
+        return dd;
     }
     /**
      * Return true of two view states are equal.
@@ -7836,7 +8182,7 @@
          * @return {?}
          */
             function () {
-                this.olView.setRotation(0);
+                this.olView.animate({ rotation: 0 });
             };
         /**
          * Whether the view has a previous state
@@ -8135,7 +8481,6 @@
                 });
                 this.viewController.setOlMap(this.ol);
                 this.overlay = new Overlay(this);
-                this.buffer = new Overlay(this);
             };
         /**
          * @param {?} id
@@ -8381,22 +8726,6 @@
              * @return {?}
              */function (layer) { return layer !== undefined; }));
                 this.setLayers([].concat(this.layers, addedLayers));
-            };
-        /**
-         * @param {?} feature
-         * @return {?}
-         */
-        IgoMap.prototype.addBuffer = /**
-         * @param {?} feature
-         * @return {?}
-         */
-            function (feature) {
-                /** @type {?} */
-                var geometry = feature.getGeometry();
-                if (geometry === null) {
-                    return;
-                }
-                this.bufferDataSource.ol.addFeature(feature);
             };
         /**
          * Remove a single layer
@@ -8687,7 +9016,7 @@
                     }
                     /** @type {?} */
                     var accuracy = geolocation.getAccuracy();
-                    if (accuracy < 4140000) {
+                    if (accuracy < 10000) {
                         /** @type {?} */
                         var geometry = geolocation.getAccuracyGeometry();
                         /** @type {?} */
@@ -8696,35 +9025,9 @@
                             _this.overlay.dataSource.ol.getFeatureById(_this.geolocationFeature.getId())) {
                             _this.overlay.dataSource.ol.removeFeature(_this.geolocationFeature);
                         }
-                        _this.geolocationFeature = new olFeature({ geometry: geometry });
+                        _this.geolocationFeature = new OlFeature({ geometry: geometry });
                         _this.geolocationFeature.setId('geolocationFeature');
-                        _this.overlay.addOlFeature(_this.geolocationFeature);
-                        if (_this.ol.getView().options_.buffer) {
-                            /** @type {?} */
-                            var bufferRadius = _this.ol.getView().options_.buffer.bufferRadius;
-                            /** @type {?} */
-                            var coordinates = geolocation.getPosition();
-                            _this.bufferGeom = new olCircle(coordinates, bufferRadius);
-                            /** @type {?} */
-                            var bufferStroke = _this.ol.getView().options_.buffer.bufferStroke;
-                            /** @type {?} */
-                            var bufferFill = _this.ol.getView().options_.buffer.bufferFill;
-                            /** @type {?} */
-                            var bufferText = void 0;
-                            if (_this.ol.getView().options_.buffer.showBufferRadius) {
-                                bufferText = bufferRadius.toString() + 'm';
-                            }
-                            else {
-                                bufferText = '';
-                            }
-                            _this.bufferFeature = new olFeature(_this.bufferGeom);
-                            _this.bufferFeature.setId('bufferFeature');
-                            _this.bufferFeature.set('bufferStroke', bufferStroke);
-                            _this.bufferFeature.set('bufferFill', bufferFill);
-                            _this.bufferFeature.set('bufferText', bufferText);
-                            console.log(_this.bufferFeature);
-                            _this.buffer.addOlFeature(_this.bufferFeature);
-                        }
+                        _this.overlay.addFeature(_this.geolocationFeature);
                         if (first) {
                             _this.viewController.zoomToExtent(extent);
                         }
@@ -8797,72 +9100,6 @@
             };
         return IgoMap;
     }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    /**
-     * When injected, this service automatically registers and
-     * projection defined in the application config. A custom projection
-     * needs to be registered to be usable by OL.
-     */
-    var ProjectionService = /** @class */ (function () {
-        function ProjectionService(config) {
-            var _this = this;
-            this.config = config;
-            /** @type {?} */
-            var projections = this.config.getConfig('projections') || [];
-            projections.forEach(( /**
-             * @param {?} projection
-             * @return {?}
-             */function (projection) {
-                _this.registerProjection(projection);
-            }));
-        }
-        /**
-         * Define a proj4 projection and register it in OL
-         * @param projection Projection
-         */
-        /**
-         * Define a proj4 projection and register it in OL
-         * @param {?} projection Projection
-         * @return {?}
-         */
-        ProjectionService.prototype.registerProjection = /**
-         * Define a proj4 projection and register it in OL
-         * @param {?} projection Projection
-         * @return {?}
-         */
-            function (projection) {
-                proj4.defs(projection.code, projection.def);
-                olproj4.register(proj4);
-                olproj.get(projection.code).setExtent(projection.extent);
-            };
-        ProjectionService.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root'
-                    },] }
-        ];
-        /** @nocollapse */
-        ProjectionService.ctorParameters = function () {
-            return [
-                { type: i1$1.ConfigService }
-            ];
-        };
-        /** @nocollapse */ ProjectionService.ngInjectableDef = i0.defineInjectable({ factory: function ProjectionService_Factory() { return new ProjectionService(i0.inject(i1$1.ConfigService)); }, token: ProjectionService, providedIn: "root" });
-        return ProjectionService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
 
     /**
      * @fileoverview added by tsickle
@@ -8962,6 +9199,176 @@
         };
         return MapBrowserComponent;
     }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var MapOfflineDirective = /** @class */ (function () {
+        function MapOfflineDirective(component, networkService) {
+            this.networkService = networkService;
+            this.component = component;
+        }
+        Object.defineProperty(MapOfflineDirective.prototype, "map", {
+            get: /**
+             * @return {?}
+             */ function () {
+                return this.component.map;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * @return {?}
+         */
+        MapOfflineDirective.prototype.ngAfterViewInit = /**
+         * @return {?}
+         */
+            function () {
+                var _this = this;
+                this.networkService.currentState().subscribe(( /**
+                 * @param {?} state
+                 * @return {?}
+                 */function (state) {
+                    console.log(state);
+                    _this.state = state;
+                    _this.changeLayer();
+                }));
+                this.map.layers$.subscribe(( /**
+                 * @param {?} layers
+                 * @return {?}
+                 */function (layers) {
+                    _this.changeLayer();
+                }));
+            };
+        /**
+         * @private
+         * @return {?}
+         */
+        MapOfflineDirective.prototype.changeLayer = /**
+         * @private
+         * @return {?}
+         */
+            function () {
+                var _this = this;
+                /** @type {?} */
+                var sourceOptions;
+                /** @type {?} */
+                var layerList = this.map.layers$.value;
+                layerList.forEach(( /**
+                 * @param {?} layer
+                 * @return {?}
+                 */function (layer) {
+                    if (layer.options.sourceOptions.type === 'mvt') {
+                        sourceOptions = (( /** @type {?} */(layer.options.sourceOptions)));
+                        layer.ol.getSource().clear();
+                    }
+                    else if (layer.options.sourceOptions.type === 'xyz') {
+                        sourceOptions = (( /** @type {?} */(layer.options.sourceOptions)));
+                    }
+                    else if (layer.options.sourceOptions.type === 'vector') {
+                        sourceOptions = (( /** @type {?} */(layer.options.sourceOptions)));
+                    }
+                    else {
+                        return;
+                    }
+                    if (sourceOptions.pathOffline &&
+                        _this.state.connection === false) {
+                        if (sourceOptions.excludeAttributeOffline) {
+                            sourceOptions.excludeAttributeBackUp = sourceOptions.excludeAttribute;
+                            sourceOptions.excludeAttribute = sourceOptions.excludeAttributeOffline;
+                        }
+                        layer.ol.getSource().setUrl(sourceOptions.pathOffline);
+                    }
+                    else if (sourceOptions.pathOffline &&
+                        _this.state.connection === true) {
+                        if (sourceOptions.excludeAttributeBackUp) {
+                            sourceOptions.excludeAttribute = sourceOptions.excludeAttributeBackUp;
+                        }
+                        layer.ol.getSource().setUrl(sourceOptions.url);
+                    }
+                }));
+            };
+        MapOfflineDirective.decorators = [
+            { type: i0.Directive, args: [{
+                        selector: '[igoMapOffline]'
+                    },] }
+        ];
+        /** @nocollapse */
+        MapOfflineDirective.ctorParameters = function () {
+            return [
+                { type: MapBrowserComponent },
+                { type: i1$1.NetworkService }
+            ];
+        };
+        return MapOfflineDirective;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * When injected, this service automatically registers and
+     * projection defined in the application config. A custom projection
+     * needs to be registered to be usable by OL.
+     */
+    var ProjectionService = /** @class */ (function () {
+        function ProjectionService(config) {
+            var _this = this;
+            this.config = config;
+            /** @type {?} */
+            var projections = this.config.getConfig('projections') || [];
+            projections.forEach(( /**
+             * @param {?} projection
+             * @return {?}
+             */function (projection) {
+                _this.registerProjection(projection);
+            }));
+        }
+        /**
+         * Define a proj4 projection and register it in OL
+         * @param projection Projection
+         */
+        /**
+         * Define a proj4 projection and register it in OL
+         * @param {?} projection Projection
+         * @return {?}
+         */
+        ProjectionService.prototype.registerProjection = /**
+         * Define a proj4 projection and register it in OL
+         * @param {?} projection Projection
+         * @return {?}
+         */
+            function (projection) {
+                proj4.defs(projection.code, projection.def);
+                olproj4.register(proj4);
+                olproj.get(projection.code).setExtent(projection.extent);
+            };
+        ProjectionService.decorators = [
+            { type: i0.Injectable, args: [{
+                        providedIn: 'root'
+                    },] }
+        ];
+        /** @nocollapse */
+        ProjectionService.ctorParameters = function () {
+            return [
+                { type: i1$1.ConfigService }
+            ];
+        };
+        /** @nocollapse */ ProjectionService.ngInjectableDef = i0.defineInjectable({ factory: function ProjectionService_Factory() { return new ProjectionService(i0.inject(i1$1.ConfigService)); }, token: ProjectionService, providedIn: "root" });
+        return ProjectionService;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
 
     /**
      * @fileoverview added by tsickle
@@ -9412,6 +9819,21 @@
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(RotationButtonComponent.prototype, "showIfNoRotation", {
+            get: /**
+             * @return {?}
+             */ function () {
+                return this._showIfNoRotation;
+            },
+            set: /**
+             * @param {?} value
+             * @return {?}
+             */ function (value) {
+                this._showIfNoRotation = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
         Object.defineProperty(RotationButtonComponent.prototype, "color", {
             get: /**
              * @return {?}
@@ -9423,6 +9845,15 @@
              * @return {?}
              */ function (value) {
                 this._color = value;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(RotationButtonComponent.prototype, "rotated", {
+            get: /**
+             * @return {?}
+             */ function () {
+                return this.map.viewController.getRotation() !== 0;
             },
             enumerable: true,
             configurable: true
@@ -9445,14 +9876,15 @@
         RotationButtonComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'igo-rotation-button',
-                        template: "<div class=\"igo-rotation-button-container\">\r\n  <button\r\n    *ngIf=\"map.viewController.getRotation() !== 0\" \r\n    mat-icon-button \r\n    [matTooltip]=\"'igo.geo.mapButtons.resetRotation' | translate\"\r\n    matTooltipPosition=\"left\" \r\n    [color]=\"color\" \r\n    (click)=\"map.viewController.resetRotation()\">\r\n    <mat-icon [ngStyle]=\"rotationStyle(map.viewController.getRotation())\" svgIcon=\"navigation\">\r\n    </mat-icon>\r\n  </button>\r\n</div>",
-                        styles: [".igo-rotation-button-container{width:40px;background-color:#fff}.igo-rotation-button-container:hover{background-color:#efefef}:host>>>button .mat-button-ripple-round,button{border-radius:0}"]
+                        template: "<div *ngIf=\"rotated && !showIfNoRotation\" class=\"igo-rotation-button-container\"\r\n  [matTooltip]=\"rotated ? ('igo.geo.mapButtons.resetRotation' | translate): ('igo.geo.mapButtons.tipRotation' | translate)\"\r\n  matTooltipPosition=\"left\">\r\n  <button mat-icon-button matTooltipPosition=\"left\" [color]=\"color\" [disabled]=\"!rotated\"\r\n    (click)=\"map.viewController.resetRotation()\">\r\n    <mat-icon [ngStyle]=\"rotationStyle(map.viewController.getRotation())\" svgIcon=\"navigation\">\r\n    </mat-icon>\r\n  </button>\r\n</div>\r\n\r\n<div *ngIf=\"showIfNoRotation\" class=\"igo-rotation-button-container\"\r\n  [matTooltip]=\"rotated ? ('igo.geo.mapButtons.resetRotation' | translate): ('igo.geo.mapButtons.tipRotation' | translate)\"\r\n  matTooltipPosition=\"left\">\r\n  <button mat-icon-button matTooltipPosition=\"left\" [color]=\"color\" [disabled]=\"!rotated\"\r\n    (click)=\"map.viewController.resetRotation()\">\r\n    <mat-icon [ngStyle]=\"rotationStyle(map.viewController.getRotation())\" svgIcon=\"navigation\">\r\n    </mat-icon>\r\n  </button>\r\n</div>",
+                        styles: [".igo-rotation-button-container{width:40px;background-color:#fff}.igo-rotation-button-container:hover{background-color:#efefef}:host>>>button .mat-button-ripple-round,button{border-radius:0}@media only screen and (max-width:450px),only screen and (max-height:450px){:host>>>button .mat-button-ripple-round:disabled,button:disabled{display:none}}"]
                     }] }
         ];
         /** @nocollapse */
         RotationButtonComponent.ctorParameters = function () { return []; };
         RotationButtonComponent.propDecorators = {
             map: [{ type: i0.Input }],
+            showIfNoRotation: [{ type: i0.Input }],
             color: [{ type: i0.Input }]
         };
         return RotationButtonComponent;
@@ -10538,10 +10970,9 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var DataSourceService = /** @class */ (function () {
-        function DataSourceService(capabilitiesService, wfsDataSourceService, networkService) {
+        function DataSourceService(capabilitiesService, wfsDataSourceService) {
             this.capabilitiesService = capabilitiesService;
             this.wfsDataSourceService = wfsDataSourceService;
-            this.networkService = networkService;
             this.datasources$ = new rxjs.BehaviorSubject([]);
         }
         /**
@@ -10614,11 +11045,10 @@
          * @return {?}
          */
             function (context) {
-                var _this = this;
                 return new rxjs.Observable(( /**
                  * @param {?} d
                  * @return {?}
-                 */function (d) { return d.next(new OSMDataSource(context, _this.networkService)); }));
+                 */function (d) { return d.next(new OSMDataSource(context)); }));
             };
         /**
          * @private
@@ -10631,11 +11061,10 @@
          * @return {?}
          */
             function (context) {
-                var _this = this;
                 return new rxjs.Observable(( /**
                  * @param {?} d
                  * @return {?}
-                 */function (d) { return d.next(new FeatureDataSource(context, _this.networkService)); }));
+                 */function (d) { return d.next(new FeatureDataSource(context)); }));
             };
         /**
          * @private
@@ -10648,11 +11077,10 @@
          * @return {?}
          */
             function (context) {
-                var _this = this;
                 return new rxjs.Observable(( /**
                  * @param {?} d
                  * @return {?}
-                 */function (d) { return d.next(new WebSocketDataSource(context, _this.networkService)); }));
+                 */function (d) { return d.next(new WebSocketDataSource(context)); }));
             };
         /**
          * @private
@@ -10670,7 +11098,7 @@
                  * @param {?} d
                  * @return {?}
                  */function (d) {
-                    return d.next(new WFSDataSource(context, _this.networkService, _this.wfsDataSourceService));
+                    return d.next(new WFSDataSource(context, _this.wfsDataSourceService));
                 }));
             };
         /**
@@ -10692,14 +11120,14 @@
                  * @param {?} options
                  * @return {?}
                  */function (options) {
-                        return new WMSDataSource(context, _this.networkService, _this.wfsDataSourceService);
+                        return new WMSDataSource(options, _this.wfsDataSourceService);
                     })));
                 }
                 return new rxjs.Observable(( /**
                  * @param {?} d
                  * @return {?}
                  */function (d) {
-                    return d.next(new WMSDataSource(context, _this.networkService, _this.wfsDataSourceService));
+                    return d.next(new WMSDataSource(context, _this.wfsDataSourceService));
                 }));
             };
         /**
@@ -10713,19 +11141,18 @@
          * @return {?}
          */
             function (context) {
-                var _this = this;
                 if (context.optionsFromCapabilities) {
                     return this.capabilitiesService
                         .getWMTSOptions(context)
                         .pipe(operators.map(( /**
                  * @param {?} options
                  * @return {?}
-                 */function (options) { return new WMTSDataSource(options, _this.networkService); })));
+                 */function (options) { return new WMTSDataSource(options); })));
                 }
                 return new rxjs.Observable(( /**
                  * @param {?} d
                  * @return {?}
-                 */function (d) { return d.next(new WMTSDataSource(context, _this.networkService)); }));
+                 */function (d) { return d.next(new WMTSDataSource(context)); }));
             };
         /**
          * @private
@@ -10738,11 +11165,10 @@
          * @return {?}
          */
             function (context) {
-                var _this = this;
                 return new rxjs.Observable(( /**
                  * @param {?} d
                  * @return {?}
-                 */function (d) { return d.next(new XYZDataSource(context, _this.networkService)); }));
+                 */function (d) { return d.next(new XYZDataSource(context)); }));
             };
         /**
          * @private
@@ -10755,19 +11181,18 @@
          * @return {?}
          */
             function (context) {
-                var _this = this;
                 if (context.mapId) {
                     return this.capabilitiesService
                         .getCartoOptions(context)
                         .pipe(operators.map(( /**
                  * @param {?} options
                  * @return {?}
-                 */function (options) { return new CartoDataSource(options, _this.networkService); })));
+                 */function (options) { return new CartoDataSource(options); })));
                 }
                 return new rxjs.Observable(( /**
                  * @param {?} d
                  * @return {?}
-                 */function (d) { return d.next(new CartoDataSource(context, _this.networkService)); }));
+                 */function (d) { return d.next(new CartoDataSource(context)); }));
             };
         /**
          * @private
@@ -10780,14 +11205,13 @@
          * @return {?}
          */
             function (context) {
-                var _this = this;
                 return this.capabilitiesService
                     .getArcgisOptions(context)
                     .pipe(operators.map(( /**
              * @param {?} options
              * @return {?}
              */function (options) {
-                    return new ArcGISRestDataSource(options, _this.networkService);
+                    return new ArcGISRestDataSource(options);
                 })));
             };
         /**
@@ -10801,14 +11225,13 @@
          * @return {?}
          */
             function (context) {
-                var _this = this;
                 return this.capabilitiesService
                     .getTileArcgisOptions(context)
                     .pipe(operators.map(( /**
              * @param {?} options
              * @return {?}
              */function (options) {
-                    return new TileArcGISRestDataSource(options, _this.networkService);
+                    return new TileArcGISRestDataSource(options);
                 })));
             };
         /**
@@ -10822,11 +11245,10 @@
          * @return {?}
          */
             function (context) {
-                var _this = this;
                 return new rxjs.Observable(( /**
                  * @param {?} d
                  * @return {?}
-                 */function (d) { return d.next(new MVTDataSource(context, _this.networkService)); }));
+                 */function (d) { return d.next(new MVTDataSource(context)); }));
             };
         /**
          * @private
@@ -10839,11 +11261,10 @@
          * @return {?}
          */
             function (context) {
-                var _this = this;
                 return new rxjs.Observable(( /**
                  * @param {?} d
                  * @return {?}
-                 */function (d) { return d.next(new ClusterDataSource(context, _this.networkService)); }));
+                 */function (d) { return d.next(new ClusterDataSource(context)); }));
             };
         DataSourceService.decorators = [
             { type: i0.Injectable, args: [{
@@ -10854,11 +11275,10 @@
         DataSourceService.ctorParameters = function () {
             return [
                 { type: CapabilitiesService },
-                { type: WFSService },
-                { type: i1$1.NetworkService }
+                { type: WFSService }
             ];
         };
-        /** @nocollapse */ DataSourceService.ngInjectableDef = i0.defineInjectable({ factory: function DataSourceService_Factory() { return new DataSourceService(i0.inject(CapabilitiesService), i0.inject(WFSService), i0.inject(i1$1.NetworkService)); }, token: DataSourceService, providedIn: "root" });
+        /** @nocollapse */ DataSourceService.ngInjectableDef = i0.defineInjectable({ factory: function DataSourceService_Factory() { return new DataSourceService(i0.inject(CapabilitiesService), i0.inject(WFSService)); }, token: DataSourceService, providedIn: "root" });
         return DataSourceService;
     }());
 
@@ -10904,7 +11324,8 @@
                 }
                 if (layerOptions.source.options &&
                     layerOptions.source.options.optionsFromCapabilities) {
-                    layerOptions = utils.ObjectUtils.mergeDeep((( /** @type {?} */(layerOptions.source.options)))._layerOptionsFromCapabilities || {}, layerOptions || {});
+                    layerOptions = utils.ObjectUtils.mergeDeep((( /** @type {?} */(layerOptions.source.options)))._layerOptionsFromCapabilities ||
+                        {}, layerOptions || {});
                 }
                 /** @type {?} */
                 var layer;
@@ -11010,25 +11431,25 @@
                     var source = ( /** @type {?} */(layerOptions.source));
                     style = source.options.params.style;
                 }
-                if (layerOptions.source instanceof ClusterDataSource) {
+                else if (layerOptions.styleByAttribute) {
                     /** @type {?} */
                     var serviceStyle_1 = this.styleService;
                     layerOptions.style = ( /**
                      * @param {?} feature
                      * @return {?}
                      */function (feature) {
-                        return serviceStyle_1.createClusterStyle(feature, layerOptions.clusterParam);
+                        return serviceStyle_1.createStyleByAttribute(feature, layerOptions.styleByAttribute);
                     });
                     return new VectorLayer(layerOptions);
                 }
-                if (layerOptions.styleByAttribute) {
+                if (layerOptions.source instanceof ClusterDataSource) {
                     /** @type {?} */
                     var serviceStyle_2 = this.styleService;
                     layerOptions.style = ( /**
                      * @param {?} feature
                      * @return {?}
                      */function (feature) {
-                        return serviceStyle_2.createStyleByAttribute(feature, layerOptions.styleByAttribute);
+                        return serviceStyle_2.createClusterStyle(feature, layerOptions.clusterParam);
                     });
                     return new VectorLayer(layerOptions);
                 }
@@ -11146,6 +11567,23 @@
                 if (!url) {
                     return rxjs.of([]);
                 }
+                if ((( /** @type {?} */(layer.dataSource))).options.queryFormat === QueryFormat.HTMLGML2) {
+                    /** @type {?} */
+                    var urlGml = this.getQueryUrl(layer.dataSource, options, true);
+                    return this.http.get(urlGml, { responseType: 'text' })
+                        .pipe(operators.mergeMap(( /**
+                 * @param {?} gmlRes
+                 * @return {?}
+                 */function (gmlRes) {
+                        /** @type {?} */
+                        var imposedGeom = _this.mergeGML(gmlRes, url);
+                        return _this.http.get(url, { responseType: 'text' })
+                            .pipe(operators.map((( /**
+                     * @param {?} res
+                     * @return {?}
+                     */function (res) { return _this.extractData(res, layer, options, url, imposedGeom); }))));
+                    })));
+                }
                 /** @type {?} */
                 var request = this.http.get(url, { responseType: 'text' });
                 return request.pipe(operators.map(( /**
@@ -11155,10 +11593,210 @@
             };
         /**
          * @private
+         * @param {?} gmlRes
+         * @param {?} url
+         * @return {?}
+         */
+        QueryService.prototype.mergeGML = /**
+         * @private
+         * @param {?} gmlRes
+         * @param {?} url
+         * @return {?}
+         */
+            function (gmlRes, url) {
+                /** @type {?} */
+                var parser = new olFormatGML2();
+                /** @type {?} */
+                var features = parser.readFeatures(gmlRes);
+                // Handle non standard GML output (MapServer)
+                if (features.length === 0) {
+                    parser = new olformat.WMSGetFeatureInfo();
+                    features = parser.readFeatures(gmlRes);
+                }
+                /** @type {?} */
+                var olmline = new olgeom.MultiLineString([]);
+                /** @type {?} */
+                var pts;
+                /** @type {?} */
+                var ptsArray = [];
+                /** @type {?} */
+                var olmpoly = new olgeom.MultiPolygon([]);
+                /** @type {?} */
+                var firstFeatureType;
+                /** @type {?} */
+                var nbFeatures = features.length;
+                // Check if geometry intersect bbox
+                // for geoserver getfeatureinfo response in data projection, not call projection
+                /** @type {?} */
+                var searchParams = this.getQueryParams(url.toLowerCase());
+                /** @type {?} */
+                var bboxRaw = searchParams.bbox;
+                /** @type {?} */
+                var bbox = bboxRaw.split(',');
+                /** @type {?} */
+                var bboxExtent = olextent.createEmpty();
+                olextent.extend(bboxExtent, bbox);
+                /** @type {?} */
+                var outBboxExtent = false;
+                features.map(( /**
+                 * @param {?} feature
+                 * @return {?}
+                 */function (feature) {
+                    /*  if (!feature.getGeometry().simplify(100).intersectsExtent(bboxExtent)) {
+                            outBboxExtent = true;
+                            // TODO: Check to project the geometry?
+                          }*/
+                    /** @type {?} */
+                    var featureGeometryCoordinates = feature.getGeometry().getCoordinates();
+                    /** @type {?} */
+                    var featureGeometryType = feature.getGeometry().getType();
+                    if (!firstFeatureType && !outBboxExtent) {
+                        firstFeatureType = featureGeometryType;
+                    }
+                    {
+                        switch (featureGeometryType) {
+                            case 'Point':
+                                if (nbFeatures === 1) {
+                                    pts = new olgeom.Point(featureGeometryCoordinates, 'XY');
+                                }
+                                else {
+                                    ptsArray.push(featureGeometryCoordinates);
+                                }
+                                break;
+                            case 'LineString':
+                                olmline.appendLineString(new olgeom.LineString(featureGeometryCoordinates, 'XY'));
+                                break;
+                            case 'Polygon':
+                                olmpoly.appendPolygon(new olgeom.Polygon(featureGeometryCoordinates, 'XY'));
+                                break;
+                            case 'MultiPolygon':
+                                olmpoly = new olgeom.MultiPolygon(featureGeometryCoordinates, 'XY');
+                                break;
+                            default:
+                                return;
+                        }
+                    }
+                }));
+                /** @type {?} */
+                var olmpts;
+                if (ptsArray.length === 0 && pts) {
+                    olmpts = {
+                        type: pts.getType(),
+                        coordinates: pts.getCoordinates()
+                    };
+                }
+                else {
+                    olmpts = {
+                        type: 'Polygon',
+                        coordinates: [this.convexHull(ptsArray)]
+                    };
+                }
+                switch (firstFeatureType) {
+                    case 'LineString':
+                        return {
+                            type: olmline.getType(),
+                            coordinates: olmline.getCoordinates()
+                        };
+                    case 'Point':
+                        return olmpts;
+                    case 'Polygon':
+                        return {
+                            type: olmpoly.getType(),
+                            coordinates: olmpoly.getCoordinates()
+                        };
+                    case 'MultiPolygon':
+                        return {
+                            type: olmpoly.getType(),
+                            coordinates: olmpoly.getCoordinates()
+                        };
+                    default:
+                        return;
+                }
+            };
+        /**
+         * @param {?} a
+         * @param {?} b
+         * @param {?} o
+         * @return {?}
+         */
+        QueryService.prototype.cross = /**
+         * @param {?} a
+         * @param {?} b
+         * @param {?} o
+         * @return {?}
+         */
+            function (a, b, o) {
+                return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+            };
+        /**
+         * @param points An array of [X, Y] coordinates
+         * This method is use instead of turf.js convexHull because Turf needs at least 3 point to make a hull.
+         * https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain#JavaScript
+         */
+        /**
+         * @param {?} points An array of [X, Y] coordinates
+         * This method is use instead of turf.js convexHull because Turf needs at least 3 point to make a hull.
+         * https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain#JavaScript
+         * @return {?}
+         */
+        QueryService.prototype.convexHull = /**
+         * @param {?} points An array of [X, Y] coordinates
+         * This method is use instead of turf.js convexHull because Turf needs at least 3 point to make a hull.
+         * https://en.wikibooks.org/wiki/Algorithm_Implementation/Geometry/Convex_hull/Monotone_chain#JavaScript
+         * @return {?}
+         */
+            function (points) {
+                var e_1, _a;
+                points.sort(( /**
+                 * @param {?} a
+                 * @param {?} b
+                 * @return {?}
+                 */function (a, b) {
+                    return a[0] === b[0] ? a[1] - b[1] : a[0] - b[0];
+                }));
+                /** @type {?} */
+                var lower = [];
+                try {
+                    for (var points_1 = __values(points), points_1_1 = points_1.next(); !points_1_1.done; points_1_1 = points_1.next()) {
+                        var point = points_1_1.value;
+                        while (lower.length >= 2 && this.cross(lower[lower.length - 2], lower[lower.length - 1], point) <= 0) {
+                            lower.pop();
+                        }
+                        lower.push(point);
+                    }
+                }
+                catch (e_1_1) {
+                    e_1 = { error: e_1_1 };
+                }
+                finally {
+                    try {
+                        if (points_1_1 && !points_1_1.done && (_a = points_1.return))
+                            _a.call(points_1);
+                    }
+                    finally {
+                        if (e_1)
+                            throw e_1.error;
+                    }
+                }
+                /** @type {?} */
+                var upper = [];
+                for (var i = points.length - 1; i >= 0; i--) {
+                    while (upper.length >= 2 && this.cross(upper[upper.length - 2], upper[upper.length - 1], points[i]) <= 0) {
+                        upper.pop();
+                    }
+                    upper.push(points[i]);
+                }
+                upper.pop();
+                lower.pop();
+                return lower.concat(upper);
+            };
+        /**
+         * @private
          * @param {?} res
          * @param {?} layer
          * @param {?} options
          * @param {?} url
+         * @param {?=} imposedGeometry
          * @return {?}
          */
         QueryService.prototype.extractData = /**
@@ -11167,9 +11805,10 @@
          * @param {?} layer
          * @param {?} options
          * @param {?} url
+         * @param {?=} imposedGeometry
          * @return {?}
          */
-            function (res, layer, options, url) {
+            function (res, layer, options, url, imposedGeometry) {
                 /** @type {?} */
                 var queryDataSource = ( /** @type {?} */(layer.dataSource));
                 /** @type {?} */
@@ -11206,6 +11845,9 @@
                         break;
                     case QueryFormat.HTML:
                         features = this.extractHtmlData(res, queryDataSource.queryHtmlTarget, url);
+                        break;
+                    case QueryFormat.HTMLGML2:
+                        features = this.extractHtmlData(res, queryDataSource.queryHtmlTarget, url, imposedGeometry);
                         break;
                     case QueryFormat.GML2:
                     default:
@@ -11363,6 +12005,7 @@
          * @param {?} res
          * @param {?} htmlTarget
          * @param {?} url
+         * @param {?=} imposedGeometry
          * @return {?}
          */
         QueryService.prototype.extractHtmlData = /**
@@ -11370,9 +12013,10 @@
          * @param {?} res
          * @param {?} htmlTarget
          * @param {?} url
+         * @param {?=} imposedGeometry
          * @return {?}
          */
-            function (res, htmlTarget, url) {
+            function (res, htmlTarget, url, imposedGeometry) {
                 // _blank , iframe or undefined
                 /** @type {?} */
                 var searchParams = this.getQueryParams(url.toLowerCase());
@@ -11457,7 +12101,7 @@
                         type: FEATURE,
                         projection: projection,
                         properties: { target: htmlTarget, body: res, url: url },
-                        geometry: { type: f.getType(), coordinates: f.getCoordinates() }
+                        geometry: imposedGeometry || { type: f.getType(), coordinates: f.getCoordinates() }
                     }
                 ];
             };
@@ -11538,27 +12182,38 @@
          * @private
          * @param {?} datasource
          * @param {?} options
+         * @param {?=} forceGML2
          * @return {?}
          */
         QueryService.prototype.getQueryUrl = /**
          * @private
          * @param {?} datasource
          * @param {?} options
+         * @param {?=} forceGML2
          * @return {?}
          */
-            function (datasource, options) {
+            function (datasource, options, forceGML2) {
+                if (forceGML2 === void 0) {
+                    forceGML2 = false;
+                }
                 /** @type {?} */
                 var url;
                 switch (datasource.constructor) {
                     case WMSDataSource:
                         /** @type {?} */
                         var wmsDatasource = ( /** @type {?} */(datasource));
-                        url = wmsDatasource.ol.getGetFeatureInfoUrl(options.coordinates, options.resolution, options.projection, {
+                        /** @type {?} */
+                        var WMSGetFeatureInfoOptions = {
                             INFO_FORMAT: wmsDatasource.params.info_format ||
                                 this.getMimeInfoFormat(datasource.options.queryFormat),
                             QUERY_LAYERS: wmsDatasource.params.layers,
                             FEATURE_COUNT: wmsDatasource.params.feature_count || '5'
-                        });
+                        };
+                        if (forceGML2) {
+                            WMSGetFeatureInfoOptions.INFO_FORMAT =
+                                this.getMimeInfoFormat(QueryFormat.GML2);
+                        }
+                        url = wmsDatasource.ol.getGetFeatureInfoUrl(options.coordinates, options.resolution, options.projection, WMSGetFeatureInfoOptions);
                         if (wmsDatasource.params.version !== '1.3.0') {
                             url = url.replace('&I=', '&X=');
                             url = url.replace('&J=', '&Y=');
@@ -11578,7 +12233,7 @@
                         /** @type {?} */
                         var clause = ' WHERE ST_Intersects(the_geom_webmercator,ST_BUFFER(ST_SetSRID(ST_POINT(';
                         /** @type {?} */
-                        var metres = cartoDatasource.options.queryPrecision
+                        var meters = cartoDatasource.options.queryPrecision
                             ? cartoDatasource.options.queryPrecision
                             : '1000';
                         /** @type {?} */
@@ -11586,7 +12241,7 @@
                             ',' +
                             options.coordinates[1] +
                             '),3857),' +
-                            metres +
+                            meters +
                             '))';
                         url = "" + baseUrl + format + sql + clause + coordinates;
                         break;
@@ -11663,6 +12318,9 @@
                     case QueryFormat.HTML:
                         mime = 'text/html';
                         break;
+                    case QueryFormat.HTMLGML2:
+                        mime = 'text/html';
+                        break;
                     default:
                         mime = 'application/vnd.ogc.gml';
                         break;
@@ -11704,7 +12362,7 @@
             /**
              * Whter to query features or not
              */
-            this.queryFeatures = true;
+            this.queryFeatures = false;
             /**
              * Feature query hit tolerance
              */
@@ -11712,7 +12370,7 @@
             /**
              * Whether all query should complete before emitting an event
              */
-            this.waitForAllQueries = false;
+            this.waitForAllQueries = true;
             /**
              * Event emitted when a query (or all queries) complete
              */
@@ -11832,7 +12490,6 @@
                 if (this.queryFeatures) {
                     queries$.push(this.doQueryFeatures(event));
                 }
-                console.log(queries$);
                 /** @type {?} */
                 var resolution = this.map.ol.getView().getResolution();
                 /** @type {?} */
@@ -11852,8 +12509,6 @@
                      */function (results) {
                         /** @type {?} */
                         var features = [].concat.apply([], __spread(results));
-                        console.log(results);
-                        console.log(features);
                         _this.query.emit({ features: features, event: event });
                     })));
                 }
@@ -11866,13 +12521,10 @@
                          * @param {?} features
                          * @return {?}
                          */function (features) {
-                            console.log(features);
                             _this.query.emit({ features: features, event: event });
                         }));
                     }));
                 }
-                console.log(this.queries$$);
-                console.log(this.query);
             };
         /**
          * Query features already present on the map
@@ -11893,69 +12545,18 @@
             function (event) {
                 var _this = this;
                 /** @type {?} */
-                var feature;
-                /** @type {?} */
-                var featuresTileCoverage;
-                /** @type {?} */
-                var clickedFeatures = [];
-                this.map.ol.forEachFeatureAtPixel(event.pixel, ( /**
-                 * @param {?} featureOL
-                 * @param {?} layerOL
-                 * @return {?}
-                 */function (featureOL, layerOL) {
-                    var e_1, _a;
-                    if (featureOL) {
-                        if (featureOL.get('features')) {
-                            featureOL = featureOL.get('features')[0];
-                            console.log(featureOL);
-                            if (featureOL.length > 1) {
-                                return;
-                            }
-                        }
-                        feature = featureFromOl(featureOL, _this.map.projection, layerOL);
-                        clickedFeatures.push(feature);
-                        console.log(layerOL);
-                        if (feature.meta.typeSource === 'mvt') {
-                            /** @type {?} */
-                            var sameDataTileFeatures = _this.sameDataTilesFeature(feature, layerOL);
-                            try {
-                                for (var sameDataTileFeatures_1 = __values(sameDataTileFeatures), sameDataTileFeatures_1_1 = sameDataTileFeatures_1.next(); !sameDataTileFeatures_1_1.done; sameDataTileFeatures_1_1 = sameDataTileFeatures_1.next()) {
-                                    var sameDataTileFeature = sameDataTileFeatures_1_1.value;
-                                    featuresTileCoverage = featureFromOl(sameDataTileFeature, _this.map.projection);
-                                    clickedFeatures.push(featuresTileCoverage);
-                                }
-                            }
-                            catch (e_1_1) {
-                                e_1 = { error: e_1_1 };
-                            }
-                            finally {
-                                try {
-                                    if (sameDataTileFeatures_1_1 && !sameDataTileFeatures_1_1.done && (_a = sameDataTileFeatures_1.return))
-                                        _a.call(sameDataTileFeatures_1);
-                                }
-                                finally {
-                                    if (e_1)
-                                        throw e_1.error;
-                                }
-                            }
-                        }
-                    }
-                    else {
-                        feature = featureFromOl(featureOL, _this.map.projection, layerOL);
-                        clickedFeatures.push(feature);
-                    }
-                    console.log(layerOL);
-                    console.log(feature);
-                }), {
+                var olFeatures = event.map.getFeaturesAtPixel(event.pixel, {
                     hitTolerance: this.queryFeaturesHitTolerance || 0,
                     layerFilter: this.queryFeaturesCondition ? this.queryFeaturesCondition : olLayerIsQueryable
                 });
                 /** @type {?} */
-                var clickedFeature = clickedFeatures.shift();
-                clickedFeatures.shift();
-                clickedFeatures.push(clickedFeature);
-                console.log(clickedFeatures);
-                return rxjs.of(clickedFeatures);
+                var features = (olFeatures || []).map(( /**
+                 * @param {?} olFeature
+                 * @return {?}
+                 */function (olFeature) {
+                    return featureFromOl(olFeature, _this.map.projection);
+                }));
+                return rxjs.of(features);
             };
         /**
          * Cancel ongoing requests, if any
@@ -11976,70 +12577,6 @@
                  * @return {?}
                  */function (sub) { return sub.unsubscribe(); }));
                 this.queries$$ = [];
-            };
-        /**
-         * @private
-         * @param {?} tileCacheEntries
-         * @param {?} olFeature
-         * @param {?} data
-         * @return {?}
-         */
-        QueryDirective.prototype.getTiles = /**
-         * @private
-         * @param {?} tileCacheEntries
-         * @param {?} olFeature
-         * @param {?} data
-         * @return {?}
-         */
-            function (tileCacheEntries, olFeature$$1, data) {
-                /** @type {?} */
-                var tile;
-                /** @type {?} */
-                var list = [];
-                Object.keys(tileCacheEntries).forEach(( /**
-                 * @param {?} tileCoord
-                 * @return {?}
-                 */function (tileCoord) {
-                    tile = tileCacheEntries[tileCoord];
-                    if (tile.features_ !== null) {
-                        tile.features_.forEach(( /**
-                         * @param {?} feature
-                         * @return {?}
-                         */function (feature) {
-                            if (feature.get(data) === olFeature$$1.properties[data]) {
-                                list.push(feature);
-                            }
-                        }));
-                    }
-                }));
-                return list;
-            };
-        /**
-         * @private
-         * @param {?} feature
-         * @param {?} layer
-         * @return {?}
-         */
-        QueryDirective.prototype.sameDataTilesFeature = /**
-         * @private
-         * @param {?} feature
-         * @param {?} layer
-         * @return {?}
-         */
-            function (feature, layer) {
-                /** @type {?} */
-                var sameDataTilesFeature;
-                /** @type {?} */
-                var tileCacheEntries;
-                /** @type {?} */
-                var data = layer.values_.sourceOptions.key;
-                tileCacheEntries = layer.values_.source.tileCache.entries_;
-                /** @type {?} */
-                var tile = Object.keys(tileCacheEntries)[0];
-                tileCacheEntries = tileCacheEntries[tile].value_.sourceTiles_;
-                sameDataTilesFeature = this.getTiles(tileCacheEntries, feature, data);
-                console.log(sameDataTilesFeature);
-                return sameDataTilesFeature;
             };
         QueryDirective.decorators = [
             { type: i0.Directive, args: [{
@@ -12072,7 +12609,15 @@
      */
     var SearchSource = /** @class */ (function () {
         function SearchSource(options) {
+            var _this = this;
             this.options = Object.assign({}, this.getDefaultOptions(), options);
+            // Set Default Params from Settings
+            this.settings.forEach(( /**
+             * @param {?} setting
+             * @return {?}
+             */function (setting) {
+                _this.setParamFromSetting(setting);
+            }));
         }
         /**
          * Get search source's id
@@ -12177,6 +12722,63 @@
             enumerable: true,
             configurable: true
         });
+        Object.defineProperty(SearchSource.prototype, "settings", {
+            /**
+             * Search settings
+             */
+            get: /**
+             * Search settings
+             * @return {?}
+             */ function () {
+                return this.options.settings === undefined ? [] : this.options.settings;
+            },
+            enumerable: true,
+            configurable: true
+        });
+        /**
+         * Set params from selected settings
+         */
+        /**
+         * Set params from selected settings
+         * @param {?} setting
+         * @return {?}
+         */
+        SearchSource.prototype.setParamFromSetting = /**
+         * Set params from selected settings
+         * @param {?} setting
+         * @return {?}
+         */
+            function (setting) {
+                var _this = this;
+                var _a;
+                switch (setting.type) {
+                    case 'radiobutton':
+                        setting.values.forEach(( /**
+                         * @param {?} conf
+                         * @return {?}
+                         */function (conf) {
+                            var _a;
+                            if (conf.enabled) {
+                                _this.options.params = Object.assign((_this.options.params || {}), (_a = {}, _a[setting.name] = conf.value, _a));
+                            }
+                        }));
+                        break;
+                    case 'checkbox':
+                        /** @type {?} */
+                        var confValue_1 = '';
+                        setting.values.forEach(( /**
+                         * @param {?} conf
+                         * @return {?}
+                         */function (conf) {
+                            if (conf.enabled) {
+                                confValue_1 += conf.value + ',';
+                            }
+                        }));
+                        confValue_1 = confValue_1.slice(0, -1);
+                        this.options.params = Object.assign((this.options.params || {}), (_a = {}, _a[setting.name] = confValue_1, _a));
+                        break;
+                }
+            };
         Object.defineProperty(SearchSource.prototype, "displayOrder", {
             /**
              * Search results display order
@@ -12190,6 +12792,62 @@
             enumerable: true,
             configurable: true
         });
+        /**
+         * Check if hashtag is valid
+         * @param hashtag hashtag from query
+         * @param completeMatch boolean
+         */
+        /**
+         * Check if hashtag is valid
+         * @param {?} searchSourceSetting
+         * @param {?} hashtag hashtag from query
+         * @param {?=} completeMatch boolean
+         * @return {?}
+         */
+        SearchSource.prototype.hashtagValid = /**
+         * Check if hashtag is valid
+         * @param {?} searchSourceSetting
+         * @param {?} hashtag hashtag from query
+         * @param {?=} completeMatch boolean
+         * @return {?}
+         */
+            function (searchSourceSetting, hashtag, completeMatch) {
+                if (completeMatch === void 0) {
+                    completeMatch = false;
+                }
+                /** @type {?} */
+                var hashtagIsValid = false;
+                searchSourceSetting.values.forEach(( /**
+                 * @param {?} conf
+                 * @return {?}
+                 */function (conf) {
+                    /** @type {?} */
+                    var re = new RegExp('' + hashtag.substring(1) + '', 'g');
+                    if (typeof conf.value === 'string') {
+                        if ((completeMatch && conf.value === hashtag.substring(1)) ||
+                            (!completeMatch && conf.value.match(re))) {
+                            hashtagIsValid = true;
+                        }
+                    }
+                }));
+                return hashtagIsValid;
+            };
+        /**
+         * @param {?} search
+         * @return {?}
+         */
+        SearchSource.prototype.getSettingsValues = /**
+         * @param {?} search
+         * @return {?}
+         */
+            function (search) {
+                return this.getDefaultOptions().settings.find(( /**
+                 * @param {?} value
+                 * @return {?}
+                 */function (value) {
+                    return value.name === search;
+                }));
+            };
         /**
          * Search source ID
          * \@internal
@@ -12480,6 +13138,10 @@
                  * @param {?} pattern
                  * @return {?}
                  */function (pattern) { return new RegExp(pattern); }));
+                /** @type {?} */
+                var catalogQueryParams = catalog.queryParams || {};
+                /** @type {?} */
+                var catalogSourceOptions = catalog.sourceOptions || {};
                 var _loop_1 = function (group) {
                     if (group.Layer !== undefined) {
                         // recursive, check next level
@@ -12518,19 +13180,23 @@
                             /** @type {?} */
                             var timeFilterable = timeFilter && Object.keys(timeFilter).length > 0 ? true : false;
                             /** @type {?} */
-                            var sourceOptions = ( /** @type {?} */({
+                            var params = Object.assign({}, catalogQueryParams, {
+                                layers: layer.Name,
+                                feature_count: catalog.count
+                            });
+                            /** @type {?} */
+                            var baseSourceOptions = {
                                 type: 'wms',
                                 url: catalog.url,
-                                params: {
-                                    layers: layer.Name,
-                                    feature_count: catalog.count
-                                },
+                                crossOrigin: catalog.setCrossOriginAnonymous ? 'anonymous' : undefined,
                                 timeFilter: __assign({}, timeFilter, catalog.timeFilter),
                                 timeFilterable: timeFilterable ? true : false,
                                 queryable: layer.queryable,
                                 queryFormat: configuredQueryFormat,
                                 queryHtmlTarget: catalog.queryHtmlTarget || QueryHtmlTarget.IFRAME
-                            }));
+                            };
+                            /** @type {?} */
+                            var sourceOptions = ( /** @type {?} */(Object.assign({}, baseSourceOptions, catalogSourceOptions, { params: params })));
                             layers.push({
                                 id: generateIdFromSourceOptions(sourceOptions),
                                 type: CatalogItemType.Layer,
@@ -12601,6 +13267,10 @@
                  * @param {?} pattern
                  * @return {?}
                  */function (pattern) { return new RegExp(pattern); }));
+                /** @type {?} */
+                var catalogQueryParams = catalog.queryParams || {};
+                /** @type {?} */
+                var catalogSourceOptions = catalog.sourceOptions || {};
                 return layers.map(( /**
                  * @param {?} layer
                  * @return {?}
@@ -12609,18 +13279,22 @@
                         return undefined;
                     }
                     /** @type {?} */
-                    var sourceOptions = ( /** @type {?} */({
+                    var params = Object.assign({}, catalogQueryParams, {
+                        version: '1.0.0'
+                    });
+                    /** @type {?} */
+                    var baseSourceOptions = ( /** @type {?} */({
                         type: 'wmts',
                         url: catalog.url,
+                        crossOrigin: catalog.setCrossOriginAnonymous ? 'anonymous' : undefined,
                         layer: layer.Identifier,
                         matrixSet: catalog.matrixSet,
                         optionsFromCapabilities: true,
                         requestEncoding: catalog.requestEncoding || 'KVP',
-                        style: 'default',
-                        params: {
-                            version: '1.0.0'
-                        }
+                        style: 'default'
                     }));
+                    /** @type {?} */
+                    var sourceOptions = ( /** @type {?} */(Object.assign({}, baseSourceOptions, catalogSourceOptions, { params: params })));
                     return {
                         id: generateIdFromSourceOptions(sourceOptions),
                         type: CatalogItemType.Layer,
@@ -12784,6 +13458,10 @@
         function CatalogBrowserComponent(layerService, cdRef) {
             this.layerService = layerService;
             this.cdRef = cdRef;
+            /**
+             * Whether a group can be toggled when it's collapsed
+             */
+            this.toggleCollapsedGroup = true;
         }
         /**
          * @internal
@@ -13069,7 +13747,7 @@
         CatalogBrowserComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'igo-catalog-browser',
-                        template: "<igo-list [navigation]=\"false\" [selection]=\"false\">\r\n  <ng-template ngFor let-item [ngForOf]=\"store.view.all$() | async\">\r\n    <ng-container *ngIf=\"isGroup(item)\">\r\n      <igo-catalog-browser-group\r\n        [catalog]=\"catalog\"\r\n        [group]=\"item\"\r\n        [state]=\"store.state\"\r\n        (addedChange)=\"onGroupAddedChange($event)\"\r\n        (layerAddedChange)=\"onLayerAddedChange($event)\">\r\n      </igo-catalog-browser-group>\r\n    </ng-container>\r\n\r\n    <ng-container *ngIf=\"isLayer(item)\">\r\n      <igo-catalog-browser-layer\r\n        igoListItem\r\n        [layer]=\"item\"\r\n        [added]=\"store.state.get(item).added\"\r\n        [disabled]=\"store.state.get(item).added\"\r\n        (addedChange)=\"onLayerAddedChange($event)\">\r\n      </igo-catalog-browser-layer>\r\n    </ng-container>\r\n  </ng-template>\r\n</igo-list>\r\n",
+                        template: "<igo-list [navigation]=\"false\" [selection]=\"false\">\r\n  <ng-template ngFor let-item [ngForOf]=\"store.view.all$() | async\">\r\n    <ng-container *ngIf=\"isGroup(item)\">\r\n      <igo-catalog-browser-group\r\n        [catalog]=\"catalog\"\r\n        [group]=\"item\"\r\n        [state]=\"store.state\"\r\n        [toggleCollapsed]=\"toggleCollapsedGroup\"\r\n        (addedChange)=\"onGroupAddedChange($event)\"\r\n        (layerAddedChange)=\"onLayerAddedChange($event)\">\r\n      </igo-catalog-browser-group>\r\n    </ng-container>\r\n\r\n    <ng-container *ngIf=\"isLayer(item)\">\r\n      <igo-catalog-browser-layer\r\n        igoListItem\r\n        [layer]=\"item\"\r\n        [added]=\"store.state.get(item).added\"\r\n        [disabled]=\"store.state.get(item).added\"\r\n        (addedChange)=\"onLayerAddedChange($event)\">\r\n      </igo-catalog-browser-layer>\r\n    </ng-container>\r\n  </ng-template>\r\n</igo-list>\r\n",
                         changeDetection: i0.ChangeDetectionStrategy.OnPush
                     }] }
         ];
@@ -13083,7 +13761,8 @@
         CatalogBrowserComponent.propDecorators = {
             catalog: [{ type: i0.Input }],
             store: [{ type: i0.Input }],
-            map: [{ type: i0.Input }]
+            map: [{ type: i0.Input }],
+            toggleCollapsedGroup: [{ type: i0.Input }]
         };
         return CatalogBrowserComponent;
     }());
@@ -13178,7 +13857,7 @@
         CatalogBrowserLayerComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'igo-catalog-browser-layer',
-                        template: "<mat-list-item>\r\n  <mat-icon mat-list-avatar svgIcon=\"{{icon}}\"></mat-icon>\r\n  <h4 mat-line>{{title}}</h4>\r\n  \r\n  <button\r\n    mat-icon-button\r\n    tooltip-position=\"below\"\r\n    matTooltipShowDelay=\"500\"\r\n    [matTooltip]=\"(added ? 'igo.geo.catalog.layer.removeFromMap' : 'igo.geo.catalog.layer.addToMap') | translate\"\r\n    [color]=\"added ? 'warn' : ''\"\r\n    (click)=\"onToggleClick()\">\r\n    <mat-icon [svgIcon]=\"added ? 'delete' : 'plus'\"></mat-icon>\r\n  </button>\r\n</mat-list-item>\r\n",
+                        template: "<mat-list-item>\r\n  <mat-icon mat-list-avatar svgIcon=\"{{icon}}\"></mat-icon>\r\n  <h4 mat-line>{{title}}</h4>\r\n\r\n  <igo-metadata-button [layer]=\"layer\"></igo-metadata-button>\r\n\r\n  <button\r\n    mat-icon-button\r\n    tooltip-position=\"below\"\r\n    matTooltipShowDelay=\"500\"\r\n    [matTooltip]=\"(added ? 'igo.geo.catalog.layer.removeFromMap' : 'igo.geo.catalog.layer.addToMap') | translate\"\r\n    [color]=\"added ? 'warn' : ''\"\r\n    (click)=\"onToggleClick()\">\r\n    <mat-icon [svgIcon]=\"added ? 'delete' : 'plus'\"></mat-icon>\r\n  </button>\r\n\r\n</mat-list-item>\r\n",
                         changeDetection: i0.ChangeDetectionStrategy.OnPush
                     }] }
         ];
@@ -13211,6 +13890,19 @@
              * \@internal
              */
             this.added$ = new rxjs.BehaviorSubject(false);
+            /**
+             * Whether the toggle button is disabled
+             * \@internal
+             */
+            this.disabled$ = new rxjs.BehaviorSubject(false);
+            /**
+             * Whether the group is collapsed
+             */
+            this.collapsed = true;
+            /**
+             * Whether the group can be toggled when it's collapsed
+             */
+            this.toggleCollapsed = true;
             /**
              * Event emitted when the add/remove button of the group is clicked
              */
@@ -13247,6 +13939,7 @@
             function () {
                 this.store.load(this.group.items);
                 this.evaluateAdded();
+                this.evaluateDisabled(this.collapsed);
                 if (this.catalog && this.catalog.sortDirection !== undefined) {
                     this.store.view.sort({
                         direction: this.catalog.sortDirection,
@@ -13314,6 +14007,25 @@
          */
             function () {
                 this.added$.value ? this.remove() : this.add();
+            };
+        /**
+         * On toggle button click, emit the added change event
+         * @internal
+         */
+        /**
+         * On toggle button click, emit the added change event
+         * \@internal
+         * @param {?} collapsed
+         * @return {?}
+         */
+        CatalogBrowserGroupComponent.prototype.onToggleCollapsed = /**
+         * On toggle button click, emit the added change event
+         * \@internal
+         * @param {?} collapsed
+         * @return {?}
+         */
+            function (collapsed) {
+                this.evaluateDisabled(collapsed);
             };
         /**
          * When a layer is added or removed, evaluate if all the layers of the group
@@ -13444,16 +14156,36 @@
                 }));
                 this.added$.next(added);
             };
+        /**
+         * @private
+         * @param {?} collapsed
+         * @return {?}
+         */
+        CatalogBrowserGroupComponent.prototype.evaluateDisabled = /**
+         * @private
+         * @param {?} collapsed
+         * @return {?}
+         */
+            function (collapsed) {
+                /** @type {?} */
+                var disabled = false;
+                if (this.toggleCollapsed === false) {
+                    disabled = collapsed;
+                }
+                this.disabled$.next(disabled);
+            };
         CatalogBrowserGroupComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'igo-catalog-browser-group',
-                        template: "<mat-list-item>\r\n  <mat-icon\r\n    mat-list-avatar\r\n    igoCollapse\r\n    class=\"igo-chevron\"\r\n    [target]=\"items\"\r\n    [collapsed]=\"true\"\r\n    svgIcon=\"chevron-up\">\r\n  </mat-icon>\r\n\r\n  <h4 matLine>{{title}}</h4>\r\n\r\n  <ng-container *ngIf=\"added$ | async; else notadded\">\r\n    <button\r\n      mat-icon-button\r\n      tooltip-position=\"below\"\r\n      matTooltipShowDelay=\"500\"\r\n      [matTooltip]=\"'igo.geo.catalog.group.removeFromMap' | translate\"\r\n      color=\"warn\"\r\n      (click)=\"onToggleClick()\">\r\n      <mat-icon svgIcon=\"delete\"></mat-icon>\r\n    </button>\r\n  </ng-container>\r\n\r\n  <ng-template #notadded>\r\n    <button\r\n      mat-icon-button\r\n      tooltip-position=\"below\"\r\n      matTooltipShowDelay=\"500\"\r\n      [matTooltip]=\"'igo.geo.catalog.group.addToMap' | translate\"\r\n      (click)=\"onToggleClick()\">\r\n      <mat-icon svgIcon=\"plus\"></mat-icon>\r\n    </button>\r\n  </ng-template>\r\n</mat-list-item>\r\n\r\n<div #items>\r\n  <ng-template ngFor let-item [ngForOf]=\"store.view.all$() | async\">\r\n    <ng-container *ngIf=\"isGroup(item)\"></ng-container>\r\n    <ng-container *ngIf=\"isLayer(item)\">\r\n      <igo-catalog-browser-layer\r\n        igoListItem\r\n        [layer]=\"item\"\r\n        [added]=\"state.get(item).added\"\r\n        [disabled]=\"state.get(item).added\"\r\n        (addedChange)=\"onLayerAddedChange($event)\">\r\n      </igo-catalog-browser-layer>\r\n    </ng-container>\r\n  </ng-template>\r\n</div>\r\n",
+                        template: "<mat-list-item>\r\n  <mat-icon\r\n    mat-list-avatar\r\n    svgIcon=\"chevron-up\"\r\n    igoCollapse\r\n    class=\"igo-chevron\"\r\n    [target]=\"items\"\r\n    [collapsed]=\"collapsed\"\r\n    (toggle)=\"onToggleCollapsed($event)\">\r\n  </mat-icon>\r\n\r\n  <h4 matLine>{{title}}</h4>\r\n\r\n  <ng-container *ngIf=\"added$ | async; else notadded\">\r\n    <button\r\n      mat-icon-button\r\n      tooltip-position=\"below\"\r\n      matTooltipShowDelay=\"500\"\r\n      [matTooltip]=\"'igo.geo.catalog.group.removeFromMap' | translate\"\r\n      color=\"warn\"\r\n      [disabled]=\"disabled$ | async\"\r\n      (click)=\"onToggleClick()\">\r\n      <mat-icon svgIcon=\"delete\"></mat-icon>\r\n    </button>\r\n  </ng-container>\r\n\r\n  <ng-template #notadded>\r\n    <button\r\n      mat-icon-button\r\n      tooltip-position=\"below\"\r\n      matTooltipShowDelay=\"500\"\r\n      [matTooltip]=\"'igo.geo.catalog.group.addToMap' | translate\"\r\n      [disabled]=\"disabled$ | async\"\r\n      (click)=\"onToggleClick()\">\r\n      <mat-icon svgIcon=\"plus\"></mat-icon>\r\n    </button>\r\n  </ng-template>\r\n</mat-list-item>\r\n\r\n<div #items>\r\n  <ng-template ngFor let-item [ngForOf]=\"store.view.all$() | async\">\r\n    <ng-container *ngIf=\"isGroup(item)\"></ng-container>\r\n    <ng-container *ngIf=\"isLayer(item)\">\r\n      <igo-catalog-browser-layer\r\n        igoListItem\r\n        [layer]=\"item\"\r\n        [added]=\"state.get(item).added\"\r\n        [disabled]=\"state.get(item).added\"\r\n        (addedChange)=\"onLayerAddedChange($event)\">\r\n      </igo-catalog-browser-layer>\r\n    </ng-container>\r\n  </ng-template>\r\n</div>\r\n",
                         changeDetection: i0.ChangeDetectionStrategy.OnPush
                     }] }
         ];
         CatalogBrowserGroupComponent.propDecorators = {
             catalog: [{ type: i0.Input }],
             group: [{ type: i0.Input }],
+            collapsed: [{ type: i0.Input }],
+            toggleCollapsed: [{ type: i0.Input }],
             state: [{ type: i0.Input }],
             addedChange: [{ type: i0.Output }],
             layerAddedChange: [{ type: i0.Output }]
@@ -13481,7 +14213,8 @@
                             material.MatTooltipModule,
                             i1$1.IgoLanguageModule,
                             common$1.IgoListModule,
-                            common$1.IgoCollapsibleModule
+                            common$1.IgoCollapsibleModule,
+                            IgoMetadataModule
                         ],
                         exports: [
                             CatalogBrowserComponent
@@ -13935,6 +14668,19 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
+    /** @enum {string} */
+    var OgcFilterOperatorType = {
+        BasicNumericOperator: 'BasicNumericOperator',
+        Basic: 'Basic',
+        BasicAndSpatial: 'BasicAndSpatial',
+        Spatial: 'Spatial',
+        All: 'All',
+    };
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
     var OGCFilterService = /** @class */ (function () {
         function OGCFilterService() {
         }
@@ -13950,12 +14696,8 @@
          */
             function (wmsDatasource, filterString) {
                 /** @type {?} */
-                var appliedFilter = wmsDatasource.formatProcessedOgcFilter(filterString, wmsDatasource.options.params.layers);
-                /** @type {?} */
-                var wmsFilterValue = appliedFilter.length > 0
-                    ? appliedFilter.replace('filter=', '')
-                    : undefined;
-                wmsDatasource.ol.updateParams({ filter: wmsFilterValue });
+                var appliedFilter = new OgcFilterWriter().formatProcessedOgcFilter(filterString, wmsDatasource.options.params.layers);
+                wmsDatasource.ol.updateParams({ filter: appliedFilter });
             };
         /**
          * @param {?} wfsDatasource
@@ -14027,7 +14769,6 @@
         function DownloadService(messageService, languageService) {
             this.messageService = messageService;
             this.languageService = languageService;
-            this.ogcFilterWriter = new OgcFilterWriter();
         }
         /**
          * @param {?} layer
@@ -14067,8 +14808,19 @@
                             .replace(/&?filter=[^&]*/gi, '')
                             .replace(/&?bbox=[^&]*/gi, '');
                         /** @type {?} */
-                        var rebuildFilter = this.ogcFilterWriter.buildFilter((( /** @type {?} */(layer.dataSource.options))).ogcFilters.filters, layer.map.getExtent(), new olProjection({ code: layer.map.projection }), wfsOptions.fieldNameGeometry);
-                        window.open(baseurl + "&" + rebuildFilter + "&" + outputFormatDownload, '_blank');
+                        var ogcFilters = (( /** @type {?} */(layer.dataSource.options))).ogcFilters;
+                        /** @type {?} */
+                        var filterQueryString = void 0;
+                        filterQueryString = new OgcFilterWriter()
+                            .handleOgcFiltersAppliedValue(layer.dataSource.options, ogcFilters.geometryName);
+                        if (!filterQueryString) {
+                            // Prevent getting all the features for empty filter
+                            filterQueryString = new OgcFilterWriter().buildFilter(undefined, layer.map.getExtent(), new olProjection({ code: layer.map.projection }), ogcFilters.geometryName);
+                        }
+                        else {
+                            filterQueryString = 'filter=' + filterQueryString;
+                        }
+                        window.open(baseurl + "&" + filterQueryString + "&" + outputFormatDownload, '_blank');
                     }
                     else if (DSOptions.download) {
                         window.open(DSOptions.download.url, '_blank');
@@ -14213,10 +14965,9 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var FeatureDetailsComponent = /** @class */ (function () {
-        function FeatureDetailsComponent(cdRef, sanitizer, mapService) {
+        function FeatureDetailsComponent(cdRef, sanitizer) {
             this.cdRef = cdRef;
             this.sanitizer = sanitizer;
-            this.mapService = mapService;
         }
         Object.defineProperty(FeatureDetailsComponent.prototype, "feature", {
             get: /**
@@ -14311,10 +15062,6 @@
                 var allowedFieldsAndAlias = feature.meta ? feature.meta.alias : undefined;
                 /** @type {?} */
                 var properties = Object.assign({}, feature.properties);
-                /** @type {?} */
-                var layerName = feature.meta.title;
-                /** @type {?} */
-                var layers = this.mapService.getMap().layers$.value;
                 if (allowedFieldsAndAlias) {
                     Object.keys(properties).forEach(( /**
                      * @param {?} property
@@ -14333,35 +15080,6 @@
                     return properties;
                 }
                 else {
-                    layers.forEach(( /**
-                     * @param {?} layer
-                     * @return {?}
-                     */function (layer) {
-                        if (layer.dataSource.options.excludeAttribute) {
-                            /** @type {?} */
-                            var exclude = layer.dataSource.options.excludeAttribute;
-                            exclude.forEach(( /**
-                             * @param {?} attribute
-                             * @return {?}
-                             */function (attribute) {
-                                if (layerName === layer.title) {
-                                    delete feature.properties[attribute];
-                                }
-                            }));
-                        }
-                        else if (layer.dataSource.options.excludeAttributeOffline) {
-                            /** @type {?} */
-                            var excludeAttributeOffline = layer.dataSource.options.excludeAttributeOffline;
-                            excludeAttributeOffline.forEach(( /**
-                             * @param {?} attribute
-                             * @return {?}
-                             */function (attribute) {
-                                if (layerName === layer.title) {
-                                    delete feature.properties[attribute];
-                                }
-                            }));
-                        }
-                    }));
                     return feature.properties;
                 }
             };
@@ -14377,8 +15095,7 @@
         FeatureDetailsComponent.ctorParameters = function () {
             return [
                 { type: i0.ChangeDetectorRef },
-                { type: platformBrowser.DomSanitizer },
-                { type: MapService }
+                { type: platformBrowser.DomSanitizer }
             ];
         };
         FeatureDetailsComponent.propDecorators = {
@@ -15788,20 +16505,17 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var OgcFilterFormComponent = /** @class */ (function () {
-        function OgcFilterFormComponent(cdRef, wktService) {
-            this.cdRef = cdRef;
+        function OgcFilterFormComponent(wktService) {
             this.wktService = wktService;
-            this._currentFilter = {};
             this.value = '';
             this.color = 'primary';
             this.snrc = '';
             this.baseOverlayName = 'ogcFilterOverlay_';
-            this.ogcFilterWriter = new OgcFilterWriter();
             // TODO: Filter permitted operator based on wfscapabilities
             // Need to work on regex on XML capabilities because
             // comaparison operator's name varies between WFS servers...
             // Ex: IsNull vs PropertyIsNull vs IsNil ...
-            this.operators = this.ogcFilterWriter.operators;
+            this.ogcFilterOperators = new OgcFilterWriter().operators;
             this.igoSpatialSelectors = [
                 {
                     type: 'fixedExtent'
@@ -15812,67 +16526,6 @@
             ];
             // TODO: selectFeature & drawFeature
         }
-        Object.defineProperty(OgcFilterFormComponent.prototype, "datasource", {
-            get: /**
-             * @return {?}
-             */ function () {
-                return this._dataSource;
-            },
-            set: /**
-             * @param {?} value
-             * @return {?}
-             */ function (value) {
-                this._dataSource = value;
-                this.cdRef.detectChanges();
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(OgcFilterFormComponent.prototype, "showFeatureOnMap", {
-            get: /**
-             * @return {?}
-             */ function () {
-                return this._showFeatureOnMap;
-            },
-            set: /**
-             * @param {?} value
-             * @return {?}
-             */ function (value) {
-                this._showFeatureOnMap = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(OgcFilterFormComponent.prototype, "map", {
-            get: /**
-             * @return {?}
-             */ function () {
-                return this._map;
-            },
-            set: /**
-             * @param {?} value
-             * @return {?}
-             */ function (value) {
-                this._map = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(OgcFilterFormComponent.prototype, "currentFilter", {
-            get: /**
-             * @return {?}
-             */ function () {
-                return this._currentFilter;
-            },
-            set: /**
-             * @param {?} value
-             * @return {?}
-             */ function (value) {
-                this._currentFilter = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
         Object.defineProperty(OgcFilterFormComponent.prototype, "activeFilters", {
             get: /**
              * @return {?}
@@ -15889,106 +16542,96 @@
         /**
          * @return {?}
          */
-        OgcFilterFormComponent.prototype.ngAfterContentChecked = /**
+        OgcFilterFormComponent.prototype.ngOnInit = /**
+         * @return {?}
+         */
+            function () {
+                this.computeAllowedOperators();
+            };
+        /**
+         * @return {?}
+         */
+        OgcFilterFormComponent.prototype.computeAllowedOperators = /**
+         * @return {?}
+         */
+            function () {
+                /** @type {?} */
+                var allowedOperators = this.datasource.options.ogcFilters.allowedOperatorsType;
+                /** @type {?} */
+                var effectiveOperators = {};
+                if (!allowedOperators) {
+                    allowedOperators = OgcFilterOperatorType.BasicAndSpatial;
+                }
+                switch (allowedOperators.toLowerCase()) {
+                    case 'all':
+                        effectiveOperators = this.ogcFilterOperators;
+                        break;
+                    case 'spatial':
+                        effectiveOperators = {
+                            Intersects: { spatial: true, fieldRestrict: [] },
+                            Within: { spatial: true, fieldRestrict: [] },
+                        };
+                        break;
+                    case 'basicandspatial':
+                        effectiveOperators = {
+                            PropertyIsEqualTo: { spatial: false, fieldRestrict: [] },
+                            PropertyIsNotEqualTo: { spatial: false, fieldRestrict: [] },
+                            Intersects: { spatial: true, fieldRestrict: [] },
+                            Within: { spatial: true, fieldRestrict: [] },
+                        };
+                        break;
+                    case 'basic':
+                        effectiveOperators = {
+                            PropertyIsEqualTo: { spatial: false, fieldRestrict: [] },
+                            PropertyIsNotEqualTo: { spatial: false, fieldRestrict: [] }
+                        };
+                        break;
+                    case 'basicnumeric':
+                        effectiveOperators = {
+                            PropertyIsEqualTo: { spatial: false, fieldRestrict: [] },
+                            PropertyIsNotEqualTo: { spatial: false, fieldRestrict: [] },
+                            PropertyIsGreaterThan: { spatial: false, fieldRestrict: ['number'] },
+                            PropertyIsGreaterThanOrEqualTo: { spatial: false, fieldRestrict: ['number'] },
+                            PropertyIsLessThan: { spatial: false, fieldRestrict: ['number'] },
+                            PropertyIsLessThanOrEqualTo: { spatial: false, fieldRestrict: ['number'] },
+                        };
+                        break;
+                    default:
+                        effectiveOperators = {
+                            PropertyIsEqualTo: { spatial: false, fieldRestrict: [] },
+                            PropertyIsNotEqualTo: { spatial: false, fieldRestrict: [] },
+                            Intersects: { spatial: true, fieldRestrict: [] },
+                            Within: { spatial: true, fieldRestrict: [] },
+                        };
+                }
+                this.ogcFilterOperators = effectiveOperators;
+            };
+        /**
+         * @return {?}
+         */
+        OgcFilterFormComponent.prototype.updateField = /**
          * @return {?}
          */
             function () {
                 var _this = this;
-                if (this.map) {
-                    this.activeFilters
-                        .filter(( /**
-                 * @param {?} af
-                 * @return {?}
-                 */function (af) { return ['Contains', 'Intersects', 'Within'].indexOf(af.operator) !== -1; }))
-                        .forEach(( /**
-                 * @param {?} activeFilterSpatial
-                 * @return {?}
-                 */function (activeFilterSpatial) {
-                        if (activeFilterSpatial.wkt_geometry) {
-                            _this.addWktAsOverlay(activeFilterSpatial.wkt_geometry, activeFilterSpatial.filterid, _this.map.projection);
-                        }
-                    }));
-                }
-            };
-        /**
-         * @param {?=} init
-         * @return {?}
-         */
-        OgcFilterFormComponent.prototype.updateField = /**
-         * @param {?=} init
-         * @return {?}
-         */
-            function (init) {
-                var _this = this;
-                if (init === void 0) {
-                    init = true;
-                }
                 if (!this.datasource.options.sourceFields) {
                     return;
                 }
-                this.fields = this.datasource.options.sourceFields.sort(( /**
-                 * @param {?} a
-                 * @param {?} b
-                 * @return {?}
-                 */function (a, b) {
-                    if (a.name < b.name) {
-                        return -1;
-                    }
-                    else if (a.name > b.name) {
-                        return 1;
-                    }
-                    else {
-                        return 0;
-                    }
-                }));
-                this.datasource.options.sourceFields
+                this.fields = this.datasource.options.sourceFields
                     .filter(( /**
-             * @param {?} f
+             * @param {?} sf
              * @return {?}
-             */function (f) { return f.name === _this.currentFilter.propertyName; }))
+             */function (sf) { return (sf.excludeFromOgcFilters === undefined || !sf.excludeFromOgcFilters); }));
+                this.fields.filter(( /**
+                 * @param {?} f
+                 * @return {?}
+                 */function (f) { return f.name === _this.currentFilter.propertyName; }))
                     .forEach(( /**
              * @param {?} element
              * @return {?}
              */function (element) {
                     _this.values = element.values !== undefined ? element.values.sort() : [];
                 }));
-            };
-        /**
-         * @private
-         * @param {?} wkt
-         * @param {?} filterid
-         * @param {?} projection
-         * @return {?}
-         */
-        OgcFilterFormComponent.prototype.addWktAsOverlay = /**
-         * @private
-         * @param {?} wkt
-         * @param {?} filterid
-         * @param {?} projection
-         * @return {?}
-         */
-            function (wkt, filterid, projection) {
-                /** @type {?} */
-                var wktAsFeature = this.wktService.wktToFeature(wkt, projection);
-                wktAsFeature.setId(this.baseOverlayName + filterid);
-                /** @type {?} */
-                var opacity = 0;
-                if (this.showFeatureOnMap) {
-                    opacity = 0.5;
-                }
-                /** @type {?} */
-                var stroke = new olstyle.Stroke({
-                    width: 2,
-                    color: [125, 136, 140, opacity]
-                });
-                return new olstyle.Style({
-                    stroke: stroke,
-                    image: new olstyle.Circle({
-                        radius: 5,
-                        stroke: stroke
-                    })
-                });
-                this.map.overlay.addOlFeature(wktAsFeature);
             };
         /**
          * @param {?} event
@@ -16004,12 +16647,7 @@
          */
             function (event, filter, property) {
                 this.updateField();
-                /** @type {?} */
-                var mapProjection = this.map.projection;
                 if (event.checked) {
-                    if (filter.wkt_geometry !== '') {
-                        this.addWktAsOverlay(filter.wkt_geometry, filter.filterid, mapProjection);
-                    }
                     this.datasource.options.ogcFilters.interfaceOgcFilters
                         .filter(( /**
                  * @param {?} f
@@ -16098,7 +16736,7 @@
          * @return {?}
          */
             function (filter) {
-                if (this.operators[filter.operator].spatial === false) {
+                if (this.ogcFilterOperators[filter.operator].spatial === false) {
                     this.removeOverlayByID(filter.filterid);
                 }
                 this.refreshFilters();
@@ -16178,30 +16816,25 @@
                         wktPoly = _this.wktService.extentToWkt(mapProjection, _this.map.getExtent(), mapProjection).wktPoly;
                         element.wkt_geometry = wktPoly;
                     }
-                    if (wktPoly) {
-                        _this.addWktAsOverlay(wktPoly, filter.filterid, mapProjection);
-                    }
                 }));
                 this.refreshFilters();
             };
         OgcFilterFormComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'igo-ogc-filter-form',
-                        template: "<mat-list-item>\r\n\r\n  <div class=\"igo-col igo-col-90 igo-col-100-m\">\r\n    <mat-select class=\"logical\" [disabled]=\"!currentFilter.active\" (selectionChange)=\"refreshFilters()\" [(ngModel)]=\"currentFilter.parentLogical\"\r\n      *ngIf=\"activeFilters.indexOf(currentFilter) !== 0 && currentFilter.active===true\">\r\n      <mat-option value=\"And\">{{'igo.geo.operators.And' | translate}}</mat-option>\r\n      <mat-option value=\"Or\">{{'igo.geo.operators.Or' | translate}}</mat-option>\r\n    </mat-select>\r\n  </div>\r\n  <!-- NON SPATIAL -->\r\n  <div class=\"igo-col igo-col-90 igo-col-100-m\" *ngIf=\"(currentFilter.operator !== 'Intersects' && currentFilter.operator !== 'Contains' && currentFilter.operator !== 'Within')\">\r\n    <span *ngIf=\"fields && fields.length > 0 && fields[0].name !== ''\">\r\n      <mat-select [disabled]=\"!currentFilter.active\" *ngIf=\"['Contains','Intersects','Within'].indexOf(currentFilter.operator) === -1\"\r\n        [(ngModel)]=\"currentFilter.propertyName\" tooltip-position=\"below\" matTooltipShowDelay=\"500\" [matTooltip]=\"'igo.geo.sourceFields.selectField' | translate\"\r\n        (selectionChange)=\"updateField(false)\">\r\n        <mat-option *ngFor=\"let field of fields\" [value]=\"field.name\">{{field.alias}}</mat-option>\r\n      </mat-select>\r\n    </span>\r\n    <span *ngIf=\"fields && fields.length === 1 && fields[0].name === ''\">\r\n      <mat-form-field>\r\n        <input [disabled]=\"!currentFilter.active\" matInput #fieldPerUser (keyup)=\"changeProperty(currentFilter,'propertyName',fieldPerUser.value)\"\r\n          (blur)=\"changeProperty(currentFilter,'propertyName',fieldPerUser.value)\" [(ngModel)]=\"currentFilter.propertyName\">\r\n\r\n        <button mat-button *ngIf=\"currentFilter.propertyName\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"currentFilter.propertyName=''\">\r\n          <mat-icon svgIcon=\"close\"></mat-icon>\r\n        </button>\r\n      </mat-form-field>\r\n\r\n    </span>\r\n  </div>\r\n\r\n  <div class=\"igo-col igo-col-90 igo-col-100-m\" *ngIf=\"(currentFilter.operator !== 'Intersects' && currentFilter.operator !== 'Contains' && currentFilter.operator !== 'Within')\">\r\n    <mat-select [disabled]=\"!currentFilter.active\" [(ngModel)]=\"currentFilter.operator\" (selectionChange)=\"changeOperator(currentFilter)\">\r\n      <mat-option *ngFor=\"let operator of operators | keyvalue\" [value]=\"operator.key\">{{('igo.geo.operators.'+ operator.key) | translate}}</mat-option>\r\n    </mat-select>\r\n  </div>\r\n\r\n  <div class=\"igo-col igo-col-90 igo-col-100-m\" *ngIf=\"(currentFilter.operator !== 'Intersects' && currentFilter.operator !== 'Contains' && currentFilter.operator !== 'Within')\">\r\n\r\n    <!-- PropertyIsEqualTo -->\r\n    <span *ngIf=\"currentFilter.operator === 'PropertyIsEqualTo' || currentFilter.operator === 'PropertyIsNotEqualTo'\">\r\n      <mat-form-field>\r\n        <input [disabled]=\"!currentFilter.active\" matInput [matAutocomplete]=\"auto\" #expressionequalto (keyup)=\"changeProperty(currentFilter,'expression',expressionequalto.value)\"\r\n          (ngModelChange)=\"changeProperty(currentFilter,'expression',expressionequalto.value)\" [ngModel]=\"currentFilter.expression\">\r\n        <mat-autocomplete #auto=\"matAutocomplete\">\r\n          <mat-option *ngFor=\"let value of values\" [value]=\"value\">\r\n            <span>{{ value }}</span>\r\n          </mat-option>\r\n        </mat-autocomplete>\r\n        <button mat-button *ngIf=\"currentFilter.expression\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"currentFilter.expression=''\">\r\n          <mat-icon svgIcon=\"close\"></mat-icon>\r\n        </button>\r\n      </mat-form-field>\r\n\r\n    </span>\r\n    <!-- PropertyIsEqualTo  -->\r\n\r\n\r\n    <!-- PropertyIsLike  -->\r\n    <span *ngIf=\"currentFilter.operator === 'PropertyIsLike'\">\r\n      <mat-form-field>\r\n        <input [disabled]=\"!currentFilter.active\" matInput [matAutocomplete]=\"auto\" #pattern (keyup)=\"changeProperty(currentFilter,'pattern',pattern.value)\"\r\n          (ngModelChange)=\"changeProperty(currentFilter,'pattern',pattern.value)\" [ngModel]=\"currentFilter.pattern\">\r\n        <mat-autocomplete #auto=\"matAutocomplete\">\r\n          <mat-option *ngFor=\"let value of values\" [value]=\"value\">\r\n            <span>{{ value }}</span>\r\n          </mat-option>\r\n        </mat-autocomplete>\r\n        <button mat-button *ngIf=\"currentFilter.pattern\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"currentFilter.pattern=''\">\r\n          <mat-icon svgIcon=\"close\"></mat-icon>\r\n        </button>\r\n      </mat-form-field>\r\n\r\n    </span>\r\n    <!-- PropertyIsLike  -->\r\n\r\n    <!-- PropertyIsNull  -->\r\n    <span *ngIf=\"currentFilter.operator === 'PropertyIsNull'\"></span>\r\n    <!-- PropertyIsNull  -->\r\n\r\n    <!-- PropertyIs_Than  -->\r\n    <span *ngIf=\"currentFilter.operator === 'PropertyIsGreaterThan' || currentFilter.operator === 'PropertyIsGreaterThanOrEqualTo' || currentFilter.operator === 'PropertyIsLessThan' || currentFilter.operator === 'PropertyIsLessThanOrEqualTo'\">\r\n      <mat-form-field>\r\n        <input [disabled]=\"!currentFilter.active\" matInput [matAutocomplete]=\"auto\" #expressionthan type=\"number\" (keyup)=\"changeNumericProperty(currentFilter,'expression',expressionthan.value)\"\r\n          (ngModelChange)=\"changeNumericProperty(currentFilter,'expression',expressionthan.value)\" [ngModel]=\"currentFilter.expression\">\r\n        <mat-autocomplete #auto=\"matAutocomplete\">\r\n          <mat-option *ngFor=\"let value of values\" [value]=\"value\">\r\n            <span>{{ value }}</span>\r\n          </mat-option>\r\n        </mat-autocomplete>\r\n        <button mat-button *ngIf=\"currentFilter.expression\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"currentFilter.expression=''\">\r\n          <mat-icon svgIcon=\"close\"></mat-icon>\r\n        </button>\r\n      </mat-form-field>\r\n    </span>\r\n    <!-- PropertyIs_Than  -->\r\n\r\n\r\n    <!-- PropertyIsBetween -->\r\n    <span *ngIf=\"currentFilter.operator === 'PropertyIsBetween'\">\r\n      <mat-form-field>\r\n        <input [disabled]=\"!currentFilter.active\" matInput [matAutocomplete]=\"auto\" #lowerBoundary type=\"number\" (keyup)=\"changeNumericProperty(currentFilter,'lowerBoundary',lowerBoundary.value)\"\r\n          (ngModelChange)=\"changeNumericProperty(currentFilter,'lowerBoundary',lowerBoundary.value)\" [ngModel]=\"currentFilter.lowerBoundary\">\r\n        <mat-autocomplete #auto=\"matAutocomplete\">\r\n          <mat-option *ngFor=\"let value of values\" [value]=\"value\">\r\n            <span>{{ value }}</span>\r\n          </mat-option>\r\n        </mat-autocomplete>\r\n        <button mat-button *ngIf=\"currentFilter.lowerBoundary\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"currentFilter.lowerBoundary=''\">\r\n          <mat-icon svgIcon=\"close\"></mat-icon>\r\n        </button>\r\n      </mat-form-field>\r\n      <mat-form-field>\r\n        <input [disabled]=\"!currentFilter.active\" matInput [matAutocomplete]=\"auto\" #upperBoundary type=\"number\" (keyup)=\"changeNumericProperty(currentFilter,'upperBoundary',upperBoundary.value)\"\r\n          (ngModelChange)=\"changeNumericProperty(currentFilter,'upperBoundary',upperBoundary.value)\" [ngModel]=\"currentFilter.upperBoundary\">\r\n        <mat-autocomplete #auto=\"matAutocomplete\">\r\n          <mat-option *ngFor=\"let value of values\" [value]=\"value\">\r\n            <span>{{ value }}</span>\r\n          </mat-option>\r\n        </mat-autocomplete>\r\n        <button mat-button *ngIf=\"currentFilter.upperBoundary\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"currentFilter.upperBoundary=''\">\r\n          <mat-icon svgIcon=\"close\"></mat-icon>\r\n        </button>\r\n      </mat-form-field>\r\n\r\n    </span>\r\n    <!-- PropertyIsBetween  -->\r\n\r\n\r\n    <!-- During -->\r\n    <span *ngIf=\"currentFilter.operator === 'During'\">\r\n      <mat-form-field>\r\n        <input [disabled]=\"!currentFilter.active\" matInput [matAutocomplete]=\"auto\" #begin (keyup)=\"changeProperty(currentFilter,'begin',begin.value)\"\r\n          (ngModelChange)=\"changeProperty(currentFilter,'begin',begin.value)\" [ngModel]=\"currentFilter.begin\">\r\n        <mat-autocomplete #auto=\"matAutocomplete\">\r\n          <mat-option *ngFor=\"let value of values \" [value]=\"value\">\r\n            <span>{{ value }}</span>\r\n          </mat-option>\r\n        </mat-autocomplete>\r\n        <button mat-button *ngIf=\"currentFilter.begin\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"currentFilter.begin=''\">\r\n          <mat-icon svgIcon=\"close\"></mat-icon>\r\n        </button>\r\n      </mat-form-field>\r\n\r\n      <mat-form-field>\r\n        <input [disabled]=\"!currentFilter.active\" matInput [matAutocomplete]=\"auto\" #end (keyup)=\"changeProperty(currentFilter,'end',end.value)\"\r\n          (ngModelChange)=\"changeProperty(currentFilter,'end',end.value)\" [ngModel]=\"currentFilter.end\">\r\n        <mat-autocomplete #auto=\"matAutocomplete\">\r\n          <mat-option *ngFor=\"let value of values\" [value]=\"value\">\r\n            <span>{{ value }}</span>\r\n          </mat-option>\r\n        </mat-autocomplete>\r\n        <button mat-button *ngIf=\"currentFilter.end\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"currentFilter.end=''\">\r\n          <mat-icon svgIcon=\"close\"></mat-icon>\r\n        </button>\r\n      </mat-form-field>\r\n\r\n\r\n    </span>\r\n    <!-- During  -->\r\n  </div>\r\n  <!-- NON SPATIAL -->\r\n\r\n\r\n  <!-- PropertySpatial  -->\r\n  <div class=\"igo-col igo-col-90 igo-col-100-m\" *ngIf=\"(currentFilter.operator === 'Intersects' || currentFilter.operator === 'Contains' || currentFilter.operator === 'Within')\">\r\n    <mat-select [disabled]=\"!currentFilter.active\" [(ngModel)]=\"currentFilter.operator\" (selectionChange)=\"changeOperator(currentFilter)\">\r\n      <mat-option *ngFor=\"let operator of operators | keyvalue\" [value]=\"operator.key\">{{('igo.geo.operators.'+ operator.key) | translate}}</mat-option>\r\n    </mat-select>\r\n  </div>\r\n  <div class=\"igo-col igo-col-90 igo-col-100-m\" *ngIf=\"(currentFilter.operator === 'Intersects' || currentFilter.operator === 'Contains' || currentFilter.operator === 'Within')\">\r\n    <mat-select [disabled]=\"!currentFilter.active\" [(ngModel)]=\"currentFilter.igoSpatialSelector\" (selectionChange)=\"changeGeometry(currentFilter,value)\">\r\n      <mat-option *ngFor=\"let igoSpatialSelector of igoSpatialSelectors\" [value]=\"igoSpatialSelector.type\">{{('igo.geo.spatialSelector.'+ igoSpatialSelector.type) | translate}}</mat-option>\r\n    </mat-select>\r\n  </div>\r\n\r\n  <div class=\"igo-col igo-col-90 igo-col-100-m\" *ngIf=\"(currentFilter.operator === 'Intersects' || currentFilter.operator === 'Contains' || currentFilter.operator === 'Within')\">\r\n    <button mat-button [disabled]=\"!currentFilter.active\" *ngIf=\"currentFilter.igoSpatialSelector === 'fixedExtent'\"\r\n      matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"changeGeometry(currentFilter,value)\" tooltip-position=\"below\" matTooltipShowDelay=\"500\"\r\n      [matTooltip]=\"'igo.geo.spatialSelector.btnSetExtent' | translate\">\r\n      <mat-icon svgIcon=\"zoom-out_map\"></mat-icon>\r\n    </button>\r\n\r\n\r\n    <mat-form-field *ngIf=\"currentFilter.igoSpatialSelector === 'snrc'\">\r\n      <input matInput #htmlSnrc (keyup)=\"changeGeometry(currentFilter,htmlSnrc.value)\" (blur)=\"changeGeometry(currentFilter,htmlSnrc.value)\"\r\n        [(ngModel)]=\"snrc\">\r\n      <button mat-button *ngIf=\"snrc\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"snrc=''\">\r\n        <mat-icon svgIcon=\"close\"></mat-icon>\r\n      </button>\r\n    </mat-form-field>\r\n  </div>\r\n  <!-- PropertySpatial  -->\r\n\r\n  <div class=\"igo-col igo-col-100 igo-col-100-m\">\r\n    <div class=\"igo-layer-button-group\">\r\n      <mat-slide-toggle class=\"example-margin\" (change)=\"toggleFilterState($event,currentFilter,'active')\" tooltip-position=\"below\"\r\n        matTooltipShowDelay=\"500\" [matTooltip]=\"'igo.geo.filter.toggleFilterState' | translate\" [color]=\"color\" [checked]=\"currentFilter.active\"\r\n        [disabled]=\"disabled\">\r\n      </mat-slide-toggle>\r\n      <button mat-icon-button tooltip-position=\"below\" matTooltipShowDelay=\"500\" [matTooltip]=\"'igo.geo.filter.removeFilter' | translate\"\r\n        color=\"warn\" (click)=\"deleteFilter(currentFilter)\">\r\n        <mat-icon svgIcon=\"delete\"></mat-icon>\r\n      </button>\r\n    </div>\r\n  </div>\r\n  <mat-divider></mat-divider>\r\n</mat-list-item>\r\n",
+                        template: "<mat-list-item>\r\n\r\n  <div class=\"igo-col igo-col-90 igo-col-100-m\">\r\n    <mat-select class=\"logical\" [disabled]=\"!currentFilter.active\" (selectionChange)=\"refreshFilters()\" [(ngModel)]=\"currentFilter.parentLogical\"\r\n      *ngIf=\"activeFilters.indexOf(currentFilter) !== 0 && currentFilter.active===true\">\r\n      <mat-option value=\"And\">{{'igo.geo.operators.And' | translate}}</mat-option>\r\n      <mat-option value=\"Or\">{{'igo.geo.operators.Or' | translate}}</mat-option>\r\n    </mat-select>\r\n  </div>\r\n  <!-- NON SPATIAL -->\r\n  <div class=\"igo-col igo-col-90 igo-col-100-m\" *ngIf=\"(currentFilter.operator !== 'Intersects' && currentFilter.operator !== 'Contains' && currentFilter.operator !== 'Within')\">\r\n    <span *ngIf=\"fields && fields.length > 0 && fields[0].name !== ''\">\r\n      <mat-select [disabled]=\"!currentFilter.active\" *ngIf=\"['Contains','Intersects','Within'].indexOf(currentFilter.operator) === -1\"\r\n        [(ngModel)]=\"currentFilter.propertyName\" tooltip-position=\"below\" matTooltipShowDelay=\"500\" [matTooltip]=\"'igo.geo.sourceFields.selectField' | translate\"\r\n        (selectionChange)=\"updateField()\">\r\n        <mat-option *ngFor=\"let field of fields\" [value]=\"field.name\">{{field.alias}}</mat-option>\r\n      </mat-select>\r\n    </span>\r\n    <span *ngIf=\"fields && fields.length === 1 && fields[0].name === ''\">\r\n      <mat-form-field>\r\n        <input [disabled]=\"!currentFilter.active\" matInput #fieldPerUser (keyup)=\"changeProperty(currentFilter,'propertyName',fieldPerUser.value)\"\r\n          (blur)=\"changeProperty(currentFilter,'propertyName',fieldPerUser.value)\" [(ngModel)]=\"currentFilter.propertyName\">\r\n\r\n        <button mat-button *ngIf=\"currentFilter.propertyName\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"currentFilter.propertyName=''\">\r\n          <mat-icon svgIcon=\"close\"></mat-icon>\r\n        </button>\r\n      </mat-form-field>\r\n\r\n    </span>\r\n  </div>\r\n\r\n  <div class=\"igo-col igo-col-90 igo-col-100-m\" *ngIf=\"(currentFilter.operator !== 'Intersects' && currentFilter.operator !== 'Contains' && currentFilter.operator !== 'Within')\">\r\n    <mat-select [disabled]=\"!currentFilter.active\" [(ngModel)]=\"currentFilter.operator\" (selectionChange)=\"changeOperator(currentFilter)\">\r\n      <mat-option *ngFor=\"let operator of ogcFilterOperators | keyvalue\" [value]=\"operator.key\">{{('igo.geo.operators.'+ operator.key) | translate}}</mat-option>\r\n    </mat-select>\r\n  </div>\r\n\r\n  <div class=\"igo-col igo-col-90 igo-col-100-m\" *ngIf=\"(currentFilter.operator !== 'Intersects' && currentFilter.operator !== 'Contains' && currentFilter.operator !== 'Within')\">\r\n\r\n    <!-- PropertyIsEqualTo -->\r\n    <span *ngIf=\"currentFilter.operator === 'PropertyIsEqualTo' || currentFilter.operator === 'PropertyIsNotEqualTo'\">\r\n      <mat-form-field>\r\n        <input [disabled]=\"!currentFilter.active\" matInput [matAutocomplete]=\"auto\" #expressionequalto (keyup)=\"changeProperty(currentFilter,'expression',expressionequalto.value)\"\r\n          (ngModelChange)=\"changeProperty(currentFilter,'expression',expressionequalto.value)\" [ngModel]=\"currentFilter.expression\">\r\n        <mat-autocomplete #auto=\"matAutocomplete\">\r\n          <mat-option *ngFor=\"let value of values\" [value]=\"value\">\r\n            <span>{{ value }}</span>\r\n          </mat-option>\r\n        </mat-autocomplete>\r\n        <button mat-button *ngIf=\"currentFilter.expression\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"currentFilter.expression=''\">\r\n          <mat-icon svgIcon=\"close\"></mat-icon>\r\n        </button>\r\n      </mat-form-field>\r\n\r\n    </span>\r\n    <!-- PropertyIsEqualTo  -->\r\n\r\n\r\n    <!-- PropertyIsLike  -->\r\n    <span *ngIf=\"currentFilter.operator === 'PropertyIsLike'\">\r\n      <mat-form-field>\r\n        <input [disabled]=\"!currentFilter.active\" matInput [matAutocomplete]=\"auto\" #pattern (keyup)=\"changeProperty(currentFilter,'pattern',pattern.value)\"\r\n          (ngModelChange)=\"changeProperty(currentFilter,'pattern',pattern.value)\" [ngModel]=\"currentFilter.pattern\">\r\n        <mat-autocomplete #auto=\"matAutocomplete\">\r\n          <mat-option *ngFor=\"let value of values\" [value]=\"value\">\r\n            <span>{{ value }}</span>\r\n          </mat-option>\r\n        </mat-autocomplete>\r\n        <button mat-button *ngIf=\"currentFilter.pattern\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"currentFilter.pattern=''\">\r\n          <mat-icon svgIcon=\"close\"></mat-icon>\r\n        </button>\r\n      </mat-form-field>\r\n\r\n    </span>\r\n    <!-- PropertyIsLike  -->\r\n\r\n    <!-- PropertyIsNull  -->\r\n    <span *ngIf=\"currentFilter.operator === 'PropertyIsNull'\"></span>\r\n    <!-- PropertyIsNull  -->\r\n\r\n    <!-- PropertyIs_Than  -->\r\n    <span *ngIf=\"currentFilter.operator === 'PropertyIsGreaterThan' || currentFilter.operator === 'PropertyIsGreaterThanOrEqualTo' || currentFilter.operator === 'PropertyIsLessThan' || currentFilter.operator === 'PropertyIsLessThanOrEqualTo'\">\r\n      <mat-form-field>\r\n        <input [disabled]=\"!currentFilter.active\" matInput [matAutocomplete]=\"auto\" #expressionthan type=\"number\" (keyup)=\"changeNumericProperty(currentFilter,'expression',expressionthan.value)\"\r\n          (ngModelChange)=\"changeNumericProperty(currentFilter,'expression',expressionthan.value)\" [ngModel]=\"currentFilter.expression\">\r\n        <mat-autocomplete #auto=\"matAutocomplete\">\r\n          <mat-option *ngFor=\"let value of values\" [value]=\"value\">\r\n            <span>{{ value }}</span>\r\n          </mat-option>\r\n        </mat-autocomplete>\r\n        <button mat-button *ngIf=\"currentFilter.expression\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"currentFilter.expression=''\">\r\n          <mat-icon svgIcon=\"close\"></mat-icon>\r\n        </button>\r\n      </mat-form-field>\r\n    </span>\r\n    <!-- PropertyIs_Than  -->\r\n\r\n\r\n    <!-- PropertyIsBetween -->\r\n    <span *ngIf=\"currentFilter.operator === 'PropertyIsBetween'\">\r\n      <mat-form-field>\r\n        <input [disabled]=\"!currentFilter.active\" matInput [matAutocomplete]=\"auto\" #lowerBoundary type=\"number\" (keyup)=\"changeNumericProperty(currentFilter,'lowerBoundary',lowerBoundary.value)\"\r\n          (ngModelChange)=\"changeNumericProperty(currentFilter,'lowerBoundary',lowerBoundary.value)\" [ngModel]=\"currentFilter.lowerBoundary\">\r\n        <mat-autocomplete #auto=\"matAutocomplete\">\r\n          <mat-option *ngFor=\"let value of values\" [value]=\"value\">\r\n            <span>{{ value }}</span>\r\n          </mat-option>\r\n        </mat-autocomplete>\r\n        <button mat-button *ngIf=\"currentFilter.lowerBoundary\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"currentFilter.lowerBoundary=''\">\r\n          <mat-icon svgIcon=\"close\"></mat-icon>\r\n        </button>\r\n      </mat-form-field>\r\n      <mat-form-field>\r\n        <input [disabled]=\"!currentFilter.active\" matInput [matAutocomplete]=\"auto\" #upperBoundary type=\"number\" (keyup)=\"changeNumericProperty(currentFilter,'upperBoundary',upperBoundary.value)\"\r\n          (ngModelChange)=\"changeNumericProperty(currentFilter,'upperBoundary',upperBoundary.value)\" [ngModel]=\"currentFilter.upperBoundary\">\r\n        <mat-autocomplete #auto=\"matAutocomplete\">\r\n          <mat-option *ngFor=\"let value of values\" [value]=\"value\">\r\n            <span>{{ value }}</span>\r\n          </mat-option>\r\n        </mat-autocomplete>\r\n        <button mat-button *ngIf=\"currentFilter.upperBoundary\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"currentFilter.upperBoundary=''\">\r\n          <mat-icon svgIcon=\"close\"></mat-icon>\r\n        </button>\r\n      </mat-form-field>\r\n\r\n    </span>\r\n    <!-- PropertyIsBetween  -->\r\n\r\n\r\n    <!-- During -->\r\n    <span *ngIf=\"currentFilter.operator === 'During'\">\r\n      <mat-form-field>\r\n        <input [disabled]=\"!currentFilter.active\" matInput [matAutocomplete]=\"auto\" #begin (keyup)=\"changeProperty(currentFilter,'begin',begin.value)\"\r\n          (ngModelChange)=\"changeProperty(currentFilter,'begin',begin.value)\" [ngModel]=\"currentFilter.begin\">\r\n        <mat-autocomplete #auto=\"matAutocomplete\">\r\n          <mat-option *ngFor=\"let value of values \" [value]=\"value\">\r\n            <span>{{ value }}</span>\r\n          </mat-option>\r\n        </mat-autocomplete>\r\n        <button mat-button *ngIf=\"currentFilter.begin\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"currentFilter.begin=''\">\r\n          <mat-icon svgIcon=\"close\"></mat-icon>\r\n        </button>\r\n      </mat-form-field>\r\n\r\n      <mat-form-field>\r\n        <input [disabled]=\"!currentFilter.active\" matInput [matAutocomplete]=\"auto\" #end (keyup)=\"changeProperty(currentFilter,'end',end.value)\"\r\n          (ngModelChange)=\"changeProperty(currentFilter,'end',end.value)\" [ngModel]=\"currentFilter.end\">\r\n        <mat-autocomplete #auto=\"matAutocomplete\">\r\n          <mat-option *ngFor=\"let value of values\" [value]=\"value\">\r\n            <span>{{ value }}</span>\r\n          </mat-option>\r\n        </mat-autocomplete>\r\n        <button mat-button *ngIf=\"currentFilter.end\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"currentFilter.end=''\">\r\n          <mat-icon svgIcon=\"close\"></mat-icon>\r\n        </button>\r\n      </mat-form-field>\r\n\r\n\r\n    </span>\r\n    <!-- During  -->\r\n  </div>\r\n  <!-- NON SPATIAL -->\r\n\r\n\r\n  <!-- PropertySpatial  -->\r\n  <div class=\"igo-col igo-col-90 igo-col-100-m\" *ngIf=\"(currentFilter.operator === 'Intersects' || currentFilter.operator === 'Contains' || currentFilter.operator === 'Within')\">\r\n    <mat-select [disabled]=\"!currentFilter.active\" [(ngModel)]=\"currentFilter.operator\" (selectionChange)=\"changeOperator(currentFilter)\">\r\n      <mat-option *ngFor=\"let operator of ogcFilterOperators | keyvalue\" [value]=\"operator.key\">{{('igo.geo.operators.'+ operator.key) | translate}}</mat-option>\r\n    </mat-select>\r\n  </div>\r\n  <div class=\"igo-col igo-col-90 igo-col-100-m\" *ngIf=\"(currentFilter.operator === 'Intersects' || currentFilter.operator === 'Contains' || currentFilter.operator === 'Within')\">\r\n    <mat-select [disabled]=\"!currentFilter.active\" [(ngModel)]=\"currentFilter.igoSpatialSelector\" (selectionChange)=\"changeGeometry(currentFilter,value)\">\r\n      <mat-option *ngFor=\"let igoSpatialSelector of igoSpatialSelectors\" [value]=\"igoSpatialSelector.type\">{{('igo.geo.spatialSelector.'+ igoSpatialSelector.type) | translate}}</mat-option>\r\n    </mat-select>\r\n  </div>\r\n\r\n  <div class=\"igo-col igo-col-90 igo-col-100-m\" *ngIf=\"(currentFilter.operator === 'Intersects' || currentFilter.operator === 'Contains' || currentFilter.operator === 'Within')\">\r\n    <button mat-button [disabled]=\"!currentFilter.active\" *ngIf=\"currentFilter.igoSpatialSelector === 'fixedExtent'\"\r\n      matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"changeGeometry(currentFilter,value)\" tooltip-position=\"below\" matTooltipShowDelay=\"500\"\r\n      [matTooltip]=\"'igo.geo.spatialSelector.btnSetExtent' | translate\">\r\n      <mat-icon svgIcon=\"arrow-expand-all\"></mat-icon>\r\n    </button>\r\n\r\n\r\n    <mat-form-field *ngIf=\"currentFilter.igoSpatialSelector === 'snrc'\">\r\n      <input matInput #htmlSnrc (keyup)=\"changeGeometry(currentFilter,htmlSnrc.value)\" (blur)=\"changeGeometry(currentFilter,htmlSnrc.value)\"\r\n        [(ngModel)]=\"snrc\">\r\n      <button mat-button *ngIf=\"snrc\" matSuffix mat-icon-button aria-label=\"Clear\" (click)=\"snrc=''\">\r\n        <mat-icon svgIcon=\"close\"></mat-icon>\r\n      </button>\r\n    </mat-form-field>\r\n  </div>\r\n  <!-- PropertySpatial  -->\r\n\r\n  <div class=\"igo-col igo-col-100 igo-col-100-m\">\r\n    <div class=\"igo-layer-button-group\">\r\n      <mat-slide-toggle class=\"example-margin\" (change)=\"toggleFilterState($event,currentFilter,'active')\" tooltip-position=\"below\"\r\n        matTooltipShowDelay=\"500\" [matTooltip]=\"'igo.geo.filter.toggleFilterState' | translate\" [color]=\"color\" [checked]=\"currentFilter.active\"\r\n        [disabled]=\"disabled\">\r\n      </mat-slide-toggle>\r\n      <button mat-icon-button tooltip-position=\"below\" matTooltipShowDelay=\"500\" [matTooltip]=\"'igo.geo.filter.removeFilter' | translate\"\r\n        color=\"warn\" (click)=\"deleteFilter(currentFilter)\">\r\n        <mat-icon svgIcon=\"delete\"></mat-icon>\r\n      </button>\r\n    </div>\r\n  </div>\r\n  <mat-divider></mat-divider>\r\n</mat-list-item>\r\n",
                         styles: [":host{overflow:hidden}.mat-list-item{height:auto}.mat-list-item>>>div.mat-list-item-content{display:inline-table}.logical{font-weight:700}input,mat-select{margin-top:10px;text-align:center}.igo-layer-actions-container{width:100%;display:inline-block}.igo-layer-actions-container>div{text-align:center}.igo-layer-button-group{float:center;padding:0 3px}@media only screen and (max-width:450px),only screen and (max-height:450px){.igo-layer-button-group{float:none}}mat-icon.disabled{color:rgba(0,0,0,.38)}"]
                     }] }
         ];
         /** @nocollapse */
         OgcFilterFormComponent.ctorParameters = function () {
             return [
-                { type: i0.ChangeDetectorRef },
                 { type: WktService }
             ];
         };
         OgcFilterFormComponent.propDecorators = {
             refreshFilters: [{ type: i0.Input }],
             datasource: [{ type: i0.Input }],
-            showFeatureOnMap: [{ type: i0.Input }],
             map: [{ type: i0.Input }],
             currentFilter: [{ type: i0.Input }]
         };
@@ -16216,36 +16849,6 @@
         function OgcFilterableFormComponent() {
             this.color = 'primary';
         }
-        Object.defineProperty(OgcFilterableFormComponent.prototype, "datasource", {
-            get: /**
-             * @return {?}
-             */ function () {
-                return this._dataSource;
-            },
-            set: /**
-             * @param {?} value
-             * @return {?}
-             */ function (value) {
-                this._dataSource = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(OgcFilterableFormComponent.prototype, "map", {
-            get: /**
-             * @return {?}
-             */ function () {
-                return this._map;
-            },
-            set: /**
-             * @param {?} value
-             * @return {?}
-             */ function (value) {
-                this._map = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
         Object.defineProperty(OgcFilterableFormComponent.prototype, "refreshFunc", {
             get: /**
              * @return {?}
@@ -16255,17 +16858,14 @@
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(OgcFilterableFormComponent.prototype, "showFeatureOnMap", {
+        Object.defineProperty(OgcFilterableFormComponent.prototype, "advancedOgcFilters", {
             get: /**
              * @return {?}
              */ function () {
-                return this._showFeatureOnMap;
-            },
-            set: /**
-             * @param {?} value
-             * @return {?}
-             */ function (value) {
-                this._showFeatureOnMap = value;
+                if (this.datasource.options.ogcFilters) {
+                    return this.datasource.options.ogcFilters.advancedOgcFilters;
+                }
+                return;
             },
             enumerable: true,
             configurable: true
@@ -16273,7 +16873,7 @@
         OgcFilterableFormComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'igo-ogc-filterable-form',
-                        template: "<igo-list [navigation]=\"false\" [selection]=\"true\">\r\n  <ng-template ngFor let-currentFilter [ngForOf]=\"this.datasource.options.ogcFilters.interfaceOgcFilters\">\r\n    <igo-ogc-filter-form igoListItem [color]=\"color\" [currentFilter]=\"currentFilter\" [datasource]=\"datasource\" [map]=\"map\" [refreshFilters]=\"refreshFunc\" [showFeatureOnMap]=\"showFeatureOnMap\">\r\n    </igo-ogc-filter-form>\r\n  </ng-template>\r\n</igo-list>\r\n"
+                        template: "<igo-list *ngIf=\"!advancedOgcFilters\" [navigation]=\"false\" [selection]=\"true\">\r\n  <igo-ogc-filter-toggle-button igoListItem [datasource]=\"datasource\" [map]=\"map\" [refreshFilters]=\"refreshFunc\">\r\n  </igo-ogc-filter-toggle-button>\r\n</igo-list>\r\n\r\n<igo-list *ngIf=\"advancedOgcFilters\" [navigation]=\"false\" [selection]=\"true\">\r\n  <ng-template ngFor let-currentFilter [ngForOf]=\"this.datasource.options.ogcFilters.interfaceOgcFilters\">\r\n    <igo-ogc-filter-form igoListItem [color]=\"color\" [currentFilter]=\"currentFilter\" [datasource]=\"datasource\"\r\n      [map]=\"map\" [refreshFilters]=\"refreshFunc\">\r\n    </igo-ogc-filter-form>\r\n  </ng-template>\r\n</igo-list>\r\n"
                     }] }
         ];
         /** @nocollapse */
@@ -16281,8 +16881,7 @@
         OgcFilterableFormComponent.propDecorators = {
             datasource: [{ type: i0.Input }],
             map: [{ type: i0.Input }],
-            refreshFilters: [{ type: i0.Input }],
-            showFeatureOnMap: [{ type: i0.Input }]
+            refreshFilters: [{ type: i0.Input }]
         };
         return OgcFilterableFormComponent;
     }());
@@ -16300,58 +16899,13 @@
             this.hasActiveSpatialFilter = false;
             this.filtersAreEditable = true;
             this.filtersCollapsed = true;
-            this._showFeatureOnMap = false;
+            this.hasPushButton = false;
         }
-        Object.defineProperty(OgcFilterableItemComponent.prototype, "layer", {
-            get: /**
-             * @return {?}
-             */ function () {
-                return this._layer;
-            },
-            set: /**
-             * @param {?} value
-             * @return {?}
-             */ function (value) {
-                this._layer = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(OgcFilterableItemComponent.prototype, "map", {
-            get: /**
-             * @return {?}
-             */ function () {
-                return this._map;
-            },
-            set: /**
-             * @param {?} value
-             * @return {?}
-             */ function (value) {
-                this._map = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
         Object.defineProperty(OgcFilterableItemComponent.prototype, "refreshFunc", {
             get: /**
              * @return {?}
              */ function () {
                 return this.refreshFilters.bind(this);
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(OgcFilterableItemComponent.prototype, "showFeatureOnMap", {
-            get: /**
-             * @return {?}
-             */ function () {
-                return this._showFeatureOnMap;
-            },
-            set: /**
-             * @param {?} value
-             * @return {?}
-             */ function (value) {
-                this._showFeatureOnMap = value;
             },
             enumerable: true,
             configurable: true
@@ -16365,17 +16919,11 @@
             enumerable: true,
             configurable: true
         });
-        Object.defineProperty(OgcFilterableItemComponent.prototype, "ogcFiltersHeaderShown", {
+        Object.defineProperty(OgcFilterableItemComponent.prototype, "downloadable", {
             get: /**
              * @return {?}
              */ function () {
-                return this._ogcFiltersHeaderShown;
-            },
-            set: /**
-             * @param {?} value
-             * @return {?}
-             */ function (value) {
-                this._ogcFiltersHeaderShown = value;
+                return (( /** @type {?} */(this.datasource.options))).download;
             },
             enumerable: true,
             configurable: true
@@ -16387,6 +16935,15 @@
          * @return {?}
          */
             function () {
+                /** @type {?} */
+                var ogcFilters = this.datasource.options.ogcFilters;
+                if (ogcFilters.pushButtons &&
+                    ogcFilters.pushButtons.length > 0) {
+                    if (ogcFilters.advancedOgcFilters === undefined) {
+                        ogcFilters.advancedOgcFilters = false;
+                    }
+                    this.hasPushButton = true;
+                }
                 switch (this.datasource.options.type) {
                     case 'wms':
                         this.ogcFilterService.setOgcWMSFiltersOptions(this.datasource);
@@ -16397,84 +16954,20 @@
                     default:
                         break;
                 }
-                if (this.datasource.options.ogcFilters) {
-                    if (this.datasource.options.ogcFilters.interfaceOgcFilters) {
-                        this.lastRunOgcFilter = JSON.parse(JSON.stringify(this.datasource.options.ogcFilters.interfaceOgcFilters));
-                        if (this.datasource.options.ogcFilters.interfaceOgcFilters.filter(( /**
+                if (ogcFilters) {
+                    if (ogcFilters.interfaceOgcFilters) {
+                        this.lastRunOgcFilter = JSON.parse(JSON.stringify(ogcFilters.interfaceOgcFilters));
+                        if (ogcFilters.interfaceOgcFilters.filter(( /**
                          * @param {?} f
                          * @return {?}
                          */function (f) { return f.wkt_geometry; })).length >= 1) {
                             this.hasActiveSpatialFilter = true;
                         }
                     }
-                    this.filtersAreEditable = this.datasource.options.ogcFilters.editable
-                        ? this.datasource.options.ogcFilters.editable
+                    this.filtersAreEditable = ogcFilters.editable
+                        ? ogcFilters.editable
                         : false;
                 }
-            };
-        /**
-         * @private
-         * @param {?} id
-         * @return {?}
-         */
-        OgcFilterableItemComponent.prototype.getOverlayByID = /**
-         * @private
-         * @param {?} id
-         * @return {?}
-         */
-            function (id) {
-                this.map.overlay.dataSource.ol.getFeatureById(id);
-            };
-        /**
-         * @return {?}
-         */
-        OgcFilterableItemComponent.prototype.toggleShowFeatureOnMap = /**
-         * @return {?}
-         */
-            function () {
-                var _this = this;
-                this.showFeatureOnMap = !this.showFeatureOnMap;
-                this.datasource.options.ogcFilters.interfaceOgcFilters.forEach(( /**
-                 * @param {?} filter
-                 * @return {?}
-                 */function (filter) {
-                    /** @type {?} */
-                    var drawnFeature;
-                    /** @type {?} */
-                    var drawnStrokeColor = ( /** @type {?} */([125, 136, 140, 0]));
-                    /** @type {?} */
-                    var drawStrokeWidth = 2;
-                    /** @type {?} */
-                    var drawnFillColor = ( /** @type {?} */([125, 136, 140, 0]));
-                    drawnFeature = _this.getOverlayByID('ogcFilterOverlay_' + filter.filterid);
-                    if (_this.showFeatureOnMap !== false) {
-                        drawnStrokeColor = [125, 136, 140, 0.5];
-                        drawStrokeWidth = 2;
-                        drawnFillColor = [125, 136, 140, 0];
-                    }
-                    /** @type {?} */
-                    var stroke = new olstyle.Stroke({
-                        width: drawStrokeWidth,
-                        color: drawnStrokeColor
-                    });
-                    /** @type {?} */
-                    var fill = new olstyle.Stroke({
-                        color: drawnFillColor
-                    });
-                    /** @type {?} */
-                    var olStyle = new olstyle.Style({
-                        stroke: stroke,
-                        fill: fill,
-                        image: new olstyle.Circle({
-                            radius: 5,
-                            stroke: stroke,
-                            fill: fill
-                        })
-                    });
-                    if (drawnFeature) {
-                        drawnFeature.setStyle(olStyle);
-                    }
-                }));
             };
         /**
          * @return {?}
@@ -16513,12 +17006,12 @@
                 }
                 /** @type {?} */
                 var status = arr.length === 0 ? true : false;
-                arr.push((( /** @type {?} */(this.datasource))).ogcFilterWriter.addInterfaceFilter({
+                arr.push(new OgcFilterWriter().addInterfaceFilter(( /** @type {?} */({
                     propertyName: firstFieldName,
                     operator: 'PropertyIsEqualTo',
                     active: status,
                     igoSpatialSelector: 'fixedExtent'
-                }, fieldNameGeometry, lastLevel, this.defaultLogicalParent));
+                })), fieldNameGeometry, lastLevel, this.defaultLogicalParent));
                 this.datasource.options.ogcFilters.interfaceOgcFilters = arr;
             };
         /**
@@ -16531,14 +17024,21 @@
                 this.downloadService.open(this.layer);
             };
         /**
+         * @param {?=} force
          * @return {?}
          */
         OgcFilterableItemComponent.prototype.refreshFilters = /**
+         * @param {?=} force
          * @return {?}
          */
-            function () {
+            function (force) {
+                if (force === true) {
+                    this.lastRunOgcFilter = undefined;
+                }
                 /** @type {?} */
                 var ogcFilters = this.datasource.options.ogcFilters;
+                /** @type {?} */
+                var ogcFilterWriter = new OgcFilterWriter();
                 /** @type {?} */
                 var activeFilters = ogcFilters.interfaceOgcFilters.filter(( /**
                  * @param {?} f
@@ -16566,9 +17066,7 @@
                         var ogcDataSource = this.layer.dataSource;
                         /** @type {?} */
                         var ogcLayer = ogcDataSource.options.ogcFilters;
-                        /** @type {?} */
-                        var writer = ogcDataSource.ogcFilterWriter;
-                        ogcLayer.filters = writer.rebuiltIgoOgcFilterObjectFromSequence(activeFilters);
+                        ogcLayer.filters = ogcFilterWriter.rebuiltIgoOgcFilterObjectFromSequence(activeFilters);
                         this.layer.dataSource.ol.clear();
                     }
                     else if (this.layer.dataSource.options.type === 'wms' &&
@@ -16580,11 +17078,8 @@
                             var ogcDataSource = this.layer.dataSource;
                             /** @type {?} */
                             var ogcLayer = ogcDataSource.options.ogcFilters;
-                            /** @type {?} */
-                            var writer = ogcDataSource.ogcFilterWriter;
-                            ogcLayer.filters = writer.rebuiltIgoOgcFilterObjectFromSequence(activeFilters);
-                            rebuildFilter = (( /** @type {?} */(this.layer
-                                .dataSource))).ogcFilterWriter.buildFilter(ogcLayer.filters, undefined, undefined, (( /** @type {?} */(this.layer.dataSource.options))).fieldNameGeometry);
+                            ogcLayer.filters = ogcFilterWriter.rebuiltIgoOgcFilterObjectFromSequence(activeFilters);
+                            rebuildFilter = ogcFilterWriter.buildFilter(ogcLayer.filters, undefined, undefined, (( /** @type {?} */(this.layer.dataSource.options))).fieldNameGeometry);
                         }
                         this.ogcFilterService.filterByOgc(( /** @type {?} */(this.datasource)), rebuildFilter);
                         this.datasource.options.ogcFilters.filtered =
@@ -16593,15 +17088,6 @@
                     this.lastRunOgcFilter = JSON.parse(JSON.stringify(activeFilters));
                 }
             };
-        Object.defineProperty(OgcFilterableItemComponent.prototype, "downloadable", {
-            get: /**
-             * @return {?}
-             */ function () {
-                return (( /** @type {?} */(this.datasource.options))).download;
-            },
-            enumerable: true,
-            configurable: true
-        });
         /**
          * @return {?}
          */
@@ -16611,10 +17097,55 @@
             function () {
                 this.layer.visible = true;
             };
+        /**
+         * @return {?}
+         */
+        OgcFilterableItemComponent.prototype.isAdvancedOgcFilters = /**
+         * @return {?}
+         */
+            function () {
+                return this.datasource.options.ogcFilters.advancedOgcFilters;
+            };
+        /**
+         * @return {?}
+         */
+        OgcFilterableItemComponent.prototype.addFilterDisabled = /**
+         * @return {?}
+         */
+            function () {
+                return (!this.datasource.options.sourceFields || this.datasource.options.sourceFields.length === 0);
+            };
+        /**
+         * @private
+         * @param {?} value
+         * @return {?}
+         */
+        OgcFilterableItemComponent.prototype.changeOgcFiltersAdvancedOgcFilters = /**
+         * @private
+         * @param {?} value
+         * @return {?}
+         */
+            function (value) {
+                this.datasource.options.ogcFilters.advancedOgcFilters = value;
+            };
+        /**
+         * @param {?} isAdvancedOgcFilters
+         * @return {?}
+         */
+        OgcFilterableItemComponent.prototype.changeOgcFilterType = /**
+         * @param {?} isAdvancedOgcFilters
+         * @return {?}
+         */
+            function (isAdvancedOgcFilters) {
+                this.changeOgcFiltersAdvancedOgcFilters(isAdvancedOgcFilters.checked);
+                if (isAdvancedOgcFilters.checked) {
+                    this.refreshFilters(true);
+                }
+            };
         OgcFilterableItemComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'igo-ogc-filterable-item',
-                        template: "<span *ngIf=\"filtersAreEditable\">\r\n<mat-list-item>\r\n\r\n  <mat-icon *ngIf=\"ogcFiltersHeaderShown\" class=\"igo-chevron\" mat-list-avatar igoCollapse [target]=\"ogcFilters\" [collapsed]=\"filtersCollapsed\" svgIcon=\"chevron-up\">\r\n  </mat-icon>\r\n  <h4 *ngIf=\"ogcFiltersHeaderShown\" matLine [matTooltip]=\"layer.title\" matTooltipShowDelay=\"500\">{{layer.title}}</h4>\r\n  <h4 *ngIf=\"!ogcFiltersHeaderShown\" matLine></h4>\r\n\r\n  <button mat-icon-button *ngIf=\"hasActiveSpatialFilter && showFeatureOnMap\" tooltip-position=\"below\" matTooltipShowDelay=\"500\"\r\n  [matTooltip]=\"'igo.geo.filter.hideFeatureExtent' | translate\"\r\n  [disabled]=\"!layer.visible || !layer.isInResolutionsRange\"\r\n  [color]=\"color\"\r\n  (click)=\"toggleShowFeatureOnMap()\">\r\n  <mat-icon svgIcon=\"border-outer\"></mat-icon>\r\n  </button>\r\n\r\n  <button mat-icon-button *ngIf=\"hasActiveSpatialFilter && !showFeatureOnMap\" tooltip-position=\"below\" matTooltipShowDelay=\"500\"\r\n  [matTooltip]=\"'igo.geo.filter.showFeatureExtent' | translate\"\r\n  [disabled]=\"!layer.visible || !layer.isInResolutionsRange\"\r\n  [color]=\"color\"\r\n  (click)=\"toggleShowFeatureOnMap()\">\r\n    <mat-icon svgIcon=\"border-none\"></mat-icon>\r\n  </button>\r\n\r\n  <span *ngIf=\"downloadable && ogcFiltersHeaderShown\">\r\n    <button mat-icon-button tooltip-position=\"below\" matTooltipShowDelay=\"500\" [matTooltip]=\"'igo.geo.download.action' | translate\"\r\n      [color]=\"color\" (click)=\"openDownload()\">\r\n      <mat-icon svgIcon=\"download\"></mat-icon>\r\n    </button>\r\n  </span>\r\n  <button [disabled]=\"!datasource.options.sourceFields ||\u00A0datasource.options.sourceFields.length === 0\" mat-icon-button tooltip-position=\"below\" matTooltipShowDelay=\"500\"\r\n    [matTooltip]=\"'igo.geo.filter.addFilter' | translate\" [color]=\"color\" (click)=\"addFilterToSequence()\">\r\n    <mat-icon svgIcon=\"plus\"></mat-icon>\r\n  </button>\r\n</mat-list-item>\r\n\r\n<button *ngIf=\"!layer.visible && ogcFiltersHeaderShown\" mat-icon-button tooltip-position=\"below\" matTooltipShowDelay=\"500\" [matTooltip]=\"'igo.geo.layer.showLayer' | translate\"\r\ncolor=\"warn\" (click)=\"setVisible()\">\r\n<mat-icon svgIcon=\"error-outline\"></mat-icon>\r\n</button>\r\n\r\n<div #ogcFilters class=\"igo-datasource-filters-container\">\r\n  <igo-ogc-filterable-form [datasource]=\"datasource\" [map]=\"map\" [refreshFilters]=\"refreshFunc\" [showFeatureOnMap]=\"showFeatureOnMap\">\r\n  </igo-ogc-filterable-form>\r\n</div>\r\n</span>\r\n",
+                        template: "<span *ngIf=\"filtersAreEditable\">\r\n<mat-list-item>\r\n\r\n  <mat-icon *ngIf=\"ogcFiltersHeaderShown\" class=\"igo-chevron\" mat-list-avatar igoCollapse [target]=\"ogcFilters\" [collapsed]=\"filtersCollapsed\" svgIcon=\"chevron-up\">\r\n  </mat-icon>\r\n  <h4 *ngIf=\"ogcFiltersHeaderShown\" matLine [matTooltip]=\"layer.title\" matTooltipShowDelay=\"500\">{{layer.title}}</h4>\r\n  <h4 *ngIf=\"!ogcFiltersHeaderShown\" matLine></h4>\r\n\r\n  <span *ngIf=\"downloadable && ogcFiltersHeaderShown\">\r\n    <button mat-icon-button tooltip-position=\"below\" matTooltipShowDelay=\"500\" [matTooltip]=\"'igo.geo.download.action' | translate\"\r\n      [color]=\"color\" (click)=\"openDownload()\">\r\n      <mat-icon svgIcon=\"download\"></mat-icon>\r\n    </button>\r\n  </span>\r\n  <button *ngIf=\"isAdvancedOgcFilters()\" [disabled]=\"addFilterDisabled()\" mat-icon-button tooltip-position=\"below\" matTooltipShowDelay=\"500\"\r\n    [matTooltip]=\"'igo.geo.filter.addFilter' | translate\" [color]=\"color\" (click)=\"addFilterToSequence()\">\r\n    <mat-icon svgIcon=\"plus\"></mat-icon>\r\n  </button>\r\n</mat-list-item>\r\n\r\n<button *ngIf=\"!layer.visible && ogcFiltersHeaderShown\" mat-icon-button tooltip-position=\"below\" matTooltipShowDelay=\"500\" [matTooltip]=\"'igo.geo.layer.showLayer' | translate\"\r\ncolor=\"warn\" (click)=\"setVisible()\">\r\n<mat-icon svgIcon=\"error-outline\"></mat-icon>\r\n</button>\r\n\r\n<div #ogcFilters class=\"igo-datasource-filters-container\">\r\n  <igo-ogc-filterable-form [datasource]=\"datasource\" [map]=\"map\" [refreshFilters]=\"refreshFunc\">\r\n  </igo-ogc-filterable-form>\r\n\r\n  <mat-checkbox labelPosition='before' *ngIf=\"hasPushButton\" (change)=\"changeOgcFilterType($event)\"\r\n    [(ngModel)]=\"datasource.options.ogcFilters.advancedOgcFilters\">\r\n    {{'igo.geo.filter.advancedOgcFilters' | translate}}\r\n  </mat-checkbox>\r\n</div>\r\n</span>\r\n",
                         styles: [":host{overflow:hidden}.igo-datasource-filters-container{text-align:center;width:100%;display:inline-block}mat-icon.disabled{color:rgba(0,0,0,.38)}"]
                     }] }
         ];
@@ -16628,7 +17159,6 @@
         OgcFilterableItemComponent.propDecorators = {
             layer: [{ type: i0.Input }],
             map: [{ type: i0.Input }],
-            showFeatureOnMap: [{ type: i0.Input }],
             ogcFiltersHeaderShown: [{ type: i0.Input }]
         };
         return OgcFilterableItemComponent;
@@ -16639,41 +17169,8 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var OgcFilterableListComponent = /** @class */ (function () {
-        function OgcFilterableListComponent(cdRef) {
-            this.cdRef = cdRef;
-            this._layers = [];
+        function OgcFilterableListComponent() {
         }
-        Object.defineProperty(OgcFilterableListComponent.prototype, "layers", {
-            get: /**
-             * @return {?}
-             */ function () {
-                return this._layers;
-            },
-            set: /**
-             * @param {?} value
-             * @return {?}
-             */ function (value) {
-                this._layers = value;
-                this.cdRef.detectChanges();
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(OgcFilterableListComponent.prototype, "map", {
-            get: /**
-             * @return {?}
-             */ function () {
-                return this._map;
-            },
-            set: /**
-             * @param {?} value
-             * @return {?}
-             */ function (value) {
-                this._map = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
         OgcFilterableListComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'igo-ogc-filterable-list',
@@ -16682,11 +17179,7 @@
                     }] }
         ];
         /** @nocollapse */
-        OgcFilterableListComponent.ctorParameters = function () {
-            return [
-                { type: i0.ChangeDetectorRef }
-            ];
-        };
+        OgcFilterableListComponent.ctorParameters = function () { return []; };
         OgcFilterableListComponent.propDecorators = {
             layers: [{ type: i0.Input }],
             map: [{ type: i0.Input }]
@@ -16750,66 +17243,17 @@
      */
     var OgcFilterButtonComponent = /** @class */ (function () {
         function OgcFilterButtonComponent() {
-            this._color = 'primary';
+            this.color = 'primary';
             this.ogcFilterCollapse = false;
-            this._ogcFiltersInLayers = false;
         }
-        Object.defineProperty(OgcFilterButtonComponent.prototype, "layer", {
+        Object.defineProperty(OgcFilterButtonComponent.prototype, "options", {
             get: /**
              * @return {?}
              */ function () {
-                return this._layer;
-            },
-            set: /**
-             * @param {?} value
-             * @return {?}
-             */ function (value) {
-                this._layer = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(OgcFilterButtonComponent.prototype, "map", {
-            get: /**
-             * @return {?}
-             */ function () {
-                return this._map;
-            },
-            set: /**
-             * @param {?} value
-             * @return {?}
-             */ function (value) {
-                this._map = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(OgcFilterButtonComponent.prototype, "color", {
-            get: /**
-             * @return {?}
-             */ function () {
-                return this._color;
-            },
-            set: /**
-             * @param {?} value
-             * @return {?}
-             */ function (value) {
-                this._color = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(OgcFilterButtonComponent.prototype, "ogcFiltersInLayers", {
-            get: /**
-             * @return {?}
-             */ function () {
-                return this._ogcFiltersInLayers;
-            },
-            set: /**
-             * @param {?} value
-             * @return {?}
-             */ function (value) {
-                this._ogcFiltersInLayers = value;
+                if (!this.layer) {
+                    return;
+                }
+                return this.layer.dataSource.options;
             },
             enumerable: true,
             configurable: true
@@ -16825,22 +17269,10 @@
                     this.ogcFilterCollapse = !this.ogcFilterCollapse;
                 }
             };
-        Object.defineProperty(OgcFilterButtonComponent.prototype, "options", {
-            get: /**
-             * @return {?}
-             */ function () {
-                if (!this.layer) {
-                    return;
-                }
-                return this.layer.dataSource.options;
-            },
-            enumerable: true,
-            configurable: true
-        });
         OgcFilterButtonComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'igo-ogc-filter-button',
-                        template: "<button *ngIf=\"ogcFiltersInLayers && options.ogcFilters && (options.ogcFilters.enabled\r\n&& options.ogcFilters.editable)\"\r\n  mat-icon-button\r\n  collapsibleButton\r\n  tooltip-position=\"below\"\r\n  matTooltipShowDelay=\"500\"\r\n  [matTooltip]=\"'igo.geo.filter.filterBy' | translate\"\r\n  [color]=\"color\"\r\n  (click)=\"toggleOgcFilter()\">\r\n  <mat-icon\r\n    [ngClass]='{disabled: !layer.isInResolutionsRange}'>\r\n    filter_list\r\n  </mat-icon>\r\n</button>\r\n\r\n<div #ogcFilter class=\"igo-layer-actions-container\"\r\n*ngIf=\"options.ogcFilters && (options.ogcFilters.enabled\r\n&& options.ogcFilters.editable)\">\r\n  <igo-ogc-filterable-item\r\n    *ngIf=\"ogcFilterCollapse && options.ogcFilters.enabled\"\r\n    igoListItem\r\n    [ogcFiltersHeaderShown]=\"false\"\r\n    [map]=\"layer.map\"\r\n    [layer]=\"layer\">\r\n  </igo-ogc-filterable-item>\r\n</div>\r\n",
+                        template: "<button *ngIf=\"ogcFiltersInLayers && options.ogcFilters && (options.ogcFilters.enabled\r\n&& options.ogcFilters.editable)\"\r\n  mat-icon-button\r\n  collapsibleButton\r\n  tooltip-position=\"below\"\r\n  matTooltipShowDelay=\"500\"\r\n  [matTooltip]=\"'igo.geo.filter.filterBy' | translate\"\r\n  [color]=\"color\"\r\n  (click)=\"toggleOgcFilter()\">\r\n  <mat-icon\r\n    [ngClass]='{disabled: !layer.isInResolutionsRange}'svgIcon=\"filter\"></mat-icon>\r\n</button>\r\n\r\n<div #ogcFilter class=\"igo-layer-actions-container\"\r\n*ngIf=\"options.ogcFilters && (options.ogcFilters.enabled\r\n&& options.ogcFilters.editable)\">\r\n  <igo-ogc-filterable-item\r\n    *ngIf=\"ogcFilterCollapse && options.ogcFilters.enabled\"\r\n    igoListItem\r\n    [ogcFiltersHeaderShown]=\"false\"\r\n    [map]=\"layer.map\"\r\n    [layer]=\"layer\">\r\n  </igo-ogc-filterable-item>\r\n</div>\r\n",
                         changeDetection: i0.ChangeDetectionStrategy.OnPush,
                         styles: [""]
                     }] }
@@ -16854,6 +17286,149 @@
             ogcFiltersInLayers: [{ type: i0.Input }]
         };
         return OgcFilterButtonComponent;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    var OgcFilterToggleButtonComponent = /** @class */ (function () {
+        function OgcFilterToggleButtonComponent(ogcFilterService) {
+            this.ogcFilterService = ogcFilterService;
+            this.color = 'primary';
+            this.pushButtonBundle = [];
+            this.ogcFilterWriter = new OgcFilterWriter();
+        }
+        /**
+         * @return {?}
+         */
+        OgcFilterToggleButtonComponent.prototype.ngOnInit = /**
+         * @return {?}
+         */
+            function () {
+                if (this.datasource.options.ogcFilters &&
+                    this.datasource.options.ogcFilters.pushButtons) {
+                    this.pushButtonBundle = ( /** @type {?} */(this.datasource.options.ogcFilters.pushButtons));
+                }
+                this.applyFilters();
+            };
+        /**
+         * @param {?} pb
+         * @return {?}
+         */
+        OgcFilterToggleButtonComponent.prototype.getToolTip = /**
+         * @param {?} pb
+         * @return {?}
+         */
+            function (pb) {
+                /** @type {?} */
+                var tt;
+                if (pb.tooltip) {
+                    tt = pb.tooltip;
+                }
+                return tt || '';
+            };
+        /**
+         * @param {?} pb
+         * @return {?}
+         */
+        OgcFilterToggleButtonComponent.prototype.getButtonColor = /**
+         * @param {?} pb
+         * @return {?}
+         */
+            function (pb) {
+                /** @type {?} */
+                var styles;
+                if (pb.color) {
+                    styles = {
+                        'background-color': pb.enabled ? "rgba(" + pb.color + ")" : "rgba(255,255,255,0)",
+                    };
+                }
+                return styles;
+            };
+        /**
+         * @param {?} bundle
+         * @return {?}
+         */
+        OgcFilterToggleButtonComponent.prototype.bundleIsVertical = /**
+         * @param {?} bundle
+         * @return {?}
+         */
+            function (bundle) {
+                return bundle.vertical ? bundle.vertical : false;
+            };
+        /**
+         * @param {?=} currentOgcPushButton
+         * @return {?}
+         */
+        OgcFilterToggleButtonComponent.prototype.applyFilters = /**
+         * @param {?=} currentOgcPushButton
+         * @return {?}
+         */
+            function (currentOgcPushButton) {
+                if (currentOgcPushButton) {
+                    currentOgcPushButton.enabled = !currentOgcPushButton.enabled;
+                }
+                /** @type {?} */
+                var filterQueryString = '';
+                /** @type {?} */
+                var conditions = [];
+                this.pushButtonBundle.map(( /**
+                 * @param {?} buttonBundle
+                 * @return {?}
+                 */function (buttonBundle) {
+                    /** @type {?} */
+                    var bundleCondition = [];
+                    buttonBundle.ogcPushButtons
+                        .filter(( /**
+                 * @param {?} ogcpb
+                 * @return {?}
+                 */function (ogcpb) { return ogcpb.enabled === true; }))
+                        .forEach(( /**
+                 * @param {?} enabledPb
+                 * @return {?}
+                 */function (enabledPb) { return bundleCondition.push(enabledPb.filters); }));
+                    if (bundleCondition.length >= 1) {
+                        if (bundleCondition.length === 1) {
+                            conditions.push(bundleCondition[0]);
+                        }
+                        else {
+                            conditions.push({ logical: buttonBundle.logical, filters: bundleCondition });
+                        }
+                    }
+                }));
+                if (conditions.length >= 1) {
+                    filterQueryString = this.ogcFilterWriter
+                        .buildFilter(conditions.length === 1 ?
+                        conditions[0] : ( /** @type {?} */({ logical: 'And', filters: conditions })));
+                }
+                if (this.datasource.options.type === 'wms') {
+                    this.ogcFilterService.filterByOgc(( /** @type {?} */(this.datasource)), filterQueryString);
+                }
+                if (this.datasource.options.type === 'wfs') {
+                    // TODO: Check how to prevent wfs to refresh when filter icon is pushed...
+                    this.datasource.ol.clear();
+                }
+            };
+        OgcFilterToggleButtonComponent.decorators = [
+            { type: i0.Component, args: [{
+                        selector: 'igo-ogc-filter-toggle-button',
+                        template: "<ng-container *ngFor=\"let bundle of pushButtonBundle\">\r\n        <mat-button-toggle-group appearance=\"legacy\" vertical={{bundleIsVertical(bundle)}} multiple=\"true\">\r\n            <mat-button-toggle [ngStyle]=\"getButtonColor(ogcPushButton)\" [checked]=\"ogcPushButton.enabled\"\r\n                (change)=\"applyFilters(ogcPushButton)\" tooltip-position=\"below\" matTooltipShowDelay=\"500\"\r\n                [matTooltip]=\"getToolTip(ogcPushButton)\" *ngFor=\"let ogcPushButton of bundle.ogcPushButtons\"\r\n                [value]=\"ogcPushButton\">{{ogcPushButton.title}}\r\n            </mat-button-toggle>\r\n        </mat-button-toggle-group>\r\n</ng-container>\r\n",
+                        styles: [".mat-button-toggle-checked{font-weight:700}.mat-button-toggle-group{margin:5px;flex-wrap:wrap}"]
+                    }] }
+        ];
+        /** @nocollapse */
+        OgcFilterToggleButtonComponent.ctorParameters = function () {
+            return [
+                { type: OGCFilterService }
+            ];
+        };
+        OgcFilterToggleButtonComponent.propDecorators = {
+            refreshFilters: [{ type: i0.Input }],
+            datasource: [{ type: i0.Input }],
+            map: [{ type: i0.Input }]
+        };
+        return OgcFilterToggleButtonComponent;
     }());
 
     /**
@@ -16889,6 +17464,8 @@
                             material.MatAutocompleteModule,
                             material.MatIconModule,
                             material.MatButtonModule,
+                            material.MatButtonToggleModule,
+                            material.MatCheckboxModule,
                             material.MatSliderModule,
                             material.MatSlideToggleModule,
                             material.MatFormFieldModule,
@@ -16914,6 +17491,7 @@
                             TimeFilterListBindingDirective,
                             OgcFilterFormComponent,
                             OgcFilterButtonComponent,
+                            OgcFilterToggleButtonComponent,
                             OgcFilterableFormComponent,
                             OgcFilterableItemComponent,
                             OgcFilterableListComponent,
@@ -16927,6 +17505,7 @@
                             TimeFilterListBindingDirective,
                             OgcFilterFormComponent,
                             OgcFilterButtonComponent,
+                            OgcFilterToggleButtonComponent,
                             OgcFilterableFormComponent,
                             OgcFilterableItemComponent,
                             OgcFilterableListComponent,
@@ -16967,7 +17546,7 @@
             /**
              * The drawGuide around the mouse pointer to help drawing
              */
-            this.drawGuide = 0;
+            this.drawGuide = null;
             /**
              * Draw guide placeholder
              */
@@ -17078,7 +17657,7 @@
         GeometryFormFieldComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'igo-geometry-form-field',
-                        template: "<igo-geometry-form-field-input\r\n  [formControl]=\"formControl\"\r\n  [map]=\"map\"\r\n  [geometryType]=\"geometryType$ | async\"\r\n  [drawGuide]=\"drawGuide$ | async\"\r\n  [measure]=\"measure\">\r\n</igo-geometry-form-field-input>\r\n\r\n<div *ngIf=\"geometryTypeField\" class=\"geometry-type-toggle\">\r\n  <mat-button-toggle-group\r\n    [disabled]=\"(value$ | async) !== undefined\"\r\n    [ngModel]=\"geometryTypeModel\"\r\n    (ngModelChange)=\"onGeometryTypeChange($event)\">\r\n    <mat-button-toggle\r\n      value=\"Point\"\r\n      [disabled]=\"geometryTypes.indexOf('Point') < 0\">\r\n      {{'igo.geo.geometry.point' | translate}}\r\n    </mat-button-toggle>\r\n    <mat-button-toggle\r\n      value=\"LineString\"\r\n      [disabled]=\"geometryTypes.indexOf('LineString') < 0\">\r\n      {{'igo.geo.geometry.line' | translate}}\r\n    </mat-button-toggle>\r\n    <mat-button-toggle\r\n      value=\"Polygon\"\r\n      [disabled]=\"geometryTypes.indexOf('Polygon') < 0\">\r\n      {{'igo.geo.geometry.polygon' | translate}}\r\n    </mat-button-toggle>\r\n  </mat-button-toggle-group>\r\n</div>\r\n\r\n<mat-form-field *ngIf=\"drawGuideField\" class=\"draw-guide-field\">\r\n  <input\r\n    matInput\r\n    type=\"number\"\r\n    [placeholder]=\"drawGuidePlaceholder\"\r\n    [ngModel]=\"drawGuideModel\"\r\n    (ngModelChange)=\"onDrawGuideChange($event)\">\r\n  <mat-icon\r\n    matPrefix\r\n    [color]=\"'primary'\"\r\n    svgIcon=\"adjust\">    \r\n  </mat-icon>\r\n  <span matSuffix class=\"draw-guide-units\">{{'igo.geo.measure.meters' | translate}}</span>\r\n</mat-form-field>",
+                        template: "<igo-geometry-form-field-input\r\n  [formControl]=\"formControl\"\r\n  [map]=\"map\"\r\n  [geometryType]=\"geometryType$ | async\"\r\n  [drawGuide]=\"drawGuide$ | async\"\r\n  [measure]=\"measure\"\r\n  [drawStyle]=\"drawStyle\"\r\n  [overlayStyle]=\"overlayStyle\">\r\n</igo-geometry-form-field-input>\r\n\r\n<div *ngIf=\"geometryTypeField\" class=\"geometry-type-toggle\">\r\n  <mat-button-toggle-group\r\n    [disabled]=\"(value$ | async) !== undefined\"\r\n    [ngModel]=\"geometryTypeModel\"\r\n    (ngModelChange)=\"onGeometryTypeChange($event)\">\r\n    <mat-button-toggle\r\n      value=\"Point\"\r\n      [disabled]=\"geometryTypes.indexOf('Point') < 0\">\r\n      {{'igo.geo.geometry.point' | translate}}\r\n    </mat-button-toggle>\r\n    <mat-button-toggle\r\n      value=\"LineString\"\r\n      [disabled]=\"geometryTypes.indexOf('LineString') < 0\">\r\n      {{'igo.geo.geometry.line' | translate}}\r\n    </mat-button-toggle>\r\n    <mat-button-toggle\r\n      value=\"Polygon\"\r\n      [disabled]=\"geometryTypes.indexOf('Polygon') < 0\">\r\n      {{'igo.geo.geometry.polygon' | translate}}\r\n    </mat-button-toggle>\r\n  </mat-button-toggle-group>\r\n</div>\r\n\r\n<mat-form-field *ngIf=\"drawGuideField\" class=\"draw-guide-field\">\r\n  <input\r\n    matInput\r\n    type=\"number\"\r\n    [placeholder]=\"drawGuidePlaceholder\"\r\n    [ngModel]=\"drawGuideModel\"\r\n    (ngModelChange)=\"onDrawGuideChange($event)\">\r\n  <mat-icon\r\n    matPrefix\r\n    [color]=\"'primary'\"\r\n    svgIcon=\"adjust\">    \r\n  </mat-icon>\r\n  <span matSuffix class=\"draw-guide-units\">{{'igo.geo.measure.meters' | translate}}</span>\r\n</mat-form-field>",
                         changeDetection: i0.ChangeDetectionStrategy.OnPush,
                         styles: [":host{display:block;width:100%}.draw-guide-field,.geometry-type-toggle{width:100%}.geometry-type-toggle{padding:10px;text-align:center}.draw-guide-field mat-icon{margin:0 10px}.draw-guide-units{padding:10px}"]
                     }] }
@@ -17098,7 +17677,9 @@
             drawGuideField: [{ type: i0.Input }],
             drawGuide: [{ type: i0.Input }],
             drawGuidePlaceholder: [{ type: i0.Input }],
-            measure: [{ type: i0.Input }]
+            measure: [{ type: i0.Input }],
+            drawStyle: [{ type: i0.Input }],
+            overlayStyle: [{ type: i0.Input }]
         };
         /**
          * This input allows a user to draw a new geometry or to edit
@@ -17722,24 +18303,26 @@
      */
     /**
      * Create a default style for draw and modify interactions
+     * @param {?=} color Style color (R, G, B)
      * @return {?} OL style
      */
-    function createDrawInteractionStyle() {
+    function createDrawInteractionStyle(color$$1) {
+        color$$1 = color$$1 || [0, 153, 255];
         return new olstyle.Style({
             stroke: new olstyle.Stroke({
-                color: [0, 153, 255, 1],
+                color: color$$1.concat([1]),
                 width: 2
             }),
             fill: new olstyle.Fill({
-                color: [0, 153, 255, 0.2]
+                color: color$$1.concat([0.2])
             }),
             image: new olstyle.Circle({
-                radius: 5,
+                radius: 8,
                 stroke: new olstyle.Stroke({
-                    color: [0, 153, 255, 1],
+                    color: color$$1.concat([1])
                 }),
                 fill: new olstyle.Fill({
-                    color: [0, 153, 255, 0.2]
+                    color: color$$1.concat([0.2])
                 })
             })
         });
@@ -18338,9 +18921,9 @@
          */
             function (olGeometry) {
                 /** @type {?} */
-                var olFeature$$1 = new olFeature({ geometry: olGeometry });
+                var olFeature = new OlFeature({ geometry: olGeometry });
                 this.olOverlaySource.clear();
-                this.olOverlaySource.addFeature(olFeature$$1);
+                this.olOverlaySource.addFeature(olFeature);
             };
         /**
          * Create an overlay source if none is defined in the options
@@ -19270,9 +19853,9 @@
          */
             function (olGeometry) {
                 /** @type {?} */
-                var olFeature$$1 = new olFeature({ geometry: olGeometry });
+                var olFeature = new OlFeature({ geometry: olGeometry });
                 this.olOverlaySource.clear();
-                this.olOverlaySource.addFeature(olFeature$$1);
+                this.olOverlaySource.addFeature(olFeature);
             };
         /**
          * Create an overlay source if none is defined in the options
@@ -19449,14 +20032,14 @@
                     this.olOverlaySource.forEachFeatureInExtent(lineExtent, ( /**
                      * @param {?} olFeature
                      * @return {?}
-                     */function (olFeature$$1) {
+                     */function (olFeature) {
                         /** @type {?} */
-                        var olGeometry = olFeature$$1.getGeometry();
+                        var olGeometry = olFeature.getGeometry();
                         /** @type {?} */
                         var olParts = sliceOlGeometry(olGeometry, olLine);
                         if (olParts.length > 0) {
                             olSlicedGeometries.push.apply(olSlicedGeometries, __spread(olParts));
-                            olFeaturesToRemove.push(olFeature$$1);
+                            olFeaturesToRemove.push(olFeature);
                         }
                     }));
                 }
@@ -19473,12 +20056,12 @@
                 this.olOverlaySource.addFeatures(olSlicedGeometries.map(( /**
                  * @param {?} olGeometry
                  * @return {?}
-                 */function (olGeometry) { return new olFeature(olGeometry); })));
+                 */function (olGeometry) { return new OlFeature(olGeometry); })));
                 olFeaturesToRemove.forEach(( /**
                  * @param {?} olFeature
                  * @return {?}
-                 */function (olFeature$$1) {
-                    _this.olOverlaySource.removeFeature(olFeature$$1);
+                 */function (olFeature) {
+                    _this.olOverlaySource.removeFeature(olFeature);
                 }));
                 this.error$.next(undefined);
                 this.end$.next(olSlicedGeometries);
@@ -19941,17 +20524,17 @@
                     /** @type {?} */
                     var olFeatures = this.store.layer.ol.getSource().getFeatures();
                     /** @type {?} */
-                    var olFeature$$1 = olFeatures.find(( /**
+                    var olFeature = olFeatures.find(( /**
                      * @param {?} _olFeature
                      * @return {?}
                      */function (_olFeature) {
                         return _olFeature.get('id') === feature_1.properties.id;
                     }));
-                    if (olFeature$$1 !== undefined) {
+                    if (olFeature !== undefined) {
                         this.deactivateDrawControl();
                         this.activateModifyControl();
                         /** @type {?} */
-                        var olGeometry = olFeature$$1.getGeometry();
+                        var olGeometry = olFeature.getGeometry();
                         this.clearTooltipsOfOlGeometry(olGeometry);
                         this.modifyControl.setOlGeometry(olGeometry);
                     }
@@ -20659,8 +21242,8 @@
                 olSource.forEachFeature(( /**
                  * @param {?} olFeature
                  * @return {?}
-                 */function (olFeature$$1) {
-                    _this.updateTooltipsOfOlGeometry(olFeature$$1.getGeometry());
+                 */function (olFeature) {
+                    _this.updateTooltipsOfOlGeometry(olFeature.getGeometry());
                 }));
             };
         /**
@@ -20683,8 +21266,8 @@
                 olSource.forEachFeature(( /**
                  * @param {?} olFeature
                  * @return {?}
-                 */function (olFeature$$1) {
-                    _this.showTooltipsOfOlGeometry(olFeature$$1.getGeometry());
+                 */function (olFeature) {
+                    _this.showTooltipsOfOlGeometry(olFeature.getGeometry());
                 }));
             };
         /**
@@ -20708,11 +21291,11 @@
                 olSource.forEachFeature(( /**
                  * @param {?} olFeature
                  * @return {?}
-                 */function (olFeature$$1) {
+                 */function (olFeature) {
                     /** @type {?} */
-                    var olGeometry = olFeature$$1.getGeometry();
+                    var olGeometry = olFeature.getGeometry();
                     if (olGeometry !== undefined) {
-                        _this.clearTooltipsOfOlGeometry(olFeature$$1.getGeometry());
+                        _this.clearTooltipsOfOlGeometry(olFeature.getGeometry());
                     }
                 }));
             };
@@ -20922,7 +21505,7 @@
             /**
              * The drawGuide around the mouse pointer to help drawing
              */
-            this.drawGuide = 0;
+            this.drawGuide = null;
             /**
              * Whether a measure tooltip should be displayed
              */
@@ -20958,6 +21541,50 @@
                 this.deactivateControl();
                 this.createDrawControl();
                 this.toggleControl();
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(GeometryFormFieldInputComponent.prototype, "drawStyle", {
+            get: /**
+             * @return {?}
+             */ function () { return this._drawStyle; },
+            /**
+             * Style for the draw control (applies while the geometry is being drawn)
+             */
+            set: /**
+             * Style for the draw control (applies while the geometry is being drawn)
+             * @param {?} value
+             * @return {?}
+             */ function (value) {
+                this._drawStyle = value || createDrawInteractionStyle();
+                if (this.isStyleWithRadius(this.drawStyle)) {
+                    this.defaultDrawStyleRadius = this.drawStyle.getImage().getRadius();
+                }
+                else {
+                    this.defaultDrawStyleRadius = null;
+                }
+            },
+            enumerable: true,
+            configurable: true
+        });
+        Object.defineProperty(GeometryFormFieldInputComponent.prototype, "overlayStyle", {
+            get: /**
+             * @return {?}
+             */ function () {
+                return this._overlayStyle || this.drawStyle;
+            },
+            /**
+             * Style for the overlay layer (applies once the geometry is added to the map)
+             * If not specified, drawStyle applies
+             */
+            set: /**
+             * Style for the overlay layer (applies once the geometry is added to the map)
+             * If not specified, drawStyle applies
+             * @param {?} value
+             * @return {?}
+             */ function (value) {
+                this._overlayStyle = value;
             },
             enumerable: true,
             configurable: true
@@ -21029,8 +21656,6 @@
             function () {
                 this.addOlOverlayLayer();
                 this.createMeasureTooltip();
-                this.drawInteractionStyle = createDrawInteractionStyle();
-                this.defaultDrawStyleRadius = this.drawInteractionStyle.getImage().getRadius();
                 this.createDrawControl();
                 this.createModifyControl();
                 if (this.value) {
@@ -21128,7 +21753,8 @@
             function () {
                 this.olOverlayLayer = new OlVectorLayer({
                     source: new OlVectorSource(),
-                    zIndex: 500
+                    zIndex: 500,
+                    style: null
                 });
                 this.map.ol.addLayer(this.olOverlayLayer);
             };
@@ -21148,15 +21774,15 @@
             function () {
                 var _this = this;
                 this.drawControl = new DrawControl({
-                    geometryType: this.geometryType,
+                    geometryType: this.geometryType || 'Point',
                     layer: this.olOverlayLayer,
                     drawStyle: ( /**
                      * @param {?} olFeature
                      * @param {?} resolution
                      * @return {?}
-                     */function (olFeature$$1, resolution) {
+                     */function (olFeature, resolution) {
                         /** @type {?} */
-                        var style = _this.drawInteractionStyle;
+                        var style = _this.drawStyle;
                         _this.updateDrawStyleWithDrawGuide(style, resolution);
                         return style;
                     })
@@ -21183,9 +21809,9 @@
                      * @param {?} olFeature
                      * @param {?} resolution
                      * @return {?}
-                     */function (olFeature$$1, resolution) {
+                     */function (olFeature, resolution) {
                         /** @type {?} */
-                        var style = _this.drawInteractionStyle;
+                        var style = _this.drawStyle;
                         _this.updateDrawStyleWithDrawGuide(style, resolution);
                         return style;
                     })
@@ -21206,7 +21832,7 @@
          */
             function () {
                 this.deactivateControl();
-                if (!this.value) {
+                if (!this.value && this.geometryType) {
                     this.activateControl(this.drawControl);
                 }
                 else {
@@ -21366,9 +21992,12 @@
                     featureProjection: this.map.projection
                 });
                 /** @type {?} */
-                var olFeature$$1 = new olFeature({ geometry: olGeometry });
+                var olFeature = new OlFeature({
+                    geometry: olGeometry
+                });
+                olFeature.setStyle(this.overlayStyle);
                 this.olOverlaySource.clear();
-                this.olOverlaySource.addFeature(olFeature$$1);
+                this.olOverlaySource.addFeature(olFeature);
             };
         /**
          * Create the measure tooltip
@@ -21454,35 +22083,63 @@
          * @return {?}
          */
             function () {
-                if (this.olTooltip.getMap() !== undefined) {
+                if (this.olTooltip.getMap && this.olTooltip.getMap() !== undefined) {
                     this.map.ol.removeOverlay(this.olTooltip);
                     this.olTooltip.setMap(undefined);
                 }
             };
         /**
+         * Adjust the draw style with the specified draw guide distance, if possible
+         * @param olStyle Draw style to update
+         * @param resolution Resolution (to make the screen size of symbol fit the drawGuide value)
+         */
+        /**
+         * Adjust the draw style with the specified draw guide distance, if possible
          * @private
-         * @param {?} olStyle
-         * @param {?} resolution
+         * @param {?} olStyle Draw style to update
+         * @param {?} resolution Resolution (to make the screen size of symbol fit the drawGuide value)
          * @return {?}
          */
         GeometryFormFieldInputComponent.prototype.updateDrawStyleWithDrawGuide = /**
+         * Adjust the draw style with the specified draw guide distance, if possible
          * @private
-         * @param {?} olStyle
-         * @param {?} resolution
+         * @param {?} olStyle Draw style to update
+         * @param {?} resolution Resolution (to make the screen size of symbol fit the drawGuide value)
          * @return {?}
          */
             function (olStyle, resolution) {
-                /** @type {?} */
-                var drawGuide = this.drawGuide;
-                /** @type {?} */
-                var radius;
-                if (drawGuide === undefined || drawGuide < 0) {
-                    radius = this.defaultDrawStyleRadius;
+                if (this.isStyleWithRadius(olStyle)) {
+                    /** @type {?} */
+                    var drawGuide = this.drawGuide;
+                    /** @type {?} */
+                    var radius = void 0;
+                    if (drawGuide === null || drawGuide < 0) {
+                        radius = this.defaultDrawStyleRadius;
+                    }
+                    else {
+                        radius = drawGuide > 0 ? drawGuide / resolution : drawGuide;
+                    }
+                    olStyle.getImage().setRadius(radius);
                 }
-                else {
-                    radius = drawGuide > 0 ? drawGuide / resolution : drawGuide;
-                }
-                olStyle.getImage().setRadius(radius);
+            };
+        /**
+         * Returns wether a given Open Layers style has a radius property that can be set (used to set draw guide)
+         * @param olStyle The style on which to perform the check
+         */
+        /**
+         * Returns wether a given Open Layers style has a radius property that can be set (used to set draw guide)
+         * @private
+         * @param {?} olStyle The style on which to perform the check
+         * @return {?}
+         */
+        GeometryFormFieldInputComponent.prototype.isStyleWithRadius = /**
+         * Returns wether a given Open Layers style has a radius property that can be set (used to set draw guide)
+         * @private
+         * @param {?} olStyle The style on which to perform the check
+         * @return {?}
+         */
+            function (olStyle) {
+                return olStyle.getImage && olStyle.getImage().setRadius;
             };
         GeometryFormFieldInputComponent.decorators = [
             { type: i0.Component, args: [{
@@ -21503,6 +22160,8 @@
             geometryType: [{ type: i0.Input }],
             drawGuide: [{ type: i0.Input }],
             measure: [{ type: i0.Input }],
+            drawStyle: [{ type: i0.Input }],
+            overlayStyle: [{ type: i0.Input }],
             value: [{ type: i0.Input }]
         };
         return GeometryFormFieldInputComponent;
@@ -21747,9 +22406,9 @@
                 var exportOlFeatures = olFeatures.map(( /**
                  * @param {?} olFeature
                  * @return {?}
-                 */function (olFeature$$1) {
+                 */function (olFeature) {
                     /** @type {?} */
-                    var keys = olFeature$$1.getKeys().filter(( /**
+                    var keys = olFeature.getKeys().filter(( /**
                      * @param {?} key
                      * @return {?}
                      */function (key) { return !key.startsWith('_'); }));
@@ -21759,10 +22418,10 @@
                      * @param {?} key
                      * @return {?}
                      */function (acc, key) {
-                        acc[key] = olFeature$$1.get(key);
+                        acc[key] = olFeature.get(key);
                         return acc;
-                    }), { geometry: olFeature$$1.getGeometry() });
-                    return new olFeature(properties);
+                    }), { geometry: olFeature.getGeometry() });
+                    return new OlFeature(properties);
                 }));
                 return this.exportAsync(exportOlFeatures, format, title, projectionIn, projectionOut);
             };
@@ -21934,8 +22593,8 @@
                     var pointOrLine = olFeatures.find(( /**
                      * @param {?} olFeature
                      * @return {?}
-                     */function (olFeature$$1) {
-                        return ['Point', 'LineString'].indexOf(olFeature$$1.getGeometry().getType()) >= 0;
+                     */function (olFeature) {
+                        return ['Point', 'LineString'].indexOf(olFeature.getGeometry().getType()) >= 0;
                     }));
                     return pointOrLine === undefined;
                 }
@@ -22384,8 +23043,8 @@
                 var features = olFeatures.map(( /**
                  * @param {?} olFeature
                  * @return {?}
-                 */function (olFeature$$1) {
-                    return Object.assign(GeoJSON.writeFeatureObject(olFeature$$1), {
+                 */function (olFeature) {
+                    return Object.assign(GeoJSON.writeFeatureObject(olFeature), {
                         projection: projectionOut,
                         meta: {
                             id: utils.uuid(),
@@ -22418,8 +23077,8 @@
                 var features = olFeatures.map(( /**
                  * @param {?} olFeature
                  * @return {?}
-                 */function (olFeature$$1) {
-                    return Object.assign(olFormat.writeFeatureObject(olFeature$$1), {
+                 */function (olFeature) {
+                    return Object.assign(olFormat.writeFeatureObject(olFeature), {
                         projection: projectionOut,
                         meta: {
                             id: utils.uuid(),
@@ -22932,99 +23591,6 @@
      * @fileoverview added by tsickle
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
-    var MapLayerDirective = /** @class */ (function () {
-        function MapLayerDirective(component, networkService) {
-            this.networkService = networkService;
-            this.component = component;
-        }
-        Object.defineProperty(MapLayerDirective.prototype, "map", {
-            get: /**
-             * @return {?}
-             */ function () {
-                return this.component.map;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @return {?}
-         */
-        MapLayerDirective.prototype.ngAfterViewInit = /**
-         * @return {?}
-         */
-            function () {
-                var _this = this;
-                this.networkService.currentState().subscribe(( /**
-                 * @param {?} state
-                 * @return {?}
-                 */function (state) {
-                    console.log(state);
-                    _this.state = state;
-                    _this.changeLayer();
-                }));
-                this.map.layers$.subscribe(( /**
-                 * @param {?} layers
-                 * @return {?}
-                 */function (layers) {
-                    _this.changeLayer();
-                }));
-            };
-        /**
-         * @private
-         * @return {?}
-         */
-        MapLayerDirective.prototype.changeLayer = /**
-         * @private
-         * @return {?}
-         */
-            function () {
-                var _this = this;
-                /** @type {?} */
-                var layerList = this.map.layers$.value;
-                layerList.forEach(( /**
-                 * @param {?} layer
-                 * @return {?}
-                 */function (layer) {
-                    if (layer.options.sourceOptions) {
-                        if (layer.options.sourceOptions.pathOffline &&
-                            _this.state.connection === false) {
-                            if (layer.options.sourceOptions.excludeAttributeOffline) {
-                                layer.options.sourceOptions.excludeAttributeBackUp = layer.options.sourceOptions.excludeAttribute;
-                                layer.options.sourceOptions.excludeAttribute = layer.options.sourceOptions.excludeAttributeOffline;
-                            }
-                            layer.ol.getSource().clear();
-                            layer.ol.getSource().setUrl(layer.options.sourceOptions.pathOffline);
-                        }
-                        else if (layer.options.sourceOptions.pathOffline &&
-                            _this.state.connection === true) {
-                            if (layer.options.sourceOptions.excludeAttributeBackUp) {
-                                layer.options.sourceOptions.excludeAttribute = layer.options.sourceOptions.excludeAttributeBackUp;
-                            }
-                            layer.ol.getSource().clear();
-                            layer.ol.getSource().setUrl(layer.options.sourceOptions.url);
-                        }
-                    }
-                }));
-            };
-        MapLayerDirective.decorators = [
-            { type: i0.Directive, args: [{
-                        selector: '[igoMapLayer]'
-                    },] }
-        ];
-        /** @nocollapse */
-        MapLayerDirective.ctorParameters = function () {
-            return [
-                { type: MapBrowserComponent },
-                { type: i1$1.NetworkService }
-            ];
-        };
-        return MapLayerDirective;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
     var IgoMapModule = /** @class */ (function () {
         function IgoMapModule() {
         }
@@ -23045,7 +23611,7 @@
                             RotationButtonComponent,
                             BaseLayersSwitcherComponent,
                             MiniBaseMapComponent,
-                            MapLayerDirective
+                            MapOfflineDirective
                         ],
                         declarations: [
                             MapBrowserComponent,
@@ -23054,7 +23620,7 @@
                             RotationButtonComponent,
                             BaseLayersSwitcherComponent,
                             MiniBaseMapComponent,
-                            MapLayerDirective
+                            MapOfflineDirective
                         ]
                     },] }
         ];
@@ -23297,155 +23863,6 @@
                     },] }
         ];
         return IgoMeasureModule;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var MetadataService = /** @class */ (function () {
-        function MetadataService() {
-        }
-        /**
-         * @param {?} metadata
-         * @return {?}
-         */
-        MetadataService.prototype.open = /**
-         * @param {?} metadata
-         * @return {?}
-         */
-            function (metadata) {
-                if (metadata.extern) {
-                    window.open(metadata.url, '_blank');
-                }
-            };
-        MetadataService.decorators = [
-            { type: i0.Injectable, args: [{
-                        providedIn: 'root'
-                    },] }
-        ];
-        /** @nocollapse */
-        MetadataService.ctorParameters = function () { return []; };
-        /** @nocollapse */ MetadataService.ngInjectableDef = i0.defineInjectable({ factory: function MetadataService_Factory() { return new MetadataService(); }, token: MetadataService, providedIn: "root" });
-        return MetadataService;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var MetadataButtonComponent = /** @class */ (function () {
-        function MetadataButtonComponent(metadataService) {
-            this.metadataService = metadataService;
-            this._color = 'primary';
-        }
-        Object.defineProperty(MetadataButtonComponent.prototype, "layer", {
-            get: /**
-             * @return {?}
-             */ function () {
-                return this._layer;
-            },
-            set: /**
-             * @param {?} value
-             * @return {?}
-             */ function (value) {
-                this._layer = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        Object.defineProperty(MetadataButtonComponent.prototype, "color", {
-            get: /**
-             * @return {?}
-             */ function () {
-                return this._color;
-            },
-            set: /**
-             * @param {?} value
-             * @return {?}
-             */ function (value) {
-                this._color = value;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        /**
-         * @param {?} metadata
-         * @return {?}
-         */
-        MetadataButtonComponent.prototype.openMetadata = /**
-         * @param {?} metadata
-         * @return {?}
-         */
-            function (metadata) {
-                this.metadataService.open(metadata);
-            };
-        Object.defineProperty(MetadataButtonComponent.prototype, "options", {
-            get: /**
-             * @return {?}
-             */ function () {
-                if (!this.layer) {
-                    return;
-                }
-                return this.layer.options;
-            },
-            enumerable: true,
-            configurable: true
-        });
-        MetadataButtonComponent.decorators = [
-            { type: i0.Component, args: [{
-                        selector: 'igo-metadata-button',
-                        template: "<button\r\n  *ngIf=\"options && options.metadata && options.metadata.url\"\r\n  mat-icon-button\r\n  tooltip-position=\"below\"\r\n  matTooltipShowDelay=\"500\"\r\n  [matTooltip]=\"'igo.geo.metadata.show' | translate\"\r\n  [color]=\"color\"\r\n  (click)=\"openMetadata(options.metadata)\">\r\n  <mat-icon svgIcon=\"information-outline\"></mat-icon>\r\n</button>\r\n",
-                        changeDetection: i0.ChangeDetectionStrategy.OnPush,
-                        styles: [""]
-                    }] }
-        ];
-        /** @nocollapse */
-        MetadataButtonComponent.ctorParameters = function () {
-            return [
-                { type: MetadataService }
-            ];
-        };
-        MetadataButtonComponent.propDecorators = {
-            layer: [{ type: i0.Input }],
-            color: [{ type: i0.Input }]
-        };
-        return MetadataButtonComponent;
-    }());
-
-    /**
-     * @fileoverview added by tsickle
-     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
-     */
-    var IgoMetadataModule = /** @class */ (function () {
-        function IgoMetadataModule() {
-        }
-        /**
-         * @return {?}
-         */
-        IgoMetadataModule.forRoot = /**
-         * @return {?}
-         */
-            function () {
-                return {
-                    ngModule: IgoMetadataModule,
-                    providers: []
-                };
-            };
-        IgoMetadataModule.decorators = [
-            { type: i0.NgModule, args: [{
-                        imports: [
-                            common.CommonModule,
-                            material.MatIconModule,
-                            material.MatButtonModule,
-                            material.MatTooltipModule,
-                            i1$1.IgoLanguageModule
-                        ],
-                        exports: [MetadataButtonComponent],
-                        declarations: [MetadataButtonComponent]
-                    },] }
-        ];
-        return IgoMetadataModule;
     }());
 
     /**
@@ -23929,11 +24346,11 @@
                 /** @type {?} */
                 var heightPixels = doc.internal.pageSize.height - marginBottom;
                 /** @type {?} */
-                var textProjScale;
+                var textProjScale = '';
                 if (projection === true) {
                     /** @type {?} */
                     var projText = translate.instant('igo.geo.printForm.projection');
-                    textProjScale = projText + ': ' + map.projection;
+                    textProjScale += projText + ': ' + map.projection;
                 }
                 if (scale === true) {
                     if (projection === true) {
@@ -25390,6 +25807,26 @@
                     }
                 }));
             };
+        /**
+         * Set Param from the selected settings
+         * @param source search-source
+         * @param setting settings
+         */
+        /**
+         * Set Param from the selected settings
+         * @param {?} source search-source
+         * @param {?} setting settings
+         * @return {?}
+         */
+        SearchSourceService.prototype.setParamFromSetting = /**
+         * Set Param from the selected settings
+         * @param {?} source search-source
+         * @param {?} setting settings
+         * @return {?}
+         */
+            function (source, setting) {
+                source.setParamFromSetting(setting);
+            };
         return SearchSourceService;
     }());
 
@@ -25445,8 +25882,9 @@
      * and the results they yielded.
      */
     var SearchService = /** @class */ (function () {
-        function SearchService(searchSourceService) {
+        function SearchService(searchSourceService, mapService) {
             this.searchSourceService = searchSourceService;
+            this.mapService = mapService;
         }
         /**
          * Perform a research by text
@@ -25470,9 +25908,12 @@
                     return [];
                 }
                 /** @type {?} */
-                var lonLat = stringToLonLat(term);
-                if (lonLat !== undefined) {
-                    return this.reverseSearch(lonLat);
+                var response = stringToLonLat(term, this.mapService.getMap().projection);
+                if (response.lonLat) {
+                    return this.reverseSearch(response.lonLat);
+                }
+                else {
+                    console.log(response.message);
                 }
                 /** @type {?} */
                 var sources = this.searchSourceService.getEnabledSources()
@@ -25598,10 +26039,11 @@
         /** @nocollapse */
         SearchService.ctorParameters = function () {
             return [
-                { type: SearchSourceService }
+                { type: SearchSourceService },
+                { type: MapService }
             ];
         };
-        /** @nocollapse */ SearchService.ngInjectableDef = i0.defineInjectable({ factory: function SearchService_Factory() { return new SearchService(i0.inject(SearchSourceService)); }, token: SearchService, providedIn: "root" });
+        /** @nocollapse */ SearchService.ngInjectableDef = i0.defineInjectable({ factory: function SearchService_Factory() { return new SearchService(i0.inject(SearchSourceService), i0.inject(MapService)); }, token: SearchService, providedIn: "root" });
         return SearchService;
     }());
 
@@ -26745,7 +27187,7 @@
                 /** @type {?} */
                 var geometry = new olgeom.Point(lastPoint);
                 /** @type {?} */
-                var feature = new olFeature({ geometry: geometry });
+                var feature = new OlFeature({ geometry: geometry });
                 feature.setId('endSegment');
                 if (geometry === null) {
                     return;
@@ -26795,7 +27237,7 @@
                 var geometry3857 = geometry4326.transform('EPSG:4326', 'EPSG:3857');
                 this.routingRoutesOverlayDataSource.ol.clear();
                 /** @type {?} */
-                var routingFeature = new olFeature({ geometry: geometry3857 });
+                var routingFeature = new OlFeature({ geometry: geometry3857 });
                 routingFeature.setStyle([
                     new olstyle.Style({
                         stroke: new olstyle.Stroke({ color: '#6a7982', width: 10 })
@@ -27279,7 +27721,7 @@
                 /** @type {?} */
                 var geometry = new olgeom.Point(olproj.transform(coordinates, this.projection, this.map.projection));
                 /** @type {?} */
-                var feature = new olFeature({ geometry: geometry });
+                var feature = new OlFeature({ geometry: geometry });
                 /** @type {?} */
                 var stopID = this.getStopOverlayID(index);
                 this.deleteRoutingOverlaybyID(stopID);
@@ -27623,7 +28065,135 @@
             function () {
                 return {
                     title: 'ICherche Québec',
-                    searchUrl: 'https://geoegl.msp.gouv.qc.ca/icherche/geocode'
+                    searchUrl: 'https://geoegl.msp.gouv.qc.ca/apis/icherche/geocode',
+                    settings: [
+                        {
+                            type: 'checkbox',
+                            title: 'results type',
+                            name: 'type',
+                            values: [
+                                {
+                                    title: 'Adresse',
+                                    value: 'adresses',
+                                    enabled: true
+                                },
+                                // {
+                                //   title: 'Ancienne adresse',
+                                //   value: 'ancienne_adresse',
+                                //   enabled: true
+                                // },
+                                {
+                                    title: 'Code Postal',
+                                    value: 'codes-postaux',
+                                    enabled: true
+                                },
+                                {
+                                    title: 'Route',
+                                    value: 'routes',
+                                    enabled: false
+                                },
+                                {
+                                    title: 'Municipalité',
+                                    value: 'municipalites',
+                                    enabled: true
+                                },
+                                // {
+                                //   title: 'Ancienne municipalité',
+                                //   value: 'ancienne_municipalite',
+                                //   enabled: true
+                                // },
+                                {
+                                    title: 'mrc',
+                                    value: 'mrc',
+                                    enabled: true
+                                },
+                                {
+                                    title: 'Région administrative',
+                                    value: 'regadmin',
+                                    enabled: true
+                                },
+                                {
+                                    title: 'Lieu',
+                                    value: 'lieux',
+                                    enabled: true
+                                },
+                                {
+                                    title: 'Borne',
+                                    value: 'bornes',
+                                    enabled: false
+                                },
+                                {
+                                    title: 'Entreprise',
+                                    value: 'entreprises',
+                                    enabled: false
+                                }
+                            ]
+                        },
+                        {
+                            type: 'radiobutton',
+                            title: 'results limit',
+                            name: 'limit',
+                            values: [
+                                {
+                                    title: '1',
+                                    value: 1,
+                                    enabled: false
+                                },
+                                {
+                                    title: '5',
+                                    value: 5,
+                                    enabled: true
+                                },
+                                {
+                                    title: '10',
+                                    value: 10,
+                                    enabled: false
+                                },
+                                {
+                                    title: '25',
+                                    value: 25,
+                                    enabled: false
+                                },
+                                {
+                                    title: '50',
+                                    value: 50,
+                                    enabled: false
+                                }
+                            ]
+                        },
+                        {
+                            type: 'radiobutton',
+                            title: 'trust level',
+                            name: 'ecmax',
+                            values: [
+                                {
+                                    title: '10',
+                                    value: 10,
+                                    enabled: false
+                                },
+                                {
+                                    title: '30',
+                                    value: 30,
+                                    enabled: true
+                                },
+                                {
+                                    title: '50',
+                                    value: 50,
+                                    enabled: false
+                                },
+                                {
+                                    title: '75',
+                                    value: 75,
+                                    enabled: false
+                                },
+                                {
+                                    title: '100',
+                                    value: 100,
+                                    enabled: false
+                                }
+                            ]
+                        }
+                    ]
                 };
             };
         /**
@@ -27669,10 +28239,10 @@
             function (term, options) {
                 return new i1.HttpParams({
                     fromObject: Object.assign({
-                        q: term,
-                        geometries: 'geom',
-                        type: 'adresse,code_postal,route,municipalite,mrc,region_administrative'
-                    }, this.params, options.params || {})
+                        q: this.computeTerm(term),
+                        geometry: true,
+                        type: 'adresses,codes-postaux,municipalites,mrc,regadmin,lieux,entreprises,bornes'
+                    }, this.params, this.computeOptionsParam(term, options || {}).params)
                 });
             };
         /**
@@ -27708,7 +28278,11 @@
                 /** @type {?} */
                 var properties = this.computeProperties(data);
                 /** @type {?} */
-                var id = [this.getId(), properties.type, data._id].join('.');
+                var id = [this.getId(), properties.type, properties.code].join('.');
+                /** @type {?} */
+                var subtitleHtml = data.highlight.title2
+                    ? ' <small> ' + data.highlight.title2 + '</small>'
+                    : '';
                 return {
                     source: this,
                     data: {
@@ -27719,14 +28293,14 @@
                         properties: properties,
                         meta: {
                             id: id,
-                            title: data.properties.recherche
+                            title: data.properties.nom
                         }
                     },
                     meta: {
                         dataType: FEATURE,
                         id: id,
-                        title: data.properties.recherche,
-                        titleHtml: data.highlight,
+                        title: data.properties.nom,
+                        titleHtml: data.highlight.title + subtitleHtml,
                         icon: 'map-marker'
                     }
                 };
@@ -27744,20 +28318,75 @@
             function (data) {
                 /** @type {?} */
                 var properties = utils.ObjectUtils.removeKeys(data.properties, IChercheSearchSource.propertiesBlacklist);
-                return Object.assign(properties, { type: data.doc_type });
+                return Object.assign(properties, { type: data.index });
+            };
+        /**
+         * Remove hashtag from query
+         * @param term Query with hashtag
+         */
+        /**
+         * Remove hashtag from query
+         * @private
+         * @param {?} term Query with hashtag
+         * @return {?}
+         */
+        IChercheSearchSource.prototype.computeTerm = /**
+         * Remove hashtag from query
+         * @private
+         * @param {?} term Query with hashtag
+         * @return {?}
+         */
+            function (term) {
+                return term.replace(/(#[^\s]*)/g, '');
+            };
+        /**
+         * Add hashtag to param if valid
+         * @param term Query with hashtag
+         * @param options TextSearchOptions
+         */
+        /**
+         * Add hashtag to param if valid
+         * @private
+         * @param {?} term Query with hashtag
+         * @param {?} options TextSearchOptions
+         * @return {?}
+         */
+        IChercheSearchSource.prototype.computeOptionsParam = /**
+         * Add hashtag to param if valid
+         * @private
+         * @param {?} term Query with hashtag
+         * @param {?} options TextSearchOptions
+         * @return {?}
+         */
+            function (term, options) {
+                var _this = this;
+                /** @type {?} */
+                var tags = term.match(/(#[^\s]+)/g);
+                if (tags) {
+                    /** @type {?} */
+                    var typeValue_1 = '';
+                    /** @type {?} */
+                    var hashtagToAdd_1 = false;
+                    tags.forEach(( /**
+                     * @param {?} value
+                     * @return {?}
+                     */function (value) {
+                        if (_super.prototype.hashtagValid.call(_this, _super.prototype.getSettingsValues.call(_this, 'type'), value, true)) {
+                            typeValue_1 += value.substring(1) + ',';
+                            hashtagToAdd_1 = true;
+                        }
+                    }));
+                    if (hashtagToAdd_1) {
+                        options.params = Object.assign(options.params || {}, {
+                            type: typeValue_1.slice(0, -1)
+                        });
+                    }
+                }
+                return options;
             };
         IChercheSearchSource.id = 'icherche';
         IChercheSearchSource.type = FEATURE;
-        IChercheSearchSource.propertiesBlacklist = [
-            '@timestamp',
-            '@version',
-            'recherche',
-            'id',
-            'idrte',
-            'cote',
-            'geometry',
-            'bbox'
-        ];
+        IChercheSearchSource.propertiesBlacklist = [];
         IChercheSearchSource.decorators = [
             { type: i0.Injectable }
         ];
@@ -27800,8 +28429,47 @@
          */
             function () {
                 return {
-                    title: 'ICherche Québec',
-                    searchUrl: 'https://geoegl.msp.gouv.qc.ca/icherche/xy'
+                    title: 'Territoire (Géocodage inversé)',
+                    searchUrl: 'https://geoegl.msp.gouv.qc.ca/apis/territoires/locate',
+                    settings: [
+                        {
+                            type: 'checkbox',
+                            title: 'results type',
+                            name: 'type',
+                            values: [
+                                {
+                                    title: 'Adresse',
+                                    value: 'adresses',
+                                    enabled: true
+                                },
+                                {
+                                    title: 'Route',
+                                    value: 'routes',
+                                    enabled: false
+                                },
+                                {
+                                    title: 'Arrondissement',
+                                    value: 'arrondissements',
+                                    enabled: false
+                                },
+                                {
+                                    title: 'Municipalité',
+                                    value: 'municipalites',
+                                    enabled: true
+                                },
+                                {
+                                    title: 'mrc',
+                                    value: 'mrc',
+                                    enabled: true
+                                },
+                                {
+                                    title: 'Région administrative',
+                                    value: 'regadmin',
+                                    enabled: true
+                                }
+                            ]
+                        }
+                    ]
                 };
             };
         /**
@@ -27851,9 +28519,8 @@
                 return new i1.HttpParams({
                     fromObject: Object.assign({
                         loc: lonLat.join(','),
-                        distance: distance ? String(distance) : '',
-                        geometries: 'geom',
-                        type: 'adresse,municipalite,mrc,regadmin'
+                        buffer: distance ? String(distance) : '100',
+                        geometry: true
                     }, this.params, options.params || {})
                 });
             };
@@ -27892,7 +28559,7 @@
                 /** @type {?} */
                 var extent = this.computeExtent(data);
                 /** @type {?} */
-                var id = [this.getId(), properties.type, data._id].join('.');
+                var id = [this.getId(), properties.type, properties.code].join('.');
                 return {
                     source: this,
                     data: {
@@ -27927,7 +28594,7 @@
             function (data) {
                 /** @type {?} */
                 var properties = utils.ObjectUtils.removeKeys(data.properties, IChercheReverseSearchSource.propertiesBlacklist);
-                return Object.assign(properties, { type: data.properties.doc_type });
+                return properties;
             };
         /**
          * @private
@@ -28365,7 +29032,7 @@
         SearchSelectorComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'igo-search-selector',
-                        template: "<div class=\"igo-search-selector\">\r\n  <button\r\n    mat-icon-button\r\n    class=\"igo-search-selector-button\"\r\n    color=\"primary\"\r\n    tooltip-position=\"below\"\r\n    matTooltipShowDelay=\"500\"\r\n    [matTooltip]=\"'igo.geo.search.menu.tooltip' | translate\"\r\n    [matMenuTriggerFor]=\"searchSelectorMenu\">\r\n    <mat-icon svgIcon=\"menu-down\"></mat-icon>\r\n  </button>\r\n\r\n  <mat-menu\r\n    #searchSelectorMenu=\"matMenu\"\r\n    class=\"no-border-radius\"\r\n    overlapTrigger=\"false\"\r\n    xPosition=\"before\"\r\n    yPosition=\"above\">\r\n    <mat-radio-group\r\n      class=\"igo-search-selector-radio-group\"\r\n      [value]=\"enabled\"\r\n      (change)=\"onSearchTypeChange($event.value)\">\r\n      <mat-radio-button *ngFor=\"let searchType of searchTypes\" [value]=\"searchType\">\r\n        {{getSearchTypeTitle(searchType) | translate}}\r\n      </mat-radio-button>\r\n    </mat-radio-group>\r\n  </mat-menu>\r\n</div>\r\n",
+                        template: "<div class=\"igo-search-selector\">\r\n  <button\r\n    mat-icon-button\r\n    class=\"igo-search-selector-button\"\r\n    color=\"primary\"\r\n    tooltip-position=\"below\"\r\n    matTooltipShowDelay=\"500\"\r\n    [matTooltip]=\"'igo.geo.search.menu.tooltip' | translate\"\r\n    [matMenuTriggerFor]=\"searchSelectorMenu\">\r\n    <mat-icon svgIcon=\"menu-down\"></mat-icon>\r\n  </button>\r\n\r\n  <mat-menu\r\n    #searchSelectorMenu=\"matMenu\"\r\n    class=\"no-border-radius\"\r\n    xPosition=\"before\"\r\n    yPosition=\"above\">\r\n    <mat-radio-group\r\n      class=\"igo-search-selector-radio-group\"\r\n      [value]=\"enabled\"\r\n      (change)=\"onSearchTypeChange($event.value)\">\r\n      <mat-radio-button *ngFor=\"let searchType of searchTypes\" [value]=\"searchType\">\r\n        {{getSearchTypeTitle(searchType) | translate}}\r\n      </mat-radio-button>\r\n    </mat-radio-group>\r\n  </mat-menu>\r\n\r\n</div>\r\n",
                         changeDetection: i0.ChangeDetectionStrategy.OnPush,
                         styles: [".igo-search-selector-button ::ng-deep div.mat-button-ripple-round{border-radius:0}.igo-search-selector-radio-group{display:inline-flex;flex-direction:column}.igo-search-selector-radio-group mat-radio-button{margin:5px}"]
                     }] }
@@ -28403,6 +29070,8 @@
                             material.MatButtonModule,
                             material.MatMenuModule,
                             material.MatRadioModule,
+                            material.MatTabsModule,
+                            material.MatCheckboxModule,
                             i1$1.IgoLanguageModule
                         ],
                         exports: [SearchSelectorComponent],
@@ -28410,6 +29079,167 @@
                     },] }
         ];
         return IgoSearchSelectorModule;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * This component allows a user to select a search type yo enable. In it's
+     * current version, only one search type can be selected at once (radio). If
+     * this component were to support more than one search source enabled (checkbox),
+     * the searchbar component would require a small change to it's
+     * placeholder getter. The search source service already supports having
+     * more than one search source enabled.
+     */
+    var SearchSettingsComponent = /** @class */ (function () {
+        function SearchSettingsComponent(searchSourceService) {
+            this.searchSourceService = searchSourceService;
+            /**
+             * Event emitted when the enabled search type changes
+             */
+            this.change = new i0.EventEmitter();
+        }
+        /**
+         * Get all search sources
+         * @internal
+         */
+        /**
+         * Get all search sources
+         * \@internal
+         * @return {?}
+         */
+        SearchSettingsComponent.prototype.getSearchSources = /**
+         * Get all search sources
+         * \@internal
+         * @return {?}
+         */
+            function () {
+                return this.searchSourceService.getSources();
+            };
+        /**
+         * Triggered when a setting is checked (checkbox style)
+         * @internal
+         */
+        /**
+         * Triggered when a setting is checked (checkbox style)
+         * \@internal
+         * @param {?} event
+         * @param {?} source
+         * @param {?} setting
+         * @param {?} settingValue
+         * @return {?}
+         */
+        SearchSettingsComponent.prototype.settingsValueCheckedCheckbox = /**
+         * Triggered when a setting is checked (checkbox style)
+         * \@internal
+         * @param {?} event
+         * @param {?} source
+         * @param {?} setting
+         * @param {?} settingValue
+         * @return {?}
+         */
+            function (event, source, setting, settingValue) {
+                settingValue.enabled = event.checked;
+                source.setParamFromSetting(setting);
+            };
+        /**
+         * Triggered when a setting is checked (radiobutton style)
+         * @internal
+         */
+        /**
+         * Triggered when a setting is checked (radiobutton style)
+         * \@internal
+         * @param {?} event
+         * @param {?} source
+         * @param {?} setting
+         * @param {?} settingValue
+         * @return {?}
+         */
+        SearchSettingsComponent.prototype.settingsValueCheckedRadioButton = /**
+         * Triggered when a setting is checked (radiobutton style)
+         * \@internal
+         * @param {?} event
+         * @param {?} source
+         * @param {?} setting
+         * @param {?} settingValue
+         * @return {?}
+         */
+            function (event, source, setting, settingValue) {
+                setting.values.forEach(( /**
+                 * @param {?} conf
+                 * @return {?}
+                 */function (conf) {
+                    if (conf.value !== settingValue.value) {
+                        conf.enabled = !event.source.checked;
+                    }
+                    else {
+                        conf.enabled = event.source.checked;
+                    }
+                }));
+                source.setParamFromSetting(setting);
+            };
+        /**
+         * @param {?} event
+         * @param {?} source
+         * @return {?}
+         */
+        SearchSettingsComponent.prototype.onCheckSearchSource = /**
+         * @param {?} event
+         * @param {?} source
+         * @return {?}
+         */
+            function (event, source) {
+                source.enabled = event.checked;
+            };
+        SearchSettingsComponent.decorators = [
+            { type: i0.Component, args: [{
+                        selector: 'igo-search-settings',
+                        template: "<div class=\"igo-search-settings\">\r\n\r\n  <button\r\n    mat-icon-button\r\n    class=\"igo-search-settings-button\"\r\n    color=\"primary\"\r\n    tooltip-position=\"below\"\r\n    matTooltipShowDelay=\"500\"\r\n    [matTooltip]=\"'igo.geo.search.menu.tooltip' | translate\"\r\n    [matMenuTriggerFor]=\"searchSettingsMenu\">\r\n    <mat-icon svgIcon=\"settings\"></mat-icon>\r\n  </button>\r\n  <mat-menu\r\n    #searchSettingsMenu=\"matMenu\"\r\n    class=\"no-border-radius\">\r\n      <ng-container *ngFor=\"let source of getSearchSources()\">\r\n        <span class=\"igo-search-settings-search-source\">\r\n          <mat-checkbox\r\n            class=\"igo-search-settings-checkbox\"\r\n            [checked]=\"source.enabled\"\r\n            [value]=\"source\"\r\n            (click)=\"$event.stopPropagation()\"\r\n            (change)=\"onCheckSearchSource($event, source)\">\r\n          </mat-checkbox>\r\n          <button *ngIf=\"source.settings.length\u00A0>\u00A00\"\r\n            [matMenuTriggerFor]=\"sub_menu\"\r\n            mat-menu-item>{{source.title}}\r\n          </button>\r\n          <button\r\n            mat-menu-item\r\n            *ngIf=\"source.settings.length\u00A0===\u00A00\">\r\n            {{source.title}}\r\n          </button>\r\n        </span>\r\n          <mat-menu #sub_menu=\"matMenu\">\r\n            <ng-container *ngFor=\"let setting of source.settings\">\r\n              <button\r\n                  mat-menu-item\r\n                  [matMenuTriggerFor]=\"test_sub_menu\">\r\n                {{'igo.geo.search.searchSources.settings.'+ setting.title | translate}}\r\n              </button>\r\n              <mat-menu #test_sub_menu=\"matMenu\"\r\n                [ngSwitch]=\"setting.type\"\r\n                yPosition=\"above\">\r\n                <span *ngSwitchCase=\"'radiobutton'\">\r\n                  <mat-radio-group\r\n                    class=\"igo-search-settings-radio-group\"\r\n                    [value]=\"setting\">\r\n                    <mat-radio-button *ngFor=\"let settingValue of setting.values\"\r\n                      [value]=\"settingValue\"\r\n                      [checked]=\"settingValue.enabled\"\r\n                      (click)=\"$event.stopPropagation()\"\r\n                      (change)=\"settingsValueCheckedRadioButton($event, source, setting, settingValue)\">\r\n                      {{settingValue.title}}\r\n                    </mat-radio-button>\r\n                  </mat-radio-group>\r\n                </span>\r\n                <span *ngSwitchCase=\"'checkbox'\">\r\n                  <mat-checkbox class=\"igo-search-settings-radio-group\"\r\n                    class=\"mat-menu-item\"\r\n                    [checked]=\"settingValue.enabled\"\r\n                    [value]=\"setting\"\r\n                    (click)=\"$event.stopPropagation()\"\r\n                    (change)=\"settingsValueCheckedCheckbox($event, source, setting, settingValue)\"\r\n                    *ngFor=\"let settingValue of setting.values\">{{settingValue.title}}\r\n                  </mat-checkbox>\r\n                </span>\r\n              </mat-menu>\r\n            </ng-container>\r\n          </mat-menu>\r\n      </ng-container>\r\n  </mat-menu>\r\n</div>\r\n",
+                        changeDetection: i0.ChangeDetectionStrategy.OnPush,
+                        styles: [".igo-search-settings-button ::ng-deep div.mat-button-ripple-round{border-radius:0}.igo-search-settings-radio-group{display:inline-flex;flex-direction:column}.igo-search-settings-radio-group mat-radio-button{margin:5px}.igo-search-settings-checkbox mat-radio-button{display:inline-flex}.igo-search-settings-search-source{display:inline-flex;width:100%}.igo-search-settings-search-source mat-checkbox{display:inline-flex;margin-left:5px;margin-right:5px}"]
+                    }] }
+        ];
+        /** @nocollapse */
+        SearchSettingsComponent.ctorParameters = function () {
+            return [
+                { type: SearchSourceService }
+            ];
+        };
+        SearchSettingsComponent.propDecorators = {
+            change: [{ type: i0.Output }]
+        };
+        return SearchSettingsComponent;
+    }());
+
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+    /**
+     * @ignore
+     */
+    var IgoSearchSettingsModule = /** @class */ (function () {
+        function IgoSearchSettingsModule() {
+        }
+        IgoSearchSettingsModule.decorators = [
+            { type: i0.NgModule, args: [{
+                        declarations: [SearchSettingsComponent],
+                        imports: [
+                            common.CommonModule,
+                            material.MatTooltipModule,
+                            material.MatIconModule,
+                            material.MatButtonModule,
+                            material.MatMenuModule,
+                            material.MatRadioModule,
+                            material.MatCheckboxModule,
+                            i1$1.IgoLanguageModule
+                        ],
+                        exports: [SearchSettingsComponent]
+                    },] }
+        ];
+        return IgoSearchSettingsModule;
     }());
 
     /**
@@ -28662,7 +29492,8 @@
                     return;
                 }
                 this.term = term;
-                if (term.length >= this.minLength || term.length === 0) {
+                if (term.replace(/(#[^\s]*)/g, '').trim().length >= this.minLength ||
+                    term.replace(/(#[^\s]*)/g, '').trim().length === 0) {
                     this.stream$.next(term);
                 }
             };
@@ -28743,7 +29574,7 @@
          */
             function (term) {
                 var _this = this;
-                if (term === undefined || term === '') {
+                if (term === undefined || term.replace(/(#[^\s]*)/g, '').trim() === '') {
                     if (this.store !== undefined) {
                         this.store.clear();
                     }
@@ -28804,9 +29635,9 @@
         SearchBarComponent.decorators = [
             { type: i0.Component, args: [{
                         selector: 'igo-search-bar',
-                        template: "<div class=\"igo-search-bar-container\">\r\n  <mat-form-field [floatLabel]=\"floatLabel\">\r\n    <input\r\n      #input\r\n      matInput\r\n      autocomplete=\"off\"\r\n      [ngClass]=\"{'hasSearchIcon': searchIcon}\"\r\n      [disabled]=\"disabled\"\r\n      [placeholder]=\"placeholder | translate\"\r\n      [ngModel]=\"term\"\r\n      (keyup)=\"onKeyup($event)\"\r\n      (touchend)=\"onKeyup($event)\">\r\n  </mat-form-field>\r\n\r\n  <div class=\"search-bar-buttons\">\r\n    <button\r\n      mat-icon-button\r\n      [color]=\"color\"\r\n      *ngIf=\"searchIcon !== undefined\">\r\n      <mat-icon svgIcon=\"{{searchIcon}}\"></mat-icon>\r\n    </button>\r\n\r\n    <button\r\n      mat-icon-button\r\n      [color]=\"color\"\r\n      (click)=\"onClearButtonClick()\"\r\n      *ngIf=\"!empty\">\r\n      <mat-icon svgIcon=\"close\"></mat-icon>\r\n    </button>\r\n  </div>\r\n\r\n  <igo-search-selector\r\n    [searchTypes]=\"searchTypes\"\r\n    (change)=\"onSearchTypeChange($event)\">\r\n  </igo-search-selector>\r\n</div>\r\n",
+                        template: "<div class=\"igo-search-bar-container\">\r\n  <mat-form-field [floatLabel]=\"floatLabel\">\r\n    <input\r\n      #input\r\n      matInput\r\n      autocomplete=\"off\"\r\n      [ngClass]=\"{'hasSearchIcon': searchIcon}\"\r\n      [disabled]=\"disabled\"\r\n      [placeholder]=\"placeholder | translate\"\r\n      [ngModel]=\"term\"\r\n      (keyup)=\"onKeyup($event)\"\r\n      (touchend)=\"onKeyup($event)\">\r\n  </mat-form-field>\r\n\r\n  <div class=\"search-bar-buttons\">\r\n    <button\r\n      mat-icon-button\r\n      [color]=\"color\"\r\n      *ngIf=\"searchIcon !== undefined\">\r\n      <mat-icon svgIcon=\"{{searchIcon}}\"></mat-icon>\r\n    </button>\r\n\r\n    <button\r\n      mat-icon-button\r\n      [color]=\"color\"\r\n      (click)=\"onClearButtonClick()\"\r\n      *ngIf=\"!empty\">\r\n      <mat-icon svgIcon=\"close\"></mat-icon>\r\n    </button>\r\n\r\n    <igo-search-selector\r\n      [searchTypes]=\"searchTypes\"\r\n      (change)=\"onSearchTypeChange($event)\">\r\n    </igo-search-selector>\r\n\r\n    <igo-search-settings></igo-search-settings>\r\n  </div>\r\n\r\n\r\n</div>\r\n",
                         changeDetection: i0.ChangeDetectionStrategy.OnPush,
-                        styles: [":host ::ng-deep .mat-form-field{padding:0 5px}:host ::ng-deep .mat-form-field-wrapper{margin-bottom:-1.5em}:host ::ng-deep span.mat-form-field-label-wrapper{top:-20px}:host ::ng-deep div.mat-form-field-infix{left:5px;right:5px;padding:0 0 12px!important}:host ::ng-deep div.mat-form-field-underline{display:none}.igo-search-bar-container{position:relative;width:100%}.igo-search-bar-container>mat-form-field{width:calc(100% - (2 * 40px))}:host.empty .igo-search-bar-container>mat-form-field{width:calc(100% - 40px)}.search-bar-buttons{position:absolute;right:40px;top:0}.search-bar-buttons>button:nth-child(2)::before{content:'';position:absolute;left:0;top:5px;border-right:1px solid #ddd;height:28px}igo-search-selector{display:inline-block;background-color:#fff;position:absolute;right:0;top:0;border-radius:0}"]
+                        styles: [":host ::ng-deep .mat-form-field{padding:0 5px}:host ::ng-deep .mat-form-field-wrapper{margin-bottom:-1.5em}:host ::ng-deep span.mat-form-field-label-wrapper{top:-20px}:host ::ng-deep div.mat-form-field-infix{left:5px;right:5px;padding:0 0 12px!important}:host ::ng-deep div.mat-form-field-underline{display:none}.igo-search-bar-container{position:relative;width:100%;display:inline-flex;overflow:hidden}.igo-search-bar-container>mat-form-field{width:calc(100% - (2 * 40px))}:host.empty .igo-search-bar-container>mat-form-field{width:calc(100% - 40px)}.search-bar-buttons{position:relative;right:0;display:inline-flex;top:0}.search-bar-buttons>button:nth-child(2)::before{content:'';left:0;top:5px;border-right:1px solid #ddd;height:28px}igo-search-selector,igo-search-settings{background-color:#fff;top:0;border-radius:0}"]
                     }] }
         ];
         /** @nocollapse */
@@ -28905,11 +29736,11 @@
                             material.MatFormFieldModule,
                             material.MatInputModule,
                             i1$1.IgoLanguageModule,
-                            IgoSearchSelectorModule
+                            IgoSearchSelectorModule,
+                            IgoSearchSettingsModule
                         ],
                         exports: [
                             SearchBarComponent,
-                            SearchBarComponent
                         ],
                         declarations: [
                             SearchBarComponent,
@@ -29214,7 +30045,9 @@
              * Search result title
              * \@internal
              * @return {?}
-             */ function () { return common$1.getEntityTitle(this.result); },
+             */ function () {
+                return common$1.getEntityTitle(this.result);
+            },
             enumerable: true,
             configurable: true
         });
@@ -29227,7 +30060,9 @@
              * Search result HTML title
              * \@internal
              * @return {?}
-             */ function () { return common$1.getEntityTitleHtml(this.result); },
+             */ function () {
+                return common$1.getEntityTitleHtml(this.result);
+            },
             enumerable: true,
             configurable: true
         });
@@ -29240,7 +30075,9 @@
              * Search result icon
              * \@internal
              * @return {?}
-             */ function () { return common$1.getEntityIcon(this.result); },
+             */ function () {
+                return common$1.getEntityIcon(this.result);
+            },
             enumerable: true,
             configurable: true
         });
@@ -29248,7 +30085,8 @@
             { type: i0.Component, args: [{
                         selector: 'igo-search-results-item',
                         template: "<mat-list-item>\r\n  <mat-icon *ngIf=\"icon\" mat-list-avatar svgIcon=\"{{icon}}\"></mat-icon>\r\n  <h4 matLine *ngIf=\"titleHtml\" [innerHtml]=\"titleHtml\"></h4>\r\n  <h4 matLine *ngIf=\"!titleHtml\">{{title}}</h4>\r\n</mat-list-item>\r\n",
-                        changeDetection: i0.ChangeDetectionStrategy.OnPush
+                        changeDetection: i0.ChangeDetectionStrategy.OnPush,
+                        styles: ["h4 :ng-deep small{color:\"#8C8C8C\"}"]
                     }] }
         ];
         /** @nocollapse */
@@ -29321,12 +30159,14 @@
                             common.CommonModule,
                             IgoSearchBarModule,
                             IgoSearchSelectorModule,
-                            IgoSearchResultsModule
+                            IgoSearchResultsModule,
+                            IgoSearchSettingsModule
                         ],
                         exports: [
                             IgoSearchBarModule,
                             IgoSearchSelectorModule,
-                            IgoSearchResultsModule
+                            IgoSearchResultsModule,
+                            IgoSearchSettingsModule
                         ],
                         declarations: []
                     },] }
@@ -29419,11 +30259,11 @@
             function () {
                 if (this.feature.geometry) {
                     /** @type {?} */
-                    var olFeature$$1 = this.format.readFeature(this.feature, {
+                    var olFeature = this.format.readFeature(this.feature, {
                         dataProjection: this.feature.projection,
                         featureProjection: this.map.projection
                     });
-                    moveToOlFeatures(this.map, [olFeature$$1], FeatureMotion.Zoom);
+                    moveToOlFeatures(this.map, [olFeature], FeatureMotion.Zoom);
                 }
             };
         /**
@@ -29510,7 +30350,6 @@
     var OgcFilterComponent = /** @class */ (function () {
         function OgcFilterComponent(cdRef) {
             this.cdRef = cdRef;
-            this.showFeatureOnMap = true;
             /**
              * Event emitted on complete
              */
@@ -29565,7 +30404,6 @@
         OgcFilterComponent.propDecorators = {
             layer: [{ type: i0.Input }],
             map: [{ type: i0.Input }],
-            showFeatureOnMap: [{ type: i0.Input }],
             complete: [{ type: i0.Output }],
             cancel: [{ type: i0.Output }]
         };
@@ -30125,13 +30963,18 @@
             var _this = _super.call(this, options) || this;
             _this.http = http;
             _this.languageService = languageService;
+            _this.title$ = new rxjs.BehaviorSubject('');
+            _this.languageService.translate.get(_this.options.title).subscribe(( /**
+             * @param {?} title
+             * @return {?}
+             */function (title) { return _this.title$.next(title); }));
             return _this;
         }
         Object.defineProperty(ILayerSearchSource.prototype, "title", {
             get: /**
              * @return {?}
              */ function () {
-                return this.languageService.translate.instant(this.options.title);
+                return this.title$.getValue();
             },
             enumerable: true,
             configurable: true
@@ -30415,18 +31258,113 @@
             function () {
                 return NominatimSearchSource.id;
             };
+        /*
+         * Source : https://wiki.openstreetmap.org/wiki/Key:amenity
+        */
+        /*
+           * Source : https://wiki.openstreetmap.org/wiki/Key:amenity
+          */
         /**
          * @protected
          * @return {?}
          */
-        NominatimSearchSource.prototype.getDefaultOptions = /**
-         * @protected
-         * @return {?}
-         */
+        NominatimSearchSource.prototype.getDefaultOptions = /*
+           * Source : https://wiki.openstreetmap.org/wiki/Key:amenity
+          */
+            /**
+             * @protected
+             * @return {?}
+             */
             function () {
                 return {
                     title: 'Nominatim (OSM)',
-                    searchUrl: 'https://nominatim.openstreetmap.org/search'
+                    searchUrl: 'https://nominatim.openstreetmap.org/search',
+                    settings: [
+                        {
+                            type: 'checkbox',
+                            title: 'results type',
+                            name: 'amenity',
+                            values: [
+                                {
+                                    title: 'Restauration',
+                                    value: 'bar,bbq,biergaten,cafe,drinking_water,fast_food,food_court,ice_cream,pub,restaurant',
+                                    enabled: false
+                                },
+                                {
+                                    title: 'Santé',
+                                    value: 'baby_hatch,clinic,dentist,doctors,hospital,nursing_home,pharmacy,social_facility,veterinary',
+                                    enabled: false
+                                },
+                                {
+                                    title: 'Divertissement',
+                                    value: 'arts_centre,brothel,casino,cinema,community_center_fountain,gambling,nightclub,planetarium \
+                          ,public_bookcase,social_centre,stripclub,studio,swingerclub,theatre,internet_cafe',
+                                    enabled: false
+                                },
+                                {
+                                    title: 'Finance',
+                                    value: 'atm,bank,bureau_de_change',
+                                    enabled: false
+                                }
+                            ]
+                        },
+                        {
+                            type: 'radiobutton',
+                            title: 'results limit',
+                            name: 'limit',
+                            values: [
+                                {
+                                    title: '10',
+                                    value: 10,
+                                    enabled: true
+                                },
+                                {
+                                    title: '20',
+                                    value: 20,
+                                    enabled: false
+                                },
+                                {
+                                    title: '50',
+                                    value: 50,
+                                    enabled: false
+                                }
+                            ]
+                        },
+                        {
+                            type: 'radiobutton',
+                            title: 'country limitation',
+                            name: 'countrycodes',
+                            values: [
+                                {
+                                    title: 'Canada',
+                                    value: 'CA',
+                                    enabled: true
+                                },
+                                {
+                                    title: 'Le monde',
+                                    value: null,
+                                    enabled: false
+                                }
+                            ]
+                        },
+                        {
+                            type: 'radiobutton',
+                            title: 'multiple object',
+                            name: 'dedupe',
+                            values: [
+                                {
+                                    title: 'Oui',
+                                    value: 0,
+                                    enabled: false
+                                },
+                                {
+                                    title: 'Non',
+                                    value: 1,
+                                    enabled: true
+                                }
+                            ]
+                        }
+                    ]
                 };
             };
         /**
@@ -30472,7 +31410,7 @@
             function (term, options) {
                 return new i1.HttpParams({
                     fromObject: Object.assign({
-                        q: term,
+                        q: this.computeTerm(term),
                         format: 'json'
                     }, this.params, options.params || {})
                 });
@@ -30586,6 +31524,101 @@
                     parseFloat(data.boundingbox[3]),
                     parseFloat(data.boundingbox[1])
                 ];
+            };
+        /**
+         * @private
+         * @param {?} term
+         * @return {?}
+         */
+        NominatimSearchSource.prototype.computeTerm = /**
+         * @private
+         * @param {?} term
+         * @return {?}
+         */
+            function (term) {
+                term = this.computeTermTags(term);
+                return term;
+            };
+        /**
+         * Add hashtag from query in Nominatim's format (+[])
+         * @param term Query with hashtag
+         */
+        /**
+         * Add hashtag from query in Nominatim's format (+[])
+         * @private
+         * @param {?} term Query with hashtag
+         * @return {?}
+         */
+        NominatimSearchSource.prototype.computeTermTags = /**
+         * Add hashtag from query in Nominatim's format (+[])
+         * @private
+         * @param {?} term Query with hashtag
+         * @return {?}
+         */
+            function (term) {
+                var _this = this;
+                /** @type {?} */
+                var tags = term.match(/(#[^\s]+)/g);
+                /** @type {?} */
+                var addTagsFromSettings = true;
+                if (tags) {
+                    tags.forEach(( /**
+                     * @param {?} value
+                     * @return {?}
+                     */function (value) {
+                        term = term.replace(value, '');
+                        if (_super.prototype.hashtagValid.call(_this, _super.prototype.getSettingsValues.call(_this, 'amenity'), value)) {
+                            term += '+[' + value.substring(1) + ']';
+                            addTagsFromSettings = false;
+                        }
+                    }));
+                    addTagsFromSettings = false;
+                }
+                if (addTagsFromSettings) {
+                    term = this.computeTermSettings(term);
+                }
+                return term;
+            };
+        /**
+         * Add hashtag from settings in Nominatim's format (+[])
+         * @param term Query
+         */
+        /**
+         * Add hashtag from settings in Nominatim's format (+[])
+         * @private
+         * @param {?} term Query
+         * @return {?}
+         */
+        NominatimSearchSource.prototype.computeTermSettings = /**
+         * Add hashtag from settings in Nominatim's format (+[])
+         * @private
+         * @param {?} term Query
+         * @return {?}
+         */
+            function (term) {
+                this.options.settings.forEach(( /**
+                 * @param {?} settings
+                 * @return {?}
+                 */function (settings) {
+                    if (settings.name === 'amenity') {
+                        settings.values.forEach(( /**
+                         * @param {?} conf
+                         * @return {?}
+                         */function (conf) {
+                            if (conf.enabled && typeof conf.value === 'string') {
+                                /** @type {?} */
+                                var splitted = conf.value.split(',');
+                                splitted.forEach(( /**
+                                 * @param {?} value
+                                 * @return {?}
+                                 */function (value) {
+                                    term += '+[' + value + ']';
+                                }));
+                            }
+                        }));
+                    }
+                }));
+                return term;
             };
         NominatimSearchSource.id = 'nominatim';
         NominatimSearchSource.type = FEATURE;
@@ -31667,6 +32700,11 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
 
+    /**
+     * @fileoverview added by tsickle
+     * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+     */
+
     exports.IgoGeoModule = IgoGeoModule;
     exports.IgoCatalogModule = IgoCatalogModule;
     exports.IgoCatalogBrowserModule = IgoCatalogBrowserModule;
@@ -31734,6 +32772,14 @@
     exports.WFSDataSource = WFSDataSource;
     exports.WFSService = WFSService;
     exports.WMSDataSource = WMSDataSource;
+    exports.formatWFSQueryString = formatWFSQueryString;
+    exports.checkWfsParams = checkWfsParams;
+    exports.defaultEpsg = defaultEpsg;
+    exports.defaultMaxFeatures = defaultMaxFeatures;
+    exports.defaultWfsVersion = defaultWfsVersion;
+    exports.defaultFieldNameGeometry = defaultFieldNameGeometry;
+    exports.gmlRegex = gmlRegex;
+    exports.jsonRegex = jsonRegex;
     exports.WMTSDataSource = WMTSDataSource;
     exports.CartoDataSource = CartoDataSource;
     exports.ArcGISRestDataSource = ArcGISRestDataSource;
@@ -31774,6 +32820,7 @@
     exports.FeatureStoreStrategy = FeatureStoreStrategy;
     exports.FilterableDataSourcePipe = FilterableDataSourcePipe;
     exports.TimeFilterService = TimeFilterService;
+    exports.OgcFilterOperatorType = OgcFilterOperatorType;
     exports.OGCFilterService = OGCFilterService;
     exports.OgcFilterWriter = OgcFilterWriter;
     exports.TimeFilterFormComponent = TimeFilterFormComponent;
@@ -31785,6 +32832,7 @@
     exports.OgcFilterableListComponent = OgcFilterableListComponent;
     exports.OgcFilterableListBindingDirective = OgcFilterableListBindingDirective;
     exports.OgcFilterFormComponent = OgcFilterFormComponent;
+    exports.OgcFilterToggleButtonComponent = OgcFilterToggleButtonComponent;
     exports.OgcFilterButtonComponent = OgcFilterButtonComponent;
     exports.GeometrySliceError = GeometrySliceError;
     exports.GeometrySliceMultiPolygonError = GeometrySliceMultiPolygonError;
@@ -31839,6 +32887,7 @@
     exports.LayerListService = LayerListService;
     exports.ImageWatcher = ImageWatcher;
     exports.TileWatcher = TileWatcher;
+    exports.VectorWatcher = VectorWatcher;
     exports.getLayersLegends = getLayersLegends;
     exports.IgoMap = IgoMap;
     exports.MapViewAction = MapViewAction;
@@ -31849,6 +32898,7 @@
     exports.getResolutionFromScale = getResolutionFromScale;
     exports.getScaleFromResolution = getScaleFromResolution;
     exports.ctrlKeyDown = ctrlKeyDown;
+    exports.MapOfflineDirective = MapOfflineDirective;
     exports.ProjectionService = ProjectionService;
     exports.MapController = MapController;
     exports.MapViewController = MapViewController;
@@ -31943,103 +32993,106 @@
     exports.ToastComponent = ToastComponent;
     exports.GoogleLinks = GoogleLinks;
     exports.WktService = WktService;
-    exports.ɵh = CatalogBrowserGroupComponent;
-    exports.ɵi = CatalogBrowserLayerComponent;
-    exports.ɵa = CatalogBrowserComponent;
-    exports.ɵk = CatalogLibaryItemComponent;
-    exports.ɵj = CatalogLibaryComponent;
-    exports.ɵe = CapabilitiesService;
-    exports.ɵd = DataSourceService;
-    exports.ɵg = DataService;
-    exports.ɵf = WFSService;
-    exports.ɵl = DownloadButtonComponent;
-    exports.ɵm = DownloadService;
-    exports.ɵn = FeatureDetailsComponent;
-    exports.ɵp = FeatureFormComponent;
-    exports.ɵy = OgcFilterButtonComponent;
-    exports.ɵw = OgcFilterFormComponent;
-    exports.ɵz = OgcFilterableFormComponent;
-    exports.ɵba = OgcFilterableItemComponent;
-    exports.ɵbd = OgcFilterableListBindingDirective;
-    exports.ɵbc = OgcFilterableListComponent;
-    exports.ɵq = FilterableDataSourcePipe;
-    exports.ɵbb = OGCFilterService;
-    exports.ɵt = TimeFilterService;
-    exports.ɵr = TimeFilterFormComponent;
-    exports.ɵs = TimeFilterItemComponent;
-    exports.ɵv = TimeFilterListBindingDirective;
-    exports.ɵu = TimeFilterListComponent;
-    exports.ɵbf = GeometryFormFieldInputComponent;
-    exports.ɵbe = GeometryFormFieldComponent;
-    exports.ɵbg = ImportExportComponent;
-    exports.ɵbj = DropGeoFileDirective;
-    exports.ɵbi = ExportService;
-    exports.ɵbh = ImportService;
-    exports.ɵbl = LayerItemComponent;
-    exports.ɵbm = LayerLegendComponent;
-    exports.ɵbp = LayerListBindingDirective;
-    exports.ɵbn = LayerListComponent;
-    exports.ɵbo = LayerListService;
-    exports.ɵb = LayerService;
-    exports.ɵc = StyleService;
-    exports.ɵbu = baseLayersSwitcherSlideInOut;
-    exports.ɵbt = BaseLayersSwitcherComponent;
-    exports.ɵbv = MiniBaseMapComponent;
-    exports.ɵbr = GeolocateButtonComponent;
-    exports.ɵbk = MapBrowserComponent;
-    exports.ɵbs = RotationButtonComponent;
-    exports.ɵo = MapService;
-    exports.ɵbw = MapLayerDirective;
-    exports.ɵbq = ZoomButtonComponent;
-    exports.ɵbx = MeasureFormatPipe;
-    exports.ɵca = MeasurerDialogComponent;
-    exports.ɵby = MeasurerItemComponent;
-    exports.ɵbz = MeasurerComponent;
-    exports.ɵcc = MetadataButtonComponent;
-    exports.ɵcd = MetadataService;
-    exports.ɵce = OverlayDirective;
-    exports.ɵcf = OverlayService;
-    exports.ɵci = PrintFormComponent;
-    exports.ɵcg = PrintComponent;
-    exports.ɵch = PrintService;
-    exports.ɵcn = QuerySearchSource;
-    exports.ɵcj = QueryDirective;
-    exports.ɵck = QueryService;
-    exports.ɵcu = RoutingFormBindingDirective;
-    exports.ɵco = RoutingFormComponent;
-    exports.ɵct = RoutingFormService;
-    exports.ɵdv = OsrmRoutingSource;
-    exports.ɵcq = RoutingSource;
-    exports.ɵcp = RoutingService;
-    exports.ɵcx = SearchBarComponent;
-    exports.ɵcy = SearchUrlParamDirective;
-    exports.ɵda = SearchResultsItemComponent;
-    exports.ɵcz = SearchResultsComponent;
-    exports.ɵcw = SearchSelectorComponent;
-    exports.ɵcv = IgoSearchSelectorModule;
-    exports.ɵdc = provideSearchSourceService;
-    exports.ɵdb = searchSourceServiceFactory;
-    exports.ɵcs = SearchSourceService;
-    exports.ɵcr = SearchService;
-    exports.ɵdh = CoordinatesReverseSearchSource;
-    exports.ɵdg = CoordinatesSearchResultFormatter;
-    exports.ɵdf = IChercheReverseSearchSource;
-    exports.ɵdd = IChercheSearchResultFormatter;
-    exports.ɵde = IChercheSearchSource;
-    exports.ɵdq = ILayerSearchSource;
-    exports.ɵds = NominatimSearchSource;
-    exports.ɵcl = SearchSource;
-    exports.ɵdu = StoredQueriesReverseSearchSource;
-    exports.ɵdt = StoredQueriesSearchSource;
-    exports.ɵdi = ToastComponent;
-    exports.ɵx = WktService;
-    exports.ɵdk = WfsWorkspaceService;
-    exports.ɵdl = WmsWorkspaceService;
-    exports.ɵdm = OgcFilterComponent;
-    exports.ɵdn = OgcFilterWidget;
-    exports.ɵdo = ogcFilterWidgetFactory;
-    exports.ɵdp = provideOgcFilterWidget;
-    exports.ɵdj = WorkspaceSelectorDirective;
+    exports.ɵj = CatalogBrowserGroupComponent;
+    exports.ɵk = CatalogBrowserLayerComponent;
+    exports.ɵc = CatalogBrowserComponent;
+    exports.ɵm = CatalogLibaryItemComponent;
+    exports.ɵl = CatalogLibaryComponent;
+    exports.ɵg = CapabilitiesService;
+    exports.ɵf = DataSourceService;
+    exports.ɵi = DataService;
+    exports.ɵh = WFSService;
+    exports.ɵn = DownloadButtonComponent;
+    exports.ɵo = DownloadService;
+    exports.ɵp = FeatureDetailsComponent;
+    exports.ɵq = FeatureFormComponent;
+    exports.ɵba = OgcFilterButtonComponent;
+    exports.ɵy = OgcFilterFormComponent;
+    exports.ɵbb = OgcFilterToggleButtonComponent;
+    exports.ɵbd = OgcFilterableFormComponent;
+    exports.ɵbe = OgcFilterableItemComponent;
+    exports.ɵbg = OgcFilterableListBindingDirective;
+    exports.ɵbf = OgcFilterableListComponent;
+    exports.ɵr = FilterableDataSourcePipe;
+    exports.ɵbc = OGCFilterService;
+    exports.ɵu = TimeFilterService;
+    exports.ɵs = TimeFilterFormComponent;
+    exports.ɵt = TimeFilterItemComponent;
+    exports.ɵw = TimeFilterListBindingDirective;
+    exports.ɵv = TimeFilterListComponent;
+    exports.ɵbi = GeometryFormFieldInputComponent;
+    exports.ɵbh = GeometryFormFieldComponent;
+    exports.ɵbj = ImportExportComponent;
+    exports.ɵbm = DropGeoFileDirective;
+    exports.ɵbl = ExportService;
+    exports.ɵbk = ImportService;
+    exports.ɵbo = LayerItemComponent;
+    exports.ɵbp = LayerLegendComponent;
+    exports.ɵbs = LayerListBindingDirective;
+    exports.ɵbq = LayerListComponent;
+    exports.ɵbr = LayerListService;
+    exports.ɵd = LayerService;
+    exports.ɵe = StyleService;
+    exports.ɵbx = baseLayersSwitcherSlideInOut;
+    exports.ɵbw = BaseLayersSwitcherComponent;
+    exports.ɵby = MiniBaseMapComponent;
+    exports.ɵbu = GeolocateButtonComponent;
+    exports.ɵbn = MapBrowserComponent;
+    exports.ɵbv = RotationButtonComponent;
+    exports.ɵx = MapService;
+    exports.ɵbz = MapOfflineDirective;
+    exports.ɵbt = ZoomButtonComponent;
+    exports.ɵca = MeasureFormatPipe;
+    exports.ɵcd = MeasurerDialogComponent;
+    exports.ɵcb = MeasurerItemComponent;
+    exports.ɵcc = MeasurerComponent;
+    exports.ɵa = MetadataButtonComponent;
+    exports.ɵb = MetadataService;
+    exports.ɵcf = OverlayDirective;
+    exports.ɵcg = OverlayService;
+    exports.ɵcj = PrintFormComponent;
+    exports.ɵch = PrintComponent;
+    exports.ɵci = PrintService;
+    exports.ɵco = QuerySearchSource;
+    exports.ɵck = QueryDirective;
+    exports.ɵcl = QueryService;
+    exports.ɵcv = RoutingFormBindingDirective;
+    exports.ɵcp = RoutingFormComponent;
+    exports.ɵcu = RoutingFormService;
+    exports.ɵdy = OsrmRoutingSource;
+    exports.ɵcr = RoutingSource;
+    exports.ɵcq = RoutingService;
+    exports.ɵda = SearchBarComponent;
+    exports.ɵdb = SearchUrlParamDirective;
+    exports.ɵdd = SearchResultsItemComponent;
+    exports.ɵdc = SearchResultsComponent;
+    exports.ɵcx = SearchSelectorComponent;
+    exports.ɵcw = IgoSearchSelectorModule;
+    exports.ɵcz = SearchSettingsComponent;
+    exports.ɵcy = IgoSearchSettingsModule;
+    exports.ɵdf = provideSearchSourceService;
+    exports.ɵde = searchSourceServiceFactory;
+    exports.ɵct = SearchSourceService;
+    exports.ɵcs = SearchService;
+    exports.ɵdk = CoordinatesReverseSearchSource;
+    exports.ɵdj = CoordinatesSearchResultFormatter;
+    exports.ɵdi = IChercheReverseSearchSource;
+    exports.ɵdg = IChercheSearchResultFormatter;
+    exports.ɵdh = IChercheSearchSource;
+    exports.ɵdt = ILayerSearchSource;
+    exports.ɵdv = NominatimSearchSource;
+    exports.ɵcm = SearchSource;
+    exports.ɵdx = StoredQueriesReverseSearchSource;
+    exports.ɵdw = StoredQueriesSearchSource;
+    exports.ɵdl = ToastComponent;
+    exports.ɵz = WktService;
+    exports.ɵdn = WfsWorkspaceService;
+    exports.ɵdo = WmsWorkspaceService;
+    exports.ɵdp = OgcFilterComponent;
+    exports.ɵdq = OgcFilterWidget;
+    exports.ɵdr = ogcFilterWidgetFactory;
+    exports.ɵds = provideOgcFilterWidget;
+    exports.ɵdm = WorkspaceSelectorDirective;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

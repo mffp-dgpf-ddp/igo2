@@ -1,14 +1,10 @@
-import { ChangeDetectorRef, AfterContentChecked } from '@angular/core';
+import { OnInit } from '@angular/core';
 import { OgcInterfaceFilterOptions, OgcFilterableDataSource } from '../../filter/shared/ogc-filter.interface';
 import { WktService } from '../../wkt/shared/wkt.service';
 import { IgoMap } from '../../map';
-export declare class OgcFilterFormComponent implements AfterContentChecked {
-    private cdRef;
+export declare class OgcFilterFormComponent implements OnInit {
     private wktService;
-    private ogcFilterWriter;
-    private _dataSource;
-    private _currentFilter;
-    operators: any;
+    ogcFilterOperators: any;
     igoSpatialSelectors: any;
     value: string;
     inputOperator: any;
@@ -17,19 +13,16 @@ export declare class OgcFilterFormComponent implements AfterContentChecked {
     color: string;
     snrc: string;
     disabled: any;
-    private _map;
     baseOverlayName: string;
-    private _showFeatureOnMap;
-    refreshFilters: Function;
+    refreshFilters: () => void;
     datasource: OgcFilterableDataSource;
-    showFeatureOnMap: boolean;
     map: IgoMap;
     currentFilter: any;
     readonly activeFilters: OgcInterfaceFilterOptions[];
-    constructor(cdRef: ChangeDetectorRef, wktService: WktService);
-    ngAfterContentChecked(): void;
-    updateField(init?: boolean): void;
-    private addWktAsOverlay;
+    constructor(wktService: WktService);
+    ngOnInit(): void;
+    computeAllowedOperators(): void;
+    updateField(): void;
     toggleFilterState(event: any, filter: OgcInterfaceFilterOptions, property: any): void;
     deleteFilter(filter: OgcInterfaceFilterOptions): void;
     changeNumericProperty(filter: OgcInterfaceFilterOptions, property: any, value: any): void;

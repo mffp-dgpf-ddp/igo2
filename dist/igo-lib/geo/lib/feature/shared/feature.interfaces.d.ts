@@ -19,7 +19,6 @@ export interface FeatureMeta {
     title?: string;
     mapTitle?: string;
     sourceTitle?: string;
-    typeSource?: string;
     order?: number;
     alias?: {
         [key: string]: string;

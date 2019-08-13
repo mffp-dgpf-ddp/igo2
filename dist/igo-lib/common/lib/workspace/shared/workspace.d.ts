@@ -11,23 +11,19 @@ import { WorkspaceOptions } from './workspace.interfaces';
 export declare class Workspace<E extends object = object> {
     protected options: WorkspaceOptions;
     /**
-     * Observable of the selected entity
-     */
-    entity$: BehaviorSubject<E>;
-    /**
      * Observable of the selected widget
      */
-    widget$: BehaviorSubject<Widget>;
+    readonly widget$: BehaviorSubject<Widget>;
     /**
      * Observable of the selected widget's inputs
      */
-    widgetInputs$: BehaviorSubject<{
+    readonly widgetInputs$: BehaviorSubject<{
         [key: string]: any;
     }>;
     /**
      * Observable of the selected widget's subscribers
      */
-    widgetSubscribers$: BehaviorSubject<{
+    readonly widgetSubscribers$: BehaviorSubject<{
         [key: string]: (event: any) => void;
     }>;
     /**
@@ -41,11 +37,11 @@ export declare class Workspace<E extends object = object> {
     /**
      * State change that trigger an update of the actions availability
      */
-    private changes$;
+    private change;
     /**
      * Subscription to state changes
      */
-    private changes$$;
+    private change$;
     /**
      * Workspace id
      */
@@ -68,10 +64,6 @@ export declare class Workspace<E extends object = object> {
      * Actions store (some actions activate a widget)
      */
     readonly actionStore: ActionStore;
-    /**
-     * Selected entity
-     */
-    readonly entity: E;
     /**
      * Selected widget
      */
@@ -112,9 +104,7 @@ export declare class Workspace<E extends object = object> {
      */
     deactivateWidget(): void;
     /**
-     * When an entity is selected, keep a reference to that
-     * entity and update the actions availability.
-     * @param entity Entity
+     * When the state changes, update the actions availability.
      */
-    private onSelectEntity;
+    private onStateChange;
 }

@@ -1,9 +1,10 @@
+import { OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 /**
  * This component renders a text field
  */
-export declare class FormFieldTextComponent {
+export declare class FormFieldTextComponent implements OnInit {
     disabled$: BehaviorSubject<boolean>;
     /**
      * The field's form control

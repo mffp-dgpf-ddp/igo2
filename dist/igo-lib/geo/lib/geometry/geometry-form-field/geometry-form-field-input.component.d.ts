@@ -1,5 +1,6 @@
 import { OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { NgControl, ControlValueAccessor } from '@angular/forms';
+import * as OlStyle from 'ol/style';
 import OlGeometryType from 'ol/geom/GeometryType';
 import OlVectorSource from 'ol/source/Vector';
 import { IgoMap } from '../../map';
@@ -19,7 +20,6 @@ export declare class GeometryFormFieldInputComponent implements OnInit, OnDestro
     private ready;
     private drawControl;
     private modifyControl;
-    private drawInteractionStyle;
     private defaultDrawStyleRadius;
     private olGeometryEnds$$;
     private olGeometryChanges$$;
@@ -46,6 +46,17 @@ export declare class GeometryFormFieldInputComponent implements OnInit, OnDestro
      * Whether a measure tooltip should be displayed
      */
     measure: boolean;
+    /**
+     * Style for the draw control (applies while the geometry is being drawn)
+     */
+    drawStyle: OlStyle;
+    private _drawStyle;
+    /**
+     * Style for the overlay layer (applies once the geometry is added to the map)
+     * If not specified, drawStyle applies
+     */
+    overlayStyle: OlStyle;
+    private _overlayStyle;
     /**
      * The geometry value (GeoJSON)
      * Implemented as part of ControlValueAccessor.
@@ -142,5 +153,15 @@ export declare class GeometryFormFieldInputComponent implements OnInit, OnDestro
      * Remove the measure tooltip from the map
      */
     private removeMeasureTooltip;
+    /**
+     * Adjust the draw style with the specified draw guide distance, if possible
+     * @param olStyle Draw style to update
+     * @param resolution Resolution (to make the screen size of symbol fit the drawGuide value)
+     */
     private updateDrawStyleWithDrawGuide;
+    /**
+     * Returns wether a given Open Layers style has a radius property that can be set (used to set draw guide)
+     * @param olStyle The style on which to perform the check
+     */
+    private isStyleWithRadius;
 }

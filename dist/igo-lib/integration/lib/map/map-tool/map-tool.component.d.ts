@@ -8,6 +8,7 @@ export declare class MapToolComponent {
     updateLegendOnResolutionChange: boolean;
     ogcFiltersInLayers: boolean;
     layerListControls: LayerListControlsOptions;
+    queryBadge: boolean;
     readonly excludeBaseLayers: boolean;
     readonly layerFilterAndSortOptions: any;
 }

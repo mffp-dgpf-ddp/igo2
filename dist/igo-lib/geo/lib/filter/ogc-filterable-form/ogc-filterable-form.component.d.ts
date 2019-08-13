@@ -3,12 +3,9 @@ import { IgoMap } from '../../map';
 export declare class OgcFilterableFormComponent {
     datasource: OgcFilterableDataSource;
     map: IgoMap;
-    refreshFilters: Function;
-    readonly refreshFunc: Function;
-    showFeatureOnMap: boolean;
-    private _showFeatureOnMap;
-    private _map;
-    private _dataSource;
+    refreshFilters: () => void;
+    readonly refreshFunc: () => void;
+    readonly advancedOgcFilters: boolean;
     color: string;
     constructor();
 }

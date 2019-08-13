@@ -2,12 +2,12 @@ import { CommonModule } from '@angular/common';
 import { MatTabsModule, MatIconModule, MatButtonModule } from '@angular/material';
 import { map } from 'rxjs/operators';
 import olFormatGeoJSON from 'ol/format/GeoJSON';
-import { IgoMap, MapService, ProjectionService, FeatureStore, IgoMeasurerModule, SearchSourceService, CatalogService, LayerListControlsEnum, moveToOlFeatures, FeatureMotion, FEATURE, LAYER, LayerService, IgoCatalogModule, IgoFilterModule, IgoImportExportModule, IgoLayerModule, IgoMetadataModule, IgoDownloadModule, IgoCatalogBrowserModule, IgoPrintModule, IgoCatalogLibraryModule, IgoFeatureModule, IgoSearchModule, IgoFeatureDetailsModule } from '@igo2/geo';
+import { IgoMap, MapService, ProjectionService, IgoMeasurerModule, FeatureStore, SearchSourceService, CatalogService, LayerListControlsEnum, moveToOlFeatures, FeatureMotion, FEATURE, LAYER, LayerService, IgoRoutingModule, IgoImportExportModule, IgoFilterModule, IgoLayerModule, IgoMetadataModule, IgoDownloadModule, IgoPrintModule, IgoCatalogBrowserModule, IgoCatalogLibraryModule, IgoFeatureModule, IgoSearchModule, IgoFeatureDetailsModule } from '@igo2/geo';
 import { __decorate, __metadata } from 'tslib';
 import { IgoLanguageModule, LanguageService } from '@igo2/core';
 import { IgoContextModule, ContextService } from '@igo2/context';
 import { BehaviorSubject } from 'rxjs';
-import { Component, Injectable, NgModule, CUSTOM_ELEMENTS_SCHEMA, defineInjectable, inject, Input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Injectable, NgModule, CUSTOM_ELEMENTS_SCHEMA, defineInjectable, inject, ChangeDetectionStrategy, Input } from '@angular/core';
 import { ToolComponent, Toolbox, ToolService, EntityStore, getEntityTitle, IgoCustomHtmlModule, IgoFlexibleModule, IgoPanelModule, WorkspaceStore } from '@igo2/common';
 
 /**
@@ -23,15 +23,12 @@ var ContextEditorToolComponent = /** @class */ (function () {
                     template: "<igo-context-edit igoContextEditBinding></igo-context-edit>\r\n"
                 }] }
     ];
-    /** @nocollapse */
-    ContextEditorToolComponent.ctorParameters = function () { return []; };
     ContextEditorToolComponent = __decorate([
         ToolComponent({
             name: 'contextEditor',
             title: 'igo.integration.tools.contexts',
-            icon: 'settings'
-        }),
-        __metadata("design:paramtypes", [])
+            icon: 'star'
+        })
     ], ContextEditorToolComponent);
     return ContextEditorToolComponent;
 }());
@@ -89,7 +86,7 @@ var ContextManagerToolComponent = /** @class */ (function () {
      * @return {?}
      */
     function () {
-        this.toolState.toolbox.activateTool('permissionsContextManager');
+        this.toolState.toolbox.activateTool('contextPermissionManager');
     };
     ContextManagerToolComponent.decorators = [
         { type: Component, args: [{
@@ -105,7 +102,7 @@ var ContextManagerToolComponent = /** @class */ (function () {
         ToolComponent({
             name: 'contextManager',
             title: 'igo.integration.tools.contexts',
-            icon: 'tune'
+            icon: 'star'
         }),
         __metadata("design:paramtypes", [ToolState])
     ], ContextManagerToolComponent);
@@ -125,15 +122,12 @@ var ContextPermissionManagerToolComponent = /** @class */ (function () {
                     template: "<igo-context-permissions igoContextPermissionsBinding></igo-context-permissions>\r\n"
                 }] }
     ];
-    /** @nocollapse */
-    ContextPermissionManagerToolComponent.ctorParameters = function () { return []; };
     ContextPermissionManagerToolComponent = __decorate([
         ToolComponent({
             name: 'contextPermissionManager',
             title: 'igo.integration.tools.contexts',
-            icon: 'settings'
-        }),
-        __metadata("design:paramtypes", [])
+            icon: 'star'
+        })
     ], ContextPermissionManagerToolComponent);
     return ContextPermissionManagerToolComponent;
 }());
@@ -505,6 +499,10 @@ var CatalogBrowserToolComponent = /** @class */ (function () {
          * \@internal
          */
         this.store$ = new BehaviorSubject(undefined);
+        /**
+         * Whether a group can be toggled when it's collapsed
+         */
+        this.toggleCollapsedGroup = true;
     }
     Object.defineProperty(CatalogBrowserToolComponent.prototype, "map", {
         /**
@@ -613,7 +611,7 @@ var CatalogBrowserToolComponent = /** @class */ (function () {
     CatalogBrowserToolComponent.decorators = [
         { type: Component, args: [{
                     selector: 'igo-catalog-browser-tool',
-                    template: "<igo-catalog-browser\r\n  *ngIf=\"store$ | async as store\"\r\n  [catalog]=\"catalog\"\r\n  [store]=\"store\"\r\n  [map]=\"map\">\r\n</igo-catalog-browser>\r\n",
+                    template: "<igo-catalog-browser\r\n  *ngIf=\"store$ | async as store\"\r\n  [catalog]=\"catalog\"\r\n  [store]=\"store\"\r\n  [map]=\"map\"\r\n  [toggleCollapsedGroup]=\"toggleCollapsedGroup\">\r\n</igo-catalog-browser>\r\n",
                     changeDetection: ChangeDetectionStrategy.OnPush
                 }] }
     ];
@@ -623,6 +621,9 @@ var CatalogBrowserToolComponent = /** @class */ (function () {
         { type: CatalogState },
         { type: MapState }
     ]; };
+    CatalogBrowserToolComponent.propDecorators = {
+        toggleCollapsedGroup: [{ type: Input }]
+    };
     /**
      * Tool to browse a catalog's groups and layers and display them to a map.
      */
@@ -744,7 +745,7 @@ var IgoAppDirectionsModule = /** @class */ (function () {
     };
     IgoAppDirectionsModule.decorators = [
         { type: NgModule, args: [{
-                    imports: [IgoCatalogModule],
+                    imports: [IgoRoutingModule],
                     declarations: [DirectionsToolComponent],
                     exports: [DirectionsToolComponent],
                     entryComponents: [DirectionsToolComponent],
@@ -857,6 +858,7 @@ var MapDetailsToolComponent = /** @class */ (function () {
         this.updateLegendOnResolutionChange = false;
         this.ogcFiltersInLayers = true;
         this.layerListControls = {};
+        this.queryBadge = false;
     }
     Object.defineProperty(MapDetailsToolComponent.prototype, "excludeBaseLayers", {
         get: /**
@@ -897,7 +899,7 @@ var MapDetailsToolComponent = /** @class */ (function () {
     MapDetailsToolComponent.decorators = [
         { type: Component, args: [{
                     selector: 'igo-map-details-tool',
-                    template: "<igo-layer-list\r\n  igoLayerListBinding\r\n  [excludeBaseLayers]=\"excludeBaseLayers\"\r\n  [layerFilterAndSortOptions]=\"layerFilterAndSortOptions\"\r\n  [expandLegendOfVisibleLayers]=\"expandLegendOfVisibleLayers\"\r\n  [toggleLegendOnVisibilityChange]=\"toggleLegendOnVisibilityChange\"\r\n  [updateLegendOnResolutionChange]=\"updateLegendOnResolutionChange\">\r\n\r\n  <ng-template #igoLayerItemToolbar let-layer=\"layer\">\r\n    <igo-download-button [layer]=\"layer\"></igo-download-button>\r\n    <igo-metadata-button [layer]=\"layer\"></igo-metadata-button>\r\n    <igo-ogc-filter-button [ogcFiltersInLayers]=\"ogcFiltersInLayers\" [layer]=\"layer\"></igo-ogc-filter-button>\r\n  </ng-template>\r\n\r\n</igo-layer-list>\r\n"
+                    template: "<igo-layer-list\r\n  igoLayerListBinding\r\n  [excludeBaseLayers]=\"excludeBaseLayers\"\r\n  [layerFilterAndSortOptions]=\"layerFilterAndSortOptions\"\r\n  [expandLegendOfVisibleLayers]=\"expandLegendOfVisibleLayers\"\r\n  [toggleLegendOnVisibilityChange]=\"toggleLegendOnVisibilityChange\"\r\n  [updateLegendOnResolutionChange]=\"updateLegendOnResolutionChange\"\r\n  [queryBadge]=\"queryBadge\">\r\n\r\n  <ng-template #igoLayerItemToolbar let-layer=\"layer\">\r\n    <igo-download-button [layer]=\"layer\"></igo-download-button>\r\n    <igo-metadata-button [layer]=\"layer\"></igo-metadata-button>\r\n    <igo-ogc-filter-button [ogcFiltersInLayers]=\"ogcFiltersInLayers\" [layer]=\"layer\"></igo-ogc-filter-button>\r\n  </ng-template>\r\n\r\n</igo-layer-list>\r\n"
                 }] }
     ];
     MapDetailsToolComponent.propDecorators = {
@@ -905,7 +907,8 @@ var MapDetailsToolComponent = /** @class */ (function () {
         expandLegendOfVisibleLayers: [{ type: Input }],
         updateLegendOnResolutionChange: [{ type: Input }],
         ogcFiltersInLayers: [{ type: Input }],
-        layerListControls: [{ type: Input }]
+        layerListControls: [{ type: Input }],
+        queryBadge: [{ type: Input }]
     };
     MapDetailsToolComponent = __decorate([
         ToolComponent({
@@ -931,6 +934,7 @@ var MapToolComponent = /** @class */ (function () {
         this.updateLegendOnResolutionChange = false;
         this.ogcFiltersInLayers = true;
         this.layerListControls = {};
+        this.queryBadge = false;
     }
     Object.defineProperty(MapToolComponent.prototype, "excludeBaseLayers", {
         get: /**
@@ -971,7 +975,7 @@ var MapToolComponent = /** @class */ (function () {
     MapToolComponent.decorators = [
         { type: Component, args: [{
                     selector: 'igo-map-tool',
-                    template: "<mat-tab-group>\r\n\r\n  <mat-tab [label]=\"'igo.integration.tools.map' |\u00A0translate\">\r\n    <igo-layer-list\r\n      igoLayerListBinding\r\n      [excludeBaseLayers]=\"excludeBaseLayers\"\r\n      [layerFilterAndSortOptions]=\"layerFilterAndSortOptions\"\r\n      [expandLegendOfVisibleLayers]=\"expandLegendOfVisibleLayers\"\r\n      [toggleLegendOnVisibilityChange]=\"toggleLegendOnVisibilityChange\"\r\n      [updateLegendOnResolutionChange]=\"updateLegendOnResolutionChange\">\r\n\r\n      <ng-template #igoLayerItemToolbar let-layer=\"layer\">\r\n        <igo-download-button [layer]=\"layer\"></igo-download-button>\r\n        <igo-metadata-button [layer]=\"layer\"></igo-metadata-button>\r\n        <igo-ogc-filter-button [ogcFiltersInLayers]=\"ogcFiltersInLayers\" [layer]=\"layer\"></igo-ogc-filter-button>\r\n      </ng-template>\r\n\r\n    </igo-layer-list>\r\n  </mat-tab>\r\n\r\n  <mat-tab [label]=\"'igo.integration.tools.contexts' |\u00A0translate\">\r\n    <igo-context-list igoContextListBinding></igo-context-list>\r\n  </mat-tab>\r\n\r\n</mat-tab-group>\r\n",
+                    template: "<mat-tab-group>\r\n\r\n  <mat-tab [label]=\"'igo.integration.tools.map' |\u00A0translate\">\r\n    <igo-layer-list\r\n      igoLayerListBinding\r\n      [excludeBaseLayers]=\"excludeBaseLayers\"\r\n      [layerFilterAndSortOptions]=\"layerFilterAndSortOptions\"\r\n      [expandLegendOfVisibleLayers]=\"expandLegendOfVisibleLayers\"\r\n      [toggleLegendOnVisibilityChange]=\"toggleLegendOnVisibilityChange\"\r\n      [updateLegendOnResolutionChange]=\"updateLegendOnResolutionChange\"\r\n      [queryBadge]=\"queryBadge\">\r\n\r\n      <ng-template #igoLayerItemToolbar let-layer=\"layer\">\r\n        <igo-download-button [layer]=\"layer\"></igo-download-button>\r\n        <igo-metadata-button [layer]=\"layer\"></igo-metadata-button>\r\n        <igo-ogc-filter-button [ogcFiltersInLayers]=\"ogcFiltersInLayers\" [layer]=\"layer\"></igo-ogc-filter-button>\r\n      </ng-template>\r\n\r\n    </igo-layer-list>\r\n  </mat-tab>\r\n\r\n  <mat-tab [label]=\"'igo.integration.tools.contexts' |\u00A0translate\">\r\n    <igo-context-list igoContextListBinding></igo-context-list>\r\n  </mat-tab>\r\n\r\n</mat-tab-group>\r\n",
                     changeDetection: ChangeDetectionStrategy.OnPush,
                     styles: ["mat-tab-group,mat-tab-group ::ng-deep .mat-tab-body-wrapper{height:100%}"]
                 }] }
@@ -981,7 +985,8 @@ var MapToolComponent = /** @class */ (function () {
         expandLegendOfVisibleLayers: [{ type: Input }],
         updateLegendOnResolutionChange: [{ type: Input }],
         ogcFiltersInLayers: [{ type: Input }],
-        layerListControls: [{ type: Input }]
+        layerListControls: [{ type: Input }],
+        queryBadge: [{ type: Input }]
     };
     /**
      * Tool to browse a map's layers or to choose a different map
@@ -1591,7 +1596,7 @@ var OgcFilterToolComponent = /** @class */ (function () {
         ToolComponent({
             name: 'ogcFilter',
             title: 'igo.integration.tools.ogcFilter',
-            icon: 'filter-list'
+            icon: 'filter'
         }),
         __metadata("design:paramtypes", [])
     ], OgcFilterToolComponent);

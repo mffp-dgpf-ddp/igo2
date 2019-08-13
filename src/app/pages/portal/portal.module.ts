@@ -7,7 +7,7 @@ import {
   MatSidenavModule
 } from '@angular/material';
 
-import { IgoCoreModule } from '@igo2/core';
+import { IgoCoreModule, NetworkModule } from '@igo2/core';
 import {
   IgoActionModule,
   IgoWorkspaceModule,
@@ -74,4 +74,4 @@ import { PortalComponent } from './portal.component';
   exports: [PortalComponent],
   declarations: [PortalComponent]
 })
-export class PortalModule {}
+export class PortalModule { }

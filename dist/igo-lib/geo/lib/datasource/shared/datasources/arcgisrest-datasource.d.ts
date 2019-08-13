@@ -7,4 +7,5 @@ export declare class ArcGISRestDataSource extends DataSource {
     options: ArcGISRestDataSourceOptions;
     protected createOlSource(): olSourceVector;
     getLegend(): DataSourceLegendOptions[];
+    onUnwatch(): void;
 }

@@ -1,5 +1,6 @@
 import { EntityState } from '@igo2/common';
-import { LayerOptions, TooltipType } from '../../layer';
+import { MetadataLayerOptions } from './../../metadata/shared/metadata.interface';
+import { TooltipType } from '../../layer';
 import { TimeFilterOptions } from '../../filter';
 import { QueryFormat, QueryHtmlTarget } from '../../query';
 import { CatalogItemType } from './catalog.enum';
@@ -16,16 +17,23 @@ export interface Catalog {
     timeFilter?: TimeFilterOptions;
     queryFormat?: QueryFormat;
     queryHtmlTarget?: QueryHtmlTarget;
+    queryParams?: {
+        [key: string]: string;
+    };
+    sourceOptions?: {
+        [key: string]: any;
+    };
     count?: number;
     tooltipType?: TooltipType.ABSTRACT | TooltipType.TITLE;
     sortDirection?: 'asc' | 'desc';
+    setCrossOriginAnonymous?: boolean;
 }
 export interface CatalogItem {
     id: string;
     title: string;
     type: CatalogItemType;
 }
-export interface CatalogItemLayer<L = LayerOptions> extends CatalogItem {
+export interface CatalogItemLayer<L = MetadataLayerOptions> extends CatalogItem {
     options: L;
 }
 export interface CatalogItemGroup extends CatalogItem {

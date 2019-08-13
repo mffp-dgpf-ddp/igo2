@@ -12,8 +12,8 @@ import { WFSDataSourceOptions } from '../../../datasource/shared/datasources/wfs
 import { ArcGISRestDataSourceOptions } from '../../../datasource/shared/datasources/arcgisrest-datasource.interface';
 import { WebSocketDataSourceOptions } from '../../../datasource/shared/datasources/websocket-datasource.interface';
 import { ClusterDataSourceOptions } from '../../../datasource/shared/datasources/cluster-datasource.interface';
-import { StyleByAttribute } from '../stylebyattribute';
 import { ClusterParam } from '../clusterParam';
+import { StyleByAttribute } from '../stylebyattribute';
 export interface VectorLayerOptions extends LayerOptions {
     source?: FeatureDataSource | WFSDataSource | ArcGISRestDataSource | WebSocketDataSource | ClusterDataSource;
     sourceOptions?: FeatureDataSourceOptions | WFSDataSourceOptions | ArcGISRestDataSourceOptions | WebSocketDataSourceOptions | ClusterDataSourceOptions;
@@ -29,5 +29,5 @@ export interface VectorLayerOptions extends LayerOptions {
 }
 export interface VectorAnimation {
     duration?: number;
-    color: olColor;
+    color?: olColor;
 }

@@ -4,15 +4,20 @@ import { WFSDataSource } from '../../../datasource/shared/datasources/wfs-dataso
 import { ArcGISRestDataSource } from '../../../datasource/shared/datasources/arcgisrest-datasource';
 import { WebSocketDataSource } from '../../../datasource/shared/datasources/websocket-datasource';
 import { ClusterDataSource } from '../../../datasource/shared/datasources/cluster-datasource';
+import { IgoMap } from '../../../map';
 import { Layer } from './layer';
 import { VectorLayerOptions } from './vector-layer.interface';
 export declare class VectorLayer extends Layer {
     dataSource: FeatureDataSource | WFSDataSource | ArcGISRestDataSource | WebSocketDataSource | ClusterDataSource;
     options: VectorLayerOptions;
     ol: olLayerVector;
+    private watcher;
     readonly browsable: boolean;
     readonly exportable: boolean;
     constructor(options: VectorLayerOptions);
     protected createOlLayer(): olLayerVector;
     protected flash(feature: any): void;
+    setMap(map: IgoMap | undefined): void;
+    onUnwatch(): void;
+    stopAnimation(): void;
 }

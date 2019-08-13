@@ -2,6 +2,7 @@ import { OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import OlGeometryType from 'ol/geom/GeometryType';
+import { Style as OlStyle } from 'ol/style';
 import { IgoMap } from '../../map';
 import { GeoJSONGeometry } from '../shared/geometry.interfaces';
 /**
@@ -50,6 +51,15 @@ export declare class GeometryFormFieldComponent implements OnInit, OnDestroy {
      * Whether a measure tooltip should be displayed
      */
     measure: boolean;
+    /**
+     * Style for the draw control (applies while the geometry is being drawn)
+     */
+    drawStyle: OlStyle;
+    /**
+     * Style for the overlay layer (applies once the geometry is added to the map)
+     * If not specified, drawStyle applies
+     */
+    overlayStyle: OlStyle;
     /**
      * The geometry type model
      */

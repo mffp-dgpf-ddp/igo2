@@ -5,4 +5,5 @@ export declare class OSMDataSource extends DataSource {
     options: OSMDataSourceOptions;
     ol: olSourceOSM;
     protected createOlSource(): olSourceOSM;
+    onUnwatch(): void;
 }

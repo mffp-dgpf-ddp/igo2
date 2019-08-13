@@ -1,5 +1,4 @@
 import OlFeature from 'ol/Feature';
-import OlLayer from 'ol/layer/Layer';
 import { EntityKey } from '@igo2/common';
 import { IgoMap } from '../../map';
 import { VectorLayer } from '../../layer';
@@ -23,7 +22,7 @@ export declare function featureToOl(feature: Feature, projectionOut: string, get
  * @param projectionOut Feature projection
  * @returns Feature
  */
-export declare function featureFromOl(olFeature: OlFeature, projectionIn: string, olLayer?: OlLayer, projectionOut?: string): Feature;
+export declare function featureFromOl(olFeature: OlFeature, projectionIn: string, projectionOut?: string): Feature;
 /**
  * Compute an OL feature extent in it's map projection
  * @param map Map

@@ -6,4 +6,5 @@ export declare class ClusterDataSource extends FeatureDataSource {
     ol: olSourceCluster;
     protected createOlSource(): olSourceCluster;
     protected generateId(): string;
+    onUnwatch(): void;
 }

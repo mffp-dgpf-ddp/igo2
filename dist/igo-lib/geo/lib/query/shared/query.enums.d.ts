@@ -5,7 +5,8 @@ export declare enum QueryFormat {
     GEOJSON = "geojson",
     ESRIJSON = "esrijson",
     TEXT = "text",
-    HTML = "html"
+    HTML = "html",
+    HTMLGML2 = "htmlgml2"
 }
 export declare enum QueryHtmlTarget {
     IFRAME = "iframe",

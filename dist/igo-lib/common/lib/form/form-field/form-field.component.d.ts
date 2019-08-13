@@ -1,4 +1,4 @@
-import { FormField, FormFieldInputs } from '../shared/form.interfaces';
+import { FormField, FormFieldInputs, FormFieldOptions } from '../shared/form.interfaces';
 import { FormFieldService } from '../shared/form-field.service';
 /**
  * This component renders the proper form input based on
@@ -10,6 +10,7 @@ export declare class FormFieldComponent {
      * Field configuration
      */
     field: FormField;
+    readonly fieldOptions: FormFieldOptions;
     constructor(formFieldService: FormFieldService);
     getFieldComponent(): any;
     getFieldInputs(): FormFieldInputs;

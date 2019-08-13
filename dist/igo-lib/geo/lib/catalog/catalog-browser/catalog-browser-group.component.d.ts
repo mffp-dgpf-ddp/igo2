@@ -17,6 +17,11 @@ export declare class CatalogBrowserGroupComponent implements OnInit, OnDestroy {
      */
     added$: BehaviorSubject<boolean>;
     /**
+     * Whether the toggle button is disabled
+     * @internal
+     */
+    disabled$: BehaviorSubject<boolean>;
+    /**
      * Catalog
      */
     catalog: Catalog;
@@ -24,6 +29,14 @@ export declare class CatalogBrowserGroupComponent implements OnInit, OnDestroy {
      * Catalog group
      */
     group: CatalogItemGroup;
+    /**
+     * Whether the group is collapsed
+     */
+    collapsed: boolean;
+    /**
+     * Whether the group can be toggled when it's collapsed
+     */
+    toggleCollapsed: boolean;
     /**
      * Parent catalog's items store state. Groups share a unique
      * EntityState that tracks the group and it's layers state (whether they are added or not).
@@ -44,7 +57,7 @@ export declare class CatalogBrowserGroupComponent implements OnInit, OnDestroy {
      */
     layerAddedChange: EventEmitter<{
         added: boolean;
-        layer: CatalogItemLayer<import("../../layer").LayerOptions>;
+        layer: CatalogItemLayer<import("../../metadata").MetadataLayerOptions>;
     }>;
     /**
      * @internal
@@ -68,6 +81,11 @@ export declare class CatalogBrowserGroupComponent implements OnInit, OnDestroy {
      * @internal
      */
     onToggleClick(): void;
+    /**
+     * On toggle button click, emit the added change event
+     * @internal
+     */
+    onToggleCollapsed(collapsed: boolean): void;
     /**
      * When a layer is added or removed, evaluate if all the layers of the group
      * are now added or removed. If so, consider that the group itself is added
@@ -93,4 +111,5 @@ export declare class CatalogBrowserGroupComponent implements OnInit, OnDestroy {
      */
     private tryToggleGroup;
     private evaluateAdded;
+    private evaluateDisabled;
 }

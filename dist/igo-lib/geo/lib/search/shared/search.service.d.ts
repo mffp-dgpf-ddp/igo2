@@ -1,3 +1,4 @@
+import { MapService } from '../../map/shared/map.service';
 import { TextSearchOptions, ReverseSearchOptions } from './sources/source.interfaces';
 import { SearchSourceService } from './search-source.service';
 import { Research } from './search.interfaces';
@@ -10,7 +11,8 @@ import { Research } from './search.interfaces';
  */
 export declare class SearchService {
     private searchSourceService;
-    constructor(searchSourceService: SearchSourceService);
+    private mapService;
+    constructor(searchSourceService: SearchSourceService, mapService: MapService);
     /**
      * Perform a research by text
      * @param term Any text

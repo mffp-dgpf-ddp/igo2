@@ -35,7 +35,7 @@
       "baseLayer": true,
       "sourceOptions": {
         "type": "xyz",
-        "url": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/tiles/EPSG_3857/{z}/{y}/{x}.png",
+        "url": "https://servicesmatriciels.mern.gouv.qc.ca/erdas-iws/ogc/wmts/Imagerie_Continue?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=Imagerie_GQ&STYLE=default&TILEMATRIXSET=GoogleMapsCompatibleExt2:epsg:3857&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&FORMAT=image%2Fjpeg",
         "pathOffline": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/tiles/EPSG_3857/{z}/{y}/{x}.png"
       }
     }

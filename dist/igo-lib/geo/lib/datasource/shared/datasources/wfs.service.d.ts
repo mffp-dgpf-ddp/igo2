@@ -7,12 +7,7 @@ export declare class WFSService extends DataService {
     constructor(http: HttpClient);
     getData(): string;
     getSourceFieldsFromWFS(datasource: any): void;
-    checkWfsOptions(wfsDataSourceOptions: any): any;
-    buildBaseWfsUrl(wfsDataSourceOptions: WFSDataSourceOptions, wfsQuery: string): string;
-    wfsGetFeature(wfsDataSourceOptions: WFSDataSourceOptions, nb?: number, epsgCode?: number, propertyname?: string): Observable<any>;
-    getValueFromWfsGetPropertyValues(wfsDataSourceOptions: WFSDataSourceOptions, field: any, maxFeatures?: number, startIndex?: number, retry?: number): Observable<any>;
-    wfsGetCapabilities(options: any): Observable<any>;
+    private wfsGetFeature;
     defineFieldAndValuefromWFS(wfsDataSourceOptions: WFSDataSourceOptions): Observable<any>;
-    wfsGetPropertyValue(wfsDataSourceOptions: WFSDataSourceOptions, field: any, maxFeatures?: number, startIndex?: number): Observable<any>;
     private built_properties_value;
 }

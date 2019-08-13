@@ -236,6 +236,23 @@ module.exports = [
     "clobbers": [
       "Ionic.WebView"
     ]
+  },
+  {
+    "id": "cordova-plugin-network-information.network",
+    "file": "plugins/cordova-plugin-network-information/www/network.js",
+    "pluginId": "cordova-plugin-network-information",
+    "clobbers": [
+      "navigator.connection",
+      "navigator.network.connection"
+    ]
+  },
+  {
+    "id": "cordova-plugin-network-information.Connection",
+    "file": "plugins/cordova-plugin-network-information/www/Connection.js",
+    "pluginId": "cordova-plugin-network-information",
+    "clobbers": [
+      "Connection"
+    ]
   }
 ];
 module.exports.metadata = 
@@ -250,7 +267,8 @@ module.exports.metadata =
   "cordova-plugin-file": "6.0.2",
   "cordova-plugin-filechooser": "1.2.0",
   "cordova-plugin-filepath": "1.5.6",
-  "cordova-plugin-ionic-webview": "4.1.1"
+  "cordova-plugin-ionic-webview": "4.1.1",
+  "cordova-plugin-network-information": "2.0.2"
 };
 // BOTTOM OF METADATA
 });

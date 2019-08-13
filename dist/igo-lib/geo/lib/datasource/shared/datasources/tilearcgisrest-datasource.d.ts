@@ -10,4 +10,5 @@ export declare class TileArcGISRestDataSource extends DataSource {
     readonly queryHtmlTarget: string;
     protected createOlSource(): olSourceTileArcGISRest;
     getLegend(): DataSourceLegendOptions[];
+    onUnwatch(): void;
 }

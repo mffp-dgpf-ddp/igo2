@@ -10,4 +10,5 @@ export declare class WebSocketDataSource extends FeatureDataSource {
     onClose(event: any): void;
     onError(event: any): void;
     onOpen(event: any): void;
+    onUnwatch(): void;
 }

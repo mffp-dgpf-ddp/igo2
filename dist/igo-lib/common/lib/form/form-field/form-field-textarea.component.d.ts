@@ -1,9 +1,10 @@
+import { OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 /**
  * This component renders a textarea field
  */
-export declare class FormFieldTextareaComponent {
+export declare class FormFieldTextareaComponent implements OnInit {
     disabled$: BehaviorSubject<boolean>;
     /**
      * The field's form control

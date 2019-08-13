@@ -10,4 +10,5 @@ export declare class CartoDataSource extends DataSource {
     readonly queryHtmlTarget: string;
     protected createOlSource(): olSourceCarto;
     getLegend(): DataSourceLegendOptions[];
+    onUnwatch(): void;
 }

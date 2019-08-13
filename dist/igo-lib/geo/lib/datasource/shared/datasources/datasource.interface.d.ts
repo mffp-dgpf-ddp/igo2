@@ -7,12 +7,6 @@ export interface DataSourceOptions {
     ol?: olSource;
     sourceFields?: SourceFieldsOptionsParams[];
     download?: DownloadOptions;
-    offline?: boolean;
-    excludeAttribute?: Array<string>;
-    excludeAttributeOffline?: Array<string>;
-    excludeAttributeBackUp?: Array<string>;
-    url?: string;
-    pathOffline?: string;
 }
 export interface DataSourceLegendOptions {
     collapsed?: boolean;
@@ -28,4 +22,5 @@ export interface SourceFieldsOptionsParams {
     name: any;
     alias?: any;
     values?: any;
+    excludeFromOgcFilters?: boolean;
 }

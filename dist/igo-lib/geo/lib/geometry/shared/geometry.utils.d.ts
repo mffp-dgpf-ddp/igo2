@@ -4,9 +4,10 @@ import OlLinearRing from 'ol/geom/LinearRing';
 import OlPolygon from 'ol/geom/Polygon';
 /**
  * Create a default style for draw and modify interactions
+ * @param color Style color (R, G, B)
  * @returns OL style
  */
-export declare function createDrawInteractionStyle(): olstyle.Style;
+export declare function createDrawInteractionStyle(color?: [number, number, number]): olstyle.Style;
 /**
  * Create a default style for drawing a hole
  * @returns OL style

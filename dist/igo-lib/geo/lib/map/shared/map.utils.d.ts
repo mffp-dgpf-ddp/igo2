@@ -1,12 +1,21 @@
 import { MapBrowserPointerEvent as OlMapBrowserPointerEvent } from 'ol/MapBrowserEvent';
 import { MapViewState } from './map.interface';
 /**
- * This method extracts a [lon, lat] tuple from a string.
+ * This method extracts a coordinate tuple from a string.
  * @param str Any string
- * @returns A [lon, lat] tuple if one is found in the string
- * @todo Reproject coordinates
+ * @param mapProjection string Map Projection
+ * @returns object:
+ *             lonLat: Coordinate,
+ *             message: Message of error,
+ *             radius: radius of the confience of coordinate,
+ *             conf: confidence of the coordinate}
  */
-export declare function stringToLonLat(str: string): [number, number] | undefined;
+export declare function stringToLonLat(str: string, mapProjection: string): {
+    lonLat: [number, number] | undefined;
+    message: string;
+    radius: number | undefined;
+    conf: number | undefined;
+};
 /**
  * Return true of two view states are equal.
  * @param state1 View state

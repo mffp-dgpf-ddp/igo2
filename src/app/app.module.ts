@@ -6,7 +6,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   provideConfigOptions,
   IgoMessageModule,
-  RouteService
+  RouteService,
+  NetworkModule,
+  NetworkService
 } from '@igo2/core';
 
 import { IgoSpinnerModule, IgoStopPropagationModule } from '@igo2/common';
@@ -17,8 +19,11 @@ import {
   provideNominatimSearchSource,
   provideCoordinatesReverseSearchSource,
   provideILayerSearchSource,
-  provideOsrmRoutingSource
+  provideOsrmRoutingSource,
+  IgoQueryModule
 } from '@igo2/geo';
+
+import { Network } from '@ionic-native/network/ngx';
 
 import { environment } from '../environments/environment';
 import { PortalModule } from './pages/portal/portal.module';
@@ -41,7 +46,8 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
     IgoStopPropagationModule,
     PortalModule,
     FeatureViewerModule,
-    ZoneSelectionModule
+    ZoneSelectionModule,
+
   ],
   providers: [
     provideConfigOptions({
@@ -58,6 +64,7 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
     provideILayerSearchSource(),
     provideOsrmRoutingSource(),
     AndroidPermissions,
+    Network
   ],
   bootstrap: [AppComponent]
 })
