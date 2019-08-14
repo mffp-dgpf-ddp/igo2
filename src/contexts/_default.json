@@ -15,7 +15,7 @@
     {
       "title": "OSM",
       "baseLayer": true,
-      "visible": true,
+      "visible": false,
       "sourceOptions": {
         "type": "osm"
       }
@@ -23,7 +23,7 @@
     {
       "title": "Fond de carte du Québec",
       "visible": true,
-      "baseLayer": true,
+      "baseLayer": false,
       "sourceOptions": {
         "type": "xyz",
         "url": "https://geoegl.msp.gouv.qc.ca/carto/tms/1.0.0/carte_gouv_qc_public@EPSG_3857/{z}/{x}/{-y}.png"
@@ -53,7 +53,7 @@
       },
       "sourceOptions": {
         "url": "https://ahocevar.com/geoserver/gwc/service/tms/1.0.0/ne:ne_10m_admin_0_countries@EPSG:900913@pbf/{z}/{x}/{-y}.pbf",
-        "pathOffline": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/tiles/pbf/chasseEtPecheNoCompress/{z}/{y}/{x}.pbf",
+        "pathOffline": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/tiles/pbf/chasseEtPecheNoCompress/{z}/{y}/{x}.mvt",
         "attributions": "<a href='https://www.quebec.ca/'><br><a href='http://www.droitauteur.gouv.qc.ca/copyright.php'>© Gouvernement du Québec</a><br> <br> Fondé sur<a href='https://github.com/infra-geo-ouverte/igo2'> IGO2</a>",
         "type": "mvt"
       }
@@ -74,8 +74,7 @@
       },
       "sourceOptions": {
         "type": "vector",
-        "url": "https://geoegl.msp.gouv.qc.ca/ws/igo_gouvouvert.fcgi?service=wfs&version=1.1.0&request=getfeature&typename=mffp_dgpf_bureaux_locaux_p&outputformat=geojson&srsName=EPSG:4326",
-        "pathOffline": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/geojson/bureaux_locaux3857.geojson"
+        "url": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/geojson/bureaux_locaux3857.geojson"
       }
     }
   ],
