@@ -34,9 +34,15 @@ import { ZoneSelectionModule } from './components/zone-selection/zone-selection.
 import { MapImageService } from './services/map-image.service';
 import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
 
+import { IonicModule } from '@ionic/angular';
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { StatusBar } from '@ionic-native/status-bar/ngx';
+
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    IonicModule.forRoot(),
     BrowserModule,
     BrowserAnimationsModule,
     RouterModule.forRoot([]),
@@ -47,7 +53,7 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
     PortalModule,
     FeatureViewerModule,
     ZoneSelectionModule,
-
+    IgoQueryModule
   ],
   providers: [
     provideConfigOptions({
@@ -64,7 +70,10 @@ import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
     provideILayerSearchSource(),
     provideOsrmRoutingSource(),
     AndroidPermissions,
-    Network
+    Network,
+    StatusBar,
+    SplashScreen,
+
   ],
   bootstrap: [AppComponent]
 })

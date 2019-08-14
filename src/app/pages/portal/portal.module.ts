@@ -69,7 +69,8 @@ import { PortalComponent } from './portal.component';
     AppSidenavModule,
     IgoContextManagerModule,
     IgoContextMapButtonModule,
-    IgoEntityTableModule
+    IgoEntityTableModule,
+    IgoQueryModule
   ],
   exports: [PortalComponent],
   declarations: [PortalComponent]

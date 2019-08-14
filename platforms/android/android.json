@@ -102,27 +102,27 @@
           "/manifest": [
             {
               "xml": "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />",
-              "count": 3,
+              "count": 7,
               "after": "uses-permission"
             },
             {
               "xml": "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />",
-              "count": 3,
+              "count": 7,
               "after": "uses-permission"
             },
             {
               "xml": "<uses-permission android:name=\"android.permission.ACCESS_BACKGROUND_LOCATION\" />",
-              "count": 3,
+              "count": 7,
               "after": "uses-permission"
             },
             {
               "xml": "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\" />",
-              "count": 3,
+              "count": 7,
               "after": "uses-permission"
             },
             {
               "xml": "<uses-permission android:name=\"android.permission.READ_EXTERNAL_STORAGE\" />",
-              "count": 3,
+              "count": 7,
               "after": "uses-permission"
             }
           ]

@@ -1,25 +1,64 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ChangeDetectorRef,
+  ViewChild,
+  ElementRef
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
-import { Notification } from 'angular2-notifications';
+import { Subscription, of } from 'rxjs';
+// import { debounceTime } from 'rxjs/operators';
 
-import { MediaService, ConfigService, MessageService, Message } from '@igo2/core';
+import { MapBrowserPointerEvent as OlMapBrowserPointerEvent } from 'ol/MapBrowserEvent';
+import * as olProj from 'ol/proj';
+
+import { MediaService, ConfigService, Media } from '@igo2/core';
+import {
+  // ActionbarMode,
+  // Workspace,
+  // WorkspaceStore,
+  // EntityRecord,
+  ActionStore,
+  EntityStore,
+  // getEntityTitle,
+  Toolbox
+} from '@igo2/common';
 import { AuthService } from '@igo2/auth';
-import { Context, ContextService } from '@igo2/context';
+import { DetailedContext } from '@igo2/context';
 import {
   DataSourceService,
   Feature,
+  // FEATURE,
+  FeatureMotion,
+  featureToSearchResult,
+  GoogleLinks,
   IgoMap,
   LayerService,
-  MapService,
-  OverlayAction,
-  OverlayService,
+  QuerySearchSource,
+  Research,
+  SearchResult,
+  SearchSource,
   SearchService,
-  CapabilitiesService
+  SearchSourceService,
+  CapabilitiesService,
+  MapService
 } from '@igo2/geo';
 
 import {
+  ContextState,
+  // WorkspaceState,
+  ToolState,
+  MapState,
+  SearchState,
+  QueryState
+} from '@igo2/integration';
+
+import {
+  expansionPanelAnimation,
+  toastPanelAnimation,
+  baselayersAnimation,
+  controlsAnimations,
   controlSlideX,
   controlSlideY,
   mapSlideX,
@@ -33,42 +72,59 @@ import { BboxService } from '../../services/bbox.service';
   selector: 'app-zone-selection',
   templateUrl: './zone-selection.component.html',
   styleUrls: ['./zone-selection.component.scss'],
-  animations: [controlSlideX(), controlSlideY(), mapSlideX(), mapSlideY()]
+  animations: [
+    expansionPanelAnimation(),
+    toastPanelAnimation(),
+    baselayersAnimation(),
+    controlsAnimations(),
+    controlSlideX(),
+    controlSlideY(),
+    mapSlideX(),
+    mapSlideY()
+  ]
 })
-export class ZoneSelectionComponent /*extends PortalComponent*/ {
+export class ZoneSelectionComponent extends PortalComponent {
 
   private bbox;
 
   constructor(
+    private mapService: MapService,
     private bboxService: BboxService,
-    public route: ActivatedRoute,
+    protected route: ActivatedRoute,
     protected configService: ConfigService,
+    // private workspaceState: WorkspaceState,
     public authService: AuthService,
     public mediaService: MediaService,
-    public searchService: SearchService,
-    public overlayService: OverlayService,
-    public mapService: MapService,
     public layerService: LayerService,
     public dataSourceService: DataSourceService,
-    public contextService: ContextService,
     public cdRef: ChangeDetectorRef,
     public capabilitiesService: CapabilitiesService,
-    public messageService: MessageService
-  ) {/*
+    protected contextState: ContextState,
+    protected mapState: MapState,
+    protected searchState: SearchState,
+    protected queryState: QueryState,
+    protected toolState: ToolState,
+    protected searchSourceService: SearchSourceService,
+    protected searchService: SearchService
+  ) {
     super(
       route,
       configService,
       authService,
-      searchService,
-      overlayService,
-      mapService,
+      mediaService,
       layerService,
       dataSourceService,
-      contextService,
       cdRef,
       capabilitiesService,
-      messageService);
-    this.mapService.setMap(this.map);*/
+      contextState,
+      mapState,
+      searchState,
+      queryState,
+      toolState,
+      searchSourceService,
+      searchService
+    );
+    this.mapService.setMap(this.map);
   }
 
   updateMap() {

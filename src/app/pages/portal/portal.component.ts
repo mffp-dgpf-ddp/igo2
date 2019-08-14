@@ -216,8 +216,8 @@ export class PortalComponent implements OnInit, OnDestroy {
   @ViewChild('mapBrowser', { read: ElementRef }) mapBrowser: ElementRef;
 
   constructor(
-    private route: ActivatedRoute,
-    private configService: ConfigService,
+    protected route: ActivatedRoute,
+    protected configService: ConfigService,
     // private workspaceState: WorkspaceState,
     public authService: AuthService,
     public mediaService: MediaService,
@@ -225,14 +225,14 @@ export class PortalComponent implements OnInit, OnDestroy {
     public dataSourceService: DataSourceService,
     public cdRef: ChangeDetectorRef,
     public capabilitiesService: CapabilitiesService,
-    private contextState: ContextState,
-    private mapState: MapState,
-    private searchState: SearchState,
-    private queryState: QueryState,
-    private toolState: ToolState,
-    private searchSourceService: SearchSourceService,
-    private searchService: SearchService
-  ) {}
+    protected contextState: ContextState,
+    protected mapState: MapState,
+    protected searchState: SearchState,
+    protected queryState: QueryState,
+    protected toolState: ToolState,
+    protected searchSourceService: SearchSourceService,
+    protected searchService: SearchService
+  ) { }
 
   ngOnInit() {
     window['IGO'] = this;

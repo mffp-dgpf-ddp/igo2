@@ -1,6 +1,8 @@
 import { Component, Renderer2 } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { LanguageService, ConfigService, AnalyticsService } from '@igo2/core';
 import { AuthOptions } from '@igo2/auth';
 import { JsonDialogComponent } from '@igo2/common';
@@ -20,6 +22,8 @@ export class AppComponent {
 
 
   constructor(
+    private splashScreen: SplashScreen,
+    private statusBar: StatusBar,
     protected languageService: LanguageService,
     private configService: ConfigService,
     private analyticsService: AnalyticsService,
@@ -61,7 +65,6 @@ export class AppComponent {
             result => (locationPermissions = result.hasPermission),
             err => (locationPermissions = false)
           );
-
           this.androidPermissions.checkPermission('android.permission.WRITE_EXTERNAL_STORAGE').then(
             result => (storagePermissions = result.hasPermission),
             err => (storagePermissions = false)
@@ -85,6 +88,9 @@ export class AppComponent {
               'android.permission.READ_EXTERNAL_STORAGE']);
           }
         }
+        this.statusBar.styleLightContent();
+        this.statusBar.show();
+        this.splashScreen.hide();
       }
     });
   }

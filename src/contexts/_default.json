@@ -14,7 +14,6 @@
   "layers": [
     {
       "title": "OSM",
-      "baseLayer": true,
       "visible": true,
       "sourceOptions": {
         "type": "osm"
@@ -23,7 +22,6 @@
     {
       "title": "Fond de carte du Québec",
       "visible": true,
-      "baseLayer": true,
       "sourceOptions": {
         "type": "xyz",
         "url": "https://geoegl.msp.gouv.qc.ca/carto/tms/1.0.0/carte_gouv_qc_public@EPSG_3857/{z}/{x}/{-y}.png"
@@ -41,7 +39,6 @@
     },
     {
       "title": "LocalChassePecheMVT-PBF",
-      "baseLayer": true,
       "visible": false,
       "style": {
         "stroke": {
@@ -56,26 +53,6 @@
         "pathOffline": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/tiles/pbf/chasseEtPecheNoCompress/{z}/{y}/{x}.pbf",
         "attributions": "<a href='https://www.quebec.ca/'><br><a href='http://www.droitauteur.gouv.qc.ca/copyright.php'>© Gouvernement du Québec</a><br> <br> Fondé sur<a href='https://github.com/infra-geo-ouverte/igo2'> IGO2</a>",
         "type": "mvt"
-      }
-    },
-    {
-      "title": "bureaux - geoson - public",
-      "visible": false,
-      "style": {
-        "circle": {
-          "fill": {
-            "color": "red"
-          },
-          "stroke": {
-            "color": "black"
-          },
-          "radius": 4
-        }
-      },
-      "sourceOptions": {
-        "type": "vector",
-        "url": "https://geoegl.msp.gouv.qc.ca/ws/igo_gouvouvert.fcgi?service=wfs&version=1.1.0&request=getfeature&typename=mffp_dgpf_bureaux_locaux_p&outputformat=geojson&srsName=EPSG:4326",
-        "pathOffline": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/geojson/bureaux_locaux3857.geojson"
       }
     }
   ],
