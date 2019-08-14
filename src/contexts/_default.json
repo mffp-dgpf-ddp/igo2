@@ -52,6 +52,7 @@
         }
       },
       "sourceOptions": {
+        "queryable": true,
         "url": "https://ahocevar.com/geoserver/gwc/service/tms/1.0.0/ne:ne_10m_admin_0_countries@EPSG:900913@pbf/{z}/{x}/{-y}.pbf",
         "pathOffline": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/tiles/pbf/chasseEtPecheNoCompress/{z}/{y}/{x}.mvt",
         "attributions": "<a href='https://www.quebec.ca/'><br><a href='http://www.droitauteur.gouv.qc.ca/copyright.php'>© Gouvernement du Québec</a><br> <br> Fondé sur<a href='https://github.com/infra-geo-ouverte/igo2'> IGO2</a>",
@@ -73,6 +74,7 @@
         }
       },
       "sourceOptions": {
+        "queryable": true,
         "type": "vector",
         "url": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/geojson/bureaux_locaux3857.geojson"
       }
