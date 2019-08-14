@@ -8,7 +8,16 @@
         -72,
         52
       ],
-      "zoom": 6
+      "zoom": 6,
+      "geolocate": true,
+      "buffer": {
+        "bufferRadius": 100000,
+        "bufferStroke": [0, 0, 0, 1],
+        "bufferFill":  [255, 0, 4, 0.15],
+        "showBufferRadius": true
+
+      }
+
     }
   },
   "layers": [
