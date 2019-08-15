@@ -1,6 +1,6 @@
 {
   "name": "igo",
-  "version": "0.23.1",
+  "version": "0.23.2-alpha.0",
   "description": "Infrastructure géomatique ouverte",
   "repository": {
     "url": "https://github.com/infra-geo-ouverte/igo2"
@@ -8,7 +8,7 @@
   "license": "LiLiQ-R",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --host 0.0.0.0 --proxy-config proxy.conf.json",
+    "start": "ng serve --host 0.0.0.0 --port 4201 --proxy-config proxy.conf.json",
     "build": "ng build",
     "lint": "ng lint",
     "e2e": "ng e2e --port 4300",
@@ -49,13 +49,13 @@
     "@angular/platform-browser": "^7.2.6",
     "@angular/platform-browser-dynamic": "^7.2.6",
     "@angular/router": "^7.2.6",
-    "@igo2/auth": "^1.0.0-alpha.2",
-    "@igo2/common": "^1.0.0-alpha.2",
-    "@igo2/context": "^1.0.0-alpha.2",
-    "@igo2/core": "^1.0.0-alpha.2",
-    "@igo2/geo": "^1.0.0-alpha.2",
-    "@igo2/integration": "^1.0.0-alpha.2",
-    "@igo2/utils": "^1.0.0-alpha.2",
+    "@igo2/auth": "^1.0.0-alpha.5",
+    "@igo2/common": "^1.0.0-alpha.5",
+    "@igo2/context": "^1.0.0-alpha.5",
+    "@igo2/core": "^1.0.0-alpha.5",
+    "@igo2/geo": "^1.0.0-alpha.5",
+    "@igo2/integration": "^1.0.0-alpha.5",
+    "@igo2/utils": "^1.0.0-alpha.5",
     "classlist.js": "^1.1.20150312",
     "core-js": "^2.6.5",
     "file-saver": "^1.3.8",
@@ -108,6 +108,7 @@
     "ts-node": "~8.0.2",
     "tsickle": "^0.34.2",
     "tslint": "^5.12.1",
-    "typescript": "~3.2.4"
+    "typescript": "~3.2.4",
+    "webdriver-manager": "^12.1.6"
   }
 }
