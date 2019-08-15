@@ -10,6 +10,12 @@
       ],
       "zoom": 7,
       "geolocate": true,
+      "buffer": {
+        "bufferRadius": 1000,
+        "bufferStroke": [0, 0, 0, 1],
+        "bufferFill":  [255, 0, 4, 0.15],
+        "showBufferRadius": true
+      }
       "maxZoom": 15
     }
   },
@@ -63,7 +69,10 @@
       }
     },
     {
-      "title": "bureaux - geoson - public",
+      "title": "bureaux - geoson - public - cluster",
+      "clusterParam": {
+        "clusterRange": [2, 5]
+      },
       "visible": true,
       "style": {
         "circle": {
@@ -78,7 +87,8 @@
       },
       "sourceOptions": {
         "queryable": true,
-        "type": "vector",
+        "type": "cluster",
+        "distance": 70,
         "url": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/geojson/bureaux_locaux3857.geojson",
         "pathOffline": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/geojson/bureaux_locaux3857.geojson"
       }
