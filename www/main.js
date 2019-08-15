@@ -55877,7 +55877,7 @@ webpackEmptyAsyncContext.id = "./src/$$_lazy_route_resource lazy recursive";
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<igo-spinner igoSpinnerBinding></igo-spinner>\r\n<igo-message-center></igo-message-center>\r\n<igo-auth-form *ngIf=\"authConfig\"></igo-auth-form>\r\n\r\n<app-portal igoStopDropPropagation></app-portal>\r\n<!-- <app-zone-selection></app-zone-selection> -->\r\n\r\n<!-- <app-feature-viewer [feature]=feature1></app-feature-viewer> -->"
+module.exports = "<igo-spinner igoSpinnerBinding></igo-spinner>\r\n<igo-message-center></igo-message-center>\r\n<igo-auth-form *ngIf=\"authConfig\"></igo-auth-form>\r\n\r\n<app-portal igoStopDropPropagation></app-portal>\r\n<!--<app-zone-selection></app-zone-selection>-->\r\n\r\n<!--<app-feature-viewer [feature]=feature1></app-feature-viewer> -->"
 
 /***/ }),
 
@@ -55888,7 +55888,7 @@ module.exports = "<igo-spinner igoSpinnerBinding></igo-spinner>\r\n<igo-message-
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = ":host {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  overflow: hidden;\n  position: relative;\n  display: block;\n  font-family: Roboto, 'Helvetica Neue', sans-serif;\n  font-size: 14px; }\n\n:host ::ng-deep h3 {\n  font-size: 1.17em;\n  font-weight: bold; }\n\n:host ::ng-deep h4 {\n  font-weigth: 400; }\n\n/*** Spinner ***/\n\nigo-spinner {\n  position: absolute;\n  top: 5px;\n  right: 5px;\n  z-index: 5; }\n\n/*** Message-center ***/\n\nigo-message-center ::ng-deep simple-notifications ::ng-deep div.simple-notification-wrapper {\n  right: 10px; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvQzpcXE1ybm1pY3JvXFxkZXZcXGlvblxcaWdvMi9zcmNcXGFwcFxcYXBwLmNvbXBvbmVudC5zY3NzIiwic3JjL2FwcC9DOlxcTXJubWljcm9cXGRldlxcaW9uXFxpZ28yL2Rpc3RcXGlnby1saWJcXGNvcmVcXHN0eWxlXFxwYXJ0aWFsXFxjb3JlLnZhcmlhYmxlcy5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQVdBO0VBQ0UsV0FBVztFQUNYLFlBQVk7RUFDWixTQUFTO0VBQ1QsZ0JBQWdCO0VBQ2hCLGtCQUFrQjtFQUNsQixjQUFjO0VBRWQsaURBQWlEO0VBQ2pELGVBQWUsRUFBQTs7QUFHakI7RUFFSSxpQkFBaUI7RUFDakIsaUJBQWlCLEVBQUE7O0FBSHJCO0VBT0ksZ0JBQWdCLEVBQUE7O0FBSXBCLGdCQUFBOztBQUVBO0VBQ0Usa0JBQWtCO0VBQ2xCLFFDdENjO0VEdUNkLFVDdkNjO0VEd0NkLFVBQVUsRUFBQTs7QUFHWix1QkFBQTs7QUFDQTtFQUNFLFdBQVcsRUFBQSIsImZpbGUiOiJzcmMvYXBwL2FwcC5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIkBpbXBvcnQgJ35AaWdvMi9jb3JlL3N0eWxlL3BhcnRpYWwvY29yZS52YXJpYWJsZXMnO1xyXG5cclxuYXBwLXBvcnRhbCB7XHJcbiAvLyBoZWlnaHQ6IDEwMCU7XHJcbn1cclxuXHJcbmFwcC16b25lLXNlbGVjdGlvbiwgYXBwLWZlYXR1cmUtdmlld2VyIHtcclxuIC8vIGhlaWdodDogOTAlO1xyXG59XHJcblxyXG5cclxuOmhvc3Qge1xyXG4gIHdpZHRoOiAxMDAlO1xyXG4gIGhlaWdodDogMTAwJTtcclxuICBtYXJnaW46IDA7XHJcbiAgb3ZlcmZsb3c6IGhpZGRlbjtcclxuICBwb3NpdGlvbjogcmVsYXRpdmU7XHJcbiAgZGlzcGxheTogYmxvY2s7XHJcblxyXG4gIGZvbnQtZmFtaWx5OiBSb2JvdG8sICdIZWx2ZXRpY2EgTmV1ZScsIHNhbnMtc2VyaWY7XHJcbiAgZm9udC1zaXplOiAxNHB4O1xyXG59XHJcblxyXG46aG9zdCA6Om5nLWRlZXAge1xyXG4gIGgzIHtcclxuICAgIGZvbnQtc2l6ZTogMS4xN2VtO1xyXG4gICAgZm9udC13ZWlnaHQ6IGJvbGQ7XHJcbiAgfVxyXG5cclxuICBoNCB7XHJcbiAgICBmb250LXdlaWd0aDogNDAwO1xyXG4gIH1cclxufVxyXG5cclxuLyoqKiBTcGlubmVyICoqKi9cclxuXHJcbmlnby1zcGlubmVyIHtcclxuICBwb3NpdGlvbjogYWJzb2x1dGU7XHJcbiAgdG9wOiAkaWdvLW1hcmdpbjtcclxuICByaWdodDogJGlnby1tYXJnaW47XHJcbiAgei1pbmRleDogNTtcclxufVxyXG5cclxuLyoqKiBNZXNzYWdlLWNlbnRlciAqKiovXHJcbmlnby1tZXNzYWdlLWNlbnRlciA6Om5nLWRlZXAgc2ltcGxlLW5vdGlmaWNhdGlvbnMgOjpuZy1kZWVwIGRpdi5zaW1wbGUtbm90aWZpY2F0aW9uLXdyYXBwZXIge1xyXG4gIHJpZ2h0OiAxMHB4O1xyXG59XHJcbiIsIiRpZ28tbWFyZ2luOiA1cHg7XHJcbiRpZ28tcGFkZGluZzogNXB4O1xyXG4kaWdvLWljb24tc2l6ZTogNDBweDtcclxuIl19 */"
+module.exports = "app-portal {\n  height: 100%; }\n\napp-zone-selection, app-feature-viewer {\n  height: 33%; }\n\n:host {\n  width: 100%;\n  height: 100%;\n  margin: 0;\n  overflow: hidden;\n  position: relative;\n  display: block;\n  font-family: Roboto, 'Helvetica Neue', sans-serif;\n  font-size: 14px; }\n\n:host ::ng-deep h3 {\n  font-size: 1.17em;\n  font-weight: bold; }\n\n:host ::ng-deep h4 {\n  font-weigth: 400; }\n\n/*** Spinner ***/\n\nigo-spinner {\n  position: absolute;\n  top: 5px;\n  right: 5px;\n  z-index: 5; }\n\n/*** Message-center ***/\n\nigo-message-center ::ng-deep simple-notifications ::ng-deep div.simple-notification-wrapper {\n  right: 10px; }\n\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbInNyYy9hcHAvQzpcXE1ybm1pY3JvXFxkZXZcXGlvblxcaWdvMi9zcmNcXGFwcFxcYXBwLmNvbXBvbmVudC5zY3NzIiwic3JjL2FwcC9DOlxcTXJubWljcm9cXGRldlxcaW9uXFxpZ28yL2Rpc3RcXGlnby1saWJcXGNvcmVcXHN0eWxlXFxwYXJ0aWFsXFxjb3JlLnZhcmlhYmxlcy5zY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUVBO0VBQ0UsWUFBWSxFQUFBOztBQUdkO0VBQ0UsV0FBVyxFQUFBOztBQUliO0VBQ0UsV0FBVztFQUNYLFlBQVk7RUFDWixTQUFTO0VBQ1QsZ0JBQWdCO0VBQ2hCLGtCQUFrQjtFQUNsQixjQUFjO0VBRWQsaURBQWlEO0VBQ2pELGVBQWUsRUFBQTs7QUFHakI7RUFFSSxpQkFBaUI7RUFDakIsaUJBQWlCLEVBQUE7O0FBSHJCO0VBT0ksZ0JBQWdCLEVBQUE7O0FBSXBCLGdCQUFBOztBQUVBO0VBQ0Usa0JBQWtCO0VBQ2xCLFFDdENjO0VEdUNkLFVDdkNjO0VEd0NkLFVBQVUsRUFBQTs7QUFHWix1QkFBQTs7QUFDQTtFQUNFLFdBQVcsRUFBQSIsImZpbGUiOiJzcmMvYXBwL2FwcC5jb21wb25lbnQuc2NzcyIsInNvdXJjZXNDb250ZW50IjpbIkBpbXBvcnQgJ35AaWdvMi9jb3JlL3N0eWxlL3BhcnRpYWwvY29yZS52YXJpYWJsZXMnO1xyXG5cclxuYXBwLXBvcnRhbCB7XHJcbiAgaGVpZ2h0OiAxMDAlO1xyXG59XHJcblxyXG5hcHAtem9uZS1zZWxlY3Rpb24sIGFwcC1mZWF0dXJlLXZpZXdlciB7XHJcbiAgaGVpZ2h0OiAzMyU7XHJcbn1cclxuXHJcblxyXG46aG9zdCB7XHJcbiAgd2lkdGg6IDEwMCU7XHJcbiAgaGVpZ2h0OiAxMDAlO1xyXG4gIG1hcmdpbjogMDtcclxuICBvdmVyZmxvdzogaGlkZGVuO1xyXG4gIHBvc2l0aW9uOiByZWxhdGl2ZTtcclxuICBkaXNwbGF5OiBibG9jaztcclxuXHJcbiAgZm9udC1mYW1pbHk6IFJvYm90bywgJ0hlbHZldGljYSBOZXVlJywgc2Fucy1zZXJpZjtcclxuICBmb250LXNpemU6IDE0cHg7XHJcbn1cclxuXHJcbjpob3N0IDo6bmctZGVlcCB7XHJcbiAgaDMge1xyXG4gICAgZm9udC1zaXplOiAxLjE3ZW07XHJcbiAgICBmb250LXdlaWdodDogYm9sZDtcclxuICB9XHJcblxyXG4gIGg0IHtcclxuICAgIGZvbnQtd2VpZ3RoOiA0MDA7XHJcbiAgfVxyXG59XHJcblxyXG4vKioqIFNwaW5uZXIgKioqL1xyXG5cclxuaWdvLXNwaW5uZXIge1xyXG4gIHBvc2l0aW9uOiBhYnNvbHV0ZTtcclxuICB0b3A6ICRpZ28tbWFyZ2luO1xyXG4gIHJpZ2h0OiAkaWdvLW1hcmdpbjtcclxuICB6LWluZGV4OiA1O1xyXG59XHJcblxyXG4vKioqIE1lc3NhZ2UtY2VudGVyICoqKi9cclxuaWdvLW1lc3NhZ2UtY2VudGVyIDo6bmctZGVlcCBzaW1wbGUtbm90aWZpY2F0aW9ucyA6Om5nLWRlZXAgZGl2LnNpbXBsZS1ub3RpZmljYXRpb24td3JhcHBlciB7XHJcbiAgcmlnaHQ6IDEwcHg7XHJcbn1cclxuIiwiJGlnby1tYXJnaW46IDVweDtcclxuJGlnby1wYWRkaW5nOiA1cHg7XHJcbiRpZ28taWNvbi1zaXplOiA0MHB4O1xyXG4iXX0= */"
 
 /***/ }),
 
@@ -55904,9 +55904,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "AppComponent", function() { return AppComponent; });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ "./node_modules/@angular/core/fesm5/core.js");
 /* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/platform-browser */ "./node_modules/@angular/platform-browser/fesm5/platform-browser.js");
-/* harmony import */ var _igo2_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @igo2/core */ "./dist/igo-lib/core/fesm5/igo2-core.js");
-/* harmony import */ var _ionic_native_android_permissions_ngx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @ionic-native/android-permissions/ngx */ "./node_modules/@ionic-native/android-permissions/ngx/index.js");
-/* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @ionic/angular */ "./node_modules/@ionic/angular/dist/fesm5.js");
+/* harmony import */ var _ionic_native_splash_screen_ngx__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @ionic-native/splash-screen/ngx */ "./node_modules/@ionic-native/splash-screen/ngx/index.js");
+/* harmony import */ var _ionic_native_status_bar_ngx__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @ionic-native/status-bar/ngx */ "./node_modules/@ionic-native/status-bar/ngx/index.js");
+/* harmony import */ var _igo2_core__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @igo2/core */ "./dist/igo-lib/core/fesm5/igo2-core.js");
+/* harmony import */ var _ionic_native_android_permissions_ngx__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @ionic-native/android-permissions/ngx */ "./node_modules/@ionic-native/android-permissions/ngx/index.js");
+/* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @ionic/angular */ "./node_modules/@ionic/angular/dist/fesm5.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -55921,8 +55923,12 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
+
+
 var AppComponent = /** @class */ (function () {
-    function AppComponent(languageService, configService, analyticsService, renderer, titleService, platform, androidPermissions) {
+    function AppComponent(splashScreen, statusBar, languageService, configService, analyticsService, renderer, titleService, platform, androidPermissions) {
+        this.splashScreen = splashScreen;
+        this.statusBar = statusBar;
         this.languageService = languageService;
         this.configService = configService;
         this.analyticsService = analyticsService;
@@ -55968,6 +55974,9 @@ var AppComponent = /** @class */ (function () {
                         ]);
                     }
                 }
+                _this.statusBar.styleLightContent();
+                _this.statusBar.show();
+                _this.splashScreen.hide();
             }
         });
     };
@@ -55977,13 +55986,15 @@ var AppComponent = /** @class */ (function () {
             template: __webpack_require__(/*! ./app.component.html */ "./src/app/app.component.html"),
             styles: [__webpack_require__(/*! ./app.component.scss */ "./src/app/app.component.scss")]
         }),
-        __metadata("design:paramtypes", [_igo2_core__WEBPACK_IMPORTED_MODULE_2__["LanguageService"],
-            _igo2_core__WEBPACK_IMPORTED_MODULE_2__["ConfigService"],
-            _igo2_core__WEBPACK_IMPORTED_MODULE_2__["AnalyticsService"],
+        __metadata("design:paramtypes", [_ionic_native_splash_screen_ngx__WEBPACK_IMPORTED_MODULE_2__["SplashScreen"],
+            _ionic_native_status_bar_ngx__WEBPACK_IMPORTED_MODULE_3__["StatusBar"],
+            _igo2_core__WEBPACK_IMPORTED_MODULE_4__["LanguageService"],
+            _igo2_core__WEBPACK_IMPORTED_MODULE_4__["ConfigService"],
+            _igo2_core__WEBPACK_IMPORTED_MODULE_4__["AnalyticsService"],
             _angular_core__WEBPACK_IMPORTED_MODULE_0__["Renderer2"],
             _angular_platform_browser__WEBPACK_IMPORTED_MODULE_1__["Title"],
-            _ionic_angular__WEBPACK_IMPORTED_MODULE_4__["Platform"],
-            _ionic_native_android_permissions_ngx__WEBPACK_IMPORTED_MODULE_3__["AndroidPermissions"]])
+            _ionic_angular__WEBPACK_IMPORTED_MODULE_6__["Platform"],
+            _ionic_native_android_permissions_ngx__WEBPACK_IMPORTED_MODULE_5__["AndroidPermissions"]])
     ], AppComponent);
     return AppComponent;
 }());
@@ -56019,12 +56030,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_zone_selection_zone_selection_module__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./components/zone-selection/zone-selection.module */ "./src/app/components/zone-selection/zone-selection.module.ts");
 /* harmony import */ var _services_map_image_service__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./services/map-image.service */ "./src/app/services/map-image.service.ts");
 /* harmony import */ var _ionic_native_android_permissions_ngx__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @ionic-native/android-permissions/ngx */ "./node_modules/@ionic-native/android-permissions/ngx/index.js");
+/* harmony import */ var _ionic_angular__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! @ionic/angular */ "./node_modules/@ionic/angular/dist/fesm5.js");
+/* harmony import */ var _ionic_native_splash_screen_ngx__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! @ionic-native/splash-screen/ngx */ "./node_modules/@ionic-native/splash-screen/ngx/index.js");
+/* harmony import */ var _ionic_native_status_bar_ngx__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! @ionic-native/status-bar/ngx */ "./node_modules/@ionic-native/status-bar/ngx/index.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
+
+
 
 
 
@@ -56049,6 +56066,7 @@ var AppModule = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["NgModule"])({
             declarations: [_app_component__WEBPACK_IMPORTED_MODULE_11__["AppComponent"]],
             imports: [
+                _ionic_angular__WEBPACK_IMPORTED_MODULE_17__["IonicModule"].forRoot(),
                 _angular_platform_browser__WEBPACK_IMPORTED_MODULE_0__["BrowserModule"],
                 _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_3__["BrowserAnimationsModule"],
                 _angular_router__WEBPACK_IMPORTED_MODULE_2__["RouterModule"].forRoot([]),
@@ -56076,7 +56094,9 @@ var AppModule = /** @class */ (function () {
                 Object(_igo2_geo__WEBPACK_IMPORTED_MODULE_7__["provideILayerSearchSource"])(),
                 Object(_igo2_geo__WEBPACK_IMPORTED_MODULE_7__["provideOsrmRoutingSource"])(),
                 _ionic_native_android_permissions_ngx__WEBPACK_IMPORTED_MODULE_16__["AndroidPermissions"],
-                _ionic_native_network_ngx__WEBPACK_IMPORTED_MODULE_8__["Network"]
+                _ionic_native_network_ngx__WEBPACK_IMPORTED_MODULE_8__["Network"],
+                _ionic_native_status_bar_ngx__WEBPACK_IMPORTED_MODULE_19__["StatusBar"],
+                _ionic_native_splash_screen_ngx__WEBPACK_IMPORTED_MODULE_18__["SplashScreen"],
             ],
             bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_11__["AppComponent"]]
         })
@@ -56344,7 +56364,7 @@ var FeatureViewerModule = /** @class */ (function () {
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<!--<mat-toolbar class=\"md-padding\">\r\n  <div class=\"md-toolbar-tools\">\r\n    <h3 flex>\r\n      Sélectionner la zone de recherche\r\n    </h3>\r\n  </div>\r\n</mat-toolbar> -->\r\n\r\n\r\n<igo-backdrop [shown]=\"backdropShown\" (click)=\"onBackdropClick()\">\r\n</igo-backdrop>\r\n\r\n<button mat-icon-button id=\"menu-button\" class=\"menu-button\" color=\"primary\" tooltip-position=\"below\"\r\n  matTooltipShowDelay=\"500\" [matTooltip]=\"(sidenavOpened ? 'menu.close' : 'menu.open') | translate\" (click)=\"onToggleSidenavClick()\">\r\n  <mat-icon svgIcon=\"menu\">\r\n  </mat-icon>\r\n</button>\r\n\r\n<igo-search-bar [term]=\"searchBarTerm\" [minLength]=\"minSearchTermLength\" (change)=\"onSearchTermChange($event)\" (search)=\"onSearch($event)\">\r\n</igo-search-bar>\r\n\r\n<app-sidenav [map]=\"map\" [(opened)]=\"sidenavOpened\">\r\n</app-sidenav>\r\n\r\n<igo-map-browser #mapBrowser igoQuery [waitForAllQueries]=\"true\" igoMapContext igoLayerContext igoDropGeoFile (query)=\"onMapQuery($event)\"\r\n  [map]=\"map\" [igoContextMenu]=actionbarMenu (menuPosition)=\"onContextMenuOpen($event)\" [ngClass]=\"{'igo-attribution-offset': map.getBaseLayers().length > 1}\"\r\n  [@mapStateX]=\"sidenavOpened ? 'right' : 'left'\" (@mapStateX.start)=\"removeMapBrowserClass($event)\" (@mapStateX.done)=\"updateMapBrowserClass($event)\"\r\n  [@mapStateY]=\"expansionPanelExpanded ? 'up' : 'down'\" (@mapStateY.start)=\"removeMapBrowserClass($event)\"\r\n  (@mapStateY.done)=\"updateMapBrowserClass($event)\">\r\n\r\n  <igo-zoom-button [map]=\"map\" color=\"primary\" [@controlsOffsetY]=\"expansionPanelExpanded\">\r\n  </igo-zoom-button>\r\n  <igo-geolocate-button [map]=\"map\" color=\"primary\" [@controlsOffsetY]=\"expansionPanelExpanded\">\r\n  </igo-geolocate-button>\r\n  <igo-rotation-button [map]=\"map\" color=\"primary\"></igo-rotation-button>\r\n  <igo-user-button [map]=\"map\" color=\"primary\" [@controlsOffsetY]=\"expansionPanelExpanded\">\r\n  </igo-user-button>\r\n  <igo-baselayers-switcher [map]=\"map\" [@baselayersStateY]=\"expansionPanelExpanded ? 'up' : 'down'\" [@baselayersStateX]=\"(mediaService.media$ | async) !== 'mobile' && sidenavOpened ? 'right' : 'left'\">\r\n  </igo-baselayers-switcher>\r\n</igo-map-browser>\r\n\r\n\r\n\r\n<app-expansion-panel *ngIf=\"hasExpansionPanel\" [(expanded)]=\"expansionPanelExpanded\" [@expansionPanelSize]=\"sidenavOpened ? 'reduced' : 'full'\">\r\n\r\n  <ng-container expansionPanelHeader>\r\n    <!-- <igo-workspace-selector igoWorkspaceSelector [store]=\"workspaceStore\" [map]=\"map\"></igo-workspace-selector> -->\r\n    <!-- <igo-actionbar\r\n  *ngIf=\"workspace\"\r\n  [store]=\"workspace.actionStore\"\r\n  [horizontal]=\"true\"\r\n  [xPosition]=\"'after'\"\r\n  [yPosition]=\"'above'\"\r\n  [withToggleButton]=\"true\"\r\n  [withTitle]=\"actionbarWithTitle\"\r\n  [mode]=\"actionbarMode\">\r\n</igo-actionbar> \r\n</ng-container>\r\n\r\n<igo-entity-table [store]=\"tableStore\" [template]=\"tableTemplate\">\r\n</igo-entity-table>\r\n</app-expansion-panel>\r\n\r\n<app-toast-panel [store]=\"queryStore\" [@toastPanelOffsetX]=\"sidenavOpened\" [@toastPanelOffsetY]=\"expansionPanelExpanded\"\r\n  (resultSelect)=\"addFeatureToMap($event)\">\r\n</app-toast-panel>\r\n\r\n<ng-template #actionbarMenu>\r\n  <igo-actionbar [store]=\"contextMenuStore\" [withIcon]=\"false\" [horizontal]=\"true\" mode=\"context\">\r\n  </igo-actionbar>\r\n</ng-template> \r\n\r\n\r\n<!--\r\n<mat-toolbar>\r\n  <button class=\"footer-button\" id='btmFooter' mat-stroked-button color=\"primary\">Annuler</button>\r\n  <button class=\"footer-button \" id='btmFooter' mat-stroked-button color=\"primary\">Sélectionner</button>\r\n</mat-toolbar> -->\r\n\r\n\r\n\r\n\r\n    <!--\r\n<ion-footer>\r\n  <ion-grid>\r\n    <ion-row>\r\n      <ion-col col-6>\r\n        <ion-button fill=\"outline\" expand=\"block\" color=\"primary\" (click)=\"close()\">Annuler</ion-button>\r\n      </ion-col>\r\n      <ion-col col-6>\r\n        <ion-button fill=\"outline\" expand=\"block\" color=\"primary\" (click)=\"selectZone()\">Sélectionner</ion-button>\r\n      </ion-col>\r\n    </ion-row>\r\n  </ion-grid>\r\n</ion-footer> -->"
+module.exports = "<!--<mat-toolbar class=\"md-padding\">\r\n  <div class=\"md-toolbar-tools\">\r\n    <h3 flex>\r\n      Sélectionner la zone de recherche\r\n    </h3>\r\n  </div>\r\n</mat-toolbar> -->\r\n\r\n<mat-sidenav-container class=\"app-main-container\">\r\n\r\n  <igo-backdrop [shown]=\"backdropShown\" (click)=\"onBackdropClick()\">\r\n  </igo-backdrop>\r\n\r\n  <button mat-icon-button id=\"menu-button\" class=\"menu-button\" color=\"primary\" tooltip-position=\"below\"\r\n    matTooltipShowDelay=\"500\" [matTooltip]=\"(sidenavOpened ? 'menu.close' : 'menu.open') | translate\" (click)=\"onToggleSidenavClick()\">\r\n    <mat-icon svgIcon=\"menu\">\r\n    </mat-icon>\r\n  </button>\r\n\r\n  <igo-search-bar [term]=\"searchBarTerm\" [minLength]=\"minSearchTermLength\" (change)=\"onSearchTermChange($event)\"\r\n    (search)=\"onSearch($event)\">\r\n  </igo-search-bar>\r\n\r\n  <app-sidenav [map]=\"map\" [(opened)]=\"sidenavOpened\">\r\n  </app-sidenav>\r\n\r\n  <igo-map-browser #mapBrowser igoQuery [waitForAllQueries]=\"true\" [queryFeatures]=\"true\" igoMapContext igoLayerContext\r\n    igoMapOffline igoDropGeoFile (query)=\"onMapQuery($event)\" [map]=\"map\" [igoContextMenu]=actionbarMenu (menuPosition)=\"onContextMenuOpen($event)\"\r\n    [ngClass]=\"{'igo-attribution-offset': map.getBaseLayers().length > 1}\" [@mapStateX]=\"sidenavOpened ? 'right' : 'left'\"\r\n    (@mapStateX.start)=\"removeMapBrowserClass($event)\" (@mapStateX.done)=\"updateMapBrowserClass($event)\" [@mapStateY]=\"expansionPanelExpanded ? 'up' : 'down'\"\r\n    (@mapStateY.start)=\"removeMapBrowserClass($event)\" (@mapStateY.done)=\"updateMapBrowserClass($event)\">\r\n\r\n    <igo-zoom-button [map]=\"map\" color=\"primary\" [@controlsOffsetY]=\"expansionPanelExpanded\">\r\n    </igo-zoom-button>\r\n    <igo-geolocate-button [map]=\"map\" color=\"primary\" [@controlsOffsetY]=\"expansionPanelExpanded\">\r\n    </igo-geolocate-button>\r\n    <igo-rotation-button [map]=\"map\" color=\"primary\"></igo-rotation-button>\r\n    <igo-baselayers-switcher [map]=\"map\" [@baselayersStateY]=\"expansionPanelExpanded ? 'up' : 'down'\"\r\n      [@baselayersStateX]=\"(mediaService.media$ | async) !== 'mobile' && sidenavOpened ? 'right' : 'left'\">\r\n    </igo-baselayers-switcher>\r\n  </igo-map-browser>\r\n\r\n</mat-sidenav-container>\r\n\r\n<app-expansion-panel *ngIf=\"hasExpansionPanel\" [(expanded)]=\"expansionPanelExpanded\" [@expansionPanelSize]=\"sidenavOpened ? 'reduced' : 'full'\">\r\n\r\n  <ng-container expansionPanelHeader>\r\n    <!-- <igo-workspace-selector igoWorkspaceSelector [store]=\"workspaceStore\" [map]=\"map\"></igo-workspace-selector> -->\r\n    <!-- <igo-actionbar\r\n      *ngIf=\"workspace\"\r\n      [store]=\"workspace.actionStore\"\r\n      [horizontal]=\"true\"\r\n      [xPosition]=\"'after'\"\r\n      [yPosition]=\"'above'\"\r\n      [withToggleButton]=\"true\"\r\n      [withTitle]=\"actionbarWithTitle\"\r\n      [mode]=\"actionbarMode\">\r\n    </igo-actionbar> -->\r\n  </ng-container>\r\n\r\n  <igo-entity-table [store]=\"tableStore\" [template]=\"tableTemplate\">\r\n  </igo-entity-table>\r\n</app-expansion-panel>\r\n\r\n<app-toast-panel [store]=\"queryStore\" [@toastPanelOffsetX]=\"sidenavOpened\" [@toastPanelOffsetY]=\"expansionPanelExpanded\"\r\n  (resultSelect)=\"addFeatureToMap($event)\">\r\n</app-toast-panel>\r\n\r\n<ng-template #actionbarMenu>\r\n  <igo-actionbar [store]=\"contextMenuStore\" [withIcon]=\"false\" [horizontal]=\"true\" mode=\"context\">\r\n  </igo-actionbar>\r\n</ng-template>\r\n\r\n\r\n\r\n\r\n<!--\r\n<ion-footer>\r\n  <ion-grid>\r\n    <ion-row>\r\n      <ion-col col-6>\r\n        <ion-button fill=\"outline\" expand=\"block\" color=\"primary\" (click)=\"close()\">Annuler</ion-button>\r\n      </ion-col>\r\n      <ion-col col-6>\r\n        <ion-button fill=\"outline\" expand=\"block\" color=\"primary\" (click)=\"selectZone()\">Sélectionner</ion-button>\r\n      </ion-col>\r\n    </ion-row>\r\n  </ion-grid>\r\n</ion-footer> -->"
 
 /***/ }),
 
@@ -56373,10 +56393,24 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
 /* harmony import */ var _igo2_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @igo2/core */ "./dist/igo-lib/core/fesm5/igo2-core.js");
 /* harmony import */ var _igo2_auth__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @igo2/auth */ "./dist/igo-lib/auth/fesm5/igo2-auth.js");
-/* harmony import */ var _igo2_context__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @igo2/context */ "./dist/igo-lib/context/fesm5/igo2-context.js");
-/* harmony import */ var _igo2_geo__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @igo2/geo */ "./dist/igo-lib/geo/fesm5/igo2-geo.js");
+/* harmony import */ var _igo2_geo__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @igo2/geo */ "./dist/igo-lib/geo/fesm5/igo2-geo.js");
+/* harmony import */ var _igo2_integration__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @igo2/integration */ "./dist/igo-lib/integration/fesm5/igo2-integration.js");
 /* harmony import */ var _pages_portal_portal_animation__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../pages/portal/portal.animation */ "./src/app/pages/portal/portal.animation.ts");
-/* harmony import */ var _services_bbox_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../services/bbox.service */ "./src/app/services/bbox.service.ts");
+/* harmony import */ var _pages_portal_portal_component__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../pages/portal/portal.component */ "./src/app/pages/portal/portal.component.ts");
+/* harmony import */ var _services_bbox_service__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../../services/bbox.service */ "./src/app/services/bbox.service.ts");
+var __extends = (undefined && undefined.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -56394,22 +56428,32 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
-var ZoneSelectionComponent = /** @class */ (function () {
-    function ZoneSelectionComponent(bboxService, route, configService, authService, mediaService, searchService, overlayService, mapService, layerService, dataSourceService, contextService, cdRef, capabilitiesService, messageService) {
-        this.bboxService = bboxService;
-        this.route = route;
-        this.configService = configService;
-        this.authService = authService;
-        this.mediaService = mediaService;
-        this.searchService = searchService;
-        this.overlayService = overlayService;
-        this.mapService = mapService;
-        this.layerService = layerService;
-        this.dataSourceService = dataSourceService;
-        this.contextService = contextService;
-        this.cdRef = cdRef;
-        this.capabilitiesService = capabilitiesService;
-        this.messageService = messageService;
+
+var ZoneSelectionComponent = /** @class */ (function (_super) {
+    __extends(ZoneSelectionComponent, _super);
+    function ZoneSelectionComponent(mapService, bboxService, route, configService, 
+    // private workspaceState: WorkspaceState,
+    authService, mediaService, layerService, dataSourceService, cdRef, capabilitiesService, contextState, mapState, searchState, queryState, toolState, searchSourceService, searchService) {
+        var _this = _super.call(this, route, configService, authService, mediaService, layerService, dataSourceService, cdRef, capabilitiesService, contextState, mapState, searchState, queryState, toolState, searchSourceService, searchService) || this;
+        _this.mapService = mapService;
+        _this.bboxService = bboxService;
+        _this.route = route;
+        _this.configService = configService;
+        _this.authService = authService;
+        _this.mediaService = mediaService;
+        _this.layerService = layerService;
+        _this.dataSourceService = dataSourceService;
+        _this.cdRef = cdRef;
+        _this.capabilitiesService = capabilitiesService;
+        _this.contextState = contextState;
+        _this.mapState = mapState;
+        _this.searchState = searchState;
+        _this.queryState = queryState;
+        _this.toolState = toolState;
+        _this.searchSourceService = searchSourceService;
+        _this.searchService = searchService;
+        _this.mapService.setMap(_this.map);
+        return _this;
     }
     ZoneSelectionComponent.prototype.updateMap = function () {
         var _this = this;
@@ -56430,26 +56474,38 @@ var ZoneSelectionComponent = /** @class */ (function () {
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"])({
             selector: 'app-zone-selection',
             template: __webpack_require__(/*! ./zone-selection.component.html */ "./src/app/components/zone-selection/zone-selection.component.html"),
-            animations: [Object(_pages_portal_portal_animation__WEBPACK_IMPORTED_MODULE_6__["controlSlideX"])(), Object(_pages_portal_portal_animation__WEBPACK_IMPORTED_MODULE_6__["controlSlideY"])(), Object(_pages_portal_portal_animation__WEBPACK_IMPORTED_MODULE_6__["mapSlideX"])(), Object(_pages_portal_portal_animation__WEBPACK_IMPORTED_MODULE_6__["mapSlideY"])()],
+            animations: [
+                Object(_pages_portal_portal_animation__WEBPACK_IMPORTED_MODULE_6__["expansionPanelAnimation"])(),
+                Object(_pages_portal_portal_animation__WEBPACK_IMPORTED_MODULE_6__["toastPanelAnimation"])(),
+                Object(_pages_portal_portal_animation__WEBPACK_IMPORTED_MODULE_6__["baselayersAnimation"])(),
+                Object(_pages_portal_portal_animation__WEBPACK_IMPORTED_MODULE_6__["controlsAnimations"])(),
+                Object(_pages_portal_portal_animation__WEBPACK_IMPORTED_MODULE_6__["controlSlideX"])(),
+                Object(_pages_portal_portal_animation__WEBPACK_IMPORTED_MODULE_6__["controlSlideY"])(),
+                Object(_pages_portal_portal_animation__WEBPACK_IMPORTED_MODULE_6__["mapSlideX"])(),
+                Object(_pages_portal_portal_animation__WEBPACK_IMPORTED_MODULE_6__["mapSlideY"])()
+            ],
             styles: [__webpack_require__(/*! ./zone-selection.component.scss */ "./src/app/components/zone-selection/zone-selection.component.scss")]
         }),
-        __metadata("design:paramtypes", [_services_bbox_service__WEBPACK_IMPORTED_MODULE_7__["BboxService"],
+        __metadata("design:paramtypes", [_igo2_geo__WEBPACK_IMPORTED_MODULE_4__["MapService"],
+            _services_bbox_service__WEBPACK_IMPORTED_MODULE_8__["BboxService"],
             _angular_router__WEBPACK_IMPORTED_MODULE_1__["ActivatedRoute"],
             _igo2_core__WEBPACK_IMPORTED_MODULE_2__["ConfigService"],
             _igo2_auth__WEBPACK_IMPORTED_MODULE_3__["AuthService"],
             _igo2_core__WEBPACK_IMPORTED_MODULE_2__["MediaService"],
-            _igo2_geo__WEBPACK_IMPORTED_MODULE_5__["SearchService"],
-            _igo2_geo__WEBPACK_IMPORTED_MODULE_5__["OverlayService"],
-            _igo2_geo__WEBPACK_IMPORTED_MODULE_5__["MapService"],
-            _igo2_geo__WEBPACK_IMPORTED_MODULE_5__["LayerService"],
-            _igo2_geo__WEBPACK_IMPORTED_MODULE_5__["DataSourceService"],
-            _igo2_context__WEBPACK_IMPORTED_MODULE_4__["ContextService"],
+            _igo2_geo__WEBPACK_IMPORTED_MODULE_4__["LayerService"],
+            _igo2_geo__WEBPACK_IMPORTED_MODULE_4__["DataSourceService"],
             _angular_core__WEBPACK_IMPORTED_MODULE_0__["ChangeDetectorRef"],
-            _igo2_geo__WEBPACK_IMPORTED_MODULE_5__["CapabilitiesService"],
-            _igo2_core__WEBPACK_IMPORTED_MODULE_2__["MessageService"]])
+            _igo2_geo__WEBPACK_IMPORTED_MODULE_4__["CapabilitiesService"],
+            _igo2_integration__WEBPACK_IMPORTED_MODULE_5__["ContextState"],
+            _igo2_integration__WEBPACK_IMPORTED_MODULE_5__["MapState"],
+            _igo2_integration__WEBPACK_IMPORTED_MODULE_5__["SearchState"],
+            _igo2_integration__WEBPACK_IMPORTED_MODULE_5__["QueryState"],
+            _igo2_integration__WEBPACK_IMPORTED_MODULE_5__["ToolState"],
+            _igo2_geo__WEBPACK_IMPORTED_MODULE_4__["SearchSourceService"],
+            _igo2_geo__WEBPACK_IMPORTED_MODULE_4__["SearchService"]])
     ], ZoneSelectionComponent);
     return ZoneSelectionComponent;
-}());
+}(_pages_portal_portal_component__WEBPACK_IMPORTED_MODULE_7__["PortalComponent"]));
 
 
 
@@ -57660,7 +57716,8 @@ var PortalModule = /** @class */ (function () {
                 _sidenav_sidenav_module__WEBPACK_IMPORTED_MODULE_10__["AppSidenavModule"],
                 _igo2_context__WEBPACK_IMPORTED_MODULE_6__["IgoContextManagerModule"],
                 _igo2_context__WEBPACK_IMPORTED_MODULE_6__["IgoContextMapButtonModule"],
-                _igo2_common__WEBPACK_IMPORTED_MODULE_4__["IgoEntityTableModule"]
+                _igo2_common__WEBPACK_IMPORTED_MODULE_4__["IgoEntityTableModule"],
+                _igo2_geo__WEBPACK_IMPORTED_MODULE_5__["IgoQueryModule"]
             ],
             exports: [_portal_component__WEBPACK_IMPORTED_MODULE_11__["PortalComponent"]],
             declarations: [_portal_component__WEBPACK_IMPORTED_MODULE_11__["PortalComponent"]]

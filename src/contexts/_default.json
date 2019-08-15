@@ -41,7 +41,6 @@
     },
     {
       "title": "LocalChassePecheMVT-PBF",
-      "baseLayer": true,
       "visible": false,
       "style": {
         "stroke": {
