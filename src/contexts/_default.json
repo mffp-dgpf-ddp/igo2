@@ -85,6 +85,7 @@
     "map",
     "directions",
     "timeAnalysis",
+    "measurer",
     "catalog",
     "print",
     "shareMap",
@@ -134,6 +135,9 @@
     },
     {
       "name": "timeAnalysis"
+    },
+    {
+      "name": "measurer"
     },
     {
       "name": "print"

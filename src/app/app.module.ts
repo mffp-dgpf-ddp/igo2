@@ -65,7 +65,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
     MapImageService,
     provideNominatimSearchSource(),
     provideIChercheSearchSource(),
-    provideIChercheReverseSearchSource(), // TODO: replace by territoire
+    provideIChercheReverseSearchSource(),
     provideCoordinatesReverseSearchSource(),
     provideILayerSearchSource(),
     provideOsrmRoutingSource(),
