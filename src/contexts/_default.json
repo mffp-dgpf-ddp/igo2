@@ -3,13 +3,14 @@
   "title": "Default Context",
   "map": {
     "view": {
-      "projection": "EPSG:3857",
+       "projection": "EPSG:3857",
       "center": [
-        -72,
-        52
+        -72.066644,
+        47.844253
       ],
-      "zoom": 6,
-      "geolocate": true
+      "zoom": 7,
+      "geolocate": true,
+      "maxZoom": 15
     }
   },
   "layers": [
@@ -56,7 +57,7 @@
       "sourceOptions": {
         "queryable": true,
         "url": "https://ahocevar.com/geoserver/gwc/service/tms/1.0.0/ne:ne_10m_admin_0_countries@EPSG:900913@pbf/{z}/{x}/{-y}.pbf",
-        "pathOffline": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/tiles/pbf/chasseEtPecheNoCompress/{z}/{y}/{x}.mvt",
+        "pathOffline": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/tiles/pbf/chasseEtPecheNoCompress/{z}/{x}/{y}.mvt",
         "attributions": "<a href='https://www.quebec.ca/'><br><a href='http://www.droitauteur.gouv.qc.ca/copyright.php'>© Gouvernement du Québec</a><br> <br> Fondé sur<a href='https://github.com/infra-geo-ouverte/igo2'> IGO2</a>",
         "type": "mvt"
       }
