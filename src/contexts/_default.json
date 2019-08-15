@@ -23,8 +23,8 @@
     },
     {
       "title": "Fond de carte du Québec",
-      "visible": true,
-      "baseLayer": false,
+      "visible": false,
+      "baseLayer": true,
       "sourceOptions": {
         "type": "xyz",
         "url": "https://geoegl.msp.gouv.qc.ca/carto/tms/1.0.0/carte_gouv_qc_public@EPSG_3857/{z}/{x}/{-y}.png"
@@ -43,7 +43,8 @@
     {
       "title": "LocalChassePecheMVT-PBF",
       "baseLayer": true,
-      "visible": false,
+      "visible": true,
+      "opacity" : 0.3,
       "style": {
         "stroke": {
           "color": "red"
@@ -62,7 +63,7 @@
     },
     {
       "title": "bureaux - geoson - public",
-      "visible": false,
+      "visible": true,
       "style": {
         "circle": {
           "fill": {
