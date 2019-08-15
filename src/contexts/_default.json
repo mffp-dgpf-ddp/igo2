@@ -3,12 +3,14 @@
   "title": "Default Context",
   "map": {
     "view": {
-      "projection": "EPSG:3857",
+       "projection": "EPSG:3857",
       "center": [
-        -72,
-        52
+        -72.066644,
+        47.844253
       ],
-      "zoom": 6
+      "zoom": 7,
+      "geolocate": true,
+      "maxZoom": 15
     }
   },
   "layers": [
@@ -22,8 +24,8 @@
     },
     {
       "title": "Fond de carte du Québec",
-      "visible": true,
-      "baseLayer": false,
+      "visible": false,
+      "baseLayer": true,
       "sourceOptions": {
         "type": "xyz",
         "url": "https://geoegl.msp.gouv.qc.ca/carto/tms/1.0.0/carte_gouv_qc_public@EPSG_3857/{z}/{x}/{-y}.png"
@@ -41,7 +43,9 @@
     },
     {
       "title": "LocalChassePecheMVT-PBF",
-      "visible": false,
+      "baseLayer": true,
+      "visible": true,
+      "opacity" : 0.3,
       "style": {
         "stroke": {
           "color": "red"
@@ -53,14 +57,14 @@
       "sourceOptions": {
         "queryable": true,
         "url": "https://ahocevar.com/geoserver/gwc/service/tms/1.0.0/ne:ne_10m_admin_0_countries@EPSG:900913@pbf/{z}/{x}/{-y}.pbf",
-        "pathOffline": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/tiles/pbf/chasseEtPecheNoCompress/{z}/{y}/{x}.mvt",
+        "pathOffline": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/tiles/pbf/chasseEtPecheNoCompress/{z}/{x}/{y}.mvt",
         "attributions": "<a href='https://www.quebec.ca/'><br><a href='http://www.droitauteur.gouv.qc.ca/copyright.php'>© Gouvernement du Québec</a><br> <br> Fondé sur<a href='https://github.com/infra-geo-ouverte/igo2'> IGO2</a>",
         "type": "mvt"
       }
     },
     {
       "title": "bureaux - geoson - public",
-      "visible": false,
+      "visible": true,
       "style": {
         "circle": {
           "fill": {
@@ -75,7 +79,8 @@
       "sourceOptions": {
         "queryable": true,
         "type": "vector",
-        "url": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/geojson/bureaux_locaux3857.geojson"
+        "url": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/geojson/bureaux_locaux3857.geojson",
+        "pathOffline": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/geojson/bureaux_locaux3857.geojson"
       }
     }
   ],
@@ -85,7 +90,6 @@
     "map",
     "directions",
     "timeAnalysis",
-    "measurer",
     "catalog",
     "print",
     "shareMap",
@@ -135,9 +139,6 @@
     },
     {
       "name": "timeAnalysis"
-    },
-    {
-      "name": "measurer"
     },
     {
       "name": "print"
