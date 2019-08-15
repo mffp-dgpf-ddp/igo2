@@ -10,7 +10,7 @@ import { uuid, ObjectUtils, Clipboard } from '@igo2/utils';
 import { AuthService, IgoAuthModule } from '@igo2/auth';
 import { CommonModule } from '@angular/common';
 import { MatIconModule, MatButtonModule, MatTooltipModule, MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, MatRadioModule, MatDialogRef, MatDialog, MatSelectModule, MatOptionModule, MatDialogModule, MatSidenavModule } from '@angular/material';
-import { Injectable, Optional, Directive, Self, HostListener, Component, Input, Output, EventEmitter, ChangeDetectorRef, NgModule, defineInjectable, inject } from '@angular/core';
+import { Injectable, Optional, Component, Input, Output, EventEmitter, ChangeDetectorRef, Directive, Self, HostListener, NgModule, defineInjectable, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ConfigService, RouteService, LanguageService, MessageService, IgoLanguageModule } from '@igo2/core';
 import { ConfirmDialogService, IgoListModule, IgoKeyValueModule, IgoCollapsibleModule, IgoStopPropagationModule, IgoConfirmDialogModule, getEntityTitle, IgoPanelModule, IgoFlexibleModule } from '@igo2/common';

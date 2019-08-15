@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { MatTabsModule, MatIconModule, MatButtonModule } from '@angular/material';
 import { map } from 'rxjs/operators';
 import olFormatGeoJSON from 'ol/format/GeoJSON';
-import { IgoMap, MapService, ProjectionService, CatalogService, LayerListControlsEnum, FeatureStore, IgoMeasurerModule, SearchSourceService, moveToOlFeatures, FeatureMotion, FEATURE, LAYER, LayerService, IgoRoutingModule, IgoFilterModule, IgoImportExportModule, IgoLayerModule, IgoMetadataModule, IgoDownloadModule, IgoPrintModule, IgoCatalogBrowserModule, IgoCatalogLibraryModule, IgoFeatureModule, IgoSearchModule, IgoFeatureDetailsModule } from '@igo2/geo';
+import { IgoMap, MapService, ProjectionService, CatalogService, LayerListControlsEnum, FeatureStore, IgoMeasurerModule, SearchSourceService, moveToOlFeatures, FeatureMotion, FEATURE, LAYER, LayerService, IgoFilterModule, IgoImportExportModule, IgoLayerModule, IgoMetadataModule, IgoDownloadModule, IgoRoutingModule, IgoPrintModule, IgoCatalogBrowserModule, IgoCatalogLibraryModule, IgoFeatureModule, IgoSearchModule, IgoFeatureDetailsModule } from '@igo2/geo';
 import { __decorate, __metadata } from 'tslib';
 import { IgoLanguageModule, LanguageService } from '@igo2/core';
 import { IgoContextModule, ContextService } from '@igo2/context';

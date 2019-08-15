@@ -1,10 +1,9 @@
-import { ChangeDetectorRef, TemplateRef, OnInit, OnDestroy } from '@angular/core';
+import { TemplateRef, OnInit, OnDestroy } from '@angular/core';
 import { FloatLabelType } from '@angular/material';
 import { Layer } from '../shared';
 import { LayerListService } from './layer-list.service';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 export declare class LayerListComponent implements OnInit, OnDestroy {
-    private cdRef;
     private layerListService;
     hasLayerNotVisible: boolean;
     hasLayerOutOfRange: boolean;
@@ -33,7 +32,7 @@ export declare class LayerListComponent implements OnInit, OnDestroy {
     onlyInRangeInitialized: boolean;
     sortedAlpha: boolean;
     sortedAlphaInitialized: boolean;
-    constructor(cdRef: ChangeDetectorRef, layerListService: LayerListService);
+    constructor(layerListService: LayerListService);
     /**
      * Subscribe to the search term stream and trigger researches
      * @internal
@@ -44,12 +43,13 @@ export declare class LayerListComponent implements OnInit, OnDestroy {
     toggleOnlyInRange(): void;
     toggleSort(sortAlpha: boolean): void;
     clearKeyword(): void;
+    getLowerLayer(): Layer;
+    getUpperLayer(): Layer;
     private next;
     private computeLayers;
     private filterLayers;
     private sortLayersByZindex;
     private sortLayersByTitle;
-    private computeOrderable;
     private computeShowToolbar;
     private initLayerFilterAndSortOptions;
     private setLayers;

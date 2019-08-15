@@ -1,4 +1,5 @@
 import OlFeature from 'ol/Feature';
+import OlLayer from 'ol/Layer';
 import { EntityKey } from '@igo2/common';
 import { IgoMap } from '../../map';
 import { VectorLayer } from '../../layer';
@@ -19,10 +20,11 @@ export declare function featureToOl(feature: Feature, projectionOut: string, get
  * The output object has a reference to the feature id.
  * @param olFeature OL Feature
  * @param projectionIn OL feature projection
+ * @param olLayer OL Layer
  * @param projectionOut Feature projection
  * @returns Feature
  */
-export declare function featureFromOl(olFeature: OlFeature, projectionIn: string, projectionOut?: string): Feature;
+export declare function featureFromOl(olFeature: OlFeature, projectionIn: string, olLayer?: OlLayer, projectionOut?: string): Feature;
 /**
  * Compute an OL feature extent in it's map projection
  * @param map Map

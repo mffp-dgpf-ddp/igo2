@@ -20,6 +20,7 @@ import olView from 'ol/View';
 import olGeolocation from 'ol/Geolocation';
 import olAttribution from 'ol/control/Attribution';
 import olControlScaleLine from 'ol/control/ScaleLine';
+import olCircle from 'ol/geom/Circle';
 import olLayerImage from 'ol/layer/Image';
 import olLayerTile from 'ol/layer/Tile';
 import { asArray } from 'ol/color';
@@ -56,7 +57,7 @@ import { saveAs } from 'file-saver';
 import * as jsPDF from 'jspdf';
 import * as _html2canvas from 'html2canvas';
 import * as JSZip from 'jszip';
-import OlFeature from 'ol/Feature';
+import olFeature from 'ol/Feature';
 import { MultiLineString, MultiPolygon, Point, LineString, Polygon } from 'ol/geom';
 import { transformExtent, get, transform, fromLonLat, METERS_PER_UNIT } from 'ol/proj';
 import * as olstyle from 'ol/style';
@@ -65,16 +66,16 @@ import { pointerMove } from 'ol/events/condition';
 import { defaults, Select, Translate } from 'ol/interaction';
 import { createEmpty, extend, boundingExtent, buffer, getSize, containsExtent, getArea, getCenter, intersects as intersects$1 } from 'ol/extent';
 import { unByKey } from 'ol/Observable';
+import * as olformat from 'ol/format';
+import { WFS, GeoJSON, KML, GML, GPX, WMSCapabilities, WMTSCapabilities, WMSGetFeatureInfo, WKT } from 'ol/format';
 import { FormsModule, ReactiveFormsModule, NgControl, FormBuilder, Validators } from '@angular/forms';
+import { Observable, BehaviorSubject, of, ReplaySubject, EMPTY, timer, combineLatest, Subject, forkJoin, zip, concat, fromEvent } from 'rxjs';
 import OlGeoJSON from 'ol/format/GeoJSON';
 import { MatIconModule, MatButtonModule, MatTooltipModule, MatListModule, MatSlider, MatAutocompleteModule, MatButtonToggleModule, MatSliderModule, MatSlideToggleModule, MatFormFieldModule, MatInputModule, MatOptionModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MAT_DATE_LOCALE, MatCheckboxModule, MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatTabsModule, MatBadgeModule, MatDividerModule, MatMenuModule, MatRadioModule } from '@angular/material';
 import { CommonModule } from '@angular/common';
 import { getEntityId, EntityStore, getEntityTitle, getEntityRevision, getEntityProperty, EntityStoreWatcher, getEntityIcon, IgoCollapsibleModule, IgoListModule, IgoKeyValueModule, IgoFormModule, FormFieldComponent, EntityTableColumnRenderer, DragAndDropDirective, IgoDrapDropModule, IgoImageModule, IgoConfirmDialogModule, IgoEntityTableModule, getEntityTitleHtml, IgoPanelModule, IgoFlexibleModule, WidgetService, Workspace, ActionStore, WorkspaceSelectorComponent, IgoWidgetModule } from '@igo2/common';
-import { Observable, BehaviorSubject, of, ReplaySubject, EMPTY, timer, combineLatest, Subject, forkJoin, zip, concat, fromEvent } from 'rxjs';
-import * as olformat from 'ol/format';
-import { WFS, GeoJSON, KML, GML, GPX, WMSCapabilities, WMTSCapabilities, WMSGetFeatureInfo, WKT } from 'ol/format';
 import { __extends, __values, __read, __decorate, __metadata, __spread, __assign } from 'tslib';
-import { Injectable, Component, Input, ChangeDetectionStrategy, Output, EventEmitter, Directive, Self, Pipe, ChangeDetectorRef, Inject, NgModule, Optional, InjectionToken, ViewChild, HostBinding, ContentChild, defineInjectable, inject, HostListener } from '@angular/core';
+import { Injectable, Directive, Self, Optional, ChangeDetectorRef, Component, Input, ChangeDetectionStrategy, NgModule, Output, EventEmitter, Pipe, Inject, InjectionToken, ApplicationRef, ContentChild, ViewChild, HostBinding, defineInjectable, inject, HostListener } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { map, debounce, debounceTime, skip, distinctUntilChanged, catchError, mergeMap } from 'rxjs/operators';
 import { uuid, ObjectUtils, Watcher, SubjectStatus, strEnum, Clipboard } from '@igo2/utils';
@@ -519,7 +520,7 @@ DataSource = /** @class */ (function () {
         this.options = options;
         this.dataService = dataService;
         this.options = options;
-        this.id = this.generateId();
+        this.id = this.options.id || this.generateId();
         this.ol = this.createOlSource();
     }
     /**
@@ -2679,7 +2680,7 @@ var MVTDataSource = /** @class */ (function (_super) {
      */
     function () {
         /** @type {?} */
-        var mvtFormat = new olFormatMVT({ featureClass: OlFeature });
+        var mvtFormat = new olFormatMVT({ featureClass: olFeature });
         this.options.format = mvtFormat;
         return new olSourceVectorTile(this.options);
     };
@@ -3941,8 +3942,7 @@ function olLayerIsQueryable(olLayer) {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var LayerItemComponent = /** @class */ (function () {
-    function LayerItemComponent(cdRef) {
-        this.cdRef = cdRef;
+    function LayerItemComponent() {
         this.showLegend$ = new BehaviorSubject(false);
         this.inResolutionRange$ = new BehaviorSubject(true);
         this.queryBadgeHidden$ = new BehaviorSubject(true);
@@ -3950,6 +3950,8 @@ var LayerItemComponent = /** @class */ (function () {
         this.expandLegendIfVisible = false;
         this.updateLegendOnResolutionChange = false;
         this.orderable = true;
+        this.lowerDisabled = false;
+        this.raiseDisabled = false;
         this.queryBadge = false;
     }
     Object.defineProperty(LayerItemComponent.prototype, "removable", {
@@ -3993,11 +3995,10 @@ var LayerItemComponent = /** @class */ (function () {
         /** @type {?} */
         var resolution$ = this.layer.map.viewController.resolution$;
         this.resolution$$ = resolution$.subscribe((/**
-         * @param {?} resolution
          * @return {?}
          */
-        function (resolution) {
-            _this.onResolutionChange(resolution);
+        function () {
+            _this.onResolutionChange();
         }));
         this.tooltipText = this.computeTooltip();
     };
@@ -4073,15 +4074,13 @@ var LayerItemComponent = /** @class */ (function () {
     };
     /**
      * @private
-     * @param {?} resolution
      * @return {?}
      */
     LayerItemComponent.prototype.onResolutionChange = /**
      * @private
-     * @param {?} resolution
      * @return {?}
      */
-    function (resolution) {
+    function () {
         /** @type {?} */
         var inResolutionRange = this.layer.isInResolutionsRange;
         if (inResolutionRange === false && this.updateLegendOnResolutionChange === true) {
@@ -4107,21 +4106,21 @@ var LayerItemComponent = /** @class */ (function () {
     LayerItemComponent.decorators = [
         { type: Component, args: [{
                     selector: 'igo-layer-item',
-                    template: "<mat-list-item>\r\n  <mat-icon\r\n    class=\"igo-chevron\"\r\n    mat-list-avatar\r\n    igoCollapse\r\n    [target]=\"legend\"\r\n    [collapsed]=\"!(showLegend$ | async)\"\r\n    (toggle)=\"toggleLegend($event)\"\r\n    svgIcon=\"chevron-up\" >\r\n  </mat-icon>\r\n  <h4 matLine [matTooltip]=\"tooltipText\" matTooltipShowDelay=\"500\">{{layer.title}}</h4>\r\n\r\n  <button\r\n    mat-icon-button\r\n    [color]=\"layer.visible ? 'primary' : 'default'\"\r\n    collapsibleButton\r\n    tooltip-position=\"below\"\r\n    matTooltipShowDelay=\"500\"\r\n    [matTooltip]=\"layer.visible ?\r\n                  ('igo.geo.layer.hideLayer' | translate) :\r\n                  ('igo.geo.layer.showLayer' | translate)\"\r\n    (click)=\"toggleVisibility()\">\r\n    <mat-icon\r\n      matBadge=\"?\"\r\n      matBadgeColor=\"accent\"\r\n      matBadgeSize=\"small\"\r\n      matBadgePosition=\"after\"\r\n      [matBadgeHidden]=\"queryBadgeHidden$ | async\"\r\n      [ngClass]=\"{disabled: !(inResolutionRange$ | async)}\"\r\n      [svgIcon]=\"layer.visible ? 'eye' : 'eye-off'\">\r\n    </mat-icon>\r\n  </button>\r\n\r\n  <button\r\n    mat-icon-button\r\n    color=\"primary\"\r\n    igoCollapse\r\n    [target]=\"actions\"\r\n    [collapsed]=\"true\">\r\n    <mat-icon svgIcon=\"dots-horizontal\"></mat-icon>\r\n  </button>\r\n</mat-list-item>\r\n\r\n<div #actions class=\"igo-layer-actions-container\">\r\n  <div class=\"igo-col igo-col-100 igo-col-100-m\">\r\n    <mat-slider\r\n      id=\"opacity-slider\"\r\n      thumbLabel\r\n      tickInterval=\"5\"\r\n      step=\"5\"\r\n      [min]=\"0\"\r\n      [max]=\"100\"\r\n      [(ngModel)]=\"opacity\"\r\n      [matTooltip]=\"'igo.geo.layer.opacity' | translate\"\r\n      matTooltipShowDelay=\"500\"\r\n      tooltip-position=\"below\">\r\n    </mat-slider>\r\n  </div>\r\n\r\n  <div class=\"igo-col igo-col-100 igo-col-100-m\">\r\n    <div class=\"igo-layer-button-group\">\r\n      <button\r\n        color=\"primary\"\r\n        mat-icon-button\r\n        tooltip-position=\"below\"\r\n        matTooltipShowDelay=\"500\"\r\n        [matTooltip]=\"'igo.geo.layer.raiseLayer' | translate\"\r\n        [disabled]=\"!orderable\"\r\n        (click)=\"layer.map.raiseLayer(layer)\">\r\n        <mat-icon svgIcon=\"arrow-up\"></mat-icon>\r\n      </button>\r\n\r\n      <button\r\n        mat-icon-button\r\n        color=\"primary\"\r\n        tooltip-position=\"below\"\r\n        matTooltipShowDelay=\"500\"\r\n        [matTooltip]=\"'igo.geo.layer.lowerLayer' | translate\"\r\n        [disabled]=\"!orderable\"\r\n        (click)=\"layer.map.lowerLayer(layer)\">\r\n        <mat-icon svgIcon=\"arrow-down\"></mat-icon>\r\n      </button>\r\n\r\n      <button\r\n        *ngIf=\"removable === true\"\r\n        mat-icon-button\r\n        color=\"warn\"\r\n        tooltip-position=\"below\"\r\n        matTooltipShowDelay=\"500\"\r\n        [matTooltip]=\"'igo.geo.layer.removeLayer' | translate\"\r\n        (click)=\"layer.map.removeLayer(layer)\">\r\n        <mat-icon svgIcon=\"delete\"></mat-icon>\r\n      </button>\r\n      <ng-content select=\"[igoLayerItemToolbar]\"></ng-content>\r\n\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n<div #legend class=\"igo-layer-legend-container\">\r\n  <igo-layer-legend\r\n    *ngIf=\"showLegend$ | async\"\r\n    [layer]=\"layer\"\r\n    [updateLegendOnResolutionChange]=\"updateLegendOnResolutionChange\">\r\n  </igo-layer-legend>\r\n</div>\r\n",
+                    template: "<mat-list-item>\r\n  <mat-icon\r\n    class=\"igo-chevron\"\r\n    mat-list-avatar\r\n    igoCollapse\r\n    [target]=\"legend\"\r\n    [collapsed]=\"!(showLegend$ | async)\"\r\n    (toggle)=\"toggleLegend($event)\"\r\n    svgIcon=\"chevron-up\" >\r\n  </mat-icon>\r\n  <h4 matLine [matTooltip]=\"tooltipText\" matTooltipShowDelay=\"500\">{{layer.title}}</h4>\r\n\r\n  <button\r\n    mat-icon-button\r\n    [color]=\"layer.visible ? 'primary' : 'default'\"\r\n    collapsibleButton\r\n    tooltip-position=\"below\"\r\n    matTooltipShowDelay=\"500\"\r\n    [matTooltip]=\"layer.visible ?\r\n                  ('igo.geo.layer.hideLayer' | translate) :\r\n                  ('igo.geo.layer.showLayer' | translate)\"\r\n    (click)=\"toggleVisibility()\">\r\n    <mat-icon\r\n      matBadge=\"?\"\r\n      matBadgeColor=\"accent\"\r\n      matBadgeSize=\"small\"\r\n      matBadgePosition=\"after\"\r\n      [matBadgeHidden]=\"queryBadgeHidden$ | async\"\r\n      [ngClass]=\"{disabled: !(inResolutionRange$ | async)}\"\r\n      [svgIcon]=\"layer.visible ? 'eye' : 'eye-off'\">\r\n    </mat-icon>\r\n  </button>\r\n\r\n  <button\r\n    mat-icon-button\r\n    color=\"primary\"\r\n    igoCollapse\r\n    [target]=\"actions\"\r\n    [collapsed]=\"true\">\r\n    <mat-icon svgIcon=\"dots-horizontal\"></mat-icon>\r\n  </button>\r\n</mat-list-item>\r\n\r\n<div #actions class=\"igo-layer-actions-container\">\r\n  <div class=\"igo-col igo-col-100 igo-col-100-m\">\r\n    <mat-slider\r\n      id=\"opacity-slider\"\r\n      thumbLabel\r\n      tickInterval=\"5\"\r\n      step=\"5\"\r\n      [min]=\"0\"\r\n      [max]=\"100\"\r\n      [(ngModel)]=\"opacity\"\r\n      [matTooltip]=\"'igo.geo.layer.opacity' | translate\"\r\n      matTooltipShowDelay=\"500\"\r\n      tooltip-position=\"below\">\r\n    </mat-slider>\r\n  </div>\r\n\r\n  <div class=\"igo-col igo-col-100 igo-col-100-m\">\r\n    <div class=\"igo-layer-button-group\">\r\n      <button\r\n        color=\"primary\"\r\n        mat-icon-button\r\n        tooltip-position=\"below\"\r\n        matTooltipShowDelay=\"500\"\r\n        [matTooltip]=\"'igo.geo.layer.raiseLayer' | translate\"\r\n        [disabled]=\"!orderable || raiseDisabled\"\r\n        (click)=\"layer.map.raiseLayer(layer)\">\r\n        <mat-icon svgIcon=\"arrow-up\"></mat-icon>\r\n      </button>\r\n\r\n      <button\r\n        mat-icon-button\r\n        color=\"primary\"\r\n        tooltip-position=\"below\"\r\n        matTooltipShowDelay=\"500\"\r\n        [matTooltip]=\"'igo.geo.layer.lowerLayer' | translate\"\r\n        [disabled]=\"!orderable || lowerDisabled\"\r\n        (click)=\"layer.map.lowerLayer(layer)\">\r\n        <mat-icon svgIcon=\"arrow-down\"></mat-icon>\r\n      </button>\r\n\r\n      <button\r\n        *ngIf=\"removable === true\"\r\n        mat-icon-button\r\n        color=\"warn\"\r\n        tooltip-position=\"below\"\r\n        matTooltipShowDelay=\"500\"\r\n        [matTooltip]=\"'igo.geo.layer.removeLayer' | translate\"\r\n        (click)=\"layer.map.removeLayer(layer)\">\r\n        <mat-icon svgIcon=\"delete\"></mat-icon>\r\n      </button>\r\n      <ng-content select=\"[igoLayerItemToolbar]\"></ng-content>\r\n\r\n    </div>\r\n  </div>\r\n</div>\r\n\r\n<div #legend class=\"igo-layer-legend-container\">\r\n  <igo-layer-legend\r\n    *ngIf=\"showLegend$ | async\"\r\n    [layer]=\"layer\"\r\n    [updateLegendOnResolutionChange]=\"updateLegendOnResolutionChange\">\r\n  </igo-layer-legend>\r\n</div>\r\n",
                     changeDetection: ChangeDetectionStrategy.OnPush,
                     styles: [":host{overflow:hidden}.igo-layer-actions-container{width:100%;display:inline-block}.igo-layer-actions-container>div{text-align:center}.igo-layer-legend-container{padding-left:18px;width:calc(100% - 18px);display:inline-block}#opacity-slider{width:100%}.igo-layer-button-group{float:right;padding:0 3px}@media only screen and (max-width:450px),only screen and (max-height:450px){#opacity-slider{width:70%}.igo-layer-button-group{float:none}}mat-icon.disabled{color:rgba(0,0,0,.38)}.mat-badge-small .mat-badge-content{font-size:12px}"]
                 }] }
     ];
     /** @nocollapse */
-    LayerItemComponent.ctorParameters = function () { return [
-        { type: ChangeDetectorRef }
-    ]; };
+    LayerItemComponent.ctorParameters = function () { return []; };
     LayerItemComponent.propDecorators = {
         layer: [{ type: Input }],
         toggleLegendOnVisibilityChange: [{ type: Input }],
         expandLegendIfVisible: [{ type: Input }],
         updateLegendOnResolutionChange: [{ type: Input }],
         orderable: [{ type: Input }],
+        lowerDisabled: [{ type: Input }],
+        raiseDisabled: [{ type: Input }],
         queryBadge: [{ type: Input }]
     };
     return LayerItemComponent;
@@ -4334,8 +4333,7 @@ var LayerListService = /** @class */ (function () {
  */
 // TODO: This class could use a clean up. Also, some methods could be moved ealsewhere
 var LayerListComponent = /** @class */ (function () {
-    function LayerListComponent(cdRef, layerListService) {
-        this.cdRef = cdRef;
+    function LayerListComponent(layerListService) {
         this.layerListService = layerListService;
         this.hasLayerNotVisible = false;
         this.hasLayerOutOfRange = false;
@@ -4564,6 +4562,46 @@ var LayerListComponent = /** @class */ (function () {
         this.keyword = undefined;
     };
     /**
+     * @return {?}
+     */
+    LayerListComponent.prototype.getLowerLayer = /**
+     * @return {?}
+     */
+    function () {
+        return this.layers.filter((/**
+         * @param {?} l
+         * @return {?}
+         */
+        function (l) { return !l.baseLayer; })).reduce((/**
+         * @param {?} prev
+         * @param {?} current
+         * @return {?}
+         */
+        function (prev, current) {
+            return (prev.zIndex < current.zIndex) ? prev : current;
+        }));
+    };
+    /**
+     * @return {?}
+     */
+    LayerListComponent.prototype.getUpperLayer = /**
+     * @return {?}
+     */
+    function () {
+        return this.layers.filter((/**
+         * @param {?} l
+         * @return {?}
+         */
+        function (l) { return !l.baseLayer; })).reduce((/**
+         * @param {?} prev
+         * @param {?} current
+         * @return {?}
+         */
+        function (prev, current) {
+            return (prev.zIndex > current.zIndex) ? prev : current;
+        }));
+    };
+    /**
      * @private
      * @return {?}
      */
@@ -4736,21 +4774,6 @@ var LayerListComponent = /** @class */ (function () {
      * @private
      * @return {?}
      */
-    LayerListComponent.prototype.computeOrderable = /**
-     * @private
-     * @return {?}
-     */
-    function () {
-        if (this.onlyInRange || this.onlyVisible ||
-            this.sortedAlpha || this.keyword) {
-            return false;
-        }
-        return true;
-    };
-    /**
-     * @private
-     * @return {?}
-     */
     LayerListComponent.prototype.computeShowToolbar = /**
      * @private
      * @return {?}
@@ -4814,7 +4837,6 @@ var LayerListComponent = /** @class */ (function () {
      */
     function (layers) {
         this._layers = layers;
-        this.orderable = this.computeOrderable();
         if (this.excludeBaseLayers) {
             this.hasLayerNotVisible = layers.find((/**
              * @param {?} l
@@ -4843,14 +4865,13 @@ var LayerListComponent = /** @class */ (function () {
     LayerListComponent.decorators = [
         { type: Component, args: [{
                     selector: 'igo-layer-list',
-                    template: "<igo-list [navigation]=\"false\" [selection]=\"false\">\r\n  <mat-list-item *ngIf=\"showToolbar$ | async\">\r\n    <ng-container>\r\n      <mat-form-field class=\"inputFilter\" [floatLabel]=\"floatLabel\">\r\n        <input\r\n          matInput\r\n          [placeholder]=\"placeholder\"\r\n          [matTooltip]=\"'igo.geo.layer.subsetLayersListKeyword' | translate\"\r\n          matTooltipShowDelay=\"500\"\r\n          type=\"text\" [(ngModel)]=\"keyword\">\r\n        <button\r\n          mat-button\r\n          *ngIf=\"keyword\"\r\n          matSuffix\r\n          mat-icon-button\r\n          aria-label=\"Clear\"\r\n          color=\"warn\"\r\n          (click)=\"clearKeyword()\">\r\n          <mat-icon svgIcon=\"close\"></mat-icon>\r\n        </button>\r\n      </mat-form-field>\r\n      <button\r\n        *ngIf=\"!sortedAlpha\"\r\n        mat-icon-button\r\n        [matTooltip]=\"'igo.geo.layer.sortAlphabetically' | translate\"\r\n        matTooltipShowDelay=\"500\"\r\n        (click)=\"toggleSort(true)\">\r\n        <mat-icon color=\"primary\" svgIcon=\"sort-alphabetical\"></mat-icon>\r\n      </button>\r\n      <button\r\n        *ngIf=\"sortedAlpha\"\r\n        mat-icon-button\r\n        [matTooltip]=\"'igo.geo.layer.sortMapOrder' | translate\"\r\n        matTooltipShowDelay=\"500\"\r\n        (click)=\"toggleSort(false)\">\r\n        <mat-icon color=\"warn\" svgIcon=\"alert\"></mat-icon>\r\n      </button>\r\n      <button\r\n        mat-icon-button\r\n        [disabled]=\"!hasLayerNotVisible\"\r\n        [matTooltip]=\"onlyVisible ?\r\n        ('igo.geo.layer.resetLayersList' | translate) :\r\n        ('igo.geo.layer.subsetLayersListOnlyVisible' | translate)\"\r\n        matTooltipShowDelay=\"500\"\r\n        [color]=\"onlyVisible ? 'warn' : 'primary'\"\r\n        (click)=\"toggleOnlyVisible()\">\r\n        <mat-icon [svgIcon]=\"!onlyVisible ? 'eye' : 'alert'\"></mat-icon>\r\n      </button>\r\n      <button\r\n        mat-icon-button\r\n        [disabled]=\"!hasLayerOutOfRange\"\r\n        [matTooltip]=\"onlyInRange ?\r\n        ('igo.geo.layer.resetLayersList' | translate) :\r\n        ('igo.geo.layer.subsetLayersListOnlyInRange' | translate)\"\r\n        matTooltipShowDelay=\"500\"\r\n        [color]=\"onlyInRange ? 'warn' : 'primary'\"\r\n        (click)=\"toggleOnlyInRange()\">\r\n        <mat-icon [svgIcon]=\"!onlyInRange ? 'playlist-check' : 'alert'\"></mat-icon>\r\n      </button>\r\n    </ng-container>\r\n  </mat-list-item>\r\n\r\n  <ng-template ngFor let-layer [ngForOf]=\"layers$ | async\">\r\n    <igo-layer-item *ngIf=\"!(excludeBaseLayers && layer.baseLayer)\"\r\n        igoListItem\r\n        [layer]=\"layer\"\r\n        [orderable]=\"orderable\"\r\n        [queryBadge]=\"queryBadge\"\r\n        [expandLegendIfVisible]=\"expandLegendOfVisibleLayers\"\r\n        [updateLegendOnResolutionChange]=\"updateLegendOnResolutionChange\"\r\n        [toggleLegendOnVisibilityChange]=\"toggleLegendOnVisibilityChange\">\r\n\r\n        <ng-container igoLayerItemToolbar\r\n          [ngTemplateOutlet]=\"templateLayerToolbar\"\r\n          [ngTemplateOutletContext]=\"{layer: layer}\">\r\n        </ng-container>\r\n\r\n    </igo-layer-item>\r\n  </ng-template>\r\n</igo-list>\r\n",
+                    template: "<igo-list [navigation]=\"false\" [selection]=\"false\">\r\n  <mat-list-item *ngIf=\"showToolbar$ | async\">\r\n    <ng-container>\r\n      <mat-form-field class=\"inputFilter\" [floatLabel]=\"floatLabel\">\r\n        <input\r\n          matInput\r\n          [placeholder]=\"placeholder\"\r\n          [matTooltip]=\"'igo.geo.layer.subsetLayersListKeyword' | translate\"\r\n          matTooltipShowDelay=\"500\"\r\n          type=\"text\" [(ngModel)]=\"keyword\">\r\n        <button\r\n          mat-button\r\n          *ngIf=\"keyword\"\r\n          matSuffix\r\n          mat-icon-button\r\n          aria-label=\"Clear\"\r\n          color=\"warn\"\r\n          (click)=\"clearKeyword()\">\r\n          <mat-icon svgIcon=\"close\"></mat-icon>\r\n        </button>\r\n      </mat-form-field>\r\n      <button\r\n        *ngIf=\"!sortedAlpha\"\r\n        mat-icon-button\r\n        [matTooltip]=\"'igo.geo.layer.sortAlphabetically' | translate\"\r\n        matTooltipShowDelay=\"500\"\r\n        (click)=\"toggleSort(true)\">\r\n        <mat-icon color=\"primary\" svgIcon=\"sort-alphabetical\"></mat-icon>\r\n      </button>\r\n      <button\r\n        *ngIf=\"sortedAlpha\"\r\n        mat-icon-button\r\n        [matTooltip]=\"'igo.geo.layer.sortMapOrder' | translate\"\r\n        matTooltipShowDelay=\"500\"\r\n        (click)=\"toggleSort(false)\">\r\n        <mat-icon color=\"warn\" svgIcon=\"alert\"></mat-icon>\r\n      </button>\r\n      <button\r\n        mat-icon-button\r\n        [disabled]=\"!hasLayerNotVisible\"\r\n        [matTooltip]=\"onlyVisible ?\r\n        ('igo.geo.layer.resetLayersList' | translate) :\r\n        ('igo.geo.layer.subsetLayersListOnlyVisible' | translate)\"\r\n        matTooltipShowDelay=\"500\"\r\n        [color]=\"onlyVisible ? 'warn' : 'primary'\"\r\n        (click)=\"toggleOnlyVisible()\">\r\n        <mat-icon [svgIcon]=\"!onlyVisible ? 'eye' : 'alert'\"></mat-icon>\r\n      </button>\r\n      <button\r\n        mat-icon-button\r\n        [disabled]=\"!hasLayerOutOfRange\"\r\n        [matTooltip]=\"onlyInRange ?\r\n        ('igo.geo.layer.resetLayersList' | translate) :\r\n        ('igo.geo.layer.subsetLayersListOnlyInRange' | translate)\"\r\n        matTooltipShowDelay=\"500\"\r\n        [color]=\"onlyInRange ? 'warn' : 'primary'\"\r\n        (click)=\"toggleOnlyInRange()\">\r\n        <mat-icon [svgIcon]=\"!onlyInRange ? 'playlist-check' : 'alert'\"></mat-icon>\r\n      </button>\r\n    </ng-container>\r\n  </mat-list-item>\r\n\r\n  <ng-template ngFor let-layer let-i=\"index\" [ngForOf]=\"layers$ | async\">\r\n    <igo-layer-item *ngIf=\"!(excludeBaseLayers && layer.baseLayer)\"\r\n        igoListItem\r\n        [layer]=\"layer\"\r\n        [orderable]=\"orderable && !layer.baseLayer\"\r\n        [lowerDisabled]=\"getLowerLayer().id === layer.id\"\r\n        [raiseDisabled]=\"getUpperLayer().id === layer.id\"\r\n        [queryBadge]=\"queryBadge\"\r\n        [expandLegendIfVisible]=\"expandLegendOfVisibleLayers\"\r\n        [updateLegendOnResolutionChange]=\"updateLegendOnResolutionChange\"\r\n        [toggleLegendOnVisibilityChange]=\"toggleLegendOnVisibilityChange\">\r\n\r\n        <ng-container igoLayerItemToolbar\r\n          [ngTemplateOutlet]=\"templateLayerToolbar\"\r\n          [ngTemplateOutletContext]=\"{layer: layer}\">\r\n        </ng-container>\r\n\r\n    </igo-layer-item>\r\n  </ng-template>\r\n</igo-list>\r\n",
                     changeDetection: ChangeDetectionStrategy.OnPush,
                     styles: ["mat-form-field.inputFilter{width:calc(100% - 100px);max-width:200px}"]
                 }] }
     ];
     /** @nocollapse */
     LayerListComponent.ctorParameters = function () { return [
-        { type: ChangeDetectorRef },
         { type: LayerListService }
     ]; };
     LayerListComponent.propDecorators = {
@@ -5945,9 +5966,9 @@ FeatureStore = /** @class */ (function (_super) {
          * @param {?} olFeature
          * @return {?}
          */
-        function (olFeature) {
-            olFeature.set('_featureStore', _this, true);
-            return featureFromOl(olFeature, _this.layer.map.projection);
+        function (olFeature$$1) {
+            olFeature$$1.set('_featureStore', _this, true);
+            return featureFromOl(olFeature$$1, _this.layer.map.projection);
         }));
         this.load((/** @type {?} */ (features)));
     };
@@ -6015,8 +6036,8 @@ FeatureStore = /** @class */ (function (_super) {
          * @param {?} olFeature
          * @return {?}
          */
-        function (olFeature) {
-            olFeaturesMap.set(olFeature.getId(), olFeature);
+        function (olFeature$$1) {
+            olFeaturesMap.set(olFeature$$1.getId(), olFeature$$1);
         }));
         /** @type {?} */
         var olFeaturesToRemove = [];
@@ -6024,14 +6045,14 @@ FeatureStore = /** @class */ (function (_super) {
          * @param {?} olFeature
          * @return {?}
          */
-        function (olFeature) {
+        function (olFeature$$1) {
             /** @type {?} */
-            var newOlFeature = olFeaturesMap.get(olFeature.getId());
+            var newOlFeature = olFeaturesMap.get(olFeature$$1.getId());
             if (newOlFeature === undefined) {
-                olFeaturesToRemove.push(olFeature);
+                olFeaturesToRemove.push(olFeature$$1);
             }
-            else if (newOlFeature.get('_entityRevision') !== olFeature.get('_entityRevision')) {
-                olFeaturesToRemove.push(olFeature);
+            else if (newOlFeature.get('_entityRevision') !== olFeature$$1.get('_entityRevision')) {
+                olFeaturesToRemove.push(olFeature$$1);
             }
             else {
                 olFeaturesMap.delete(newOlFeature.getId());
@@ -6044,8 +6065,8 @@ FeatureStore = /** @class */ (function (_super) {
          * @param {?} olFeature
          * @return {?}
          */
-        function (olFeature) {
-            return olFeaturesToAddIds.indexOf(olFeature.getId()) >= 0;
+        function (olFeature$$1) {
+            return olFeaturesToAddIds.indexOf(olFeature$$1.getId()) >= 0;
         }));
         if (olFeaturesToRemove.length > 0) {
             this.removeOlFeaturesFromLayer(olFeaturesToRemove);
@@ -6084,8 +6105,8 @@ FeatureStore = /** @class */ (function (_super) {
          * @param {?} olFeature
          * @return {?}
          */
-        function (olFeature) {
-            olFeature.set('_featureStore', _this, true);
+        function (olFeature$$1) {
+            olFeature$$1.set('_featureStore', _this, true);
         }));
         this.source.ol.addFeatures(olFeatures);
     };
@@ -6111,8 +6132,8 @@ FeatureStore = /** @class */ (function (_super) {
          * @param {?} olFeature
          * @return {?}
          */
-        function (olFeature) {
-            _this.source.ol.removeFeature(olFeature);
+        function (olFeature$$1) {
+            _this.source.ol.removeFeature(olFeature$$1);
         }));
     };
     return FeatureStore;
@@ -6609,7 +6630,7 @@ FeatureStoreSelectionStrategy = /** @class */ (function (_super) {
          * @param {?} olFeature
          * @return {?}
          */
-        function (olFeature) { return olFeature.getId(); }));
+        function (olFeature$$1) { return olFeature$$1.getId(); }));
         /** @type {?} */
         var featuresKeys = features.map(this.overlayStore.getKey);
         /** @type {?} */
@@ -6747,9 +6768,9 @@ FeatureStoreSelectionStrategy = /** @class */ (function (_super) {
          * @param {?} olFeature
          * @return {?}
          */
-        function (olFeature) {
+        function (olFeature$$1) {
             /** @type {?} */
-            var store = olFeature.get('_featureStore');
+            var store = olFeature$$1.get('_featureStore');
             if (store === undefined) {
                 return;
             }
@@ -6760,7 +6781,7 @@ FeatureStoreSelectionStrategy = /** @class */ (function (_super) {
                 groupedFeatures.set(store, features);
             }
             /** @type {?} */
-            var feature = store.get(olFeature.getId());
+            var feature = store.get(olFeature$$1.getId());
             if (feature !== undefined) {
                 features.push(feature);
             }
@@ -6875,47 +6896,50 @@ function featureToOl(feature, projectionOut, getId) {
     /** @type {?} */
     var olFormat = new OlGeoJSON();
     /** @type {?} */
-    var olFeature = olFormat.readFeature(feature, {
+    var olFeature$$1 = olFormat.readFeature(feature, {
         dataProjection: feature.projection,
         featureProjection: projectionOut
     });
-    olFeature.setId(getId(feature));
+    olFeature$$1.setId(getId(feature));
     /** @type {?} */
     var title = getEntityTitle(feature);
     if (title !== undefined) {
-        olFeature.set('_title', title, true);
+        olFeature$$1.set('_title', title, true);
     }
     if (feature.extent !== undefined) {
-        olFeature.set('_extent', feature.extent, true);
+        olFeature$$1.set('_extent', feature.extent, true);
     }
     if (feature.projection !== undefined) {
-        olFeature.set('_projection', feature.projection, true);
+        olFeature$$1.set('_projection', feature.projection, true);
     }
     if (feature.extent !== undefined) {
-        olFeature.set('_extent', feature.extent, true);
+        olFeature$$1.set('_extent', feature.extent, true);
     }
     /** @type {?} */
     var mapTitle = getEntityProperty(feature, 'meta.mapTitle');
     if (mapTitle !== undefined) {
-        olFeature.set('_mapTitle', mapTitle, true);
+        olFeature$$1.set('_mapTitle', mapTitle, true);
     }
-    olFeature.set('_entityRevision', getEntityRevision(feature), true);
-    return olFeature;
+    olFeature$$1.set('_entityRevision', getEntityRevision(feature), true);
+    return olFeature$$1;
 }
 /**
  * Create a feature object out of an OL feature
  * The output object has a reference to the feature id.
  * @param {?} olFeature OL Feature
  * @param {?} projectionIn OL feature projection
+ * @param {?=} olLayer OL Layer
  * @param {?=} projectionOut Feature projection
  * @return {?} Feature
  */
-function featureFromOl(olFeature, projectionIn, projectionOut) {
+function featureFromOl(olFeature$$1, projectionIn, olLayer, projectionOut) {
     if (projectionOut === void 0) { projectionOut = 'EPSG:4326'; }
+    /** @type {?} */
+    var title;
     /** @type {?} */
     var olFormat = new OlGeoJSON();
     /** @type {?} */
-    var keys = olFeature.getKeys().filter((/**
+    var keys = olFeature$$1.getKeys().filter((/**
      * @param {?} key
      * @return {?}
      */
@@ -6929,29 +6953,33 @@ function featureFromOl(olFeature, projectionIn, projectionOut) {
      * @return {?}
      */
     function (acc, key) {
-        acc[key] = olFeature.get(key);
+        acc[key] = olFeature$$1.get(key);
         return acc;
     }), {});
     /** @type {?} */
-    var geometry = olFormat.writeGeometryObject(olFeature.getGeometry(), {
+    var geometry = olFormat.writeGeometryObject(olFeature$$1.getGeometry(), {
         dataProjection: projectionOut,
         featureProjection: projectionIn
     });
+    if (olLayer) {
+        title = olLayer.get('title');
+    }
+    else {
+        title = olFeature$$1.get('_title');
+    }
     /** @type {?} */
-    var title = olFeature.get('_title');
+    var mapTitle = olFeature$$1.get('_mapTitle');
     /** @type {?} */
-    var mapTitle = olFeature.get('_mapTitle');
-    /** @type {?} */
-    var id = olFeature.getId();
+    var id = olFeature$$1.getId();
     return {
         type: FEATURE,
         projection: projectionOut,
-        extent: olFeature.get('_extent'),
+        extent: olFeature$$1.get('_extent'),
         meta: {
             id: id,
             title: title ? title : (mapTitle ? mapTitle : id),
             mapTitle: mapTitle,
-            revision: olFeature.getRevision()
+            revision: olFeature$$1.getRevision()
         },
         properties: properties,
         geometry: geometry
@@ -6963,19 +6991,19 @@ function featureFromOl(olFeature, projectionIn, projectionOut) {
  * @param {?} olFeature OL feature
  * @return {?} Extent in the map projection
  */
-function computeOlFeatureExtent(map$$1, olFeature) {
+function computeOlFeatureExtent(map$$1, olFeature$$1) {
     /** @type {?} */
     var olExtent = createEmpty();
     /** @type {?} */
-    var olFeatureExtent = olFeature.get('_extent');
+    var olFeatureExtent = olFeature$$1.get('_extent');
     /** @type {?} */
-    var olFeatureProjection = olFeature.get('_projection');
+    var olFeatureProjection = olFeature$$1.get('_projection');
     if (olFeatureExtent !== undefined && olFeatureProjection !== undefined) {
         olExtent = transformExtent(olFeatureExtent, olFeatureProjection, map$$1.projection);
     }
     else {
         /** @type {?} */
-        var olGeometry = olFeature.getGeometry();
+        var olGeometry = olFeature$$1.getGeometry();
         if (olGeometry !== null) {
             olExtent = olGeometry.getExtent();
         }
@@ -6995,9 +7023,9 @@ function computeOlFeaturesExtent(map$$1, olFeatures) {
      * @param {?} olFeature
      * @return {?}
      */
-    function (olFeature) {
+    function (olFeature$$1) {
         /** @type {?} */
-        var featureExtent = computeOlFeatureExtent(map$$1, olFeature);
+        var featureExtent = computeOlFeatureExtent(map$$1, olFeature$$1);
         extend(extent, featureExtent);
     }));
     return extent;
@@ -7100,8 +7128,8 @@ function moveToOlFeatures(map$$1, olFeatures, motion, scale, areaRatio) {
  * @param {?} olFeature OL feature
  * @return {?}
  */
-function hideOlFeature(olFeature) {
-    olFeature.setStyle(new Style({}));
+function hideOlFeature(olFeature$$1) {
+    olFeature$$1.setStyle(new Style({}));
 }
 /**
  * Try to bind a layer to a store if none is bound already.
@@ -7199,17 +7227,24 @@ function createOverlayLayerStyle() {
     var defaultStyle = createOverlayDefaultStyle();
     /** @type {?} */
     var markerStyle = createOverlayMarkerStyle();
+    /** @type {?} */
+    var style$$1;
     return (/**
      * @param {?} olFeature
      * @return {?}
      */
-    function (olFeature) {
-        /** @type {?} */
-        var geometryType = olFeature.getGeometry().getType();
-        /** @type {?} */
-        var style$$1 = geometryType === 'Point' ? markerStyle : defaultStyle;
-        style$$1.getText().setText(olFeature.get('_mapTitle'));
-        return style$$1;
+    function (olFeature$$1) {
+        if (olFeature$$1.getId() === 'bufferFeature') {
+            style$$1 = createBufferStyle(olFeature$$1.get('bufferStroke'), 2, olFeature$$1.get('bufferFill'), olFeature$$1.get('bufferText'));
+            return style$$1;
+        }
+        else {
+            /** @type {?} */
+            var geometryType = olFeature$$1.getGeometry().getType();
+            style$$1 = geometryType === 'Point' ? markerStyle : defaultStyle;
+            style$$1.getText().setText(olFeature$$1.get('_mapTitle'));
+            return style$$1;
+        }
     });
 }
 /**
@@ -7271,6 +7306,43 @@ function createOverlayMarkerStyle(color) {
         }),
         text: new Text({
             font: '12px Calibri,sans-serif',
+            fill: new Fill({ color: '#000' }),
+            stroke: new Stroke({ color: '#fff', width: 3 }),
+            overflow: true
+        })
+    });
+}
+/**
+ * @param {?=} strokeRGBA
+ * @param {?=} strokeWidth
+ * @param {?=} fillRGBA
+ * @param {?=} bufferRadius
+ * @return {?}
+ */
+function createBufferStyle(strokeRGBA, strokeWidth, fillRGBA, bufferRadius) {
+    if (strokeRGBA === void 0) { strokeRGBA = [0, 161, 222, 1]; }
+    if (strokeWidth === void 0) { strokeWidth = 2; }
+    if (fillRGBA === void 0) { fillRGBA = [0, 161, 222, 0.15]; }
+    /** @type {?} */
+    var stroke = new Stroke({
+        width: strokeWidth,
+        color: strokeRGBA
+    });
+    /** @type {?} */
+    var fill = new Stroke({
+        color: fillRGBA
+    });
+    return new Style({
+        stroke: stroke,
+        fill: fill,
+        image: new Circle({
+            radius: 5,
+            stroke: stroke,
+            fill: fill
+        }),
+        text: new Text({
+            font: '12px Calibri,sans-serif',
+            text: bufferRadius,
             fill: new Fill({ color: '#000' }),
             stroke: new Stroke({ color: '#fff', width: 3 }),
             overflow: true
@@ -7409,13 +7481,13 @@ Overlay = /** @class */ (function () {
          */
         function (feature) {
             /** @type {?} */
-            var olFeature = featureToOl(feature, _this.map.projection);
+            var olFeature$$1 = featureToOl(feature, _this.map.projection);
             /** @type {?} */
-            var olGeometry = olFeature.getGeometry();
+            var olGeometry = olFeature$$1.getGeometry();
             if (olGeometry === null) {
                 return;
             }
-            olFeatures.push(olFeature);
+            olFeatures.push(olFeature$$1);
         }));
         this.addOlFeatures(olFeatures, motion);
     };
@@ -7436,9 +7508,9 @@ Overlay = /** @class */ (function () {
      * @param {?=} motion Optional: Apply this motion to the map view
      * @return {?}
      */
-    function (olFeature, motion) {
+    function (olFeature$$1, motion) {
         if (motion === void 0) { motion = FeatureMotion.Default; }
-        this.addOlFeature([olFeature], motion);
+        this.addOlFeatures([olFeature$$1], motion);
     };
     /**
      * Add OpenLayers features to the overlay and, optionally, move to them
@@ -8613,6 +8685,7 @@ IgoMap = /** @class */ (function () {
         });
         this.viewController.setOlMap(this.ol);
         this.overlay = new Overlay(this);
+        this.buffer = new Overlay(this);
     };
     /**
      * @param {?} id
@@ -8980,6 +9053,9 @@ IgoMap = /** @class */ (function () {
         var zIndexTo = layerTo.zIndex;
         /** @type {?} */
         var zIndexFrom = layer.zIndex;
+        if (zIndexTo < 10) {
+            return;
+        }
         layer.zIndex = zIndexTo;
         layerTo.zIndex = zIndexFrom;
         this.layers[to] = layer;
@@ -9148,7 +9224,7 @@ IgoMap = /** @class */ (function () {
             }
             /** @type {?} */
             var accuracy = geolocation.getAccuracy();
-            if (accuracy < 10000) {
+            if (accuracy < 4140000) {
                 /** @type {?} */
                 var geometry = geolocation.getAccuracyGeometry();
                 /** @type {?} */
@@ -9157,9 +9233,34 @@ IgoMap = /** @class */ (function () {
                     _this.overlay.dataSource.ol.getFeatureById(_this.geolocationFeature.getId())) {
                     _this.overlay.dataSource.ol.removeFeature(_this.geolocationFeature);
                 }
-                _this.geolocationFeature = new OlFeature({ geometry: geometry });
+                _this.geolocationFeature = new olFeature({ geometry: geometry });
                 _this.geolocationFeature.setId('geolocationFeature');
-                _this.overlay.addFeature(_this.geolocationFeature);
+                _this.overlay.addOlFeature(_this.geolocationFeature);
+                if (_this.ol.getView().options_.buffer) {
+                    /** @type {?} */
+                    var bufferRadius = _this.ol.getView().options_.buffer.bufferRadius;
+                    /** @type {?} */
+                    var coordinates = geolocation.getPosition();
+                    _this.bufferGeom = new olCircle(coordinates, bufferRadius);
+                    /** @type {?} */
+                    var bufferStroke = _this.ol.getView().options_.buffer.bufferStroke;
+                    /** @type {?} */
+                    var bufferFill = _this.ol.getView().options_.buffer.bufferFill;
+                    /** @type {?} */
+                    var bufferText = void 0;
+                    if (_this.ol.getView().options_.buffer.showBufferRadius) {
+                        bufferText = bufferRadius.toString() + 'm';
+                    }
+                    else {
+                        bufferText = '';
+                    }
+                    _this.bufferFeature = new olFeature(_this.bufferGeom);
+                    _this.bufferFeature.setId('bufferFeature');
+                    _this.bufferFeature.set('bufferStroke', bufferStroke);
+                    _this.bufferFeature.set('bufferFill', bufferFill);
+                    _this.bufferFeature.set('bufferText', bufferText);
+                    _this.buffer.addOlFeature(_this.bufferFeature);
+                }
                 if (first) {
                     _this.viewController.zoomToExtent(extent);
                 }
@@ -9325,7 +9426,7 @@ var MapBrowserComponent = /** @class */ (function () {
         { type: Component, args: [{
                     selector: 'igo-map-browser',
                     template: "<div [id]=\"id\" class=\"igo-map-browser-target\"></div>\r\n<ng-content></ng-content>\r\n",
-                    styles: [":host{position:relative;display:block}.igo-map-browser-target,:host{width:100%;height:100%}:host>>>igo-zoom-button{position:absolute;bottom:5px;right:5px}:host>>>igo-geolocate-button{position:absolute;bottom:95px;right:5px}:host>>>igo-rotation-button{position:absolute;top:calc(40px + 5px + 5px);right:5px}:host>>>igo-user-button{position:absolute;bottom:5px;right:calc(5px + 50px)}:host>>>igo-baselayers-switcher{position:absolute;bottom:5px;left:5px}:host.igo-attribution-offset>>>.ol-attribution{left:90px;width:calc(100% - 200px)}@media only screen and (max-width:450px),only screen and (max-height:450px){:host>>>igo-zoom-button{display:none}:host>>>igo-geolocate-button{bottom:5px}:host>>>igo-rotation-button{top:calc(40px + 5px + 5px)}:host>>>igo-user-button{right:calc(5px + 90px)}:host.igo-attribution-offset>>>.ol-attribution{left:50px}}:host>>>.ol-attribution{left:5px;bottom:5px;text-align:left;padding:0;margin-right:90px;background-color:rgba(255,255,255,0);width:calc(100% - 100px)}:host>>>.ol-attribution.ol-logo-only{height:inherit}:host>>>.ol-attribution.ol-collapsed{background:0 0}:host>>>.ol-attribution.ol-collapsed button{-webkit-transform:none;transform:none}:host>>>.ol-attribution button{-webkit-transform:rotate(180deg);transform:rotate(180deg);background-color:#fff;cursor:pointer}:host>>>.ol-scale-line-inner{color:#000;border-color:#000}:host>>>.ol-scale-line{background-color:rgba(255,255,255,0);bottom:4px;-webkit-transform:translate(-50%);transform:translate(-50%);left:50%}:host>>>canvas{display:block}"]
+                    styles: [":host{position:relative;display:block}.igo-map-browser-target,:host{width:100%;height:100%}:host>>>igo-zoom-button{position:absolute;bottom:5px;right:5px}:host>>>igo-geolocate-button{position:absolute;bottom:95px;right:5px}:host>>>igo-rotation-button{position:absolute;top:calc(40px + 5px + 5px);right:5px}:host>>>igo-user-button{position:absolute;bottom:5px;right:calc(5px + 50px)}:host>>>igo-baselayers-switcher{position:absolute;bottom:5px;left:5px}:host.igo-attribution-offset>>>.ol-attribution{left:90px;width:calc(100% - 200px)}@media only screen and (max-width:450px),only screen and (max-height:450px){:host>>>igo-zoom-button{display:none}:host>>>igo-geolocate-button{bottom:5px}:host>>>igo-rotation-button{top:calc(40px + 5px + 5px)}:host>>>igo-user-button{right:calc(5px + 90px)}:host.igo-attribution-offset>>>.ol-attribution{left:50px}}:host>>>.ol-attribution{left:5px;bottom:5px;text-align:left;padding:0;margin-right:90px;background-color:rgba(255,255,255,0);width:calc(100% - 100px)}:host>>>.ol-attribution.ol-logo-only{height:inherit}:host>>>.ol-attribution.ol-collapsed{background:0 0}:host>>>.ol-attribution.ol-collapsed button{transform:none}:host>>>.ol-attribution button{transform:rotate(180deg);background-color:#fff;cursor:pointer}:host>>>.ol-scale-line-inner{color:#000;border-color:#000}:host>>>.ol-scale-line{background-color:rgba(255,255,255,0);bottom:4px;transform:translate(-50%);left:50%}:host>>>canvas{display:block}"]
                 }] }
     ];
     /** @nocollapse */
@@ -9371,7 +9472,6 @@ var MapOfflineDirective = /** @class */ (function () {
          * @return {?}
          */
         function (state$$1) {
-            console.log(state$$1);
             _this.state = state$$1;
             _this.changeLayer();
         }));
@@ -9413,22 +9513,36 @@ var MapOfflineDirective = /** @class */ (function () {
                 sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
             }
             else {
-                return;
+                if (_this.state.connection === false) {
+                    layer.ol.setMaxResolution(0);
+                    return;
+                }
+                else if (_this.state.connection === true) {
+                    layer.ol.setMaxResolution(Infinity);
+                    return;
+                }
             }
             if (sourceOptions.pathOffline &&
                 _this.state.connection === false) {
-                if (sourceOptions.excludeAttributeOffline) {
-                    sourceOptions.excludeAttributeBackUp = sourceOptions.excludeAttribute;
-                    sourceOptions.excludeAttribute = sourceOptions.excludeAttributeOffline;
+                if (sourceOptions.type === 'vector') {
+                    return;
                 }
                 layer.ol.getSource().setUrl(sourceOptions.pathOffline);
             }
             else if (sourceOptions.pathOffline &&
                 _this.state.connection === true) {
-                if (sourceOptions.excludeAttributeBackUp) {
-                    sourceOptions.excludeAttribute = sourceOptions.excludeAttributeBackUp;
+                if (sourceOptions.type === 'vector') {
+                    return;
                 }
                 layer.ol.getSource().setUrl(sourceOptions.url);
+            }
+            else {
+                if (_this.state.connection === false) {
+                    layer.ol.setMaxResolution(0);
+                }
+                else if (_this.state.connection === true) {
+                    layer.ol.setMaxResolution(Infinity);
+                }
             }
         }));
     };
@@ -9789,8 +9903,9 @@ var BaseLayersSwitcherComponent = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var MiniBaseMapComponent = /** @class */ (function () {
-    function MiniBaseMapComponent(layerService) {
+    function MiniBaseMapComponent(layerService, appRef) {
         this.layerService = layerService;
+        this.appRef = appRef;
         this.basemap = new IgoMap({
             controls: {},
             interactions: false
@@ -9906,6 +10021,7 @@ var MiniBaseMapComponent = /** @class */ (function () {
             return;
         }
         this.map.changeBaseLayer(baseLayer);
+        this.appRef.tick();
     };
     /**
      * @private
@@ -9946,7 +10062,8 @@ var MiniBaseMapComponent = /** @class */ (function () {
     ];
     /** @nocollapse */
     MiniBaseMapComponent.ctorParameters = function () { return [
-        { type: LayerService }
+        { type: LayerService },
+        { type: ApplicationRef }
     ]; };
     MiniBaseMapComponent.propDecorators = {
         map: [{ type: Input }],
@@ -12759,19 +12876,31 @@ var QueryDirective = /** @class */ (function () {
     function (event) {
         var _this = this;
         /** @type {?} */
-        var olFeatures = event.map.getFeaturesAtPixel(event.pixel, {
+        var feature;
+        /** @type {?} */
+        var clickedFeatures = [];
+        this.map.ol.forEachFeatureAtPixel(event.pixel, (/**
+         * @param {?} featureOL
+         * @param {?} layerOL
+         * @return {?}
+         */
+        function (featureOL, layerOL) {
+            if (featureOL) {
+                if (featureOL.get('features')) {
+                    featureOL = featureOL.get('features')[0];
+                }
+                feature = featureFromOl(featureOL, _this.map.projection, layerOL);
+                clickedFeatures.push(feature);
+            }
+            else {
+                feature = featureFromOl(featureOL, _this.map.projection, layerOL);
+                clickedFeatures.push(feature);
+            }
+        }), {
             hitTolerance: this.queryFeaturesHitTolerance || 0,
             layerFilter: this.queryFeaturesCondition ? this.queryFeaturesCondition : olLayerIsQueryable
         });
-        /** @type {?} */
-        var features = (olFeatures || []).map((/**
-         * @param {?} olFeature
-         * @return {?}
-         */
-        function (olFeature) {
-            return featureFromOl(olFeature, _this.map.projection);
-        }));
-        return of(features);
+        return of(clickedFeatures);
     };
     /**
      * Cancel ongoing requests, if any
@@ -15235,9 +15364,19 @@ var IgoDownloadModule = /** @class */ (function () {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var FeatureDetailsComponent = /** @class */ (function () {
-    function FeatureDetailsComponent(cdRef, sanitizer) {
+    function FeatureDetailsComponent(cdRef, sanitizer, networkService, mapService) {
+        var _this = this;
         this.cdRef = cdRef;
         this.sanitizer = sanitizer;
+        this.networkService = networkService;
+        this.mapService = mapService;
+        this.networkService.currentState().subscribe((/**
+         * @param {?} state
+         * @return {?}
+         */
+        function (state$$1) {
+            _this.state = state$$1;
+        }));
     }
     Object.defineProperty(FeatureDetailsComponent.prototype, "feature", {
         get: /**
@@ -15332,10 +15471,17 @@ var FeatureDetailsComponent = /** @class */ (function () {
      * @return {?}
      */
     function (feature) {
+        var _this = this;
+        /** @type {?} */
+        var sourceOptions;
         /** @type {?} */
         var allowedFieldsAndAlias = feature.meta ? feature.meta.alias : undefined;
         /** @type {?} */
         var properties = Object.assign({}, feature.properties);
+        /** @type {?} */
+        var layerName = feature.meta.title;
+        /** @type {?} */
+        var layers = this.mapService.getMap().layers$.value;
         if (allowedFieldsAndAlias) {
             Object.keys(properties).forEach((/**
              * @param {?} property
@@ -15355,13 +15501,57 @@ var FeatureDetailsComponent = /** @class */ (function () {
             return properties;
         }
         else {
+            layers.forEach((/**
+             * @param {?} layer
+             * @return {?}
+             */
+            function (layer) {
+                if (layer.dataSource.options.type === 'mvt') {
+                    sourceOptions = ((/** @type {?} */ (layer.dataSource.options)));
+                }
+                else if (layer.dataSource.options.type === 'xyz') {
+                    sourceOptions = ((/** @type {?} */ (layer.dataSource.options)));
+                }
+                else if (layer.dataSource.options.type === 'vector') {
+                    sourceOptions = ((/** @type {?} */ (layer.dataSource.options)));
+                }
+                else {
+                    return;
+                }
+                if (_this.state.connection && sourceOptions.excludeAttribute) {
+                    /** @type {?} */
+                    var exclude = sourceOptions.excludeAttribute;
+                    exclude.forEach((/**
+                     * @param {?} attribute
+                     * @return {?}
+                     */
+                    function (attribute) {
+                        if (layerName === layer.title) {
+                            delete feature.properties[attribute];
+                        }
+                    }));
+                }
+                else if (!_this.state.connection && sourceOptions.excludeAttributeOffline) {
+                    /** @type {?} */
+                    var excludeAttributeOffline = sourceOptions.excludeAttributeOffline;
+                    excludeAttributeOffline.forEach((/**
+                     * @param {?} attribute
+                     * @return {?}
+                     */
+                    function (attribute) {
+                        if (layerName === layer.title) {
+                            delete feature.properties[attribute];
+                        }
+                    }));
+                }
+            }));
             return feature.properties;
         }
     };
     FeatureDetailsComponent.decorators = [
         { type: Component, args: [{
                     selector: 'igo-feature-details',
-                    template: "<table class=\"igo-striped\" *ngIf=\"feature && isObject(feature.properties) && feature.properties.target !== 'iframe'\">\r\n  <tbody>\r\n    <tr *ngFor=\"let property of filterFeatureProperties(feature) | keyvalue\">\r\n\r\n      <td *ngIf=\"feature.properties.target === '_blank' && property.key === 'url'\">\r\n        <mat-icon mat-list-avatar svgIcon=\"{{icon}}\"></mat-icon>\r\n      </td>\r\n\r\n      <td *ngIf=\"feature.properties.target === '_blank' && property.key === 'url'\">\r\n        <a href=\"{{property.value}}\" target='_blank'> {{ 'igo.geo.targetHtmlUrl' | translate }} {{title}}</a>\r\n      </td>\r\n\r\n      <td *ngIf=\"feature.properties.target === undefined\">\r\n        {{property.key }}\r\n      </td>\r\n\r\n      <td *ngIf=\"feature.properties.target === undefined && !isObject(property.value) && !isUrl(property.value)\" [innerHTML]=property.value>\r\n      </td>\r\n\r\n      <td *ngIf=\"feature.properties.target === undefined && !isObject(property.value) && isUrl(property.value)\">\r\n        <a href=\"{{property.value}}\" target='_blank'>{{ 'igo.geo.targetHtmlUrl' | translate }} </a>\r\n      </td>\r\n\r\n      <td *ngIf=\"feature.properties.target === undefined && isObject(property.value)\" [innerHTML]=\"property.value | json\">\r\n      </td>\r\n\r\n    </tr>\r\n  </tbody>\r\n</table>\r\n<iframe *ngIf=\"feature && isObject(feature.properties) && feature.properties.target === 'iframe'\" [src]='htmlSanitizer(feature.properties.url)'></iframe>\r\n",
+                    template: "<table class=\"igo-striped\" *ngIf=\"feature && isObject(feature.properties) && feature.properties.target !== 'iframe'\">\r\n  <tbody>\r\n    <tr *ngFor=\"let property of filterFeatureProperties(feature) | keyvalue\">\r\n\r\n      <td *ngIf=\"feature.properties.target === '_blank' && property.key === 'url'\">\r\n        <mat-icon mat-list-avatar svgIcon=\"{{icon}}\"></mat-icon>\r\n      </td>\r\n\r\n      <td *ngIf=\"feature.properties.target === '_blank' && property.key === 'url'\">\r\n        <a href=\"{{property.value}}\" target='_blank'> {{ 'igo.geo.targetHtmlUrl' | translate }} {{title}}</a>\r\n      </td>\r\n\r\n      <td *ngIf=\"feature.properties.target === undefined\">\r\n        {{property.key }}\r\n      </td>\r\n\r\n      <td *ngIf=\"feature.properties.target === undefined && !isObject(property.value) && !isUrl(property.value)\" [innerHTML]=property.value>\r\n      </td>\r\n\r\n      <td *ngIf=\"feature.properties.target === undefined && !isObject(property.value) && isUrl(property.value)\">\r\n        <a href=\"{{property.value}}\" target='_blank'>{{ 'igo.geo.targetHtmlUrl' | translate }} </a>\r\n      </td>\r\n\r\n      <td *ngIf=\"feature.properties.target === undefined && isObject(property.value)\" [innerHTML]=\"property.value | json\">\r\n      </td>\r\n\r\n    </tr>\r\n  </tbody>\r\n</table>\r\n\r\n<iframe *ngIf=\"feature && isObject(feature.properties) && feature.properties.target === 'iframe'\" [src]='htmlSanitizer(feature.properties.url)'></iframe>\r\n",
                     changeDetection: ChangeDetectionStrategy.OnPush,
                     styles: ["table{width:100%;white-space:nowrap}table td{padding:5px}iframe{height:calc(100% - 4px);width:100%;border:0}"]
                 }] }
@@ -15369,7 +15559,9 @@ var FeatureDetailsComponent = /** @class */ (function () {
     /** @nocollapse */
     FeatureDetailsComponent.ctorParameters = function () { return [
         { type: ChangeDetectorRef },
-        { type: DomSanitizer }
+        { type: DomSanitizer },
+        { type: NetworkService },
+        { type: MapService }
     ]; };
     FeatureDetailsComponent.propDecorators = {
         feature: [{ type: Input }]
@@ -19250,9 +19442,9 @@ ModifyControl = /** @class */ (function () {
      */
     function (olGeometry) {
         /** @type {?} */
-        var olFeature = new OlFeature({ geometry: olGeometry });
+        var olFeature$$1 = new olFeature({ geometry: olGeometry });
         this.olOverlaySource.clear();
-        this.olOverlaySource.addFeature(olFeature);
+        this.olOverlaySource.addFeature(olFeature$$1);
     };
     /**
      * Create an overlay source if none is defined in the options
@@ -20201,9 +20393,9 @@ SliceControl = /** @class */ (function () {
      */
     function (olGeometry) {
         /** @type {?} */
-        var olFeature = new OlFeature({ geometry: olGeometry });
+        var olFeature$$1 = new olFeature({ geometry: olGeometry });
         this.olOverlaySource.clear();
-        this.olOverlaySource.addFeature(olFeature);
+        this.olOverlaySource.addFeature(olFeature$$1);
     };
     /**
      * Create an overlay source if none is defined in the options
@@ -20383,14 +20575,14 @@ SliceControl = /** @class */ (function () {
              * @param {?} olFeature
              * @return {?}
              */
-            function (olFeature) {
+            function (olFeature$$1) {
                 /** @type {?} */
-                var olGeometry = olFeature.getGeometry();
+                var olGeometry = olFeature$$1.getGeometry();
                 /** @type {?} */
                 var olParts = sliceOlGeometry(olGeometry, olLine);
                 if (olParts.length > 0) {
                     olSlicedGeometries.push.apply(olSlicedGeometries, __spread(olParts));
-                    olFeaturesToRemove.push(olFeature);
+                    olFeaturesToRemove.push(olFeature$$1);
                 }
             }));
         }
@@ -20408,13 +20600,13 @@ SliceControl = /** @class */ (function () {
          * @param {?} olGeometry
          * @return {?}
          */
-        function (olGeometry) { return new OlFeature(olGeometry); })));
+        function (olGeometry) { return new olFeature(olGeometry); })));
         olFeaturesToRemove.forEach((/**
          * @param {?} olFeature
          * @return {?}
          */
-        function (olFeature) {
-            _this.olOverlaySource.removeFeature(olFeature);
+        function (olFeature$$1) {
+            _this.olOverlaySource.removeFeature(olFeature$$1);
         }));
         this.error$.next(undefined);
         this.end$.next(olSlicedGeometries);
@@ -20889,18 +21081,18 @@ var MeasurerComponent = /** @class */ (function () {
             /** @type {?} */
             var olFeatures = this.store.layer.ol.getSource().getFeatures();
             /** @type {?} */
-            var olFeature = olFeatures.find((/**
+            var olFeature$$1 = olFeatures.find((/**
              * @param {?} _olFeature
              * @return {?}
              */
             function (_olFeature) {
                 return _olFeature.get('id') === feature_1.properties.id;
             }));
-            if (olFeature !== undefined) {
+            if (olFeature$$1 !== undefined) {
                 this.deactivateDrawControl();
                 this.activateModifyControl();
                 /** @type {?} */
-                var olGeometry = olFeature.getGeometry();
+                var olGeometry = olFeature$$1.getGeometry();
                 this.clearTooltipsOfOlGeometry(olGeometry);
                 this.modifyControl.setOlGeometry(olGeometry);
             }
@@ -21622,8 +21814,8 @@ var MeasurerComponent = /** @class */ (function () {
          * @param {?} olFeature
          * @return {?}
          */
-        function (olFeature) {
-            _this.updateTooltipsOfOlGeometry(olFeature.getGeometry());
+        function (olFeature$$1) {
+            _this.updateTooltipsOfOlGeometry(olFeature$$1.getGeometry());
         }));
     };
     /**
@@ -21647,8 +21839,8 @@ var MeasurerComponent = /** @class */ (function () {
          * @param {?} olFeature
          * @return {?}
          */
-        function (olFeature) {
-            _this.showTooltipsOfOlGeometry(olFeature.getGeometry());
+        function (olFeature$$1) {
+            _this.showTooltipsOfOlGeometry(olFeature$$1.getGeometry());
         }));
     };
     /**
@@ -21673,11 +21865,11 @@ var MeasurerComponent = /** @class */ (function () {
          * @param {?} olFeature
          * @return {?}
          */
-        function (olFeature) {
+        function (olFeature$$1) {
             /** @type {?} */
-            var olGeometry = olFeature.getGeometry();
+            var olGeometry = olFeature$$1.getGeometry();
             if (olGeometry !== undefined) {
-                _this.clearTooltipsOfOlGeometry(olFeature.getGeometry());
+                _this.clearTooltipsOfOlGeometry(olFeature$$1.getGeometry());
             }
         }));
     };
@@ -22168,7 +22360,7 @@ var GeometryFormFieldInputComponent = /** @class */ (function () {
              * @param {?} resolution
              * @return {?}
              */
-            function (olFeature, resolution) {
+            function (olFeature$$1, resolution) {
                 /** @type {?} */
                 var style$$1 = _this.drawStyle;
                 _this.updateDrawStyleWithDrawGuide(style$$1, resolution);
@@ -22198,7 +22390,7 @@ var GeometryFormFieldInputComponent = /** @class */ (function () {
              * @param {?} resolution
              * @return {?}
              */
-            function (olFeature, resolution) {
+            function (olFeature$$1, resolution) {
                 /** @type {?} */
                 var style$$1 = _this.drawStyle;
                 _this.updateDrawStyleWithDrawGuide(style$$1, resolution);
@@ -22383,12 +22575,12 @@ var GeometryFormFieldInputComponent = /** @class */ (function () {
             featureProjection: this.map.projection
         });
         /** @type {?} */
-        var olFeature = new OlFeature({
+        var olFeature$$1 = new olFeature({
             geometry: olGeometry
         });
-        olFeature.setStyle(this.overlayStyle);
+        olFeature$$1.setStyle(this.overlayStyle);
         this.olOverlaySource.clear();
-        this.olOverlaySource.addFeature(olFeature);
+        this.olOverlaySource.addFeature(olFeature$$1);
     };
     /**
      * Create the measure tooltip
@@ -22793,9 +22985,9 @@ var ExportService = /** @class */ (function () {
          * @param {?} olFeature
          * @return {?}
          */
-        function (olFeature) {
+        function (olFeature$$1) {
             /** @type {?} */
-            var keys = olFeature.getKeys().filter((/**
+            var keys = olFeature$$1.getKeys().filter((/**
              * @param {?} key
              * @return {?}
              */
@@ -22807,10 +22999,10 @@ var ExportService = /** @class */ (function () {
              * @return {?}
              */
             function (acc, key) {
-                acc[key] = olFeature.get(key);
+                acc[key] = olFeature$$1.get(key);
                 return acc;
-            }), { geometry: olFeature.getGeometry() });
-            return new OlFeature(properties);
+            }), { geometry: olFeature$$1.getGeometry() });
+            return new olFeature(properties);
         }));
         return this.exportAsync(exportOlFeatures, format, title, projectionIn, projectionOut);
     };
@@ -22984,8 +23176,8 @@ var ExportService = /** @class */ (function () {
              * @param {?} olFeature
              * @return {?}
              */
-            function (olFeature) {
-                return ['Point', 'LineString'].indexOf(olFeature.getGeometry().getType()) >= 0;
+            function (olFeature$$1) {
+                return ['Point', 'LineString'].indexOf(olFeature$$1.getGeometry().getType()) >= 0;
             }));
             return pointOrLine === undefined;
         }
@@ -23435,8 +23627,8 @@ var ImportService = /** @class */ (function () {
          * @param {?} olFeature
          * @return {?}
          */
-        function (olFeature) {
-            return Object.assign(GeoJSON$$1.writeFeatureObject(olFeature), {
+        function (olFeature$$1) {
+            return Object.assign(GeoJSON$$1.writeFeatureObject(olFeature$$1), {
                 projection: projectionOut,
                 meta: {
                     id: uuid(),
@@ -23470,8 +23662,8 @@ var ImportService = /** @class */ (function () {
          * @param {?} olFeature
          * @return {?}
          */
-        function (olFeature) {
-            return Object.assign(olFormat.writeFeatureObject(olFeature), {
+        function (olFeature$$1) {
+            return Object.assign(olFormat.writeFeatureObject(olFeature$$1), {
                 projection: projectionOut,
                 meta: {
                     id: uuid(),
@@ -26341,7 +26533,7 @@ var SearchService = /** @class */ (function () {
         if (response.lonLat) {
             return this.reverseSearch(response.lonLat);
         }
-        else {
+        else if (response.message) {
             console.log(response.message);
         }
         /** @type {?} */
@@ -27631,7 +27823,7 @@ var RoutingFormComponent = /** @class */ (function () {
         /** @type {?} */
         var geometry = new Point(lastPoint);
         /** @type {?} */
-        var feature = new OlFeature({ geometry: geometry });
+        var feature = new olFeature({ geometry: geometry });
         feature.setId('endSegment');
         if (geometry === null) {
             return;
@@ -27679,7 +27871,7 @@ var RoutingFormComponent = /** @class */ (function () {
         var geometry3857 = geometry4326.transform('EPSG:4326', 'EPSG:3857');
         this.routingRoutesOverlayDataSource.ol.clear();
         /** @type {?} */
-        var routingFeature = new OlFeature({ geometry: geometry3857 });
+        var routingFeature = new olFeature({ geometry: geometry3857 });
         routingFeature.setStyle([
             new Style({
                 stroke: new Stroke({ color: '#6a7982', width: 10 })
@@ -28177,7 +28369,7 @@ var RoutingFormComponent = /** @class */ (function () {
         /** @type {?} */
         var geometry = new Point(transform(coordinates, this.projection, this.map.projection));
         /** @type {?} */
-        var feature = new OlFeature({ geometry: geometry });
+        var feature = new olFeature({ geometry: geometry });
         /** @type {?} */
         var stopID = this.getStopOverlayID(index);
         this.deleteRoutingOverlaybyID(stopID);
@@ -28271,7 +28463,7 @@ var RoutingFormComponent = /** @class */ (function () {
         { type: Component, args: [{
                     selector: 'igo-routing-form',
                     template: "<form class=\"igo-form\" [formGroup]=\"stopsForm\">\r\n  <!-- <div class=\"igo-form-button-group\">\r\n\r\n  </div> -->\r\n  <div #inputs formArrayName=\"stops\" *ngFor=\"let stop of stops.controls; let i = index;\">\r\n    <mat-list-item [formGroupName]=\"i\">\r\n\r\n      <div class=\"igo-input-container\">\r\n        <button *ngIf=\"map.geolocationFeature\" mat-icon-button tooltip-position=\"below\" matTooltipShowDelay=\"500\" [matTooltip]=\"'igo.geo.routingForm.geolocate' | translate\" (click)=\"geolocateStop(i)\">\r\n          <mat-icon svgIcon=\"crosshairs-gps\"></mat-icon>\r\n        </button>\r\n        <mat-form-field>\r\n          <input matInput formControlName=\"stopPoint\" [matAutocomplete]=\"auto\" placeholder=\"{{'igo.geo.routingForm.'+stop.value.routingText | translate}}\"\r\n            (focus)=\"focus(i)\" (keyup)=\"keyup(i,$event)\">\r\n\r\n          <mat-autocomplete #auto=\"matAutocomplete\">\r\n            <mat-optgroup *ngFor=\"let source of stop.value.stopProposals\" [label]=\"source.source\" [disabled]=\"source.disabled\">\r\n              <mat-option *ngFor=\"let result of source.results\" [value]=\"result.title\" (onSelectionChange)=\"chooseProposal(result,i)\">\r\n                {{ result.title }}\r\n              </mat-option>\r\n            </mat-optgroup>\r\n          </mat-autocomplete>\r\n        </mat-form-field>\r\n        <button mat-button *ngIf=\"stop.value && (stop.value.stopPoint.length>0 || stop.value.stopProposals.length>0)\" matSuffix mat-icon-button\r\n          aria-label=\"Clear\" (click)=\"clearStop(i)\">\r\n          <mat-icon svgIcon=\"close\"></mat-icon>\r\n        </button>\r\n        <!-- <div class=\"igo-form-button-group\"> -->\r\n\r\n\r\n          <!-- <button *ngIf=\"i !== 0\" mat-icon-button tooltip-position=\"below\" matTooltipShowDelay=\"500\" [matTooltip]=\"'igo.geo.routingForm.raiseStop' | translate\"\r\n            [color]=\"color\" (click)=\"raiseStop(i)\">\r\n            <mat-icon svgIcon=\"arrow-upward\"></mat-icon>\r\n          </button>\r\n          <button *ngIf=\"i !== stops.length - 1\" mat-icon-button tooltip-position=\"below\" matTooltipShowDelay=\"500\" [matTooltip]=\"'igo.geo.routingForm.lowerStop' | translate\"\r\n            [color]=\"color\" (click)=\"lowerStop(i)\">\r\n            <mat-icon svgIcon=\"arrow-downward\"></mat-icon>\r\n          </button> -->\r\n\r\n          <button *ngIf=\"i !== 0 && i !== stops.length - 1\" mat-icon-button tooltip-position=\"below\" matTooltipShowDelay=\"500\" [matTooltip]=\"'igo.geo.routingForm.removeStop' | translate\"\r\n            color=\"warn\" (click)=\"removeStop(i)\">\r\n            <mat-icon svgIcon=\"delete\"></mat-icon>\r\n          </button>\r\n        <!-- </div> -->\r\n      </div>\r\n\r\n    </mat-list-item>\r\n  </div>\r\n  <div class=\"igo-form-button-group\">\r\n    <button mat-icon-button tooltip-position=\"below\" matTooltipShowDelay=\"500\"\r\n      [matTooltip]=\"'igo.geo.routingForm.zoomRoute' | translate\"\r\n      *ngIf=\"routesResults\" color=\"primary\" (click)=\"zoomRoute()\">\r\n      <mat-icon svgIcon=\"zoom-in\"></mat-icon>\r\n    </button>\r\n      <button mat-icon-button tooltip-position=\"below\" matTooltipShowDelay=\"500\" [matTooltip]=\"'igo.geo.routingForm.addStop' | translate\"\r\n      color=\"primary\" (click)=\"addStop()\">\r\n      <mat-icon svgIcon=\"map-marker-plus\"></mat-icon>\r\n    </button>\r\n    <button mat-icon-button tooltip-position=\"below\" matTooltipShowDelay=\"500\" [matTooltip]=\"'igo.geo.routingForm.resetRoutingBtn' | translate\"\r\n      *ngIf=\"routesResults\" color=\"warn\" (click)=\"resetForm()\">\r\n      <mat-icon svgIcon=\"restore-page\"></mat-icon>\r\n    </button>\r\n    <button mat-icon-button *ngIf=\"routesResults\" tooltip-position=\"below\" matTooltipShowDelay=\"500\" [matTooltip]=\"'igo.geo.routingForm.copy' | translate\"\r\n      color=\"primary\" (click)=\"copyDirectionsToClipboard()\">\r\n      <mat-icon svgIcon=\"content-copy\"></mat-icon>\r\n    </button>\r\n    <button mat-icon-button *ngIf=\"routesResults\" tooltip-position=\"below\" matTooltipShowDelay=\"500\" [matTooltip]=\"'igo.geo.routingForm.link' | translate\"\r\n    color=\"primary\" (click)=\"copyLinkToClipboard()\">\r\n    <mat-icon svgIcon=\"link\"></mat-icon>\r\n  </button>\r\n  </div>\r\n\r\n</form>\r\n\r\n<div class=\"igo-input-container\" *ngIf=\"routesResults\">\r\n  <mat-form-field *ngIf=\"routesResults && routesResults.length > 1\">\r\n    <mat-select placeholder=\"{{'igo.geo.routingForm.drivingOptions' | translate}}\" (selectionChange)=\"changeRoute($event)\" [(ngModel)]=\"activeRoute\">\r\n      <mat-option *ngFor=\"let pathRouting of routesResults; let cnt = index;\" [value]=\"pathRouting\">\r\n        Option {{cnt + 1}} : {{this.formatDistance(pathRouting.distance)}} ({{this.formatDuration(pathRouting.duration)}})\r\n      </mat-option>\r\n    </mat-select>\r\n  </mat-form-field>\r\n\r\n  <mat-divider *ngIf=\"routesResults && routesResults.length === 0\"></mat-divider>\r\n\r\n  <mat-list>\r\n    <h3 mat-header>{{activeRoute.title}}</h3>\r\n    <h3 mat-subheader>{{this.formatDistance(activeRoute.distance)}}, {{this.formatDuration(activeRoute.duration)}}</h3>\r\n\r\n    <mat-list-item (mouseenter)=\"showSegment(step)\" (click)=\"showSegment(step,true)\" *ngFor=\"let step of activeRoute.steps; let cnt = index;\"\r\n      igoListItem>\r\n      <mat-icon [ngClass]=\"this.formatStep(step,cnt).cssClass\" mat-list-icon svgIcon=\"{{this.formatStep(step,cnt).image}}\"></mat-icon>\r\n\r\n      <h4 mat-line (click)=\"showSegment(step,true)\">{{cnt +1}}. {{this.formatStep(step,cnt).instruction}}</h4>\r\n      <h4 mat-line class=\"right\">{{this.formatDistance(step.distance)}}</h4>\r\n    </mat-list-item>\r\n\r\n    <mat-divider></mat-divider>\r\n\r\n  </mat-list>\r\n\r\n</div>\r\n",
-                    styles: ["mat-form-field{width:70%}.mat-list-item{height:auto}.mat-line{word-wrap:break-word!important;white-space:pre-wrap!important}.mat-line.right{text-align:right}.rotate-90{-webkit-transform:rotate(90deg);transform:rotate(90deg)}.rotate-45{-webkit-transform:rotate(45deg);transform:rotate(45deg)}.rotate-270{-webkit-transform:rotate(270deg);transform:rotate(270deg)}.rotate-250{-webkit-transform:rotate(250deg);transform:rotate(250deg)}.rotate-290{-webkit-transform:rotate(290deg);transform:rotate(290deg)}.icon-flipped{-webkit-transform:scaleY(-1);transform:scaleY(-1)}"]
+                    styles: ["mat-form-field{width:70%}.mat-list-item{height:auto}.mat-line{word-wrap:break-word!important;white-space:pre-wrap!important}.mat-line.right{text-align:right}.rotate-90{transform:rotate(90deg)}.rotate-45{transform:rotate(45deg)}.rotate-270{transform:rotate(270deg)}.rotate-250{transform:rotate(250deg)}.rotate-290{transform:rotate(290deg)}.icon-flipped{transform:scaleY(-1)}"]
                 }] }
     ];
     /** @nocollapse */
@@ -28458,6 +28650,42 @@ function provideSearchSourceService() {
         deps: [SearchSource]
     };
 }
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var GoogleLinks = /** @class */ (function () {
+    function GoogleLinks() {
+    }
+    /**
+     * @param {?} lon
+     * @param {?} lat
+     * @return {?}
+     */
+    GoogleLinks.getGoogleMapsLink = /**
+     * @param {?} lon
+     * @param {?} lat
+     * @return {?}
+     */
+    function (lon, lat) {
+        return 'https://www.google.com/maps?q=' + lat + ',' + lon;
+    };
+    /**
+     * @param {?} lon
+     * @param {?} lat
+     * @return {?}
+     */
+    GoogleLinks.getGoogleStreetViewLink = /**
+     * @param {?} lon
+     * @param {?} lat
+     * @return {?}
+     */
+    function (lon, lat) {
+        return 'https://www.google.com/maps?q=&layer=c&cbll=' + lat + ',' + lon;
+    };
+    return GoogleLinks;
+}());
 
 /**
  * @fileoverview added by tsickle
@@ -28773,7 +29001,14 @@ var IChercheSearchSource = /** @class */ (function (_super) {
     function (data) {
         /** @type {?} */
         var properties = ObjectUtils.removeKeys(data.properties, IChercheSearchSource.propertiesBlacklist);
-        return Object.assign(properties, { type: data.index });
+        /** @type {?} */
+        var googleLinksProperties = {
+            GoogleMaps: GoogleLinks.getGoogleMapsLink(data.geometry.coordinates[0], data.geometry.coordinates[1])
+        };
+        if (data.geometry.type === 'Point') {
+            googleLinksProperties.GoogleStreetView = GoogleLinks.getGoogleStreetViewLink(data.geometry.coordinates[0], data.geometry.coordinates[1]);
+        }
+        return Object.assign(properties, { type: data.index }, googleLinksProperties);
     };
     /**
      * Remove hashtag from query
@@ -29155,42 +29390,6 @@ function provideIChercheReverseSearchSource() {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-var GoogleLinks = /** @class */ (function () {
-    function GoogleLinks() {
-    }
-    /**
-     * @param {?} lon
-     * @param {?} lat
-     * @return {?}
-     */
-    GoogleLinks.getGoogleMapsLink = /**
-     * @param {?} lon
-     * @param {?} lat
-     * @return {?}
-     */
-    function (lon, lat) {
-        return 'https://www.google.com/maps?q=' + lat + ',' + lon;
-    };
-    /**
-     * @param {?} lon
-     * @param {?} lat
-     * @return {?}
-     */
-    GoogleLinks.getGoogleStreetViewLink = /**
-     * @param {?} lon
-     * @param {?} lat
-     * @return {?}
-     */
-    function (lon, lat) {
-        return 'https://www.google.com/maps?q=&layer=c&cbll=' + lat + ',' + lon;
-    };
-    return GoogleLinks;
-}());
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 var CoordinatesSearchResultFormatter = /** @class */ (function () {
     function CoordinatesSearchResultFormatter(languageService) {
         this.languageService = languageService;
@@ -29368,6 +29567,1515 @@ function provideCoordinatesReverseSearchSource() {
  */
 /** @type {?} */
 var SEARCH_TYPES = [FEATURE, LAYER];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var ILayerSearchResultFormatter = /** @class */ (function () {
+    function ILayerSearchResultFormatter(languageService) {
+        this.languageService = languageService;
+    }
+    /**
+     * @param {?} data
+     * @return {?}
+     */
+    ILayerSearchResultFormatter.prototype.formatResult = /**
+     * @param {?} data
+     * @return {?}
+     */
+    function (data) {
+        var _this = this;
+        /** @type {?} */
+        var allowedKey = ['title', 'abstract', 'groupTitle', 'metadataUrl'];
+        /** @type {?} */
+        var property = Object.entries(data.properties)
+            .filter((/**
+         * @param {?} __0
+         * @return {?}
+         */
+        function (_a) {
+            var _b = __read(_a, 1), key = _b[0];
+            return allowedKey.indexOf(key) !== -1;
+        }))
+            .reduce((/**
+         * @param {?} out
+         * @param {?} entries
+         * @return {?}
+         */
+        function (out, entries) {
+            var _a = __read(entries, 2), key = _a[0], value = _a[1];
+            /** @type {?} */
+            var newKey;
+            try {
+                newKey = _this.languageService.translate.instant('igo.geo.search.ilayer.properties.' + key);
+            }
+            catch (e) {
+                newKey = key;
+            }
+            out[newKey] = value ? value : '';
+            return out;
+        }), {});
+        /** @type {?} */
+        var dataR = Object.assign({}, data);
+        dataR.properties = (/** @type {?} */ (property));
+        return dataR;
+    };
+    ILayerSearchResultFormatter.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    ILayerSearchResultFormatter.ctorParameters = function () { return [
+        { type: LanguageService }
+    ]; };
+    return ILayerSearchResultFormatter;
+}());
+/**
+ * ILayer search source
+ */
+var ILayerSearchSource = /** @class */ (function (_super) {
+    __extends(ILayerSearchSource, _super);
+    function ILayerSearchSource(http, languageService, options, formatter) {
+        var _this = _super.call(this, options) || this;
+        _this.http = http;
+        _this.languageService = languageService;
+        _this.formatter = formatter;
+        _this.title$ = new BehaviorSubject('');
+        _this.languageService.translate.get(_this.options.title).subscribe((/**
+         * @param {?} title
+         * @return {?}
+         */
+        function (title) { return _this.title$.next(title); }));
+        return _this;
+    }
+    Object.defineProperty(ILayerSearchSource.prototype, "title", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            return this.title$.getValue();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * @return {?}
+     */
+    ILayerSearchSource.prototype.getId = /**
+     * @return {?}
+     */
+    function () {
+        return ILayerSearchSource.id;
+    };
+    /**
+     * @protected
+     * @return {?}
+     */
+    ILayerSearchSource.prototype.getDefaultOptions = /**
+     * @protected
+     * @return {?}
+     */
+    function () {
+        return {
+            title: 'igo.geo.search.ilayer.name',
+            searchUrl: 'https://geoegl.msp.gouv.qc.ca/apis/layers/search'
+        };
+    };
+    /**
+     * Search a layer by name or keyword
+     * @param term Layer name or keyword
+     * @returns Observable of <SearchResult<LayerOptions>[]
+     */
+    /**
+     * Search a layer by name or keyword
+     * @param {?} term Layer name or keyword
+     * @param {?=} options
+     * @return {?} Observable of <SearchResult<LayerOptions>[]
+     */
+    ILayerSearchSource.prototype.search = /**
+     * Search a layer by name or keyword
+     * @param {?} term Layer name or keyword
+     * @param {?=} options
+     * @return {?} Observable of <SearchResult<LayerOptions>[]
+     */
+    function (term, options) {
+        var _this = this;
+        /** @type {?} */
+        var params = this.computeSearchRequestParams(term, options || {});
+        return this.http
+            .get(this.searchUrl, { params: params })
+            .pipe(map((/**
+         * @param {?} response
+         * @return {?}
+         */
+        function (response) { return _this.extractResults(response); })));
+    };
+    /**
+     * @private
+     * @param {?} term
+     * @param {?} options
+     * @return {?}
+     */
+    ILayerSearchSource.prototype.computeSearchRequestParams = /**
+     * @private
+     * @param {?} term
+     * @param {?} options
+     * @return {?}
+     */
+    function (term, options) {
+        return new HttpParams({
+            fromObject: Object.assign({
+                q: term
+            }, this.params, options.params || {})
+        });
+    };
+    /**
+     * @private
+     * @param {?} response
+     * @return {?}
+     */
+    ILayerSearchSource.prototype.extractResults = /**
+     * @private
+     * @param {?} response
+     * @return {?}
+     */
+    function (response) {
+        var _this = this;
+        return response.items.map((/**
+         * @param {?} data
+         * @return {?}
+         */
+        function (data) { return _this.dataToResult(data); }));
+    };
+    /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    ILayerSearchSource.prototype.dataToResult = /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    function (data) {
+        /** @type {?} */
+        var layerOptions = this.computeLayerOptions(data);
+        return {
+            source: this,
+            meta: {
+                dataType: LAYER,
+                id: [this.getId(), data.properties.id].join('.'),
+                title: data.properties.title,
+                titleHtml: data.highlight.title,
+                icon: data.properties.type === 'Layer' ? 'layers' : 'map'
+            },
+            data: layerOptions
+        };
+    };
+    /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    ILayerSearchSource.prototype.computeLayerOptions = /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    function (data) {
+        /** @type {?} */
+        var url = data.properties.url;
+        /** @type {?} */
+        var queryParams = this.extractQueryParamsFromSourceUrl(url);
+        return {
+            sourceOptions: {
+                id: data.properties.id,
+                crossOrigin: 'anonymous',
+                type: data.properties.format,
+                url: url,
+                queryFormat: queryParams.queryFormat,
+                queryHtmlTarget: queryParams.queryHtmlTarget,
+                queryable: data.properties.queryable,
+                params: {
+                    layers: data.properties.name
+                }
+            },
+            title: data.properties.title,
+            properties: this.formatter.formatResult(data).properties
+        };
+    };
+    /**
+     * @private
+     * @param {?} url
+     * @return {?}
+     */
+    ILayerSearchSource.prototype.extractQueryParamsFromSourceUrl = /**
+     * @private
+     * @param {?} url
+     * @return {?}
+     */
+    function (url) {
+        var e_1, _a;
+        /** @type {?} */
+        var queryFormat = QueryFormat.GML2;
+        /** @type {?} */
+        var queryHtmlTarget;
+        /** @type {?} */
+        var formatOpt = ((/** @type {?} */ (this.options))).queryFormat;
+        if (formatOpt) {
+            var _loop_1 = function (key) {
+                /** @type {?} */
+                var value = formatOpt[key];
+                if (value === '*') {
+                    queryFormat = QueryFormat[key.toUpperCase()];
+                    return "break";
+                }
+                /** @type {?} */
+                var urls = ((/** @type {?} */ ((/** @type {?} */ (value))))).urls;
+                if (Array.isArray(urls)) {
+                    urls.forEach((/**
+                     * @param {?} urlOpt
+                     * @return {?}
+                     */
+                    function (urlOpt) {
+                        if (url.indexOf(urlOpt) !== -1) {
+                            queryFormat = QueryFormat[key.toUpperCase()];
+                        }
+                    }));
+                    return "break";
+                }
+            };
+            try {
+                for (var _b = __values(Object.keys(formatOpt)), _c = _b.next(); !_c.done; _c = _b.next()) {
+                    var key = _c.value;
+                    var state_1 = _loop_1(key);
+                    if (state_1 === "break")
+                        break;
+                }
+            }
+            catch (e_1_1) { e_1 = { error: e_1_1 }; }
+            finally {
+                try {
+                    if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
+                }
+                finally { if (e_1) throw e_1.error; }
+            }
+        }
+        if (queryFormat === QueryFormat.HTML) {
+            queryHtmlTarget = 'iframe';
+        }
+        return {
+            queryFormat: queryFormat,
+            queryHtmlTarget: queryHtmlTarget
+        };
+    };
+    ILayerSearchSource.id = 'ilayer';
+    ILayerSearchSource.type = LAYER;
+    ILayerSearchSource.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    ILayerSearchSource.ctorParameters = function () { return [
+        { type: HttpClient },
+        { type: LanguageService },
+        { type: undefined, decorators: [{ type: Inject, args: ['options',] }] },
+        { type: ILayerSearchResultFormatter, decorators: [{ type: Inject, args: [ILayerSearchResultFormatter,] }] }
+    ]; };
+    return ILayerSearchSource;
+}(SearchSource));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * ILayer search result formatter factory
+ * @ignore
+ * @param {?} languageService
+ * @return {?}
+ */
+function ilayerSearchResultFormatterFactory(languageService) {
+    return new ILayerSearchResultFormatter(languageService);
+}
+/**
+ * Function that returns a provider for the ILayer search result formatter
+ * @return {?}
+ */
+function provideILayerSearchResultFormatter() {
+    return {
+        provide: ILayerSearchResultFormatter,
+        useFactory: ilayerSearchResultFormatterFactory,
+        deps: [LanguageService]
+    };
+}
+/**
+ * ILayer search source factory
+ * @ignore
+ * @param {?} http
+ * @param {?} languageService
+ * @param {?} config
+ * @param {?} formatter
+ * @return {?}
+ */
+function ilayerSearchSourceFactory(http, languageService, config, formatter) {
+    return new ILayerSearchSource(http, languageService, config.getConfig("searchSources." + ILayerSearchSource.id), formatter);
+}
+/**
+ * Function that returns a provider for the ILayer search source
+ * @return {?}
+ */
+function provideILayerSearchSource() {
+    return {
+        provide: SearchSource,
+        useFactory: ilayerSearchSourceFactory,
+        multi: true,
+        deps: [HttpClient, LanguageService, ConfigService, ILayerSearchResultFormatter]
+    };
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Nominatim search source
+ */
+var NominatimSearchSource = /** @class */ (function (_super) {
+    __extends(NominatimSearchSource, _super);
+    function NominatimSearchSource(http, options) {
+        var _this = _super.call(this, options) || this;
+        _this.http = http;
+        return _this;
+    }
+    /**
+     * @return {?}
+     */
+    NominatimSearchSource.prototype.getId = /**
+     * @return {?}
+     */
+    function () {
+        return NominatimSearchSource.id;
+    };
+    /*
+     * Source : https://wiki.openstreetmap.org/wiki/Key:amenity
+    */
+    /*
+       * Source : https://wiki.openstreetmap.org/wiki/Key:amenity
+      */
+    /**
+     * @protected
+     * @return {?}
+     */
+    NominatimSearchSource.prototype.getDefaultOptions = /*
+       * Source : https://wiki.openstreetmap.org/wiki/Key:amenity
+      */
+    /**
+     * @protected
+     * @return {?}
+     */
+    function () {
+        return {
+            title: 'Nominatim (OSM)',
+            searchUrl: 'https://nominatim.openstreetmap.org/search',
+            settings: [
+                {
+                    type: 'checkbox',
+                    title: 'results type',
+                    name: 'amenity',
+                    values: [
+                        {
+                            title: 'Restauration',
+                            value: 'bar,bbq,biergaten,cafe,drinking_water,fast_food,food_court,ice_cream,pub,restaurant',
+                            enabled: false
+                        },
+                        {
+                            title: 'Santé',
+                            value: 'baby_hatch,clinic,dentist,doctors,hospital,nursing_home,pharmacy,social_facility,veterinary',
+                            enabled: false
+                        },
+                        {
+                            title: 'Divertissement',
+                            value: 'arts_centre,brothel,casino,cinema,community_center_fountain,gambling,nightclub,planetarium \
+                          ,public_bookcase,social_centre,stripclub,studio,swingerclub,theatre,internet_cafe',
+                            enabled: false
+                        },
+                        {
+                            title: 'Finance',
+                            value: 'atm,bank,bureau_de_change',
+                            enabled: false
+                        }
+                    ]
+                },
+                {
+                    type: 'radiobutton',
+                    title: 'results limit',
+                    name: 'limit',
+                    values: [
+                        {
+                            title: '10',
+                            value: 10,
+                            enabled: true
+                        },
+                        {
+                            title: '20',
+                            value: 20,
+                            enabled: false
+                        },
+                        {
+                            title: '50',
+                            value: 50,
+                            enabled: false
+                        }
+                    ]
+                },
+                {
+                    type: 'radiobutton',
+                    title: 'country limitation',
+                    name: 'countrycodes',
+                    values: [
+                        {
+                            title: 'Canada',
+                            value: 'CA',
+                            enabled: true
+                        },
+                        {
+                            title: 'Le monde',
+                            value: null,
+                            enabled: false
+                        }
+                    ]
+                },
+                {
+                    type: 'radiobutton',
+                    title: 'multiple object',
+                    name: 'dedupe',
+                    values: [
+                        {
+                            title: 'Oui',
+                            value: 0,
+                            enabled: false
+                        },
+                        {
+                            title: 'Non',
+                            value: 1,
+                            enabled: true
+                        }
+                    ]
+                }
+            ]
+        };
+    };
+    /**
+     * Search a place by name
+     * @param term Place name
+     * @returns Observable of <SearchResult<Feature>[]
+     */
+    /**
+     * Search a place by name
+     * @param {?} term Place name
+     * @param {?=} options
+     * @return {?} Observable of <SearchResult<Feature>[]
+     */
+    NominatimSearchSource.prototype.search = /**
+     * Search a place by name
+     * @param {?} term Place name
+     * @param {?=} options
+     * @return {?} Observable of <SearchResult<Feature>[]
+     */
+    function (term, options) {
+        var _this = this;
+        /** @type {?} */
+        var params = this.computeSearchRequestParams(term, options || {});
+        return this.http
+            .get(this.searchUrl, { params: params })
+            .pipe(map((/**
+         * @param {?} response
+         * @return {?}
+         */
+        function (response) { return _this.extractResults(response); })));
+    };
+    /**
+     * @private
+     * @param {?} term
+     * @param {?} options
+     * @return {?}
+     */
+    NominatimSearchSource.prototype.computeSearchRequestParams = /**
+     * @private
+     * @param {?} term
+     * @param {?} options
+     * @return {?}
+     */
+    function (term, options) {
+        return new HttpParams({
+            fromObject: Object.assign({
+                q: this.computeTerm(term),
+                format: 'json'
+            }, this.params, options.params || {})
+        });
+    };
+    /**
+     * @private
+     * @param {?} response
+     * @return {?}
+     */
+    NominatimSearchSource.prototype.extractResults = /**
+     * @private
+     * @param {?} response
+     * @return {?}
+     */
+    function (response) {
+        var _this = this;
+        return response.map((/**
+         * @param {?} data
+         * @return {?}
+         */
+        function (data) { return _this.dataToResult(data); }));
+    };
+    /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    NominatimSearchSource.prototype.dataToResult = /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    function (data) {
+        /** @type {?} */
+        var properties = this.computeProperties(data);
+        /** @type {?} */
+        var geometry = this.computeGeometry(data);
+        /** @type {?} */
+        var extent = this.computeExtent(data);
+        /** @type {?} */
+        var id = [this.getId(), 'place', data.place_id].join('.');
+        return {
+            source: this,
+            meta: {
+                dataType: FEATURE,
+                id: id,
+                title: data.display_name,
+                icon: 'map-marker'
+            },
+            data: {
+                type: FEATURE,
+                projection: 'EPSG:4326',
+                geometry: geometry,
+                extent: extent,
+                properties: properties,
+                meta: {
+                    id: id,
+                    title: data.display_name
+                }
+            }
+        };
+    };
+    /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    NominatimSearchSource.prototype.computeProperties = /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    function (data) {
+        return {
+            display_name: data.display_name,
+            place_id: data.place_id,
+            osm_type: data.osm_type,
+            class: data.class,
+            type: data.type
+        };
+    };
+    /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    NominatimSearchSource.prototype.computeGeometry = /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    function (data) {
+        return {
+            type: 'Point',
+            coordinates: [parseFloat(data.lon), parseFloat(data.lat)]
+        };
+    };
+    /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    NominatimSearchSource.prototype.computeExtent = /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    function (data) {
+        return [
+            parseFloat(data.boundingbox[2]),
+            parseFloat(data.boundingbox[0]),
+            parseFloat(data.boundingbox[3]),
+            parseFloat(data.boundingbox[1])
+        ];
+    };
+    /**
+     * @private
+     * @param {?} term
+     * @return {?}
+     */
+    NominatimSearchSource.prototype.computeTerm = /**
+     * @private
+     * @param {?} term
+     * @return {?}
+     */
+    function (term) {
+        term = this.computeTermTags(term);
+        return term;
+    };
+    /**
+     * Add hashtag from query in Nominatim's format (+[])
+     * @param term Query with hashtag
+     */
+    /**
+     * Add hashtag from query in Nominatim's format (+[])
+     * @private
+     * @param {?} term Query with hashtag
+     * @return {?}
+     */
+    NominatimSearchSource.prototype.computeTermTags = /**
+     * Add hashtag from query in Nominatim's format (+[])
+     * @private
+     * @param {?} term Query with hashtag
+     * @return {?}
+     */
+    function (term) {
+        var _this = this;
+        /** @type {?} */
+        var tags = term.match(/(#[^\s]+)/g);
+        /** @type {?} */
+        var addTagsFromSettings = true;
+        if (tags) {
+            tags.forEach((/**
+             * @param {?} value
+             * @return {?}
+             */
+            function (value) {
+                term = term.replace(value, '');
+                if (_super.prototype.hashtagValid.call(_this, _super.prototype.getSettingsValues.call(_this, 'amenity'), value)) {
+                    term += '+[' + value.substring(1) + ']';
+                    addTagsFromSettings = false;
+                }
+            }));
+            addTagsFromSettings = false;
+        }
+        if (addTagsFromSettings) {
+            term = this.computeTermSettings(term);
+        }
+        return term;
+    };
+    /**
+     * Add hashtag from settings in Nominatim's format (+[])
+     * @param term Query
+     */
+    /**
+     * Add hashtag from settings in Nominatim's format (+[])
+     * @private
+     * @param {?} term Query
+     * @return {?}
+     */
+    NominatimSearchSource.prototype.computeTermSettings = /**
+     * Add hashtag from settings in Nominatim's format (+[])
+     * @private
+     * @param {?} term Query
+     * @return {?}
+     */
+    function (term) {
+        this.options.settings.forEach((/**
+         * @param {?} settings
+         * @return {?}
+         */
+        function (settings) {
+            if (settings.name === 'amenity') {
+                settings.values.forEach((/**
+                 * @param {?} conf
+                 * @return {?}
+                 */
+                function (conf) {
+                    if (conf.enabled && typeof conf.value === 'string') {
+                        /** @type {?} */
+                        var splitted = conf.value.split(',');
+                        splitted.forEach((/**
+                         * @param {?} value
+                         * @return {?}
+                         */
+                        function (value) {
+                            term += '+[' + value + ']';
+                        }));
+                    }
+                }));
+            }
+        }));
+        return term;
+    };
+    NominatimSearchSource.id = 'nominatim';
+    NominatimSearchSource.type = FEATURE;
+    NominatimSearchSource.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    NominatimSearchSource.ctorParameters = function () { return [
+        { type: HttpClient },
+        { type: undefined, decorators: [{ type: Inject, args: ['options',] }] }
+    ]; };
+    return NominatimSearchSource;
+}(SearchSource));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * Nominatim search source factory
+ * @ignore
+ * @param {?} http
+ * @param {?} config
+ * @return {?}
+ */
+function nominatimSearchSourceFactory(http, config) {
+    return new NominatimSearchSource(http, config.getConfig("searchSources." + NominatimSearchSource.id));
+}
+/**
+ * Function that returns a provider for the Nominatim search source
+ * @return {?}
+ */
+function provideNominatimSearchSource() {
+    return {
+        provide: SearchSource,
+        useFactory: nominatimSearchSourceFactory,
+        multi: true,
+        deps: [HttpClient, ConfigService]
+    };
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * StoredQueries search source
+ */
+var StoredQueriesSearchSource = /** @class */ (function (_super) {
+    __extends(StoredQueriesSearchSource, _super);
+    function StoredQueriesSearchSource(http, options) {
+        var _this = _super.call(this, options) || this;
+        _this.http = http;
+        _this.storedQueriesOptions = (/** @type {?} */ (options));
+        if (!_this.storedQueriesOptions.storedquery_id) {
+            /** @type {?} */
+            var err = 'Stored Queries :You have to set "storedquery_id" into StoredQueries options. ex: storedquery_id: "nameofstoredquerie"';
+            throw new Error(err);
+        }
+        if (!_this.storedQueriesOptions.fields) {
+            throw new Error('Stored Queries :You have to set "fields" into options. ex: fields: {"name": "rtss", "defaultValue": "-99"}');
+        }
+        _this.storedQueriesOptions.outputformat = _this.storedQueriesOptions.outputformat || 'text/xml; subtype=gml/3.1.1';
+        _this.storedQueriesOptions.srsname = _this.storedQueriesOptions.srsname || 'EPSG:4326';
+        /** @type {?} */
+        var storedQueryId = _this.storedQueriesOptions.storedquery_id.toLowerCase();
+        if (storedQueryId.includes('getfeaturebyid') && _this.storedQueriesOptions.outputformat.toLowerCase().includes('getfeaturebyid')) {
+            /** @type {?} */
+            var err = 'You must set a geojson format for your stored query. This is due to an openlayers issue)';
+            err += ' (wfs 1.1.0 & gml 3.1.1 limitation)';
+            throw new Error(err);
+        }
+        if (!_this.storedQueriesOptions.fields) {
+            throw new Error('Stored Queries :You must set a fields definition for your stored query');
+        }
+        if (!(_this.storedQueriesOptions.fields instanceof Array)) {
+            _this.storedQueriesOptions.fields = [_this.storedQueriesOptions.fields];
+        }
+        _this.multipleFieldsQuery = _this.storedQueriesOptions.fields.length > 1 ? true : false;
+        _this.storedQueriesOptions.fields.forEach((/**
+         * @param {?} field
+         * @param {?} index
+         * @return {?}
+         */
+        function (field, index) {
+            if (_this.multipleFieldsQuery && !field.splitPrefix && index !== 0) {
+                throw new Error('Stored Queries :You must set a field spliter into your field definition (optional for the first one!)');
+            }
+            if (!field.defaultValue) {
+                throw new Error('Stored Queries :You must set a field default value into your field definition');
+            }
+        }));
+        _this.storedQueriesOptions.resultTitle = _this.storedQueriesOptions.resultTitle || _this.resultTitle;
+        return _this;
+    }
+    /**
+     * @return {?}
+     */
+    StoredQueriesSearchSource.prototype.getId = /**
+     * @return {?}
+     */
+    function () {
+        return StoredQueriesSearchSource.id;
+    };
+    /**
+     * @protected
+     * @return {?}
+     */
+    StoredQueriesSearchSource.prototype.getDefaultOptions = /**
+     * @protected
+     * @return {?}
+     */
+    function () {
+        return {
+            title: 'Stored Queries',
+            searchUrl: 'https://ws.mapserver.transports.gouv.qc.ca/swtq'
+        };
+    };
+    // URL CALL EXAMPLES:
+    //  GetFeatureById (mandatory storedquery for wfs server) (outputformat must be in geojson)
+    //  tslint:disable-next-line:max-line-length
+    //  https://ws.mapserver.transports.gouv.qc.ca/swtq?service=wfs&version=2.0.0&request=GetFeature&storedquery_id=urn:ogc:def:query:OGC-WFS::GetFeatureById&srsname=epsg:4326&outputformat=geojson&ID=a_num_route.132
+    //  Custom StoredQuery
+    //  tslint:disable-next-line:max-line-length
+    //  https://ws.mapserver.transports.gouv.qc.ca/swtq?service=wfs&version=1.1.0&request=GetFeature&storedquery_id=rtss&srsname=epsg:4326&outputformat=text/xml;%20subtype=gml/3.1.1&rtss=0013801110000c&chainage=12
+    /**
+     * Search a location by name or keyword
+     * @param term Location name or keyword
+     * @returns Observable of <SearchResult<Feature>[]
+     */
+    // URL CALL EXAMPLES:
+    //  GetFeatureById (mandatory storedquery for wfs server) (outputformat must be in geojson)
+    //  tslint:disable-next-line:max-line-length
+    //  https://ws.mapserver.transports.gouv.qc.ca/swtq?service=wfs&version=2.0.0&request=GetFeature&storedquery_id=urn:ogc:def:query:OGC-WFS::GetFeatureById&srsname=epsg:4326&outputformat=geojson&ID=a_num_route.132
+    //  Custom StoredQuery
+    //  tslint:disable-next-line:max-line-length
+    //  https://ws.mapserver.transports.gouv.qc.ca/swtq?service=wfs&version=1.1.0&request=GetFeature&storedquery_id=rtss&srsname=epsg:4326&outputformat=text/xml;%20subtype=gml/3.1.1&rtss=0013801110000c&chainage=12
+    /**
+     * Search a location by name or keyword
+     * @param {?} term Location name or keyword
+     * @param {?=} options
+     * @return {?} Observable of <SearchResult<Feature>[]
+     */
+    StoredQueriesSearchSource.prototype.search = 
+    // URL CALL EXAMPLES:
+    //  GetFeatureById (mandatory storedquery for wfs server) (outputformat must be in geojson)
+    //  tslint:disable-next-line:max-line-length
+    //  https://ws.mapserver.transports.gouv.qc.ca/swtq?service=wfs&version=2.0.0&request=GetFeature&storedquery_id=urn:ogc:def:query:OGC-WFS::GetFeatureById&srsname=epsg:4326&outputformat=geojson&ID=a_num_route.132
+    //  Custom StoredQuery
+    //  tslint:disable-next-line:max-line-length
+    //  https://ws.mapserver.transports.gouv.qc.ca/swtq?service=wfs&version=1.1.0&request=GetFeature&storedquery_id=rtss&srsname=epsg:4326&outputformat=text/xml;%20subtype=gml/3.1.1&rtss=0013801110000c&chainage=12
+    /**
+     * Search a location by name or keyword
+     * @param {?} term Location name or keyword
+     * @param {?=} options
+     * @return {?} Observable of <SearchResult<Feature>[]
+     */
+    function (term, options) {
+        var _this = this;
+        /** @type {?} */
+        var storedqueriesParams = this.termSplitter(term, this.storedQueriesOptions.fields);
+        /** @type {?} */
+        var params = this.computeRequestParams(options || {}, storedqueriesParams);
+        if (new RegExp('.*?gml.*?', 'i').test(this.storedQueriesOptions.outputformat)) {
+            return this.http
+                .get(this.searchUrl, { params: params, responseType: 'text' })
+                .pipe(map((/**
+             * @param {?} response
+             * @return {?}
+             */
+            function (response) {
+                return _this.extractResults(_this.extractWFSData(response));
+            })));
+        }
+        else {
+            return this.http
+                .get(this.searchUrl, { params: params })
+                .pipe(map((/**
+             * @param {?} response
+             * @return {?}
+             */
+            function (response) {
+                return _this.extractResults(_this.extractWFSData(response));
+            })));
+        }
+    };
+    /**
+     * @private
+     * @return {?}
+     */
+    StoredQueriesSearchSource.prototype.getFormatFromOptions = /**
+     * @private
+     * @return {?}
+     */
+    function () {
+        /** @type {?} */
+        var olFormatCls;
+        /** @type {?} */
+        var outputFormat = this.storedQueriesOptions.outputformat;
+        /** @type {?} */
+        var patternGml3 = new RegExp('.*?gml.*?', 'i');
+        /** @type {?} */
+        var patternGeojson = new RegExp('.*?json.*?', 'i');
+        if (patternGeojson.test(outputFormat)) {
+            olFormatCls = GeoJSON;
+        }
+        if (patternGml3.test(outputFormat)) {
+            olFormatCls = WFS;
+        }
+        return new olFormatCls();
+    };
+    /**
+     * @private
+     * @param {?} res
+     * @return {?}
+     */
+    StoredQueriesSearchSource.prototype.extractWFSData = /**
+     * @private
+     * @param {?} res
+     * @return {?}
+     */
+    function (res) {
+        /** @type {?} */
+        var olFormat = this.getFormatFromOptions();
+        /** @type {?} */
+        var geojson = GeoJSON;
+        /** @type {?} */
+        var wfsfeatures = olFormat.readFeatures(res);
+        /** @type {?} */
+        var features = JSON.parse(new geojson().writeFeatures(wfsfeatures));
+        return features;
+    };
+    /**
+     * @private
+     * @param {?} term
+     * @param {?} fields
+     * @return {?}
+     */
+    StoredQueriesSearchSource.prototype.termSplitter = /**
+     * @private
+     * @param {?} term
+     * @param {?} fields
+     * @return {?}
+     */
+    function (term, fields) {
+        /** @type {?} */
+        var splittedTerm = {};
+        /** @type {?} */
+        var remainingTerm = term;
+        /** @type {?} */
+        var cnt = 0;
+        // Used to build the default values
+        fields.forEach((/**
+         * @param {?} field
+         * @return {?}
+         */
+        function (field) {
+            splittedTerm[field.name] = field.defaultValue;
+            /** @type {?} */
+            var splitterRegex = new RegExp(field.splitPrefix + '(.+)', 'i');
+            if (splitterRegex.test(remainingTerm)) {
+                cnt = field.splitPrefix ? cnt += 1 : cnt;
+                remainingTerm = remainingTerm.split(splitterRegex)[1];
+            }
+        }));
+        if (cnt === 0) {
+            splittedTerm[fields[0].name] = term;
+            return splittedTerm;
+        }
+        remainingTerm = term;
+        /** @type {?} */
+        var localFields = __spread(fields).reverse();
+        localFields.forEach((/**
+         * @param {?} field
+         * @return {?}
+         */
+        function (field) {
+            /** @type {?} */
+            var splitterRegex = new RegExp(field.splitPrefix || '' + '(.+)', 'i');
+            if (remainingTerm || remainingTerm !== '') {
+                /** @type {?} */
+                var values = remainingTerm.split(splitterRegex);
+                remainingTerm = values[0];
+                if (values[1]) {
+                    splittedTerm[field.name] = values[1].trim();
+                }
+            }
+        }));
+        return splittedTerm;
+    };
+    /**
+     * @private
+     * @param {?} options
+     * @param {?} queryParams
+     * @return {?}
+     */
+    StoredQueriesSearchSource.prototype.computeRequestParams = /**
+     * @private
+     * @param {?} options
+     * @param {?} queryParams
+     * @return {?}
+     */
+    function (options, queryParams) {
+        /** @type {?} */
+        var wfsversion = this.storedQueriesOptions.storedquery_id.toLowerCase().includes('getfeaturebyid') ? '2.0.0' : '1.1.0';
+        return new HttpParams({
+            fromObject: Object.assign({
+                service: 'wfs',
+                version: wfsversion,
+                request: 'GetFeature',
+                storedquery_id: this.storedQueriesOptions.storedquery_id,
+                srsname: this.storedQueriesOptions.srsname,
+                outputformat: this.storedQueriesOptions.outputformat
+            }, queryParams, this.params, options.params || {})
+        });
+    };
+    /**
+     * @private
+     * @param {?} response
+     * @return {?}
+     */
+    StoredQueriesSearchSource.prototype.extractResults = /**
+     * @private
+     * @param {?} response
+     * @return {?}
+     */
+    function (response) {
+        var _this = this;
+        return response.features.map((/**
+         * @param {?} data
+         * @return {?}
+         */
+        function (data) {
+            return _this.dataToResult(data);
+        }));
+    };
+    /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    StoredQueriesSearchSource.prototype.dataToResult = /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    function (data) {
+        /** @type {?} */
+        var properties = this.computeProperties(data);
+        /** @type {?} */
+        var id = [this.getId(), properties.type, data.id].join('.');
+        /** @type {?} */
+        var title = data.properties[this.storedQueriesOptions.resultTitle] ? this.storedQueriesOptions.resultTitle : this.resultTitle;
+        return {
+            source: this,
+            data: {
+                type: FEATURE,
+                projection: 'EPSG:4326',
+                geometry: data.geometry,
+                // extent: data.bbox,
+                properties: properties,
+                meta: {
+                    id: id,
+                    title: data.properties[title]
+                }
+            },
+            meta: {
+                dataType: FEATURE,
+                id: id,
+                title: data.properties.title,
+                titleHtml: data.properties[title],
+                icon: 'map-marker'
+            }
+        };
+    };
+    /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    StoredQueriesSearchSource.prototype.computeProperties = /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    function (data) {
+        /** @type {?} */
+        var properties = ObjectUtils.removeKeys(data.properties, StoredQueriesSearchSource.propertiesBlacklist);
+        return properties;
+    };
+    StoredQueriesSearchSource.id = 'storedqueries';
+    StoredQueriesSearchSource.type = FEATURE;
+    StoredQueriesSearchSource.propertiesBlacklist = [];
+    StoredQueriesSearchSource.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    StoredQueriesSearchSource.ctorParameters = function () { return [
+        { type: HttpClient },
+        { type: undefined, decorators: [{ type: Inject, args: ['options',] }] }
+    ]; };
+    return StoredQueriesSearchSource;
+}(SearchSource));
+/**
+ * StoredQueriesReverse search source
+ */
+// EXAMPLE CALLS
+// tslint:disable-next-line:max-line-length
+// https://ws.mapserver.transports.gouv.qc.ca/swtq?service=wfs&version=1.1.0&request=GetFeature&storedquery_id=lim_adm&srsname=epsg:4326&outputformat=text/xml;%20subtype=gml/3.1.1&long=-71.292469&lat=46.748107
+//
+var StoredQueriesReverseSearchSource = /** @class */ (function (_super) {
+    __extends(StoredQueriesReverseSearchSource, _super);
+    function StoredQueriesReverseSearchSource(http, options) {
+        var _this = _super.call(this, options) || this;
+        _this.http = http;
+        _this.storedQueriesOptions = (/** @type {?} */ (options));
+        if (!_this.storedQueriesOptions.storedquery_id) {
+            /** @type {?} */
+            var err = 'Stored Queries :You have to set "storedquery_id" into StoredQueries options. ex: storedquery_id: "nameofstoredquerie"';
+            throw new Error(err);
+        }
+        if (!_this.storedQueriesOptions.longField) {
+            throw new Error('Stored Queries :You have to set "longField" to map the longitude coordinate to the query params.');
+        }
+        if (!_this.storedQueriesOptions.latField) {
+            throw new Error('Stored Queries :You have to set "latField" to map the latitude coordinate to the query params.');
+        }
+        _this.storedQueriesOptions.outputformat = _this.storedQueriesOptions.outputformat || 'text/xml; subtype=gml/3.1.1';
+        _this.storedQueriesOptions.srsname = _this.storedQueriesOptions.srsname || 'EPSG:4326';
+        _this.storedQueriesOptions.resultTitle = _this.storedQueriesOptions.resultTitle || _this.resultTitle;
+        return _this;
+    }
+    /**
+     * @return {?}
+     */
+    StoredQueriesReverseSearchSource.prototype.getId = /**
+     * @return {?}
+     */
+    function () {
+        return StoredQueriesReverseSearchSource.id;
+    };
+    /**
+     * @protected
+     * @return {?}
+     */
+    StoredQueriesReverseSearchSource.prototype.getDefaultOptions = /**
+     * @protected
+     * @return {?}
+     */
+    function () {
+        return {
+            title: 'Stored Queries (reverse)',
+            searchUrl: 'https://ws.mapserver.transports.gouv.qc.ca/swtq'
+        };
+    };
+    /**
+     * Search a location by coordinates
+     * @param lonLat Location coordinates
+     * @param distance Search raidus around lonLat
+     * @returns Observable of <SearchResult<Feature>[]
+     */
+    /**
+     * Search a location by coordinates
+     * @param {?} lonLat Location coordinates
+     * @param {?=} options
+     * @return {?} Observable of <SearchResult<Feature>[]
+     */
+    StoredQueriesReverseSearchSource.prototype.reverseSearch = /**
+     * Search a location by coordinates
+     * @param {?} lonLat Location coordinates
+     * @param {?=} options
+     * @return {?} Observable of <SearchResult<Feature>[]
+     */
+    function (lonLat, options) {
+        var _this = this;
+        /** @type {?} */
+        var params = this.computeRequestParams(lonLat, options || {});
+        if (new RegExp('.*?gml.*?', 'i').test(this.storedQueriesOptions.outputformat)) {
+            return this.http
+                .get(this.searchUrl, { params: params, responseType: 'text' })
+                .pipe(map((/**
+             * @param {?} response
+             * @return {?}
+             */
+            function (response) {
+                return _this.extractResults(_this.extractWFSData(response));
+            })));
+        }
+        else {
+            return this.http
+                .get(this.searchUrl, { params: params })
+                .pipe(map((/**
+             * @param {?} response
+             * @return {?}
+             */
+            function (response) {
+                return _this.extractResults(_this.extractWFSData(response));
+            })));
+        }
+    };
+    /**
+     * @private
+     * @return {?}
+     */
+    StoredQueriesReverseSearchSource.prototype.getFormatFromOptions = /**
+     * @private
+     * @return {?}
+     */
+    function () {
+        /** @type {?} */
+        var olFormatCls;
+        /** @type {?} */
+        var outputFormat = this.storedQueriesOptions.outputformat;
+        /** @type {?} */
+        var patternGml3 = new RegExp('.*?gml.*?', 'i');
+        /** @type {?} */
+        var patternGeojson = new RegExp('.*?json.*?', 'i');
+        if (patternGeojson.test(outputFormat)) {
+            olFormatCls = GeoJSON;
+        }
+        if (patternGml3.test(outputFormat)) {
+            olFormatCls = WFS;
+        }
+        return new olFormatCls();
+    };
+    /**
+     * @private
+     * @param {?} res
+     * @return {?}
+     */
+    StoredQueriesReverseSearchSource.prototype.extractWFSData = /**
+     * @private
+     * @param {?} res
+     * @return {?}
+     */
+    function (res) {
+        /** @type {?} */
+        var olFormat = this.getFormatFromOptions();
+        /** @type {?} */
+        var geojson = GeoJSON;
+        /** @type {?} */
+        var wfsfeatures = olFormat.readFeatures(res);
+        /** @type {?} */
+        var features = JSON.parse(new geojson().writeFeatures(wfsfeatures));
+        return features;
+    };
+    /**
+     * @private
+     * @param {?} lonLat
+     * @param {?=} options
+     * @return {?}
+     */
+    StoredQueriesReverseSearchSource.prototype.computeRequestParams = /**
+     * @private
+     * @param {?} lonLat
+     * @param {?=} options
+     * @return {?}
+     */
+    function (lonLat, options) {
+        /** @type {?} */
+        var longLatParams = {};
+        longLatParams[this.storedQueriesOptions.longField] = lonLat[0];
+        longLatParams[this.storedQueriesOptions.latField] = lonLat[1];
+        return new HttpParams({
+            fromObject: Object.assign({
+                service: 'wfs',
+                version: '1.1.0',
+                request: 'GetFeature',
+                storedquery_id: this.storedQueriesOptions.storedquery_id,
+                srsname: this.storedQueriesOptions.srsname,
+                outputformat: this.storedQueriesOptions.outputformat,
+            }, longLatParams, this.params, options.params || {})
+        });
+    };
+    /**
+     * @private
+     * @param {?} response
+     * @return {?}
+     */
+    StoredQueriesReverseSearchSource.prototype.extractResults = /**
+     * @private
+     * @param {?} response
+     * @return {?}
+     */
+    function (response) {
+        var _this = this;
+        return response.features.map((/**
+         * @param {?} data
+         * @return {?}
+         */
+        function (data) {
+            return _this.dataToResult(data);
+        }));
+    };
+    /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    StoredQueriesReverseSearchSource.prototype.dataToResult = /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    function (data) {
+        /** @type {?} */
+        var properties = this.computeProperties(data);
+        /** @type {?} */
+        var id = [this.getId(), properties.type, data.id].join('.');
+        /** @type {?} */
+        var title = data.properties[this.storedQueriesOptions.resultTitle] ? this.storedQueriesOptions.resultTitle : this.resultTitle;
+        return {
+            source: this,
+            data: {
+                type: FEATURE,
+                projection: 'EPSG:4326',
+                geometry: data.geometry,
+                properties: properties,
+                meta: {
+                    id: id,
+                    title: data.properties[title]
+                }
+            },
+            meta: {
+                dataType: FEATURE,
+                id: id,
+                title: data.properties[title],
+                icon: 'map-marker'
+            }
+        };
+    };
+    /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    StoredQueriesReverseSearchSource.prototype.computeProperties = /**
+     * @private
+     * @param {?} data
+     * @return {?}
+     */
+    function (data) {
+        /** @type {?} */
+        var properties = ObjectUtils.removeKeys(data.properties, StoredQueriesReverseSearchSource.propertiesBlacklist);
+        return Object.assign(properties, { type: data.properties.doc_type });
+    };
+    StoredQueriesReverseSearchSource.id = 'storedqueriesreverse';
+    StoredQueriesReverseSearchSource.type = FEATURE;
+    StoredQueriesReverseSearchSource.propertiesBlacklist = [];
+    StoredQueriesReverseSearchSource.decorators = [
+        { type: Injectable }
+    ];
+    /** @nocollapse */
+    StoredQueriesReverseSearchSource.ctorParameters = function () { return [
+        { type: HttpClient },
+        { type: undefined, decorators: [{ type: Inject, args: ['options',] }] }
+    ]; };
+    return StoredQueriesReverseSearchSource;
+}(SearchSource));
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * StoredQueries search source factory
+ * @ignore
+ * @param {?} http
+ * @param {?} config
+ * @return {?}
+ */
+function storedqueriesSearchSourceFactory(http, config) {
+    return new StoredQueriesSearchSource(http, config.getConfig("searchSources." + StoredQueriesSearchSource.id));
+}
+/**
+ * Function that returns a provider for the StoredQueries search source
+ * @return {?}
+ */
+function provideStoredQueriesSearchSource() {
+    return {
+        provide: SearchSource,
+        useFactory: storedqueriesSearchSourceFactory,
+        multi: true,
+        deps: [HttpClient, ConfigService]
+    };
+}
+/**
+ * StoredQueriesReverse search source factory
+ * @ignore
+ * @param {?} http
+ * @param {?} config
+ * @return {?}
+ */
+function storedqueriesReverseSearchSourceFactory(http, config) {
+    return new StoredQueriesReverseSearchSource(http, config.getConfig("searchSources." + StoredQueriesReverseSearchSource.id));
+}
+/**
+ * Function that returns a provider for the StoredQueriesReverse search source
+ * @return {?}
+ */
+function provideStoredQueriesReverseSearchSource() {
+    return {
+        provide: SearchSource,
+        useFactory: storedqueriesReverseSearchSourceFactory,
+        multi: true,
+        deps: [HttpClient, ConfigService]
+    };
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
 
 /**
  * @fileoverview added by tsickle
@@ -29749,6 +31457,10 @@ var SearchBarComponent = /** @class */ (function () {
          * Event emitted when the search type changes
          */
         this.searchTypeChange = new EventEmitter();
+        /**
+         * Event emitted when the search type changes
+         */
+        this.clearFeature = new EventEmitter();
         this._placeholder = '';
     }
     Object.defineProperty(SearchBarComponent.prototype, "emptyClass", {
@@ -29897,6 +31609,7 @@ var SearchBarComponent = /** @class */ (function () {
      */
     function () {
         this.clear();
+        this.clearFeature.emit();
     };
     /**
      * Update the placeholder with the enabled search type. The placeholder
@@ -30113,6 +31826,7 @@ var SearchBarComponent = /** @class */ (function () {
         change: [{ type: Output }],
         search: [{ type: Output }],
         searchTypeChange: [{ type: Output }],
+        clearFeature: [{ type: Output }],
         input: [{ type: ViewChild, args: ['input',] }],
         emptyClass: [{ type: HostBinding, args: ['class.empty',] }]
     };
@@ -30358,10 +32072,7 @@ var SearchResultsComponent = /** @class */ (function () {
      * @return {?}
      */
     function (result) {
-        this.store.state.update(result, {
-            focused: true,
-            selected: true
-        }, true);
+        this.store.state.update(result, { focused: true, selected: true }, true);
         this.resultSelect.emit(result);
     };
     /**
@@ -30465,7 +32176,7 @@ var SearchResultsComponent = /** @class */ (function () {
     SearchResultsComponent.decorators = [
         { type: Component, args: [{
                     selector: 'igo-search-results',
-                    template: "<igo-list [navigation]=\"true\">\r\n  <ng-template\r\n    #groupTemplate\r\n    ngFor let-group\r\n    [ngForOf]=\"results$ | async\">\r\n\r\n    <igo-collapsible\r\n      *ngIf=\"mode === searchResultMode.Grouped; else flatTemplate\"\r\n      [title]=\"computeGroupTitle(group)\">\r\n      <ng-container *ngTemplateOutlet=\"storeItemTemplate; context: {results: group.results}\"></ng-container>\r\n    </igo-collapsible>\r\n\r\n    <ng-template #flatTemplate>\r\n      <ng-container *ngTemplateOutlet=\"storeItemTemplate; context: {results: group.results}\"></ng-container>\r\n    </ng-template>\r\n\r\n    <ng-template #storeItemTemplate let-results=\"results\">\r\n      <ng-template ngFor let-result [ngForOf]=\"results\">\r\n        <igo-search-results-item\r\n          igoListItem\r\n          color=\"accent\"\r\n          [result]=\"result\"\r\n          [focused]=\"store.state.get(result).focused\"\r\n          [selected]=\"store.state.get(result).selected\"\r\n          (focus)=\"onResultFocus(result)\"\r\n          (select)=\"onResultSelect(result)\">\r\n        </igo-search-results-item>\r\n      </ng-template>\r\n    </ng-template>\r\n\r\n  </ng-template>\r\n</igo-list>\r\n",
+                    template: "<igo-list [navigation]=\"true\">\r\n  <ng-template\r\n    #groupTemplate\r\n    ngFor let-group\r\n    [ngForOf]=\"results$ | async\">\r\n\r\n    <igo-collapsible\r\n      *ngIf=\"mode === searchResultMode.Grouped; else flatTemplate\"\r\n      [title]=\"computeGroupTitle(group)\">\r\n      <ng-container *ngTemplateOutlet=\"storeItemTemplate; context: {results: group.results}\"></ng-container>\r\n    </igo-collapsible>\r\n\r\n    <ng-template #flatTemplate>\r\n      <ng-container *ngTemplateOutlet=\"storeItemTemplate; context: {results: group.results}\"></ng-container>\r\n    </ng-template>\r\n\r\n    <ng-template #storeItemTemplate let-results=\"results\">\r\n      <ng-template ngFor let-result [ngForOf]=\"results\">\r\n        <igo-search-results-item\r\n          igoListItem\r\n          color=\"accent\"\r\n          [result]=\"result\"\r\n          [focused]=\"store.state.get(result).focused\"\r\n          [selected]=\"store.state.get(result).selected\"\r\n          (focus)=\"onResultFocus(result)\"\r\n          (select)=\"onResultSelect(result)\">\r\n\r\n          <ng-container igoSearchItemToolbar\r\n            [ngTemplateOutlet]=\"templateSearchToolbar\"\r\n            [ngTemplateOutletContext]=\"{result: result}\">\r\n          </ng-container>\r\n\r\n        </igo-search-results-item>\r\n      </ng-template>\r\n    </ng-template>\r\n\r\n  </ng-template>\r\n</igo-list>\r\n",
                     changeDetection: ChangeDetectionStrategy.OnPush
                 }] }
     ];
@@ -30477,7 +32188,8 @@ var SearchResultsComponent = /** @class */ (function () {
         store: [{ type: Input }],
         mode: [{ type: Input }],
         resultFocus: [{ type: Output }],
-        resultSelect: [{ type: Output }]
+        resultSelect: [{ type: Output }],
+        templateSearchToolbar: [{ type: ContentChild, args: ['igoSearchItemToolbar',] }]
     };
     return SearchResultsComponent;
 }());
@@ -30543,7 +32255,7 @@ var SearchResultsItemComponent = /** @class */ (function () {
     SearchResultsItemComponent.decorators = [
         { type: Component, args: [{
                     selector: 'igo-search-results-item',
-                    template: "<mat-list-item>\r\n  <mat-icon *ngIf=\"icon\" mat-list-avatar svgIcon=\"{{icon}}\"></mat-icon>\r\n  <h4 matLine *ngIf=\"titleHtml\" [innerHtml]=\"titleHtml\"></h4>\r\n  <h4 matLine *ngIf=\"!titleHtml\">{{title}}</h4>\r\n</mat-list-item>\r\n",
+                    template: "<mat-list-item>\r\n  <mat-icon *ngIf=\"icon\" mat-list-avatar svgIcon=\"{{icon}}\"></mat-icon>\r\n  <h4 matLine *ngIf=\"titleHtml\" [innerHtml]=\"titleHtml\"></h4>\r\n  <h4 matLine *ngIf=\"!titleHtml\">{{title}}</h4>\r\n\r\n  <ng-content\r\n    select=[igoSearchItemToolbar]>\r\n  </ng-content>\r\n\r\n</mat-list-item>\r\n",
                     changeDetection: ChangeDetectionStrategy.OnPush,
                     styles: ["h4 :ng-deep small{color:\"#8C8C8C\"}"]
                 }] }
@@ -30554,6 +32266,169 @@ var SearchResultsItemComponent = /** @class */ (function () {
         result: [{ type: Input }]
     };
     return SearchResultsItemComponent;
+}());
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+var SearchResultAddButtonComponent = /** @class */ (function () {
+    function SearchResultAddButtonComponent(layerService) {
+        this.layerService = layerService;
+        this._color = 'primary';
+    }
+    Object.defineProperty(SearchResultAddButtonComponent.prototype, "color", {
+        get: /**
+         * @return {?}
+         */
+        function () {
+            return this._color;
+        },
+        set: /**
+         * @param {?} value
+         * @return {?}
+         */
+        function (value) {
+            this._color = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    /**
+     * @internal
+     */
+    /**
+     * \@internal
+     * @return {?}
+     */
+    SearchResultAddButtonComponent.prototype.ngOnInit = /**
+     * \@internal
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        if (this.layer.meta.dataType === 'Layer') {
+            this.added = this.map.layers.findIndex((/**
+             * @param {?} lay
+             * @return {?}
+             */
+            function (lay) { return lay.id === _this.layer.data.sourceOptions.id; })) !== -1;
+        }
+    };
+    /**
+     * On toggle button click, emit the added change event
+     * @internal
+     */
+    /**
+     * On toggle button click, emit the added change event
+     * \@internal
+     * @return {?}
+     */
+    SearchResultAddButtonComponent.prototype.onToggleClick = /**
+     * On toggle button click, emit the added change event
+     * \@internal
+     * @return {?}
+     */
+    function () {
+        this.added ? this.remove() : this.add();
+    };
+    /**
+     * @private
+     * @return {?}
+     */
+    SearchResultAddButtonComponent.prototype.add = /**
+     * @private
+     * @return {?}
+     */
+    function () {
+        this.added = true;
+        this.addLayerToMap();
+    };
+    /**
+     * @private
+     * @return {?}
+     */
+    SearchResultAddButtonComponent.prototype.remove = /**
+     * @private
+     * @return {?}
+     */
+    function () {
+        this.added = false;
+        this.removeLayerFromMap();
+    };
+    /**
+     * Emit added change event with added = true
+     */
+    /**
+     * Emit added change event with added = true
+     * @private
+     * @return {?}
+     */
+    SearchResultAddButtonComponent.prototype.addLayerToMap = /**
+     * Emit added change event with added = true
+     * @private
+     * @return {?}
+     */
+    function () {
+        var _this = this;
+        if (this.map === undefined) {
+            return;
+        }
+        if (this.layer.meta.dataType !== LAYER) {
+            return undefined;
+        }
+        /** @type {?} */
+        var layerOptions = ((/** @type {?} */ (this.layer))).data;
+        this.layerService
+            .createAsyncLayer(layerOptions)
+            .subscribe((/**
+         * @param {?} layer
+         * @return {?}
+         */
+        function (layer) { return _this.map.addLayer(layer); }));
+    };
+    /**
+     * Emit added change event with added = false
+     */
+    /**
+     * Emit added change event with added = false
+     * @private
+     * @return {?}
+     */
+    SearchResultAddButtonComponent.prototype.removeLayerFromMap = /**
+     * Emit added change event with added = false
+     * @private
+     * @return {?}
+     */
+    function () {
+        if (this.map === undefined) {
+            return;
+        }
+        if (this.layer.meta.dataType !== LAYER) {
+            return undefined;
+        }
+        /** @type {?} */
+        var oLayer = this.map.getLayerById(this.layer.data.sourceOptions.id);
+        this.map.removeLayer(oLayer);
+    };
+    SearchResultAddButtonComponent.decorators = [
+        { type: Component, args: [{
+                    selector: 'igo-search-add-button',
+                    template: "<button\r\n*ngIf=\"layer.meta.dataType === 'Layer'\"\r\nmat-icon-button\r\ntooltip-position=\"below\"\r\nmatTooltipShowDelay=\"500\"\r\n[matTooltip]=\"(added ? 'igo.geo.catalog.layer.removeFromMap' : 'igo.geo.catalog.layer.addToMap') | translate\"\r\n[color]=\"added ? 'warn' : ''\"\r\n(click)=\"onToggleClick()\">\r\n<mat-icon [svgIcon]=\"added ? 'delete' : 'plus'\"></mat-icon>\r\n</button>",
+                    changeDetection: ChangeDetectionStrategy.OnPush
+                }] }
+    ];
+    /** @nocollapse */
+    SearchResultAddButtonComponent.ctorParameters = function () { return [
+        { type: LayerService }
+    ]; };
+    SearchResultAddButtonComponent.propDecorators = {
+        layer: [{ type: Input }],
+        added: [{ type: Input }],
+        map: [{ type: Input }],
+        color: [{ type: Input }]
+    };
+    return SearchResultAddButtonComponent;
 }());
 
 /**
@@ -30573,16 +32448,20 @@ var IgoSearchResultsModule = /** @class */ (function () {
                         MatTooltipModule,
                         MatIconModule,
                         MatListModule,
+                        MatButtonModule,
                         IgoCollapsibleModule,
                         IgoListModule,
-                        IgoLanguageModule
+                        IgoLanguageModule,
+                        IgoMetadataModule,
                     ],
                     exports: [
-                        SearchResultsComponent
+                        SearchResultsComponent,
+                        SearchResultAddButtonComponent
                     ],
                     declarations: [
                         SearchResultsComponent,
-                        SearchResultsItemComponent
+                        SearchResultsItemComponent,
+                        SearchResultAddButtonComponent
                     ]
                 },] }
     ];
@@ -30608,7 +32487,8 @@ var IgoSearchModule = /** @class */ (function () {
             providers: [
                 provideSearchSourceService(),
                 provideDefaultIChercheSearchResultFormatter(),
-                provideDefaultCoordinatesSearchResultFormatter()
+                provideDefaultCoordinatesSearchResultFormatter(),
+                provideILayerSearchResultFormatter()
             ]
         };
     };
@@ -30725,11 +32605,11 @@ var ToastComponent = /** @class */ (function () {
     function () {
         if (this.feature.geometry) {
             /** @type {?} */
-            var olFeature = this.format.readFeature(this.feature, {
+            var olFeature$$1 = this.format.readFeature(this.feature, {
                 dataProjection: this.feature.projection,
                 featureProjection: this.map.projection
             });
-            moveToOlFeatures(this.map, [olFeature], FeatureMotion.Zoom);
+            moveToOlFeatures(this.map, [olFeature$$1], FeatureMotion.Zoom);
         }
     };
     /**
@@ -31429,1387 +33309,6 @@ var IgoGeoModule = /** @class */ (function () {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-/**
- * ILayer search source
- */
-var ILayerSearchSource = /** @class */ (function (_super) {
-    __extends(ILayerSearchSource, _super);
-    function ILayerSearchSource(http, languageService, options) {
-        var _this = _super.call(this, options) || this;
-        _this.http = http;
-        _this.languageService = languageService;
-        _this.title$ = new BehaviorSubject('');
-        _this.languageService.translate.get(_this.options.title).subscribe((/**
-         * @param {?} title
-         * @return {?}
-         */
-        function (title) { return _this.title$.next(title); }));
-        return _this;
-    }
-    Object.defineProperty(ILayerSearchSource.prototype, "title", {
-        get: /**
-         * @return {?}
-         */
-        function () {
-            return this.title$.getValue();
-        },
-        enumerable: true,
-        configurable: true
-    });
-    /**
-     * @return {?}
-     */
-    ILayerSearchSource.prototype.getId = /**
-     * @return {?}
-     */
-    function () {
-        return ILayerSearchSource.id;
-    };
-    /**
-     * @protected
-     * @return {?}
-     */
-    ILayerSearchSource.prototype.getDefaultOptions = /**
-     * @protected
-     * @return {?}
-     */
-    function () {
-        return {
-            title: 'igo.geo.search.dataSources.name',
-            searchUrl: 'https://geoegl.msp.gouv.qc.ca/apis/layers/search'
-        };
-    };
-    /**
-     * Search a layer by name or keyword
-     * @param term Layer name or keyword
-     * @returns Observable of <SearchResult<LayerOptions>[]
-     */
-    /**
-     * Search a layer by name or keyword
-     * @param {?} term Layer name or keyword
-     * @param {?=} options
-     * @return {?} Observable of <SearchResult<LayerOptions>[]
-     */
-    ILayerSearchSource.prototype.search = /**
-     * Search a layer by name or keyword
-     * @param {?} term Layer name or keyword
-     * @param {?=} options
-     * @return {?} Observable of <SearchResult<LayerOptions>[]
-     */
-    function (term, options) {
-        var _this = this;
-        /** @type {?} */
-        var params = this.computeSearchRequestParams(term, options || {});
-        return this.http
-            .get(this.searchUrl, { params: params })
-            .pipe(map((/**
-         * @param {?} response
-         * @return {?}
-         */
-        function (response) { return _this.extractResults(response); })));
-    };
-    /**
-     * @private
-     * @param {?} term
-     * @param {?} options
-     * @return {?}
-     */
-    ILayerSearchSource.prototype.computeSearchRequestParams = /**
-     * @private
-     * @param {?} term
-     * @param {?} options
-     * @return {?}
-     */
-    function (term, options) {
-        return new HttpParams({
-            fromObject: Object.assign({
-                q: term
-            }, this.params, options.params || {})
-        });
-    };
-    /**
-     * @private
-     * @param {?} response
-     * @return {?}
-     */
-    ILayerSearchSource.prototype.extractResults = /**
-     * @private
-     * @param {?} response
-     * @return {?}
-     */
-    function (response) {
-        var _this = this;
-        return response.items.map((/**
-         * @param {?} data
-         * @return {?}
-         */
-        function (data) { return _this.dataToResult(data); }));
-    };
-    /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    ILayerSearchSource.prototype.dataToResult = /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    function (data) {
-        /** @type {?} */
-        var layerOptions = this.computeLayerOptions(data);
-        return {
-            source: this,
-            meta: {
-                dataType: LAYER,
-                id: [this.getId(), data.id].join('.'),
-                title: data.source.title,
-                titleHtml: data.highlight.title,
-                icon: data.source.type === 'Layer' ? 'layers' : 'map'
-            },
-            data: layerOptions
-        };
-    };
-    /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    ILayerSearchSource.prototype.computeLayerOptions = /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    function (data) {
-        /** @type {?} */
-        var url = data.source.url;
-        /** @type {?} */
-        var queryParams = this.extractQueryParamsFromSourceUrl(url);
-        return {
-            title: data.source.title,
-            sourceOptions: {
-                crossOrigin: 'anonymous',
-                type: data.source.format,
-                url: url,
-                queryable: ((/** @type {?} */ (data.source))).queryable,
-                queryFormat: queryParams.format,
-                queryHtmlTarget: queryParams.htmlTarget,
-                params: {
-                    layers: data.source.name
-                }
-            }
-        };
-    };
-    /**
-     * @private
-     * @param {?} url
-     * @return {?}
-     */
-    ILayerSearchSource.prototype.extractQueryParamsFromSourceUrl = /**
-     * @private
-     * @param {?} url
-     * @return {?}
-     */
-    function (url) {
-        var e_1, _a;
-        /** @type {?} */
-        var queryFormat = QueryFormat.GML2;
-        /** @type {?} */
-        var htmlTarget;
-        /** @type {?} */
-        var formatOpt = ((/** @type {?} */ (this.options))).queryFormat;
-        if (formatOpt) {
-            var _loop_1 = function (key) {
-                /** @type {?} */
-                var value = formatOpt[key];
-                if (value === '*') {
-                    queryFormat = QueryFormat[key.toUpperCase()];
-                    return "break";
-                }
-                /** @type {?} */
-                var urls = ((/** @type {?} */ ((/** @type {?} */ (value))))).urls;
-                if (Array.isArray(urls)) {
-                    urls.forEach((/**
-                     * @param {?} urlOpt
-                     * @return {?}
-                     */
-                    function (urlOpt) {
-                        if (url.indexOf(urlOpt) !== -1) {
-                            queryFormat = QueryFormat[key.toUpperCase()];
-                        }
-                    }));
-                    return "break";
-                }
-            };
-            try {
-                for (var _b = __values(Object.keys(formatOpt)), _c = _b.next(); !_c.done; _c = _b.next()) {
-                    var key = _c.value;
-                    var state_1 = _loop_1(key);
-                    if (state_1 === "break")
-                        break;
-                }
-            }
-            catch (e_1_1) { e_1 = { error: e_1_1 }; }
-            finally {
-                try {
-                    if (_c && !_c.done && (_a = _b.return)) _a.call(_b);
-                }
-                finally { if (e_1) throw e_1.error; }
-            }
-        }
-        if (queryFormat === QueryFormat.HTML) {
-            htmlTarget = 'iframe';
-        }
-        return {
-            format: queryFormat,
-            htmlTarget: htmlTarget
-        };
-    };
-    ILayerSearchSource.id = 'ilayer';
-    ILayerSearchSource.type = LAYER;
-    ILayerSearchSource.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    ILayerSearchSource.ctorParameters = function () { return [
-        { type: HttpClient },
-        { type: LanguageService },
-        { type: undefined, decorators: [{ type: Inject, args: ['options',] }] }
-    ]; };
-    return ILayerSearchSource;
-}(SearchSource));
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * ILayer search source factory
- * @ignore
- * @param {?} http
- * @param {?} languageService
- * @param {?} config
- * @return {?}
- */
-function ilayerSearchSourceFactory(http, languageService, config) {
-    return new ILayerSearchSource(http, languageService, config.getConfig("searchSources." + ILayerSearchSource.id));
-}
-/**
- * Function that returns a provider for the ILayer search source
- * @return {?}
- */
-function provideILayerSearchSource() {
-    return {
-        provide: SearchSource,
-        useFactory: ilayerSearchSourceFactory,
-        multi: true,
-        deps: [HttpClient, LanguageService, ConfigService]
-    };
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * Nominatim search source
- */
-var NominatimSearchSource = /** @class */ (function (_super) {
-    __extends(NominatimSearchSource, _super);
-    function NominatimSearchSource(http, options) {
-        var _this = _super.call(this, options) || this;
-        _this.http = http;
-        return _this;
-    }
-    /**
-     * @return {?}
-     */
-    NominatimSearchSource.prototype.getId = /**
-     * @return {?}
-     */
-    function () {
-        return NominatimSearchSource.id;
-    };
-    /*
-     * Source : https://wiki.openstreetmap.org/wiki/Key:amenity
-    */
-    /*
-       * Source : https://wiki.openstreetmap.org/wiki/Key:amenity
-      */
-    /**
-     * @protected
-     * @return {?}
-     */
-    NominatimSearchSource.prototype.getDefaultOptions = /*
-       * Source : https://wiki.openstreetmap.org/wiki/Key:amenity
-      */
-    /**
-     * @protected
-     * @return {?}
-     */
-    function () {
-        return {
-            title: 'Nominatim (OSM)',
-            searchUrl: 'https://nominatim.openstreetmap.org/search',
-            settings: [
-                {
-                    type: 'checkbox',
-                    title: 'results type',
-                    name: 'amenity',
-                    values: [
-                        {
-                            title: 'Restauration',
-                            value: 'bar,bbq,biergaten,cafe,drinking_water,fast_food,food_court,ice_cream,pub,restaurant',
-                            enabled: false
-                        },
-                        {
-                            title: 'Santé',
-                            value: 'baby_hatch,clinic,dentist,doctors,hospital,nursing_home,pharmacy,social_facility,veterinary',
-                            enabled: false
-                        },
-                        {
-                            title: 'Divertissement',
-                            value: 'arts_centre,brothel,casino,cinema,community_center_fountain,gambling,nightclub,planetarium \
-                          ,public_bookcase,social_centre,stripclub,studio,swingerclub,theatre,internet_cafe',
-                            enabled: false
-                        },
-                        {
-                            title: 'Finance',
-                            value: 'atm,bank,bureau_de_change',
-                            enabled: false
-                        }
-                    ]
-                },
-                {
-                    type: 'radiobutton',
-                    title: 'results limit',
-                    name: 'limit',
-                    values: [
-                        {
-                            title: '10',
-                            value: 10,
-                            enabled: true
-                        },
-                        {
-                            title: '20',
-                            value: 20,
-                            enabled: false
-                        },
-                        {
-                            title: '50',
-                            value: 50,
-                            enabled: false
-                        }
-                    ]
-                },
-                {
-                    type: 'radiobutton',
-                    title: 'country limitation',
-                    name: 'countrycodes',
-                    values: [
-                        {
-                            title: 'Canada',
-                            value: 'CA',
-                            enabled: true
-                        },
-                        {
-                            title: 'Le monde',
-                            value: null,
-                            enabled: false
-                        }
-                    ]
-                },
-                {
-                    type: 'radiobutton',
-                    title: 'multiple object',
-                    name: 'dedupe',
-                    values: [
-                        {
-                            title: 'Oui',
-                            value: 0,
-                            enabled: false
-                        },
-                        {
-                            title: 'Non',
-                            value: 1,
-                            enabled: true
-                        }
-                    ]
-                }
-            ]
-        };
-    };
-    /**
-     * Search a place by name
-     * @param term Place name
-     * @returns Observable of <SearchResult<Feature>[]
-     */
-    /**
-     * Search a place by name
-     * @param {?} term Place name
-     * @param {?=} options
-     * @return {?} Observable of <SearchResult<Feature>[]
-     */
-    NominatimSearchSource.prototype.search = /**
-     * Search a place by name
-     * @param {?} term Place name
-     * @param {?=} options
-     * @return {?} Observable of <SearchResult<Feature>[]
-     */
-    function (term, options) {
-        var _this = this;
-        /** @type {?} */
-        var params = this.computeSearchRequestParams(term, options || {});
-        return this.http
-            .get(this.searchUrl, { params: params })
-            .pipe(map((/**
-         * @param {?} response
-         * @return {?}
-         */
-        function (response) { return _this.extractResults(response); })));
-    };
-    /**
-     * @private
-     * @param {?} term
-     * @param {?} options
-     * @return {?}
-     */
-    NominatimSearchSource.prototype.computeSearchRequestParams = /**
-     * @private
-     * @param {?} term
-     * @param {?} options
-     * @return {?}
-     */
-    function (term, options) {
-        return new HttpParams({
-            fromObject: Object.assign({
-                q: this.computeTerm(term),
-                format: 'json'
-            }, this.params, options.params || {})
-        });
-    };
-    /**
-     * @private
-     * @param {?} response
-     * @return {?}
-     */
-    NominatimSearchSource.prototype.extractResults = /**
-     * @private
-     * @param {?} response
-     * @return {?}
-     */
-    function (response) {
-        var _this = this;
-        return response.map((/**
-         * @param {?} data
-         * @return {?}
-         */
-        function (data) { return _this.dataToResult(data); }));
-    };
-    /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    NominatimSearchSource.prototype.dataToResult = /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    function (data) {
-        /** @type {?} */
-        var properties = this.computeProperties(data);
-        /** @type {?} */
-        var geometry = this.computeGeometry(data);
-        /** @type {?} */
-        var extent = this.computeExtent(data);
-        /** @type {?} */
-        var id = [this.getId(), 'place', data.place_id].join('.');
-        return {
-            source: this,
-            meta: {
-                dataType: FEATURE,
-                id: id,
-                title: data.display_name,
-                icon: 'map-marker'
-            },
-            data: {
-                type: FEATURE,
-                projection: 'EPSG:4326',
-                geometry: geometry,
-                extent: extent,
-                properties: properties,
-                meta: {
-                    id: id,
-                    title: data.display_name
-                }
-            }
-        };
-    };
-    /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    NominatimSearchSource.prototype.computeProperties = /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    function (data) {
-        return {
-            display_name: data.display_name,
-            place_id: data.place_id,
-            osm_type: data.osm_type,
-            class: data.class,
-            type: data.type
-        };
-    };
-    /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    NominatimSearchSource.prototype.computeGeometry = /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    function (data) {
-        return {
-            type: 'Point',
-            coordinates: [parseFloat(data.lon), parseFloat(data.lat)]
-        };
-    };
-    /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    NominatimSearchSource.prototype.computeExtent = /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    function (data) {
-        return [
-            parseFloat(data.boundingbox[2]),
-            parseFloat(data.boundingbox[0]),
-            parseFloat(data.boundingbox[3]),
-            parseFloat(data.boundingbox[1])
-        ];
-    };
-    /**
-     * @private
-     * @param {?} term
-     * @return {?}
-     */
-    NominatimSearchSource.prototype.computeTerm = /**
-     * @private
-     * @param {?} term
-     * @return {?}
-     */
-    function (term) {
-        term = this.computeTermTags(term);
-        return term;
-    };
-    /**
-     * Add hashtag from query in Nominatim's format (+[])
-     * @param term Query with hashtag
-     */
-    /**
-     * Add hashtag from query in Nominatim's format (+[])
-     * @private
-     * @param {?} term Query with hashtag
-     * @return {?}
-     */
-    NominatimSearchSource.prototype.computeTermTags = /**
-     * Add hashtag from query in Nominatim's format (+[])
-     * @private
-     * @param {?} term Query with hashtag
-     * @return {?}
-     */
-    function (term) {
-        var _this = this;
-        /** @type {?} */
-        var tags = term.match(/(#[^\s]+)/g);
-        /** @type {?} */
-        var addTagsFromSettings = true;
-        if (tags) {
-            tags.forEach((/**
-             * @param {?} value
-             * @return {?}
-             */
-            function (value) {
-                term = term.replace(value, '');
-                if (_super.prototype.hashtagValid.call(_this, _super.prototype.getSettingsValues.call(_this, 'amenity'), value)) {
-                    term += '+[' + value.substring(1) + ']';
-                    addTagsFromSettings = false;
-                }
-            }));
-            addTagsFromSettings = false;
-        }
-        if (addTagsFromSettings) {
-            term = this.computeTermSettings(term);
-        }
-        return term;
-    };
-    /**
-     * Add hashtag from settings in Nominatim's format (+[])
-     * @param term Query
-     */
-    /**
-     * Add hashtag from settings in Nominatim's format (+[])
-     * @private
-     * @param {?} term Query
-     * @return {?}
-     */
-    NominatimSearchSource.prototype.computeTermSettings = /**
-     * Add hashtag from settings in Nominatim's format (+[])
-     * @private
-     * @param {?} term Query
-     * @return {?}
-     */
-    function (term) {
-        this.options.settings.forEach((/**
-         * @param {?} settings
-         * @return {?}
-         */
-        function (settings) {
-            if (settings.name === 'amenity') {
-                settings.values.forEach((/**
-                 * @param {?} conf
-                 * @return {?}
-                 */
-                function (conf) {
-                    if (conf.enabled && typeof conf.value === 'string') {
-                        /** @type {?} */
-                        var splitted = conf.value.split(',');
-                        splitted.forEach((/**
-                         * @param {?} value
-                         * @return {?}
-                         */
-                        function (value) {
-                            term += '+[' + value + ']';
-                        }));
-                    }
-                }));
-            }
-        }));
-        return term;
-    };
-    NominatimSearchSource.id = 'nominatim';
-    NominatimSearchSource.type = FEATURE;
-    NominatimSearchSource.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    NominatimSearchSource.ctorParameters = function () { return [
-        { type: HttpClient },
-        { type: undefined, decorators: [{ type: Inject, args: ['options',] }] }
-    ]; };
-    return NominatimSearchSource;
-}(SearchSource));
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * Nominatim search source factory
- * @ignore
- * @param {?} http
- * @param {?} config
- * @return {?}
- */
-function nominatimSearchSourceFactory(http, config) {
-    return new NominatimSearchSource(http, config.getConfig("searchSources." + NominatimSearchSource.id));
-}
-/**
- * Function that returns a provider for the Nominatim search source
- * @return {?}
- */
-function provideNominatimSearchSource() {
-    return {
-        provide: SearchSource,
-        useFactory: nominatimSearchSourceFactory,
-        multi: true,
-        deps: [HttpClient, ConfigService]
-    };
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * StoredQueries search source
- */
-var StoredQueriesSearchSource = /** @class */ (function (_super) {
-    __extends(StoredQueriesSearchSource, _super);
-    function StoredQueriesSearchSource(http, options) {
-        var _this = _super.call(this, options) || this;
-        _this.http = http;
-        _this.storedQueriesOptions = (/** @type {?} */ (options));
-        if (!_this.storedQueriesOptions.storedquery_id) {
-            /** @type {?} */
-            var err = 'Stored Queries :You have to set "storedquery_id" into StoredQueries options. ex: storedquery_id: "nameofstoredquerie"';
-            throw new Error(err);
-        }
-        if (!_this.storedQueriesOptions.fields) {
-            throw new Error('Stored Queries :You have to set "fields" into options. ex: fields: {"name": "rtss", "defaultValue": "-99"}');
-        }
-        _this.storedQueriesOptions.outputformat = _this.storedQueriesOptions.outputformat || 'text/xml; subtype=gml/3.1.1';
-        _this.storedQueriesOptions.srsname = _this.storedQueriesOptions.srsname || 'EPSG:4326';
-        /** @type {?} */
-        var storedQueryId = _this.storedQueriesOptions.storedquery_id.toLowerCase();
-        if (storedQueryId.includes('getfeaturebyid') && _this.storedQueriesOptions.outputformat.toLowerCase().includes('getfeaturebyid')) {
-            /** @type {?} */
-            var err = 'You must set a geojson format for your stored query. This is due to an openlayers issue)';
-            err += ' (wfs 1.1.0 & gml 3.1.1 limitation)';
-            throw new Error(err);
-        }
-        if (!_this.storedQueriesOptions.fields) {
-            throw new Error('Stored Queries :You must set a fields definition for your stored query');
-        }
-        if (!(_this.storedQueriesOptions.fields instanceof Array)) {
-            _this.storedQueriesOptions.fields = [_this.storedQueriesOptions.fields];
-        }
-        _this.multipleFieldsQuery = _this.storedQueriesOptions.fields.length > 1 ? true : false;
-        _this.storedQueriesOptions.fields.forEach((/**
-         * @param {?} field
-         * @param {?} index
-         * @return {?}
-         */
-        function (field, index) {
-            if (_this.multipleFieldsQuery && !field.splitPrefix && index !== 0) {
-                throw new Error('Stored Queries :You must set a field spliter into your field definition (optional for the first one!)');
-            }
-            if (!field.defaultValue) {
-                throw new Error('Stored Queries :You must set a field default value into your field definition');
-            }
-        }));
-        _this.storedQueriesOptions.resultTitle = _this.storedQueriesOptions.resultTitle || _this.resultTitle;
-        return _this;
-    }
-    /**
-     * @return {?}
-     */
-    StoredQueriesSearchSource.prototype.getId = /**
-     * @return {?}
-     */
-    function () {
-        return StoredQueriesSearchSource.id;
-    };
-    /**
-     * @protected
-     * @return {?}
-     */
-    StoredQueriesSearchSource.prototype.getDefaultOptions = /**
-     * @protected
-     * @return {?}
-     */
-    function () {
-        return {
-            title: 'Stored Queries',
-            searchUrl: 'https://ws.mapserver.transports.gouv.qc.ca/swtq'
-        };
-    };
-    // URL CALL EXAMPLES:
-    //  GetFeatureById (mandatory storedquery for wfs server) (outputformat must be in geojson)
-    //  tslint:disable-next-line:max-line-length
-    //  https://ws.mapserver.transports.gouv.qc.ca/swtq?service=wfs&version=2.0.0&request=GetFeature&storedquery_id=urn:ogc:def:query:OGC-WFS::GetFeatureById&srsname=epsg:4326&outputformat=geojson&ID=a_num_route.132
-    //  Custom StoredQuery
-    //  tslint:disable-next-line:max-line-length
-    //  https://ws.mapserver.transports.gouv.qc.ca/swtq?service=wfs&version=1.1.0&request=GetFeature&storedquery_id=rtss&srsname=epsg:4326&outputformat=text/xml;%20subtype=gml/3.1.1&rtss=0013801110000c&chainage=12
-    /**
-     * Search a location by name or keyword
-     * @param term Location name or keyword
-     * @returns Observable of <SearchResult<Feature>[]
-     */
-    // URL CALL EXAMPLES:
-    //  GetFeatureById (mandatory storedquery for wfs server) (outputformat must be in geojson)
-    //  tslint:disable-next-line:max-line-length
-    //  https://ws.mapserver.transports.gouv.qc.ca/swtq?service=wfs&version=2.0.0&request=GetFeature&storedquery_id=urn:ogc:def:query:OGC-WFS::GetFeatureById&srsname=epsg:4326&outputformat=geojson&ID=a_num_route.132
-    //  Custom StoredQuery
-    //  tslint:disable-next-line:max-line-length
-    //  https://ws.mapserver.transports.gouv.qc.ca/swtq?service=wfs&version=1.1.0&request=GetFeature&storedquery_id=rtss&srsname=epsg:4326&outputformat=text/xml;%20subtype=gml/3.1.1&rtss=0013801110000c&chainage=12
-    /**
-     * Search a location by name or keyword
-     * @param {?} term Location name or keyword
-     * @param {?=} options
-     * @return {?} Observable of <SearchResult<Feature>[]
-     */
-    StoredQueriesSearchSource.prototype.search = 
-    // URL CALL EXAMPLES:
-    //  GetFeatureById (mandatory storedquery for wfs server) (outputformat must be in geojson)
-    //  tslint:disable-next-line:max-line-length
-    //  https://ws.mapserver.transports.gouv.qc.ca/swtq?service=wfs&version=2.0.0&request=GetFeature&storedquery_id=urn:ogc:def:query:OGC-WFS::GetFeatureById&srsname=epsg:4326&outputformat=geojson&ID=a_num_route.132
-    //  Custom StoredQuery
-    //  tslint:disable-next-line:max-line-length
-    //  https://ws.mapserver.transports.gouv.qc.ca/swtq?service=wfs&version=1.1.0&request=GetFeature&storedquery_id=rtss&srsname=epsg:4326&outputformat=text/xml;%20subtype=gml/3.1.1&rtss=0013801110000c&chainage=12
-    /**
-     * Search a location by name or keyword
-     * @param {?} term Location name or keyword
-     * @param {?=} options
-     * @return {?} Observable of <SearchResult<Feature>[]
-     */
-    function (term, options) {
-        var _this = this;
-        /** @type {?} */
-        var storedqueriesParams = this.termSplitter(term, this.storedQueriesOptions.fields);
-        /** @type {?} */
-        var params = this.computeRequestParams(options || {}, storedqueriesParams);
-        if (new RegExp('.*?gml.*?', 'i').test(this.storedQueriesOptions.outputformat)) {
-            return this.http
-                .get(this.searchUrl, { params: params, responseType: 'text' })
-                .pipe(map((/**
-             * @param {?} response
-             * @return {?}
-             */
-            function (response) {
-                return _this.extractResults(_this.extractWFSData(response));
-            })));
-        }
-        else {
-            return this.http
-                .get(this.searchUrl, { params: params })
-                .pipe(map((/**
-             * @param {?} response
-             * @return {?}
-             */
-            function (response) {
-                return _this.extractResults(_this.extractWFSData(response));
-            })));
-        }
-    };
-    /**
-     * @private
-     * @return {?}
-     */
-    StoredQueriesSearchSource.prototype.getFormatFromOptions = /**
-     * @private
-     * @return {?}
-     */
-    function () {
-        /** @type {?} */
-        var olFormatCls;
-        /** @type {?} */
-        var outputFormat = this.storedQueriesOptions.outputformat;
-        /** @type {?} */
-        var patternGml3 = new RegExp('.*?gml.*?', 'i');
-        /** @type {?} */
-        var patternGeojson = new RegExp('.*?json.*?', 'i');
-        if (patternGeojson.test(outputFormat)) {
-            olFormatCls = GeoJSON;
-        }
-        if (patternGml3.test(outputFormat)) {
-            olFormatCls = WFS;
-        }
-        return new olFormatCls();
-    };
-    /**
-     * @private
-     * @param {?} res
-     * @return {?}
-     */
-    StoredQueriesSearchSource.prototype.extractWFSData = /**
-     * @private
-     * @param {?} res
-     * @return {?}
-     */
-    function (res) {
-        /** @type {?} */
-        var olFormat = this.getFormatFromOptions();
-        /** @type {?} */
-        var geojson = GeoJSON;
-        /** @type {?} */
-        var wfsfeatures = olFormat.readFeatures(res);
-        /** @type {?} */
-        var features = JSON.parse(new geojson().writeFeatures(wfsfeatures));
-        return features;
-    };
-    /**
-     * @private
-     * @param {?} term
-     * @param {?} fields
-     * @return {?}
-     */
-    StoredQueriesSearchSource.prototype.termSplitter = /**
-     * @private
-     * @param {?} term
-     * @param {?} fields
-     * @return {?}
-     */
-    function (term, fields) {
-        /** @type {?} */
-        var splittedTerm = {};
-        /** @type {?} */
-        var remainingTerm = term;
-        /** @type {?} */
-        var cnt = 0;
-        // Used to build the default values
-        fields.forEach((/**
-         * @param {?} field
-         * @return {?}
-         */
-        function (field) {
-            splittedTerm[field.name] = field.defaultValue;
-            /** @type {?} */
-            var splitterRegex = new RegExp(field.splitPrefix + '(.+)', 'i');
-            if (splitterRegex.test(remainingTerm)) {
-                cnt = field.splitPrefix ? cnt += 1 : cnt;
-                remainingTerm = remainingTerm.split(splitterRegex)[1];
-            }
-        }));
-        if (cnt === 0) {
-            splittedTerm[fields[0].name] = term;
-            return splittedTerm;
-        }
-        remainingTerm = term;
-        /** @type {?} */
-        var localFields = __spread(fields).reverse();
-        localFields.forEach((/**
-         * @param {?} field
-         * @return {?}
-         */
-        function (field) {
-            /** @type {?} */
-            var splitterRegex = new RegExp(field.splitPrefix || '' + '(.+)', 'i');
-            if (remainingTerm || remainingTerm !== '') {
-                /** @type {?} */
-                var values = remainingTerm.split(splitterRegex);
-                remainingTerm = values[0];
-                if (values[1]) {
-                    splittedTerm[field.name] = values[1].trim();
-                }
-            }
-        }));
-        return splittedTerm;
-    };
-    /**
-     * @private
-     * @param {?} options
-     * @param {?} queryParams
-     * @return {?}
-     */
-    StoredQueriesSearchSource.prototype.computeRequestParams = /**
-     * @private
-     * @param {?} options
-     * @param {?} queryParams
-     * @return {?}
-     */
-    function (options, queryParams) {
-        /** @type {?} */
-        var wfsversion = this.storedQueriesOptions.storedquery_id.toLowerCase().includes('getfeaturebyid') ? '2.0.0' : '1.1.0';
-        return new HttpParams({
-            fromObject: Object.assign({
-                service: 'wfs',
-                version: wfsversion,
-                request: 'GetFeature',
-                storedquery_id: this.storedQueriesOptions.storedquery_id,
-                srsname: this.storedQueriesOptions.srsname,
-                outputformat: this.storedQueriesOptions.outputformat
-            }, queryParams, this.params, options.params || {})
-        });
-    };
-    /**
-     * @private
-     * @param {?} response
-     * @return {?}
-     */
-    StoredQueriesSearchSource.prototype.extractResults = /**
-     * @private
-     * @param {?} response
-     * @return {?}
-     */
-    function (response) {
-        var _this = this;
-        return response.features.map((/**
-         * @param {?} data
-         * @return {?}
-         */
-        function (data) {
-            return _this.dataToResult(data);
-        }));
-    };
-    /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    StoredQueriesSearchSource.prototype.dataToResult = /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    function (data) {
-        /** @type {?} */
-        var properties = this.computeProperties(data);
-        /** @type {?} */
-        var id = [this.getId(), properties.type, data.id].join('.');
-        /** @type {?} */
-        var title = data.properties[this.storedQueriesOptions.resultTitle] ? this.storedQueriesOptions.resultTitle : this.resultTitle;
-        return {
-            source: this,
-            data: {
-                type: FEATURE,
-                projection: 'EPSG:4326',
-                geometry: data.geometry,
-                // extent: data.bbox,
-                properties: properties,
-                meta: {
-                    id: id,
-                    title: data.properties[title]
-                }
-            },
-            meta: {
-                dataType: FEATURE,
-                id: id,
-                title: data.properties.title,
-                titleHtml: data.properties[title],
-                icon: 'map-marker'
-            }
-        };
-    };
-    /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    StoredQueriesSearchSource.prototype.computeProperties = /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    function (data) {
-        /** @type {?} */
-        var properties = ObjectUtils.removeKeys(data.properties, StoredQueriesSearchSource.propertiesBlacklist);
-        return properties;
-    };
-    StoredQueriesSearchSource.id = 'storedqueries';
-    StoredQueriesSearchSource.type = FEATURE;
-    StoredQueriesSearchSource.propertiesBlacklist = [];
-    StoredQueriesSearchSource.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    StoredQueriesSearchSource.ctorParameters = function () { return [
-        { type: HttpClient },
-        { type: undefined, decorators: [{ type: Inject, args: ['options',] }] }
-    ]; };
-    return StoredQueriesSearchSource;
-}(SearchSource));
-/**
- * StoredQueriesReverse search source
- */
-// EXAMPLE CALLS
-// tslint:disable-next-line:max-line-length
-// https://ws.mapserver.transports.gouv.qc.ca/swtq?service=wfs&version=1.1.0&request=GetFeature&storedquery_id=lim_adm&srsname=epsg:4326&outputformat=text/xml;%20subtype=gml/3.1.1&long=-71.292469&lat=46.748107
-//
-var StoredQueriesReverseSearchSource = /** @class */ (function (_super) {
-    __extends(StoredQueriesReverseSearchSource, _super);
-    function StoredQueriesReverseSearchSource(http, options) {
-        var _this = _super.call(this, options) || this;
-        _this.http = http;
-        _this.storedQueriesOptions = (/** @type {?} */ (options));
-        if (!_this.storedQueriesOptions.storedquery_id) {
-            /** @type {?} */
-            var err = 'Stored Queries :You have to set "storedquery_id" into StoredQueries options. ex: storedquery_id: "nameofstoredquerie"';
-            throw new Error(err);
-        }
-        if (!_this.storedQueriesOptions.longField) {
-            throw new Error('Stored Queries :You have to set "longField" to map the longitude coordinate to the query params.');
-        }
-        if (!_this.storedQueriesOptions.latField) {
-            throw new Error('Stored Queries :You have to set "latField" to map the latitude coordinate to the query params.');
-        }
-        _this.storedQueriesOptions.outputformat = _this.storedQueriesOptions.outputformat || 'text/xml; subtype=gml/3.1.1';
-        _this.storedQueriesOptions.srsname = _this.storedQueriesOptions.srsname || 'EPSG:4326';
-        _this.storedQueriesOptions.resultTitle = _this.storedQueriesOptions.resultTitle || _this.resultTitle;
-        return _this;
-    }
-    /**
-     * @return {?}
-     */
-    StoredQueriesReverseSearchSource.prototype.getId = /**
-     * @return {?}
-     */
-    function () {
-        return StoredQueriesReverseSearchSource.id;
-    };
-    /**
-     * @protected
-     * @return {?}
-     */
-    StoredQueriesReverseSearchSource.prototype.getDefaultOptions = /**
-     * @protected
-     * @return {?}
-     */
-    function () {
-        return {
-            title: 'Stored Queries (reverse)',
-            searchUrl: 'https://ws.mapserver.transports.gouv.qc.ca/swtq'
-        };
-    };
-    /**
-     * Search a location by coordinates
-     * @param lonLat Location coordinates
-     * @param distance Search raidus around lonLat
-     * @returns Observable of <SearchResult<Feature>[]
-     */
-    /**
-     * Search a location by coordinates
-     * @param {?} lonLat Location coordinates
-     * @param {?=} options
-     * @return {?} Observable of <SearchResult<Feature>[]
-     */
-    StoredQueriesReverseSearchSource.prototype.reverseSearch = /**
-     * Search a location by coordinates
-     * @param {?} lonLat Location coordinates
-     * @param {?=} options
-     * @return {?} Observable of <SearchResult<Feature>[]
-     */
-    function (lonLat, options) {
-        var _this = this;
-        /** @type {?} */
-        var params = this.computeRequestParams(lonLat, options || {});
-        if (new RegExp('.*?gml.*?', 'i').test(this.storedQueriesOptions.outputformat)) {
-            return this.http
-                .get(this.searchUrl, { params: params, responseType: 'text' })
-                .pipe(map((/**
-             * @param {?} response
-             * @return {?}
-             */
-            function (response) {
-                return _this.extractResults(_this.extractWFSData(response));
-            })));
-        }
-        else {
-            return this.http
-                .get(this.searchUrl, { params: params })
-                .pipe(map((/**
-             * @param {?} response
-             * @return {?}
-             */
-            function (response) {
-                return _this.extractResults(_this.extractWFSData(response));
-            })));
-        }
-    };
-    /**
-     * @private
-     * @return {?}
-     */
-    StoredQueriesReverseSearchSource.prototype.getFormatFromOptions = /**
-     * @private
-     * @return {?}
-     */
-    function () {
-        /** @type {?} */
-        var olFormatCls;
-        /** @type {?} */
-        var outputFormat = this.storedQueriesOptions.outputformat;
-        /** @type {?} */
-        var patternGml3 = new RegExp('.*?gml.*?', 'i');
-        /** @type {?} */
-        var patternGeojson = new RegExp('.*?json.*?', 'i');
-        if (patternGeojson.test(outputFormat)) {
-            olFormatCls = GeoJSON;
-        }
-        if (patternGml3.test(outputFormat)) {
-            olFormatCls = WFS;
-        }
-        return new olFormatCls();
-    };
-    /**
-     * @private
-     * @param {?} res
-     * @return {?}
-     */
-    StoredQueriesReverseSearchSource.prototype.extractWFSData = /**
-     * @private
-     * @param {?} res
-     * @return {?}
-     */
-    function (res) {
-        /** @type {?} */
-        var olFormat = this.getFormatFromOptions();
-        /** @type {?} */
-        var geojson = GeoJSON;
-        /** @type {?} */
-        var wfsfeatures = olFormat.readFeatures(res);
-        /** @type {?} */
-        var features = JSON.parse(new geojson().writeFeatures(wfsfeatures));
-        return features;
-    };
-    /**
-     * @private
-     * @param {?} lonLat
-     * @param {?=} options
-     * @return {?}
-     */
-    StoredQueriesReverseSearchSource.prototype.computeRequestParams = /**
-     * @private
-     * @param {?} lonLat
-     * @param {?=} options
-     * @return {?}
-     */
-    function (lonLat, options) {
-        /** @type {?} */
-        var longLatParams = {};
-        longLatParams[this.storedQueriesOptions.longField] = lonLat[0];
-        longLatParams[this.storedQueriesOptions.latField] = lonLat[1];
-        return new HttpParams({
-            fromObject: Object.assign({
-                service: 'wfs',
-                version: '1.1.0',
-                request: 'GetFeature',
-                storedquery_id: this.storedQueriesOptions.storedquery_id,
-                srsname: this.storedQueriesOptions.srsname,
-                outputformat: this.storedQueriesOptions.outputformat,
-            }, longLatParams, this.params, options.params || {})
-        });
-    };
-    /**
-     * @private
-     * @param {?} response
-     * @return {?}
-     */
-    StoredQueriesReverseSearchSource.prototype.extractResults = /**
-     * @private
-     * @param {?} response
-     * @return {?}
-     */
-    function (response) {
-        var _this = this;
-        return response.features.map((/**
-         * @param {?} data
-         * @return {?}
-         */
-        function (data) {
-            return _this.dataToResult(data);
-        }));
-    };
-    /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    StoredQueriesReverseSearchSource.prototype.dataToResult = /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    function (data) {
-        /** @type {?} */
-        var properties = this.computeProperties(data);
-        /** @type {?} */
-        var id = [this.getId(), properties.type, data.id].join('.');
-        /** @type {?} */
-        var title = data.properties[this.storedQueriesOptions.resultTitle] ? this.storedQueriesOptions.resultTitle : this.resultTitle;
-        return {
-            source: this,
-            data: {
-                type: FEATURE,
-                projection: 'EPSG:4326',
-                geometry: data.geometry,
-                properties: properties,
-                meta: {
-                    id: id,
-                    title: data.properties[title]
-                }
-            },
-            meta: {
-                dataType: FEATURE,
-                id: id,
-                title: data.properties[title],
-                icon: 'map-marker'
-            }
-        };
-    };
-    /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    StoredQueriesReverseSearchSource.prototype.computeProperties = /**
-     * @private
-     * @param {?} data
-     * @return {?}
-     */
-    function (data) {
-        /** @type {?} */
-        var properties = ObjectUtils.removeKeys(data.properties, StoredQueriesReverseSearchSource.propertiesBlacklist);
-        return Object.assign(properties, { type: data.properties.doc_type });
-    };
-    StoredQueriesReverseSearchSource.id = 'storedqueriesreverse';
-    StoredQueriesReverseSearchSource.type = FEATURE;
-    StoredQueriesReverseSearchSource.propertiesBlacklist = [];
-    StoredQueriesReverseSearchSource.decorators = [
-        { type: Injectable }
-    ];
-    /** @nocollapse */
-    StoredQueriesReverseSearchSource.ctorParameters = function () { return [
-        { type: HttpClient },
-        { type: undefined, decorators: [{ type: Inject, args: ['options',] }] }
-    ]; };
-    return StoredQueriesReverseSearchSource;
-}(SearchSource));
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-/**
- * StoredQueries search source factory
- * @ignore
- * @param {?} http
- * @param {?} config
- * @return {?}
- */
-function storedqueriesSearchSourceFactory(http, config) {
-    return new StoredQueriesSearchSource(http, config.getConfig("searchSources." + StoredQueriesSearchSource.id));
-}
-/**
- * Function that returns a provider for the StoredQueries search source
- * @return {?}
- */
-function provideStoredQueriesSearchSource() {
-    return {
-        provide: SearchSource,
-        useFactory: storedqueriesSearchSourceFactory,
-        multi: true,
-        deps: [HttpClient, ConfigService]
-    };
-}
-/**
- * StoredQueriesReverse search source factory
- * @ignore
- * @param {?} http
- * @param {?} config
- * @return {?}
- */
-function storedqueriesReverseSearchSourceFactory(http, config) {
-    return new StoredQueriesReverseSearchSource(http, config.getConfig("searchSources." + StoredQueriesReverseSearchSource.id));
-}
-/**
- * Function that returns a provider for the StoredQueriesReverse search source
- * @return {?}
- */
-function provideStoredQueriesReverseSearchSource() {
-    return {
-        provide: SearchSource,
-        useFactory: storedqueriesReverseSearchSourceFactory,
-        multi: true,
-        deps: [HttpClient, ConfigService]
-    };
-}
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
 /** @enum {number} */
 var RoutingFormat = {
     GeoJSON: 0,
@@ -33220,51 +33719,6 @@ function provideOsrmRoutingSource() {
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-
-export { IgoGeoModule, IgoCatalogModule, IgoCatalogBrowserModule, IgoCatalogLibraryModule, IgoDataSourceModule, IgoDownloadModule, IgoGeoWorkspaceModule, IgoWorkspaceSelectorModule, IgoOgcFilterModule, IgoFeatureModule, IgoFeatureFormModule, IgoFeatureDetailsModule, IgoFilterModule, IgoGeometryModule, IgoGeometryFormFieldModule, IgoImportExportModule, IgoLayerModule, IgoMapModule, IgoMeasureModule, IgoMeasurerModule, IgoMetadataModule, IgoOverlayModule, IgoPrintModule, IgoQueryModule, IgoRoutingModule, IgoSearchModule, IgoSearchBarModule, IgoSearchResultsModule, IgoToastModule, IgoWktModule, querySearchSourceFactory, provideQuerySearchSource, defaultIChercheSearchResultFormatterFactory, provideDefaultIChercheSearchResultFormatter, ichercheSearchSourceFactory, provideIChercheSearchSource, ichercheReverseSearchSourceFactory, provideIChercheReverseSearchSource, defaultCoordinatesSearchResultFormatterFactory, provideDefaultCoordinatesSearchResultFormatter, CoordinatesReverseSearchSourceFactory, provideCoordinatesReverseSearchSource, ilayerSearchSourceFactory, provideILayerSearchSource, nominatimSearchSourceFactory, provideNominatimSearchSource, storedqueriesSearchSourceFactory, provideStoredQueriesSearchSource, storedqueriesReverseSearchSourceFactory, provideStoredQueriesReverseSearchSource, osrmRoutingSourcesFactory, provideOsrmRoutingSource, routingSourceServiceFactory, provideRoutingSourceService, RoutingSourceService, CatalogService, CatalogItemType, CatalogBrowserComponent, CatalogLibaryComponent, DataService, DataSource, FeatureDataSource, OSMDataSource, XYZDataSource, WFSDataSource, WFSService, WMSDataSource, formatWFSQueryString, checkWfsParams, defaultEpsg, defaultMaxFeatures, defaultWfsVersion, defaultFieldNameGeometry, gmlRegex, jsonRegex, WMTSDataSource, CartoDataSource, ArcGISRestDataSource, TileArcGISRestDataSource, WebSocketDataSource, MVTDataSource, ClusterDataSource, DataSourceService, CapabilitiesService, EsriStyleGenerator, generateIdFromSourceOptions, generateWMSIdFromSourceOptions, generateWMTSIdFromSourceOptions, generateXYZIdFromSourceOptions, generateFeatureIdFromSourceOptions, generateId, createDefaultTileGrid, DownloadService, DownloadButtonComponent, FEATURE, FeatureMotion, featureToOl, featureFromOl, computeOlFeatureExtent, computeOlFeaturesExtent, scaleExtent, featuresAreOutOfView, featuresAreTooDeepInView, moveToOlFeatures, hideOlFeature, tryBindStoreLayer, tryAddLoadingStrategy, tryAddSelectionStrategy, FeatureStore, FeatureStoreLoadingStrategy, FeatureStoreLoadingLayerStrategy, FeatureStoreSelectionStrategy, FeatureStoreStrategy, FilterableDataSourcePipe, TimeFilterService, OgcFilterOperatorType, OGCFilterService, OgcFilterWriter, TimeFilterFormComponent, TimeFilterItemComponent, TimeFilterListComponent, TimeFilterListBindingDirective, OgcFilterableFormComponent, OgcFilterableItemComponent, OgcFilterableListComponent, OgcFilterableListBindingDirective, OgcFilterFormComponent, OgcFilterToggleButtonComponent, OgcFilterButtonComponent, GeometrySliceError, GeometrySliceMultiPolygonError, GeometrySliceLineStringError, GeometrySliceTooManyIntersectionError, createDrawInteractionStyle, createDrawHoleInteractionStyle, sliceOlGeometry, sliceOlLineString, sliceOlPolygon, addLinearRingToOlPolygon, DrawControl, ModifyControl, SliceControl, DropGeoFileDirective, ExportError, ExportInvalidFileError, ExportNothingToExportError, ExportService, ExportFormat, exportToCSV, entitiesToRowData, downloadContent, handleFileExportError, handleNothingToExportError, ImportError, ImportInvalidFileError, ImportUnreadableFileError, ImportNothingToImportError, ImportService, addLayerAndFeaturesToMap, handleFileImportSuccess, handleFileImportError, handleNothingToImportError, getFileExtension, computeLayerTitleFromFile, ImportExportComponent, LayerService, LAYER, Layer, TooltipType, ImageLayer, TileLayer, VectorLayer, VectorTileLayer, StyleService, LayerItemComponent, LayerLegendComponent, LayerListComponent, LayerListBindingDirective, LayerListControlsEnum, LayerListService, ImageWatcher, TileWatcher, VectorWatcher, getLayersLegends, IgoMap, MapViewAction, MapService, stringToLonLat, viewStatesAreEqual, formatScale, getResolutionFromScale, getScaleFromResolution, ctrlKeyDown, MapOfflineDirective, ProjectionService, MapController, MapViewController, MapBrowserComponent, ZoomButtonComponent, GeolocateButtonComponent, BaseLayersSwitcherComponent, MiniBaseMapComponent, RotationButtonComponent, MEASURE_UNIT_AUTO, MeasureType, MeasureLengthUnit, MeasureLengthUnitAbbreviation, MeasureAreaUnit, MeasureAreaUnitAbbreviation, metersToKilometers, metersToFeet, metersToMiles, squareMetersToSquareKilometers, squareMetersToSquareMiles, squareMetersToSquareFeet, squareMetersToHectares, squareMetersToAcres, metersToUnit, squareMetersToUnit, formatMeasure, computeBestLengthUnit, computeBestAreaUnit, createMeasureInteractionStyle, createMeasureLayerStyle, measureOlGeometryLength, measureOlGeometryArea, measureOlGeometry, updateOlGeometryMidpoints, clearOlGeometryMidpoints, updateOlTooltipsAtMidpoints, getOlTooltipsAtMidpoints, updateOlGeometryCenter, updateOlTooltipAtCenter, getOlTooltipAtCenter, getTooltipsOfOlGeometry, createOlTooltipAtPoint, MeasurerComponent, MeasureFormatPipe, MetadataService, MetadataButtonComponent, Overlay, OverlayDirective, OverlayService, OverlayAction, createOverlayLayer, createOverlayMarkerStyle, PrintService, PrintOutputFormat, PrintPaperFormat, PrintOrientation, PrintResolution, PrintSaveImageFormat, PrintComponent, PrintFormComponent, QueryService, QueryDirective, QueryFormat, QueryHtmlTarget, layerIsQueryable, olLayerIsQueryable, QuerySearchSource, RoutingService, RoutingFormat, SourceRoutingType, RoutingSource, OsrmRoutingSource, RoutingFormComponent, RoutingFormBindingDirective, RoutingFormService, SEARCH_TYPES, SearchService, SearchSourceService, sourceCanSearch, sourceCanReverseSearch, featureToSearchResult, SearchSource, IChercheSearchResultFormatter, IChercheSearchSource, IChercheReverseSearchSource, ILayerSearchSource, NominatimSearchSource, StoredQueriesSearchSource, StoredQueriesReverseSearchSource, CoordinatesSearchResultFormatter, CoordinatesReverseSearchSource, ToastComponent, GoogleLinks, WktService, CatalogBrowserGroupComponent as ɵj, CatalogBrowserLayerComponent as ɵk, CatalogBrowserComponent as ɵc, CatalogLibaryItemComponent as ɵm, CatalogLibaryComponent as ɵl, CapabilitiesService as ɵg, DataSourceService as ɵf, DataService as ɵi, WFSService as ɵh, DownloadButtonComponent as ɵn, DownloadService as ɵo, FeatureDetailsComponent as ɵp, FeatureFormComponent as ɵq, OgcFilterButtonComponent as ɵba, OgcFilterFormComponent as ɵy, OgcFilterToggleButtonComponent as ɵbb, OgcFilterableFormComponent as ɵbd, OgcFilterableItemComponent as ɵbe, OgcFilterableListBindingDirective as ɵbg, OgcFilterableListComponent as ɵbf, FilterableDataSourcePipe as ɵr, OGCFilterService as ɵbc, TimeFilterService as ɵu, TimeFilterFormComponent as ɵs, TimeFilterItemComponent as ɵt, TimeFilterListBindingDirective as ɵw, TimeFilterListComponent as ɵv, GeometryFormFieldInputComponent as ɵbi, GeometryFormFieldComponent as ɵbh, ImportExportComponent as ɵbj, DropGeoFileDirective as ɵbm, ExportService as ɵbl, ImportService as ɵbk, LayerItemComponent as ɵbo, LayerLegendComponent as ɵbp, LayerListBindingDirective as ɵbs, LayerListComponent as ɵbq, LayerListService as ɵbr, LayerService as ɵd, StyleService as ɵe, baseLayersSwitcherSlideInOut as ɵbx, BaseLayersSwitcherComponent as ɵbw, MiniBaseMapComponent as ɵby, GeolocateButtonComponent as ɵbu, MapBrowserComponent as ɵbn, RotationButtonComponent as ɵbv, MapService as ɵx, MapOfflineDirective as ɵbz, ZoomButtonComponent as ɵbt, MeasureFormatPipe as ɵca, MeasurerDialogComponent as ɵcd, MeasurerItemComponent as ɵcb, MeasurerComponent as ɵcc, MetadataButtonComponent as ɵa, MetadataService as ɵb, OverlayDirective as ɵcf, OverlayService as ɵcg, PrintFormComponent as ɵcj, PrintComponent as ɵch, PrintService as ɵci, QuerySearchSource as ɵco, QueryDirective as ɵck, QueryService as ɵcl, RoutingFormBindingDirective as ɵcv, RoutingFormComponent as ɵcp, RoutingFormService as ɵcu, OsrmRoutingSource as ɵdy, RoutingSource as ɵcr, RoutingService as ɵcq, SearchBarComponent as ɵda, SearchUrlParamDirective as ɵdb, SearchResultsItemComponent as ɵdd, SearchResultsComponent as ɵdc, SearchSelectorComponent as ɵcx, IgoSearchSelectorModule as ɵcw, SearchSettingsComponent as ɵcz, IgoSearchSettingsModule as ɵcy, provideSearchSourceService as ɵdf, searchSourceServiceFactory as ɵde, SearchSourceService as ɵct, SearchService as ɵcs, CoordinatesReverseSearchSource as ɵdk, CoordinatesSearchResultFormatter as ɵdj, IChercheReverseSearchSource as ɵdi, IChercheSearchResultFormatter as ɵdg, IChercheSearchSource as ɵdh, ILayerSearchSource as ɵdt, NominatimSearchSource as ɵdv, SearchSource as ɵcm, StoredQueriesReverseSearchSource as ɵdx, StoredQueriesSearchSource as ɵdw, ToastComponent as ɵdl, WktService as ɵz, WfsWorkspaceService as ɵdn, WmsWorkspaceService as ɵdo, OgcFilterComponent as ɵdp, OgcFilterWidget as ɵdq, ogcFilterWidgetFactory as ɵdr, provideOgcFilterWidget as ɵds, WorkspaceSelectorDirective as ɵdm };
+export { IgoGeoModule, IgoCatalogModule, IgoCatalogBrowserModule, IgoCatalogLibraryModule, IgoDataSourceModule, IgoDownloadModule, IgoGeoWorkspaceModule, IgoWorkspaceSelectorModule, IgoOgcFilterModule, IgoFeatureModule, IgoFeatureFormModule, IgoFeatureDetailsModule, IgoFilterModule, IgoGeometryModule, IgoGeometryFormFieldModule, IgoImportExportModule, IgoLayerModule, IgoMapModule, IgoMeasureModule, IgoMeasurerModule, IgoMetadataModule, IgoOverlayModule, IgoPrintModule, IgoQueryModule, IgoRoutingModule, IgoSearchModule, IgoSearchBarModule, IgoSearchResultsModule, IgoToastModule, IgoWktModule, querySearchSourceFactory, provideQuerySearchSource, defaultIChercheSearchResultFormatterFactory, provideDefaultIChercheSearchResultFormatter, ichercheSearchSourceFactory, provideIChercheSearchSource, ichercheReverseSearchSourceFactory, provideIChercheReverseSearchSource, defaultCoordinatesSearchResultFormatterFactory, provideDefaultCoordinatesSearchResultFormatter, CoordinatesReverseSearchSourceFactory, provideCoordinatesReverseSearchSource, ilayerSearchResultFormatterFactory, provideILayerSearchResultFormatter, ilayerSearchSourceFactory, provideILayerSearchSource, nominatimSearchSourceFactory, provideNominatimSearchSource, storedqueriesSearchSourceFactory, provideStoredQueriesSearchSource, storedqueriesReverseSearchSourceFactory, provideStoredQueriesReverseSearchSource, osrmRoutingSourcesFactory, provideOsrmRoutingSource, routingSourceServiceFactory, provideRoutingSourceService, RoutingSourceService, CatalogService, CatalogItemType, CatalogBrowserComponent, CatalogLibaryComponent, DataService, DataSource, FeatureDataSource, OSMDataSource, XYZDataSource, WFSDataSource, WFSService, WMSDataSource, formatWFSQueryString, checkWfsParams, defaultEpsg, defaultMaxFeatures, defaultWfsVersion, defaultFieldNameGeometry, gmlRegex, jsonRegex, WMTSDataSource, CartoDataSource, ArcGISRestDataSource, TileArcGISRestDataSource, WebSocketDataSource, MVTDataSource, ClusterDataSource, DataSourceService, CapabilitiesService, EsriStyleGenerator, generateIdFromSourceOptions, generateWMSIdFromSourceOptions, generateWMTSIdFromSourceOptions, generateXYZIdFromSourceOptions, generateFeatureIdFromSourceOptions, generateId, createDefaultTileGrid, DownloadService, DownloadButtonComponent, FEATURE, FeatureMotion, featureToOl, featureFromOl, computeOlFeatureExtent, computeOlFeaturesExtent, scaleExtent, featuresAreOutOfView, featuresAreTooDeepInView, moveToOlFeatures, hideOlFeature, tryBindStoreLayer, tryAddLoadingStrategy, tryAddSelectionStrategy, FeatureStore, FeatureStoreLoadingStrategy, FeatureStoreLoadingLayerStrategy, FeatureStoreSelectionStrategy, FeatureStoreStrategy, FilterableDataSourcePipe, TimeFilterService, OgcFilterOperatorType, OGCFilterService, OgcFilterWriter, TimeFilterFormComponent, TimeFilterItemComponent, TimeFilterListComponent, TimeFilterListBindingDirective, OgcFilterableFormComponent, OgcFilterableItemComponent, OgcFilterableListComponent, OgcFilterableListBindingDirective, OgcFilterFormComponent, OgcFilterToggleButtonComponent, OgcFilterButtonComponent, GeometrySliceError, GeometrySliceMultiPolygonError, GeometrySliceLineStringError, GeometrySliceTooManyIntersectionError, createDrawInteractionStyle, createDrawHoleInteractionStyle, sliceOlGeometry, sliceOlLineString, sliceOlPolygon, addLinearRingToOlPolygon, DrawControl, ModifyControl, SliceControl, DropGeoFileDirective, ExportError, ExportInvalidFileError, ExportNothingToExportError, ExportService, ExportFormat, exportToCSV, entitiesToRowData, downloadContent, handleFileExportError, handleNothingToExportError, ImportError, ImportInvalidFileError, ImportUnreadableFileError, ImportNothingToImportError, ImportService, addLayerAndFeaturesToMap, handleFileImportSuccess, handleFileImportError, handleNothingToImportError, getFileExtension, computeLayerTitleFromFile, ImportExportComponent, LayerService, LAYER, Layer, TooltipType, ImageLayer, TileLayer, VectorLayer, VectorTileLayer, StyleService, LayerItemComponent, LayerLegendComponent, LayerListComponent, LayerListBindingDirective, LayerListControlsEnum, LayerListService, ImageWatcher, TileWatcher, VectorWatcher, getLayersLegends, IgoMap, MapViewAction, MapService, stringToLonLat, viewStatesAreEqual, formatScale, getResolutionFromScale, getScaleFromResolution, ctrlKeyDown, MapOfflineDirective, ProjectionService, MapController, MapViewController, MapBrowserComponent, ZoomButtonComponent, GeolocateButtonComponent, BaseLayersSwitcherComponent, MiniBaseMapComponent, RotationButtonComponent, MEASURE_UNIT_AUTO, MeasureType, MeasureLengthUnit, MeasureLengthUnitAbbreviation, MeasureAreaUnit, MeasureAreaUnitAbbreviation, metersToKilometers, metersToFeet, metersToMiles, squareMetersToSquareKilometers, squareMetersToSquareMiles, squareMetersToSquareFeet, squareMetersToHectares, squareMetersToAcres, metersToUnit, squareMetersToUnit, formatMeasure, computeBestLengthUnit, computeBestAreaUnit, createMeasureInteractionStyle, createMeasureLayerStyle, measureOlGeometryLength, measureOlGeometryArea, measureOlGeometry, updateOlGeometryMidpoints, clearOlGeometryMidpoints, updateOlTooltipsAtMidpoints, getOlTooltipsAtMidpoints, updateOlGeometryCenter, updateOlTooltipAtCenter, getOlTooltipAtCenter, getTooltipsOfOlGeometry, createOlTooltipAtPoint, MeasurerComponent, MeasureFormatPipe, MetadataService, MetadataButtonComponent, Overlay, OverlayDirective, OverlayService, OverlayAction, createOverlayLayer, createOverlayMarkerStyle, PrintService, PrintOutputFormat, PrintPaperFormat, PrintOrientation, PrintResolution, PrintSaveImageFormat, PrintComponent, PrintFormComponent, QueryService, QueryDirective, QueryFormat, QueryHtmlTarget, layerIsQueryable, olLayerIsQueryable, QuerySearchSource, RoutingService, RoutingFormat, SourceRoutingType, RoutingSource, OsrmRoutingSource, RoutingFormComponent, RoutingFormBindingDirective, RoutingFormService, SEARCH_TYPES, SearchService, SearchSourceService, sourceCanSearch, sourceCanReverseSearch, featureToSearchResult, SearchSource, IChercheSearchResultFormatter, IChercheSearchSource, IChercheReverseSearchSource, ILayerSearchResultFormatter, ILayerSearchSource, NominatimSearchSource, StoredQueriesSearchSource, StoredQueriesReverseSearchSource, CoordinatesSearchResultFormatter, CoordinatesReverseSearchSource, ToastComponent, GoogleLinks, WktService, CatalogBrowserGroupComponent as ɵj, CatalogBrowserLayerComponent as ɵk, CatalogBrowserComponent as ɵc, CatalogLibaryItemComponent as ɵm, CatalogLibaryComponent as ɵl, CapabilitiesService as ɵg, DataSourceService as ɵf, DataService as ɵi, WFSService as ɵh, DownloadButtonComponent as ɵn, DownloadService as ɵo, FeatureDetailsComponent as ɵp, FeatureFormComponent as ɵr, OgcFilterButtonComponent as ɵba, OgcFilterFormComponent as ɵy, OgcFilterToggleButtonComponent as ɵbb, OgcFilterableFormComponent as ɵbd, OgcFilterableItemComponent as ɵbe, OgcFilterableListBindingDirective as ɵbg, OgcFilterableListComponent as ɵbf, FilterableDataSourcePipe as ɵs, OGCFilterService as ɵbc, TimeFilterService as ɵv, TimeFilterFormComponent as ɵt, TimeFilterItemComponent as ɵu, TimeFilterListBindingDirective as ɵx, TimeFilterListComponent as ɵw, GeometryFormFieldInputComponent as ɵbi, GeometryFormFieldComponent as ɵbh, ImportExportComponent as ɵbj, DropGeoFileDirective as ɵbm, ExportService as ɵbl, ImportService as ɵbk, LayerItemComponent as ɵbo, LayerLegendComponent as ɵbp, LayerListBindingDirective as ɵbs, LayerListComponent as ɵbq, LayerListService as ɵbr, LayerService as ɵd, StyleService as ɵe, baseLayersSwitcherSlideInOut as ɵbx, BaseLayersSwitcherComponent as ɵbw, MiniBaseMapComponent as ɵby, GeolocateButtonComponent as ɵbu, MapBrowserComponent as ɵbn, RotationButtonComponent as ɵbv, MapService as ɵq, MapOfflineDirective as ɵbz, ZoomButtonComponent as ɵbt, MeasureFormatPipe as ɵca, MeasurerDialogComponent as ɵcd, MeasurerItemComponent as ɵcb, MeasurerComponent as ɵcc, MetadataButtonComponent as ɵa, MetadataService as ɵb, OverlayDirective as ɵcf, OverlayService as ɵcg, PrintFormComponent as ɵcj, PrintComponent as ɵch, PrintService as ɵci, QuerySearchSource as ɵco, QueryDirective as ɵck, QueryService as ɵcl, RoutingFormBindingDirective as ɵcv, RoutingFormComponent as ɵcp, RoutingFormService as ɵcu, OsrmRoutingSource as ɵeb, RoutingSource as ɵcr, RoutingService as ɵcq, SearchBarComponent as ɵda, SearchUrlParamDirective as ɵdb, SearchResultAddButtonComponent as ɵdd, SearchResultsItemComponent as ɵde, SearchResultsComponent as ɵdc, SearchSelectorComponent as ɵcx, IgoSearchSelectorModule as ɵcw, SearchSettingsComponent as ɵcz, IgoSearchSettingsModule as ɵcy, provideILayerSearchResultFormatter as ɵdm, provideSearchSourceService as ɵdg, searchSourceServiceFactory as ɵdf, SearchSourceService as ɵct, SearchService as ɵcs, CoordinatesReverseSearchSource as ɵdl, CoordinatesSearchResultFormatter as ɵdk, IChercheReverseSearchSource as ɵdj, IChercheSearchResultFormatter as ɵdh, IChercheSearchSource as ɵdi, ILayerSearchResultFormatter as ɵdv, ILayerSearchSource as ɵdw, NominatimSearchSource as ɵdy, SearchSource as ɵcm, StoredQueriesReverseSearchSource as ɵea, StoredQueriesSearchSource as ɵdz, ToastComponent as ɵdn, WktService as ɵz, WfsWorkspaceService as ɵdp, WmsWorkspaceService as ɵdq, OgcFilterComponent as ɵdr, OgcFilterWidget as ɵds, ogcFilterWidgetFactory as ɵdt, provideOgcFilterWidget as ɵdu, WorkspaceSelectorDirective as ɵdo };
 
 //# sourceMappingURL=igo2-geo.js.map

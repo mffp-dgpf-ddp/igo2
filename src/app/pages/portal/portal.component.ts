@@ -437,6 +437,7 @@ export class PortalComponent implements OnInit, OnDestroy {
     }
 
     this.map.overlay.setFeatures([feature], FeatureMotion.Default);
+    this.map.buffer.clear();
   }
 
   private onClearSearch() {

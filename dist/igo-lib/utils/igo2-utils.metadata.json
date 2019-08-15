@@ -1,1 +1,1 @@
-{"__symbolic":"module","version":4,"exports":[{"from":"./watcher"}],"metadata":{},"origins":{},"importAs":"@igo2/utils"}
+{"__symbolic":"module","version":4,"exports":[{"from":"./base64"},{"from":"./clipboard"},{"from":"./change"},{"from":"./change.interface"},{"from":"./object-utils"},{"from":"./strenum"},{"from":"./string-utils"},{"from":"./uuid"},{"from":"./watcher"}],"metadata":{},"origins":{},"importAs":"@igo2/utils"}

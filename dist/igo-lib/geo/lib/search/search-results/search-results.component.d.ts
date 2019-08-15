@@ -1,4 +1,4 @@
-import { EventEmitter, ChangeDetectorRef, OnInit, OnDestroy } from '@angular/core';
+import { EventEmitter, ChangeDetectorRef, OnInit, TemplateRef, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EntityStore } from '@igo2/common';
 import { SearchResult } from '../shared/search.interfaces';
@@ -42,6 +42,7 @@ export declare class SearchResultsComponent implements OnInit, OnDestroy {
     resultSelect: EventEmitter<SearchResult<{
         [key: string]: any;
     }>>;
+    templateSearchToolbar: TemplateRef<any>;
     readonly results$: Observable<{
         source: SearchSource;
         results: SearchResult[];

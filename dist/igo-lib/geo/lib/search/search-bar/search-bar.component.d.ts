@@ -76,6 +76,10 @@ export declare class SearchBarComponent implements OnInit, OnDestroy {
      */
     searchTypeChange: EventEmitter<string>;
     /**
+     * Event emitted when the search type changes
+     */
+    clearFeature: EventEmitter<{}>;
+    /**
      * Input element
      * @internal
      */

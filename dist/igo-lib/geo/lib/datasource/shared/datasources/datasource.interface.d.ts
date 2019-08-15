@@ -4,6 +4,7 @@ export interface DataSourceOptions {
     type?: 'wms' | 'wfs' | 'vector' | 'wmts' | 'xyz' | 'osm' | 'carto' | 'arcgisrest' | 'tilearcgisrest' | 'websocket' | 'mvt' | 'cluster';
     legend?: DataSourceLegendOptions;
     optionsFromCapabilities?: boolean;
+    id?: string;
     ol?: olSource;
     sourceFields?: SourceFieldsOptionsParams[];
     download?: DownloadOptions;

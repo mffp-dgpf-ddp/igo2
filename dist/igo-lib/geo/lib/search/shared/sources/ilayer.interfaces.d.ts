@@ -1,3 +1,5 @@
+import { QueryableDataSourceOptions } from './../../../query/shared/query.interfaces';
+import { WMSDataSourceOptions } from '../../../datasource/shared/datasources/wms-datasource.interface';
 import { SearchSourceOptions } from './source.interfaces';
 export interface ILayerSearchSourceOptions extends SearchSourceOptions {
     queryFormat?: {
@@ -6,23 +8,35 @@ export interface ILayerSearchSourceOptions extends SearchSourceOptions {
         };
     };
 }
+export interface ILayerServiceResponse {
+    items: ILayerData[];
+}
 export interface ILayerData {
-    id: string;
-    source: ILayerDataSource;
+    score: number;
+    properties: ILayerDataSource;
     highlight: ILayerDataHighlight;
 }
 export interface ILayerDataSource {
+    id?: string;
     title: string;
     groupTitle: string;
     abstract: string;
-    format: 'wms' | 'wfs';
-    url: string;
-    type: string;
-    name: string;
+    format?: 'wms' | 'wfs';
+    url?: string;
+    type?: string;
+    name?: string;
+    queryable?: boolean;
 }
 export interface ILayerDataHighlight {
     title: string;
 }
-export interface ILayerResponse {
-    items: ILayerData[];
+interface QueryWMSDataSourceOptions extends WMSDataSourceOptions, QueryableDataSourceOptions {
 }
+export interface ILayerItemResponse {
+    title: string;
+    sourceOptions: QueryWMSDataSourceOptions;
+    properties: {
+        [key: string]: any;
+    };
+}
+export {};

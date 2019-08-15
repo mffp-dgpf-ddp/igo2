@@ -8,6 +8,7 @@ export interface WMSDataSourceOptions extends DataSourceOptions {
     urlWfs?: string;
     url: string;
     params: WMSDataSourceOptionsParams;
+    crossOrigin?: string;
     projection?: string;
     resolutions?: number[];
     serverType?: string;

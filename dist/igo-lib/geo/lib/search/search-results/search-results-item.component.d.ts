@@ -4,7 +4,7 @@ import { SearchResult } from '../shared/search.interfaces';
  */
 export declare class SearchResultsItemComponent {
     /**
-     * Search result
+     * Search result item
      */
     result: SearchResult;
     /**

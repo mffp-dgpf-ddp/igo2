@@ -1,6 +1,6 @@
 {
   "name": "@igo2/common",
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0-alpha.5",
   "description": "IGO Library",
   "author": "MSP",
   "keywords": [
@@ -19,8 +19,8 @@
     "@angular/common": "^7.2.6",
     "@angular/core": "^7.2.6",
     "@angular/material": "^7.3.3",
-    "@igo2/core": "^1.0.0-alpha.4",
-    "@igo2/utils": "^1.0.0-alpha.4",
+    "@igo2/core": "^1.0.0-alpha.5",
+    "@igo2/utils": "^1.0.0-alpha.5",
     "typy": "^2.0.1"
   },
   "main": "bundles/igo2-common.umd.js",

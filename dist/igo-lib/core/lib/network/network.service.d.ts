@@ -18,7 +18,7 @@ export declare class NetworkService implements OnDestroy {
     private state;
     constructor(messageService: MessageService, injector: Injector, network: Network, platform: Platform);
     private checkNetworkState;
-    initializeService(): void;
+    private checkNetworkStateMobile;
     private emitEvent;
     ngOnDestroy(): void;
     currentState(reportState?: boolean): Observable<ConnectionState>;

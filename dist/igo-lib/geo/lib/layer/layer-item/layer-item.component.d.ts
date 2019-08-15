@@ -1,8 +1,7 @@
-import { OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
+import { OnInit, OnDestroy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { Layer } from '../shared/layers';
 export declare class LayerItemComponent implements OnInit, OnDestroy {
-    private cdRef;
     showLegend$: BehaviorSubject<boolean>;
     inResolutionRange$: BehaviorSubject<boolean>;
     queryBadgeHidden$: BehaviorSubject<boolean>;
@@ -13,10 +12,12 @@ export declare class LayerItemComponent implements OnInit, OnDestroy {
     expandLegendIfVisible: boolean;
     updateLegendOnResolutionChange: boolean;
     orderable: boolean;
+    lowerDisabled: boolean;
+    raiseDisabled: boolean;
     queryBadge: boolean;
     readonly removable: boolean;
     opacity: number;
-    constructor(cdRef: ChangeDetectorRef);
+    constructor();
     ngOnInit(): void;
     ngOnDestroy(): void;
     toggleLegend(collapsed: boolean): void;

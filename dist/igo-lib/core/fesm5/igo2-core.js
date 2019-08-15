@@ -488,7 +488,7 @@ var MessageCenterComponent = /** @class */ (function () {
         { type: Component, args: [{
                     selector: 'igo-message-center',
                     template: "<simple-notifications\r\n  [ngClass]=\"{closeIcon: options.hasCloseIcon}\"\r\n  [options]=\"options\">\r\n</simple-notifications>\r\n",
-                    styles: ["@charset \"UTF-8\";:host>>>div.simple-notification-wrapper{bottom:0;right:calc(50% - 150px)}:host>>>div.simple-notification{min-height:50px;margin-bottom:5px;padding-left:45px;padding-right:25px}:host>>>div.simple-notification.noIcon{padding-left:25px}@media only screen and (max-width:450px),only screen and (max-height:450px){:host>>>div.simple-notification-wrapper{right:0;left:0;width:100%}:host>>>div.simple-notification{margin-bottom:0}}:host>>>div.simple-notification .sn-title{line-height:23px;font-size:15px;font-weight:700}:host>>>div.simple-notification .sn-content{line-height:18px;font-size:15px}:host>>>div.simple-notification .icon{top:0;left:0;width:45px;height:100%;padding:7px}:host>>>div.simple-notification .icon mat-icon{display:flex;align-items:center;height:100%;font-size:32px}:host>>>.closeIcon>>>.sn-title:after{content:'close';font-family:'Material Icons';-webkit-font-feature-settings:'liga' 1;font-feature-settings:'liga' 1;font-size:24px;font-weight:400;right:5px;top:5px;position:absolute}"]
+                    styles: ["@charset \"UTF-8\";:host>>>div.simple-notification-wrapper{bottom:0;right:calc(50% - 150px)}:host>>>div.simple-notification{min-height:50px;margin-bottom:5px;padding-left:45px;padding-right:25px}:host>>>div.simple-notification.noIcon{padding-left:25px}@media only screen and (max-width:450px),only screen and (max-height:450px){:host>>>div.simple-notification-wrapper{right:0;left:0;width:100%}:host>>>div.simple-notification{margin-bottom:0}}:host>>>div.simple-notification .sn-title{line-height:23px;font-size:15px;font-weight:700}:host>>>div.simple-notification .sn-content{line-height:18px;font-size:15px}:host>>>div.simple-notification .icon{top:0;left:0;width:45px;height:100%;padding:7px}:host>>>div.simple-notification .icon mat-icon{display:flex;align-items:center;height:100%;font-size:32px}:host>>>.closeIcon>>>.sn-title:after{content:'close';font-family:'Material Icons';font-feature-settings:'liga' 1;font-size:24px;font-weight:400;right:5px;top:5px;position:absolute}"]
                 }] }
     ];
     /** @nocollapse */
@@ -1418,17 +1418,13 @@ var NetworkService = /** @class */ (function () {
         this.state = {
             connection: window.navigator.onLine
         };
-        console.log(this.platform + 'premier');
         this.platform.ready().then((/**
          * @return {?}
          */
         function () {
-            console.log(_this.platform);
             if (_this.platform.is('cordova')) {
-                console.log('cordova');
                 if (_this.platform.is('android')) {
-                    console.log('android');
-                    _this.initializeService();
+                    _this.checkNetworkStateMobile();
                 }
             }
             else {
@@ -1477,9 +1473,11 @@ var NetworkService = /** @class */ (function () {
         }));
     };
     /**
+     * @private
      * @return {?}
      */
-    NetworkService.prototype.initializeService = /**
+    NetworkService.prototype.checkNetworkStateMobile = /**
+     * @private
      * @return {?}
      */
     function () {

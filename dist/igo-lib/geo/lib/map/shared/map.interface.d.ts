@@ -15,6 +15,7 @@ export interface MapViewOptions {
     rotation?: number;
     zoom?: number;
     zoomFactor?: number;
+    buffer?: Buffer;
 }
 export interface MapViewState {
     resolution: number;
@@ -39,4 +40,10 @@ export interface MapScaleLineOptions {
 export interface MapAttributionOptions {
     html?: string;
     collapsed: boolean;
+}
+export interface Buffer {
+    bufferRadius?: number;
+    bufferStroke?: [number, number, number, number];
+    bufferFill?: [number, number, number, number];
+    showBufferRadius?: boolean;
 }

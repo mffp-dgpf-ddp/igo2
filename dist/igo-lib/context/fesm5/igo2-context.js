@@ -8,7 +8,7 @@ import { trigger, state, style, transition, animate } from '@angular/animations'
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { uuid, ObjectUtils, Clipboard } from '@igo2/utils';
 import { AuthService, IgoAuthModule } from '@igo2/auth';
-import { __spread, __read, __values } from 'tslib';
+import { __values, __spread, __read } from 'tslib';
 import { CommonModule } from '@angular/common';
 import { MatIconModule, MatButtonModule, MatTooltipModule, MatListModule, MatFormFieldModule, MatInputModule, MatCheckboxModule, MatRadioModule, MatDialogRef, MatDialog, MatSelectModule, MatOptionModule, MatDialogModule, MatSidenavModule } from '@angular/material';
 import { Injectable, Optional, Component, Input, Output, EventEmitter, ChangeDetectorRef, Directive, Self, HostListener, NgModule, defineInjectable, inject } from '@angular/core';

@@ -34,9 +34,11 @@
     #mapBrowser
     igoQuery
     [waitForAllQueries]="true"
+    [queryFeatures]="true"
     igoMapContext
     igoLayerContext
     igoDropGeoFile
+    igoMapOffline
     (query)="onMapQuery($event)"
     [map]="map"
     [igoContextMenu]=contextMenu
@@ -56,9 +58,6 @@
       [@controlsOffsetY]="expansionPanelExpanded">
     </igo-geolocate-button>
     <igo-rotation-button [map]="map" color="primary"></igo-rotation-button>
-    <igo-user-button [map]="map" color="primary"
-      [@controlsOffsetY]="expansionPanelExpanded">
-    </igo-user-button>
     <igo-baselayers-switcher [map]="map"
       [@baselayersStateY]="expansionPanelExpanded ? 'up' : 'down'"
       [@baselayersStateX]="(mediaService.media$ | async) !== 'mobile' && sidenavOpened ? 'right' : 'left'">
@@ -66,31 +65,6 @@
   </igo-map-browser>
 
 </mat-sidenav-container>
-
-<app-expansion-panel
-  *ngIf="hasExpansionPanel"
-  [(expanded)]="expansionPanelExpanded"
-  [@expansionPanelSize]="sidenavOpened ? 'reduced' : 'full'">
-
-  <ng-container expansionPanelHeader>
-    <!-- <igo-workspace-selector igoWorkspaceSelector [store]="workspaceStore" [map]="map"></igo-workspace-selector> -->
-    <!-- <igo-actionbar
-      *ngIf="workspace"
-      [store]="workspace.actionStore"
-      [horizontal]="true"
-      [xPosition]="'after'"
-      [yPosition]="'above'"
-      [withToggleButton]="true"
-      [withTitle]="actionbarWithTitle"
-      [mode]="actionbarMode">
-    </igo-actionbar> -->
-  </ng-container>
-
-  <igo-entity-table
-    [store]="tableStore"
-    [template]="tableTemplate">
-  </igo-entity-table>
-</app-expansion-panel>
 
 <app-toast-panel
   [store]="queryStore"

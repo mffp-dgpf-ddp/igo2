@@ -34,7 +34,6 @@
     "preghpages": "npm run build.prod -- --output-path ./dist/ghpages --base-href /igo2/ && echo \"include: ['_default.json', '_contexts.json']\" > dist/ghpages/_config.yml",
     "ghpages": "VERSION=$(node -p -e \"require('./package.json').version\") && npx ngh --dir=dist/ghpages --no-silent=false --message=$VERSION",
     "postghpages": "rimraf ./dist/ghpages",
-
     "ghrelease": "VERSION=$(node -p -e \"require('./package.json').version\") && publish-release --owner infra-geo-ouverte --repo igo2 --tag $VERSION --name $VERSION --reuse-release --notes \"$(npm run changelog-current -s)\" --assets dist/igo2.zip",
     "geo-lib": "gulp geo-lib",
     "geo-clean": "gulp geo:clean",
@@ -53,7 +52,6 @@
     "@angular/platform-browser": "^7.2.6",
     "@angular/platform-browser-dynamic": "^7.2.6",
     "@angular/router": "^7.2.6",
-
     "@igo2/auth": "file:dist/igo-lib/auth",
     "@igo2/common": "file:dist/igo-lib/common",
     "@igo2/context": "file:dist/igo-lib/context",
