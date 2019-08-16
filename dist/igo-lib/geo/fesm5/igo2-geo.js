@@ -9512,6 +9512,9 @@ var MapOfflineDirective = /** @class */ (function () {
             else if (layer.options.sourceOptions.type === 'vector') {
                 sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
             }
+            else if (layer.options.sourceOptions.type === 'cluster') {
+                sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
+            }
             else {
                 if (_this.state.connection === false) {
                     layer.ol.setMaxResolution(0);
@@ -9527,11 +9530,17 @@ var MapOfflineDirective = /** @class */ (function () {
                 if (sourceOptions.type === 'vector') {
                     return;
                 }
+                else if (sourceOptions.type === 'cluster') {
+                    return;
+                }
                 layer.ol.getSource().setUrl(sourceOptions.pathOffline);
             }
             else if (sourceOptions.pathOffline &&
                 _this.state.connection === true) {
                 if (sourceOptions.type === 'vector') {
+                    return;
+                }
+                else if (sourceOptions.type === 'cluster') {
                     return;
                 }
                 layer.ol.getSource().setUrl(sourceOptions.url);

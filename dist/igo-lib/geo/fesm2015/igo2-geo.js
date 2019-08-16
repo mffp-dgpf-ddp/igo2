@@ -75,7 +75,7 @@ import OlGeoJSON from 'ol/format/GeoJSON';
 import { MatIconModule, MatButtonModule, MatTooltipModule, MatListModule, MatSlider, MatAutocompleteModule, MatButtonToggleModule, MatSliderModule, MatSlideToggleModule, MatFormFieldModule, MatInputModule, MatOptionModule, MatSelectModule, MatDatepickerModule, MatNativeDateModule, MAT_DATE_LOCALE, MatCheckboxModule, MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatTabsModule, MatBadgeModule, MatDividerModule, MatMenuModule, MatRadioModule } from '@angular/material';
 import { CommonModule } from '@angular/common';
 import { getEntityId, EntityStore, getEntityTitle, getEntityRevision, getEntityProperty, EntityStoreWatcher, getEntityIcon, IgoCollapsibleModule, IgoListModule, IgoKeyValueModule, IgoFormModule, FormFieldComponent, EntityTableColumnRenderer, DragAndDropDirective, IgoDrapDropModule, IgoImageModule, IgoConfirmDialogModule, IgoEntityTableModule, getEntityTitleHtml, IgoPanelModule, IgoFlexibleModule, WidgetService, Workspace, ActionStore, WorkspaceSelectorComponent, IgoWidgetModule } from '@igo2/common';
-import { Injectable, Directive, Self, Optional, ChangeDetectorRef, Component, Input, ChangeDetectionStrategy, NgModule, Output, EventEmitter, Pipe, Inject, InjectionToken, HostListener, ApplicationRef, ContentChild, ViewChild, HostBinding, defineInjectable, inject } from '@angular/core';
+import { Injectable, Directive, Self, Optional, ChangeDetectorRef, Component, Input, ChangeDetectionStrategy, NgModule, Output, EventEmitter, Pipe, Inject, InjectionToken, ApplicationRef, HostListener, ContentChild, ViewChild, HostBinding, defineInjectable, inject } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { map, debounce, debounceTime, skip, distinctUntilChanged, catchError, mergeMap } from 'rxjs/operators';
 import { uuid, ObjectUtils, Watcher, SubjectStatus, strEnum, Clipboard } from '@igo2/utils';
@@ -7443,6 +7443,9 @@ class MapOfflineDirective {
             else if (layer.options.sourceOptions.type === 'vector') {
                 sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
             }
+            else if (layer.options.sourceOptions.type === 'cluster') {
+                sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
+            }
             else {
                 if (this.state.connection === false) {
                     layer.ol.setMaxResolution(0);
@@ -7458,11 +7461,17 @@ class MapOfflineDirective {
                 if (sourceOptions.type === 'vector') {
                     return;
                 }
+                else if (sourceOptions.type === 'cluster') {
+                    return;
+                }
                 layer.ol.getSource().setUrl(sourceOptions.pathOffline);
             }
             else if (sourceOptions.pathOffline &&
                 this.state.connection === true) {
                 if (sourceOptions.type === 'vector') {
+                    return;
+                }
+                else if (sourceOptions.type === 'cluster') {
                     return;
                 }
                 layer.ol.getSource().setUrl(sourceOptions.url);

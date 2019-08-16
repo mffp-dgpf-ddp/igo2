@@ -1,8 +1,8 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('ol/source/OSM'), require('ol/source/XYZ'), require('ol/format/filter'), require('ol/format/WFS'), require('ol/source/ImageWMS'), require('ol/source/WMTS'), require('ol/tilegrid/WMTS'), require('ol/extent.js'), require('ol/source/CartoDB'), require('ol/loadingstrategy'), require('ol/source/TileArcGISRest'), require('ts-md5'), require('ol/source/VectorTile'), require('ol/format/MVT'), require('ol/source/Cluster'), require('ngx-cacheable'), require('ol/source/WMTS.js'), require('ol/Map'), require('ol/View'), require('ol/Geolocation'), require('ol/control/Attribution'), require('ol/control/ScaleLine'), require('ol/geom/Circle'), require('ol/layer/Image'), require('ol/layer/Tile'), require('ol/color'), require('ol/layer/VectorTile'), require('ol/easing'), require('ol/has'), require('proj4'), require('ol/proj/proj4'), require('@angular/animations'), require('ol/format/GML2'), require('ol/format/GML3'), require('ol/format/EsriJSON'), require('ol/proj/Projection'), require('@angular/platform-browser'), require('moment'), require('ol/format/WKT'), require('ol/geom/Point'), require('ol/Overlay'), require('ol/sphere'), require('ol/style/Style'), require('ol/geom/LineString'), require('@turf/line-intersect'), require('@turf/helpers'), require('ol/interaction/Modify'), require('ol/interaction/Translate'), require('ol/interaction/Draw'), require('ol/geom/Polygon'), require('ol/geom/LinearRing'), require('ol/interaction/DragBox'), require('ol/source/Vector'), require('ol/layer/Vector'), require('file-saver'), require('jspdf'), require('html2canvas'), require('jszip'), require('ol/Feature'), require('ol/geom'), require('ol/proj'), require('ol/style'), require('ol/events/condition'), require('ol/interaction'), require('ol/extent'), require('ol/Observable'), require('ol/format'), require('@angular/forms'), require('rxjs'), require('ol/format/GeoJSON'), require('@angular/material'), require('@angular/common'), require('@igo2/common'), require('@angular/core'), require('@angular/common/http'), require('rxjs/operators'), require('@igo2/utils'), require('@igo2/core')) :
     typeof define === 'function' && define.amd ? define('@igo2/geo', ['exports', 'ol/source/OSM', 'ol/source/XYZ', 'ol/format/filter', 'ol/format/WFS', 'ol/source/ImageWMS', 'ol/source/WMTS', 'ol/tilegrid/WMTS', 'ol/extent.js', 'ol/source/CartoDB', 'ol/loadingstrategy', 'ol/source/TileArcGISRest', 'ts-md5', 'ol/source/VectorTile', 'ol/format/MVT', 'ol/source/Cluster', 'ngx-cacheable', 'ol/source/WMTS.js', 'ol/Map', 'ol/View', 'ol/Geolocation', 'ol/control/Attribution', 'ol/control/ScaleLine', 'ol/geom/Circle', 'ol/layer/Image', 'ol/layer/Tile', 'ol/color', 'ol/layer/VectorTile', 'ol/easing', 'ol/has', 'proj4', 'ol/proj/proj4', '@angular/animations', 'ol/format/GML2', 'ol/format/GML3', 'ol/format/EsriJSON', 'ol/proj/Projection', '@angular/platform-browser', 'moment', 'ol/format/WKT', 'ol/geom/Point', 'ol/Overlay', 'ol/sphere', 'ol/style/Style', 'ol/geom/LineString', '@turf/line-intersect', '@turf/helpers', 'ol/interaction/Modify', 'ol/interaction/Translate', 'ol/interaction/Draw', 'ol/geom/Polygon', 'ol/geom/LinearRing', 'ol/interaction/DragBox', 'ol/source/Vector', 'ol/layer/Vector', 'file-saver', 'jspdf', 'html2canvas', 'jszip', 'ol/Feature', 'ol/geom', 'ol/proj', 'ol/style', 'ol/events/condition', 'ol/interaction', 'ol/extent', 'ol/Observable', 'ol/format', '@angular/forms', 'rxjs', 'ol/format/GeoJSON', '@angular/material', '@angular/common', '@igo2/common', '@angular/core', '@angular/common/http', 'rxjs/operators', '@igo2/utils', '@igo2/core'], factory) :
-    (factory((global.igo2 = global.igo2 || {}, global.igo2.geo = {}),global.olSourceOSM,global.olSourceXYZ,global.olfilter,global.olFormatWFS,global.olSourceImageWMS,global.olSourceWMTS,global.olTileGridWMTS,global.extent_js,global.olSourceCarto,global.olloadingstrategy,global.olSourceTileArcGISRest,global.tsMd5,global.olSourceVectorTile,global.olFormatMVT,global.olSourceCluster,global.ngxCacheable,global.WMTS_js,global.olMap,global.olView,global.olGeolocation,global.olAttribution,global.olControlScaleLine,global.olCircle,global.olLayerImage,global.olLayerTile,global.color,global.olLayerVectorTile,global.oleasing,global.has,global.proj4,global.olproj4,global.ng.animations,global.olFormatGML2,global.olFormatGML3,global.olFormatEsriJSON,global.olProjection,global.ng.platformBrowser,global.moment,global.olWKT,global.OlPoint,global.OlOverlay,global.sphere,global.OlStyle,global.OlLineString,global.lineIntersect,global.helpers,global.OlModify,global.OlTranslate,global.OlDraw,global.OlPolygon,global.OlLinearRing,global.OlDragBoxInteraction,global.OlVectorSource,global.OlVectorLayer,global.fileSaver,global.jsPDF,global._html2canvas,global.JSZip,global.olFeature,global.olgeom,global.olproj,global.olstyle,global.olcondition,global.olinteraction,global.olextent,global.olobservable,global.olformat,global.ng.forms,global.rxjs,global.OlGeoJSON,global.ng.material,global.ng.common,global.common$1,global.ng.core,global.ng.common.http,global.rxjs.operators,global.utils,global.i1$1));
-}(this, (function (exports,olSourceOSM,olSourceXYZ,olfilter,olFormatWFS,olSourceImageWMS,olSourceWMTS,olTileGridWMTS,extent_js,olSourceCarto,olloadingstrategy,olSourceTileArcGISRest,tsMd5,olSourceVectorTile,olFormatMVT,olSourceCluster,ngxCacheable,WMTS_js,olMap,olView,olGeolocation,olAttribution,olControlScaleLine,olCircle,olLayerImage,olLayerTile,color,olLayerVectorTile,oleasing,has,proj4,olproj4,animations,olFormatGML2,olFormatGML3,olFormatEsriJSON,olProjection,platformBrowser,moment,olWKT,OlPoint,OlOverlay,sphere,OlStyle,OlLineString,lineIntersect,helpers,OlModify,OlTranslate,OlDraw,OlPolygon,OlLinearRing,OlDragBoxInteraction,OlVectorSource,OlVectorLayer,fileSaver,jsPDF,_html2canvas,JSZip,olFeature,olgeom,olproj,olstyle,olcondition,olinteraction,olextent,olobservable,olformat,forms,rxjs,OlGeoJSON,material,common,common$1,i0,i1,operators,utils,i1$1) { 'use strict';
+    (factory((global.igo2 = global.igo2 || {}, global.igo2.geo = {}),global.olSourceOSM,global.olSourceXYZ,global.olfilter,global.olFormatWFS,global.olSourceImageWMS,global.olSourceWMTS,global.olTileGridWMTS,global.extent_js,global.olSourceCarto,global.OlLoadingStrategy,global.olSourceTileArcGISRest,global.tsMd5,global.olSourceVectorTile,global.olFormatMVT,global.olSourceCluster,global.ngxCacheable,global.WMTS_js,global.olMap,global.olView,global.olGeolocation,global.olAttribution,global.olControlScaleLine,global.olCircle,global.olLayerImage,global.olLayerTile,global.color,global.olLayerVectorTile,global.oleasing,global.has,global.proj4,global.olproj4,global.ng.animations,global.olFormatGML2,global.olFormatGML3,global.olFormatEsriJSON,global.olProjection,global.ng.platformBrowser,global.moment,global.olWKT,global.OlPoint,global.OlOverlay,global.sphere,global.OlStyle,global.OlLineString,global.lineIntersect,global.helpers,global.OlModify,global.OlTranslate,global.OlDraw,global.OlPolygon,global.OlLinearRing,global.OlDragBoxInteraction,global.OlVectorSource,global.OlVectorLayer,global.fileSaver,global.jsPDF,global._html2canvas,global.JSZip,global.olFeature,global.olgeom,global.olproj,global.olstyle,global.olcondition,global.olinteraction,global.olextent,global.olobservable,global.olformat,global.ng.forms,global.rxjs,global.OlGeoJSON,global.ng.material,global.ng.common,global.common$1,global.ng.core,global.ng.common.http,global.rxjs.operators,global.utils,global.i1$1));
+}(this, (function (exports,olSourceOSM,olSourceXYZ,olfilter,olFormatWFS,olSourceImageWMS,olSourceWMTS,olTileGridWMTS,extent_js,olSourceCarto,OlLoadingStrategy,olSourceTileArcGISRest,tsMd5,olSourceVectorTile,olFormatMVT,olSourceCluster,ngxCacheable,WMTS_js,olMap,olView,olGeolocation,olAttribution,olControlScaleLine,olCircle,olLayerImage,olLayerTile,color,olLayerVectorTile,oleasing,has,proj4,olproj4,animations,olFormatGML2,olFormatGML3,olFormatEsriJSON,olProjection,platformBrowser,moment,olWKT,OlPoint,OlOverlay,sphere,OlStyle,OlLineString,lineIntersect,helpers,OlModify,OlTranslate,OlDraw,OlPolygon,OlLinearRing,OlDragBoxInteraction,OlVectorSource,OlVectorLayer,fileSaver,jsPDF,_html2canvas,JSZip,olFeature,olgeom,olproj,olstyle,olcondition,olinteraction,olextent,olobservable,olformat,forms,rxjs,OlGeoJSON,material,common,common$1,i0,i1,operators,utils,i1$1) { 'use strict';
 
     olSourceOSM = olSourceOSM && olSourceOSM.hasOwnProperty('default') ? olSourceOSM['default'] : olSourceOSM;
     olSourceXYZ = olSourceXYZ && olSourceXYZ.hasOwnProperty('default') ? olSourceXYZ['default'] : olSourceXYZ;
@@ -1321,7 +1321,7 @@
                      */function (extent, resolution, proj) {
                         return _this.buildUrl(extent, proj, (( /** @type {?} */(_this.options))).ogcFilters);
                     }),
-                    strategy: olloadingstrategy.bbox
+                    strategy: OlLoadingStrategy.bbox
                 });
             };
         /**
@@ -2190,7 +2190,7 @@
                         }
                         return baseUrl + "?" + params.join('&');
                     }).bind(this),
-                    strategy: olloadingstrategy.bbox
+                    strategy: OlLoadingStrategy.bbox
                 });
             };
         /**
@@ -9369,6 +9369,9 @@
                     else if (layer.options.sourceOptions.type === 'vector') {
                         sourceOptions = (( /** @type {?} */(layer.options.sourceOptions)));
                     }
+                    else if (layer.options.sourceOptions.type === 'cluster') {
+                        sourceOptions = (( /** @type {?} */(layer.options.sourceOptions)));
+                    }
                     else {
                         if (_this.state.connection === false) {
                             layer.ol.setMaxResolution(0);
@@ -9384,11 +9387,17 @@
                         if (sourceOptions.type === 'vector') {
                             return;
                         }
+                        else if (sourceOptions.type === 'cluster') {
+                            return;
+                        }
                         layer.ol.getSource().setUrl(sourceOptions.pathOffline);
                     }
                     else if (sourceOptions.pathOffline &&
                         _this.state.connection === true) {
                         if (sourceOptions.type === 'vector') {
+                            return;
+                        }
+                        else if (sourceOptions.type === 'cluster') {
                             return;
                         }
                         layer.ol.getSource().setUrl(sourceOptions.url);
