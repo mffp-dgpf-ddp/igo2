@@ -34,7 +34,8 @@
       "baseLayer": true,
       "sourceOptions": {
         "type": "xyz",
-        "url": "https://geoegl.msp.gouv.qc.ca/carto/tms/1.0.0/carte_gouv_qc_public@EPSG_3857/{z}/{x}/{-y}.png"
+        "url": "https://geoegl.msp.gouv.qc.ca/carto/tms/1.0.0/carte_gouv_qc_public@EPSG_3857/{z}/{x}/{-y}.png",
+        "pathOffline": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/tiles/carte_gouv_qc_public/{z}/{y}/{x}.png"
       }
     },
     {
@@ -179,11 +180,7 @@
     "searchResults",
     "contextManager",
     "map",
-    "directions",
-    "timeAnalysis",
     "catalog",
-    "print",
-    "shareMap",
     "about"
   ],
   "tools": [
@@ -192,9 +189,6 @@
       "options": {
         "html": "<h1>This is a IGO</h1>"
       }
-    },
-    {
-      "name": "directions"
     },
     {
       "name": "searchResults",
@@ -212,9 +206,6 @@
       "name": "catalog"
     },
     {
-      "name": "shareMap"
-    },
-    {
       "name": "map",
       "options": {
         "toggleLegendOnVisibilityChange": false,
@@ -227,12 +218,6 @@
           "onlyInRange": false
         }
       }
-    },
-    {
-      "name": "timeAnalysis"
-    },
-    {
-      "name": "print"
     }
   ]
 }
