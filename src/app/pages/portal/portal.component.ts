@@ -68,11 +68,11 @@ export class PortalComponent implements OnInit, OnDestroy {
   // Reference to last startup message from context
   // To remove message on context change
   private contextMessage: Notification;
-  private _routerSubscription: any;
+  public _routerSubscription: any;
 
   constructor(
     public route: ActivatedRoute,
-    protected configService: ConfigService,
+    public configService: ConfigService,
     public authService: AuthService,
     public featureService: FeatureService,
     public mediaService: MediaService,
@@ -127,9 +127,9 @@ export class PortalComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.selectedFeature$$.unsubscribe();
+    /*this.selectedFeature$$.unsubscribe();
     this.features$$.unsubscribe();
-    this.context$$.unsubscribe();
+    this.context$$.unsubscribe();*/
   }
 
   closeSidenav() {

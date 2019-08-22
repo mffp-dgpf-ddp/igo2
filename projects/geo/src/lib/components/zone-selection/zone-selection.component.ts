@@ -36,14 +36,29 @@ import { BboxService } from '../../services/bbox.service';
   styleUrls: ['./zone-selection.component.scss'],
   animations: [controlSlideX(), controlSlideY(), mapSlideX(), mapSlideY()]
 })
-export class ZoneSelectionComponent extends PortalComponent {
+export class ZoneSelectionComponent implements OnInit /*extends PortalComponent*/ {
 
   private bbox;
+
+  map = new IgoMap({
+    controls: {
+      scaleLine: true,
+      attribution: {
+        collapsed: true
+      }
+    }
+  });
+
+  public view = {
+    center: [-73, 47.2],
+    zoom: 15
+  };
+
 
   constructor(
     private bboxService: BboxService,
     public route: ActivatedRoute,
-    protected configService: ConfigService,
+    public configService: ConfigService,
     public authService: AuthService,
     public featureService: FeatureService,
     public mediaService: MediaService,
@@ -58,7 +73,7 @@ export class ZoneSelectionComponent extends PortalComponent {
     public capabilitiesService: CapabilitiesService,
     public messageService: MessageService
   ) {
-    super(
+    /*super(
       route,
       configService,
       authService,
@@ -73,14 +88,31 @@ export class ZoneSelectionComponent extends PortalComponent {
       contextService,
       cdRef,
       capabilitiesService,
-      messageService);
-    this.mapService.setMap(this.map);
+      messageService);*/
+    //this.mapService.setMap(this.map);
+    //this.map = this.mapService.getMap();
+    this.dataSourceService
+      .createAsyncDataSource({
+        type: 'osm'
+      })
+      .subscribe(dataSource => {
+        this.map.addLayer(
+          this.layerService.createLayer({
+            title: 'OSM',
+            source: dataSource
+          })
+        );
+      });
+    this.updateMap();
+  }
+
+  ngOnInit() {
   }
 
   updateMap() {
     // Sans cela la carte n'affichait pas
     setTimeout(() => {
-      this.mapService.getMap().ol.updateSize();
+      this.map.ol.updateSize();
     }, 600);
   }
 
@@ -94,4 +126,5 @@ export class ZoneSelectionComponent extends PortalComponent {
     this.close();
   }
 }
+
 
