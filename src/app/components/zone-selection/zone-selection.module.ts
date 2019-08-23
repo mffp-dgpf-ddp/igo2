@@ -22,9 +22,11 @@ import { IgoContextModule } from '@igo2/context';
 import { IgoToolsModule } from '@igo2/tools';
 import { MapOverlayModule } from '../../pages/portal/map-overlay/map-overlay.module';
 import { ZoneSelectionComponent } from './zone-selection.component';
+import { IonicModule } from '@ionic/angular';
 
 @NgModule({
   imports: [
+    IonicModule,
     CommonModule,
     MatTooltipModule,
     MatButtonModule,

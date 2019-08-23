@@ -1,16 +1,17 @@
-<!--<mat-toolbar class="md-padding">
+<!--<mat-toolbar (click)="selectZone()" class="md-padding">
   <div class="md-toolbar-tools">
     <h3 flex>
       Sélectionner la zone de recherche
     </h3>
   </div>
-</mat-toolbar> -->
+</mat-toolbar>-->
 
-<igo-map-browser [map]="map" [view]="view" igoOverlay igoMapContext igoLayerContext>
-  <igo-zoom-button [map]="map" color="primary"></igo-zoom-button>
-  <igo-geolocate-button [map]="map" color="primary">
+<igo-map-browser [map]="map_" igoOverlay igoMapContext igoLayerContext>
+  <igo-zoom-button [map]="map_" color="primary"></igo-zoom-button>
+  <igo-geolocate-button [map]="map_" color="primary">
   </igo-geolocate-button>
 </igo-map-browser>
+
 <!--
 <mat-toolbar>
   <button class="footer-button" id='btmFooter' mat-stroked-button color="primary">Annuler</button>

@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { Notification } from 'angular2-notifications';
+import View from 'ol/View';
 
 import { MediaService, ConfigService, MessageService, Message } from '@igo2/core';
 import { AuthService } from '@igo2/auth';
@@ -40,7 +41,7 @@ export class ZoneSelectionComponent implements OnInit /*extends PortalComponent*
 
   private bbox;
 
-  map = new IgoMap({
+  map_ = new IgoMap({
     controls: {
       scaleLine: true,
       attribution: {
@@ -48,11 +49,6 @@ export class ZoneSelectionComponent implements OnInit /*extends PortalComponent*
       }
     }
   });
-
-  public view = {
-    center: [-73, 47.2],
-    zoom: 15
-  };
 
 
   constructor(
@@ -96,7 +92,7 @@ export class ZoneSelectionComponent implements OnInit /*extends PortalComponent*
         type: 'osm'
       })
       .subscribe(dataSource => {
-        this.map.addLayer(
+        this.map_.addLayer(
           this.layerService.createLayer({
             title: 'OSM',
             source: dataSource
@@ -112,18 +108,14 @@ export class ZoneSelectionComponent implements OnInit /*extends PortalComponent*
   updateMap() {
     // Sans cela la carte n'affichait pas
     setTimeout(() => {
-      this.map.ol.updateSize();
+      this.map_.ol.updateSize();
+      this.mapService.setMap(this.map_);
     }, 600);
   }
 
-  close() {
-    // this.modalController.dismiss();
-  }
-
   selectZone() {
-    this.bbox = this.mapService.getMap().ol.getView().calculateExtent(this.mapService.getMap().ol.getSize());
+    this.bbox = this.map_.ol.getView().calculateExtent(this.map_.ol.getSize());
     this.bboxService.setBBOX(this.bbox);
-    this.close();
   }
 }
 
