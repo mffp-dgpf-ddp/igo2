@@ -49,6 +49,10 @@ export class ZoneSelectionComponent implements OnInit /*extends PortalComponent*
       }
     }
   });
+  public view_ = {
+    center: [-73, 47.2],
+    zoom: 15
+  };
 
 
   constructor(
@@ -87,6 +91,9 @@ export class ZoneSelectionComponent implements OnInit /*extends PortalComponent*
       messageService);*/
     //this.mapService.setMap(this.map);
     //this.map = this.mapService.getMap();
+  }
+
+  ngOnInit() {
     this.dataSourceService
       .createAsyncDataSource({
         type: 'osm'
@@ -102,14 +109,11 @@ export class ZoneSelectionComponent implements OnInit /*extends PortalComponent*
     this.updateMap();
   }
 
-  ngOnInit() {
-  }
-
   updateMap() {
     // Sans cela la carte n'affichait pas
     setTimeout(() => {
       this.map_.ol.updateSize();
-      this.mapService.setMap(this.map_);
+      //this.mapService.setMap(this.map_);
     }, 600);
   }
 

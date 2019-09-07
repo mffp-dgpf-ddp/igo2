@@ -23,6 +23,7 @@ import { IgoToolsModule } from '@igo2/tools';
 import { MapOverlayModule } from '../../pages/portal/map-overlay/map-overlay.module';
 import { ZoneSelectionComponent } from './zone-selection.component';
 
+
 @NgModule({
   imports: [
     CommonModule,
