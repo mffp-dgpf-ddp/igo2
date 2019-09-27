@@ -6,12 +6,12 @@
 import { AuthOptions } from '@igo2/auth';
 import { ContextServiceOptions } from '@igo2/context';
 import { LanguageOptions } from '@igo2/core';
-import { SearchSourcesOptions, CatalogServiceOptions } from '@igo2/geo';
+import { SearchSourceOptions, CatalogServiceOptions } from '@igo2/geo';
 
 interface Environment {
   production: boolean;
   igo: {
-    searchSources?: SearchSourcesOptions;
+    searchSources?: { [key: string]: SearchSourceOptions };
     language?: LanguageOptions;
     auth?: AuthOptions;
     context?: ContextServiceOptions;
@@ -22,15 +22,37 @@ interface Environment {
 export const environment: Environment = {
   production: false,
   igo: {
+    auth: {
+      url: '/apis/users',
+      tokenKey: 'id_token_igo',
+      allowAnonymous: true
+    },
+    // context: {
+    //   url: '/apis/igo2',
+    //   defaultContextUri: '5'
+    // },
     searchSources: {
       nominatim: {
-        enabled: false
+        available: false
       },
       icherche: {
-        searchUrl: 'https://geoegl.msp.gouv.qc.ca/icherche/geocode'
+        searchUrl: '/apis/icherche',
+        order: 2,
+        params: {
+          limit: '8'
+        }
       },
-      datasource: {
-        searchUrl: 'https://geoegl.msp.gouv.qc.ca/apis/layers/search'
+      icherchereverse: {
+        searchUrl: '/apis/territoires',
+        order: 3,
+        enabled: true
+      },
+      ilayer: {
+        searchUrl: '/apis/layers/search',
+        order: 4,
+        params: {
+          limit: '5'
+        }
       }
     },
     language: {

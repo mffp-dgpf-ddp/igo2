@@ -3,7 +3,7 @@
     "uri": "_default",
     "title": "Default Context"
   },
-{
+  {
     "uri": "qc911",
     "title": "Qc-911"
   },
@@ -13,10 +13,6 @@
   },
   {
     "uri": "mapOverlay",
-    "title": "Demo for mapOverlay"
-  },
-  {
-    "uri": "message",
-    "title": "Demo for startup message"
+    "title": "Map overlay Demo"
   }
 ]
