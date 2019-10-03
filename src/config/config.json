@@ -1,9 +1,36 @@
 {
-  "routingSources": {
-    "osrm": {
-      "enabled": true
+  "searchSources": {
+    "nominatim": {
+      "enabled": false
+    },
+    "icherche": {
+      "enabled": true,
+      "searchUrl": "https://geoegl.msp.gouv.qc.ca/apis/icherche",
+      "zoomMaxOnSelect": 10
+    },
+    "icherchereverse": {
+      "searchUrl": "https://geoegl.msp.gouv.qc.ca/apis/icherche"
+    },
+    "ilayer": {
+      "available" : false
+    },
+    "reseautq": {
+      "available" : false
     }
   },
-  "theme": "blue-theme",
-  "hasExpansionPanel": false
+  "auth": false,
+  "catalog": {
+    "sources": [
+      {
+        "title": "Limites administratives du Québec",
+        "url": "https://servicescarto.mern.gouv.qc.ca/pes/services/Territoire/SDA_WMS/MapServer/WMSServer?"
+      },
+      {
+        "title": "Inventaire écoforestier",
+        "url": "https://geoegl.msp.gouv.qc.ca/ws/mffpecofor.fcgi"
+      }
+    ]
+  },
+  "sidenavTitle": "Menu - Carte",
+  "theme": "blue-theme"
 }
