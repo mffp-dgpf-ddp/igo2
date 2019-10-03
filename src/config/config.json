@@ -13,9 +13,6 @@
     },
     "ilayer": {
       "available" : false
-    },
-    "reseautq": {
-      "available" : false
     }
   },
   "auth": false,
