@@ -9,7 +9,7 @@
       "zoomMaxOnSelect": 10
     },
     "icherchereverse": {
-      "searchUrl": "https://geoegl.msp.gouv.qc.ca/apis/icherche"
+      "searchUrl": "https://geoegl.msp.gouv.qc.ca/apis/territoires"
     },
     "ilayer": {
       "available" : false
