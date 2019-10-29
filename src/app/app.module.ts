@@ -2,6 +2,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AndroidPermissions } from '@ionic-native/android-permissions/ngx';
+import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { IonicModule } from '@ionic/angular';
 
 import {
   provideConfigOptions,
@@ -27,6 +31,7 @@ import { AppComponent } from './app.component';
   declarations: [AppComponent],
   imports: [
     BrowserModule,
+    IonicModule.forRoot(),
     BrowserAnimationsModule,
     RouterModule.forRoot([]),
     IgoAuthModule.forRoot(),
@@ -41,6 +46,9 @@ import { AppComponent } from './app.component';
       path: './config/config.json'
     }),
     RouteService,
+    AndroidPermissions,
+    StatusBar,
+    SplashScreen,
     provideNominatimSearchSource(),
     provideIChercheSearchSource(),
     provideIChercheReverseSearchSource(),
