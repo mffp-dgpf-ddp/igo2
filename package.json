@@ -35,7 +35,11 @@
     "preghpages": "npm run build -- --configuration=github --output-path ./dist/ghpages --base-href /igo2/ && echo \"include: ['_default.json', '_contexts.json', '_base.json']\" > dist/ghpages/_config.yml",
     "ghpages": "VERSION=$(node -p -e \"require('./package.json').version\") && npx ngh --dir=dist/ghpages --no-silent=false --message=$VERSION",
     "postghpages": "rimraf ./dist/ghpages",
-    "ghrelease": "VERSION=$(node -p -e \"require('./package.json').version\") && publish-release --owner infra-geo-ouverte --repo igo2 --tag $VERSION --name $VERSION --reuse-release --notes \"$(npm run changelog-current -s)\" --assets dist/igo2.zip"
+    "ghrelease": "VERSION=$(node -p -e \"require('./package.json').version\") && publish-release --owner infra-geo-ouverte --repo igo2 --tag $VERSION --name $VERSION --reuse-release --notes \"$(npm run changelog-current -s)\" --assets dist/igo2.zip",
+    "geo-lib": "gulp geo-lib",
+    "geo-clean": "gulp geo:clean",
+    "build.geo": "ng build geo && gulp geo",
+    "build.geo.prod": "ng build geo --prod && gulp geo"
   },
   "private": true,
   "dependencies": {
@@ -80,6 +84,7 @@
     "cordova-plugin-whitelist": "^1.3.3",
     "core-js": "^2.6.5",
     "file-saver": "^1.3.8",
+    "gulp-clean": "^0.4.0",
     "hammerjs": "^2.0.8",
     "html2canvas": "^1.0.0-alpha.12",
     "jspdf": "^1.5.3",
@@ -116,7 +121,7 @@
     "codelyzer": "~4.5.0",
     "compodoc": "0.0.41",
     "conventional-changelog-cli": "^2.0.12",
-    "gulp": "^3.9.1",
+    "gulp": "^4.0.2",
     "gulp-babel": "^8.0.0",
     "gulp-json-editor": "^2.4.2",
     "jasmine-core": "~2.99.1",

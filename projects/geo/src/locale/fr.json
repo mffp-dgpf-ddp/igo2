@@ -1,7 +1,16 @@
 {
-  "welcome": "Bienvenue à {{title}}",
-  "Close Menu": "Fermer le menu",
-  "Open Menu": "Menu",
-  "Search for an address or a place":
-    "Rechercher une adresse, un lieu ou une couche"
+  "welcome": "Bienvenue dans IGO",
+  "menu": {
+    "close": "Fermer le menu",
+    "open": "Menu"
+  },
+  "toastPanel": {
+    "title": "Entités trouvées sur la carte",
+    "listButton": "Retourner à la liste des entités"
+  },
+  "IGO": "IGO",
+  "noEntityStore": "Aucune table disponible pour ce jeu de données",
+  "coordinates": "Afficher les coordonnées",
+  "googleMap": "Afficher sur Google maps",
+  "googleStreetView": "Afficher sur Google Street view"
 }

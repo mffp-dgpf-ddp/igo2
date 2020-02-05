@@ -1,6 +1,16 @@
 {
-  "welcome": "Welcome to {{title}}",
-  "Close Menu": "Close Menu",
-  "Open Menu": "Open Menu",
-  "Search for an address or a place": "Search for an address or a place"
+  "welcome": "Welcome",
+  "menu": {
+    "close": "Close Menu",
+    "open": "Open Menu"
+  },
+  "toastPanel": {
+    "title": "Entities found on the map",
+    "listButton": "Return to the list of entities"
+  },
+  "IGO": "IGO",
+  "noEntityStore": "No tables available for this dataset",
+  "coordinates": "Show coordinates,",
+  "googleMap": "Show in Google maps",
+  "googleStreetView": "Show in Google Street view"
 }

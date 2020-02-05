@@ -8,24 +8,20 @@ import {
   IgoMessageModule,
   RouteService
 } from '@igo2/core';
-
 import { IgoSpinnerModule, IgoStopPropagationModule } from '@igo2/common';
 import { IgoAuthModule } from '@igo2/auth';
 import {
   provideIChercheSearchSource,
-  provideReseauTransportsQuebecSearchSource,
+  provideIChercheReverseSearchSource,
   provideNominatimSearchSource,
-  provideDataSourceSearchSource,
+  provideCoordinatesReverseSearchSource,
+  provideILayerSearchSource,
   provideOsrmRoutingSource
 } from '@igo2/geo';
 
 import { environment } from '../environments/environment';
-import { PortalModule } from './pages/portal/portal.module';
+import { PortalModule } from './pages';
 import { AppComponent } from './app.component';
-import { BboxService } from './services/bbox.service';
-import { FeatureViewerModule } from './components/feature-viewer/feature-viewer.module';
-import { ZoneSelectionModule } from './components/zone-selection/zone-selection.module';
-import { MapImageService } from './services/map-image.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -37,9 +33,7 @@ import { MapImageService } from './services/map-image.service';
     IgoMessageModule,
     IgoSpinnerModule,
     IgoStopPropagationModule,
-    PortalModule,
-    FeatureViewerModule,
-    ZoneSelectionModule
+    PortalModule
   ],
   providers: [
     provideConfigOptions({
@@ -47,14 +41,13 @@ import { MapImageService } from './services/map-image.service';
       path: './config/config.json'
     }),
     RouteService,
-    BboxService,
-    MapImageService,
     provideNominatimSearchSource(),
     provideIChercheSearchSource(),
-    provideReseauTransportsQuebecSearchSource(),
-    provideDataSourceSearchSource(),
+    provideIChercheReverseSearchSource(),
+    provideCoordinatesReverseSearchSource(),
+    provideILayerSearchSource(),
     provideOsrmRoutingSource()
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

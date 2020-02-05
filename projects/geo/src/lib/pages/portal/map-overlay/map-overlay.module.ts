@@ -9,7 +9,6 @@ import { MapOverlayComponent } from './map-overlay.component';
     CommonModule
   ],
   exports: [MapOverlayComponent],
-  declarations: [MapOverlayComponent],
-  entryComponents: [MapOverlayComponent]
+  declarations: [MapOverlayComponent]
 })
 export class MapOverlayModule {}
