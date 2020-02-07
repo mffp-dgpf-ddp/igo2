@@ -20,7 +20,7 @@ import {
 } from '@igo2/geo';
 
 import { environment } from '../environments/environment';
-import { PortalModule } from './pages';
+import { PortalModule } from './pages/portal/portal.module';
 import { AppComponent } from './app.component';
 
 @NgModule({

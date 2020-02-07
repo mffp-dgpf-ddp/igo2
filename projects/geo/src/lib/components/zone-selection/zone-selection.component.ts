@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy, ChangeDetectorRef, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ModalController } from '@ionic/angular';
 
 import { MediaService, ConfigService, MessageService, Message } from '@igo2/core';
 import { AuthService } from '@igo2/auth';
@@ -53,7 +54,8 @@ export class ZoneSelectionComponent extends PortalComponent {
     public searchSourceService: SearchSourceService,
     public searchService: SearchService,
     public configService: ConfigService,
-    public mapService: MapService
+    public mapService: MapService,
+    private modalController: ModalController,
 
   ) {
     super(
@@ -102,7 +104,7 @@ export class ZoneSelectionComponent extends PortalComponent {
   }
 
   close() {
-    // this.modalController.dismiss();
+    this.modalController.dismiss();
   }
 
   selectZone() {

@@ -34,8 +34,9 @@ import {
 } from '@igo2/context';
 
 import { IgoIntegrationModule } from '@igo2/integration';
+import { MapOverlayModule } from '../../pages/portal/map-overlay/map-overlay.module';
 import { ZoneSelectionComponent } from './zone-selection.component';
-import { PortalModule } from '../../pages';
+import { PortalModule } from '../../pages/portal/portal.module';
 
 @NgModule({
   imports: [
@@ -63,7 +64,8 @@ import { PortalModule } from '../../pages';
     IgoContextManagerModule,
     IgoContextMapButtonModule,
     IgoEntityTableModule,
-    PortalModule
+    PortalModule,
+    MapOverlayModule
   ],
   exports: [ZoneSelectionComponent],
   declarations: [ZoneSelectionComponent],

@@ -1,5 +1,3 @@
-import './portal.variables.scss';
-
 import {
   trigger,
   state,
