@@ -12,6 +12,13 @@ import { AuthOptions } from '@igo2/auth';
 export class AppComponent {
   public authConfig: AuthOptions;
   private themeClass = 'blue-theme';
+  public feature = {
+    'type': 'Feature',
+    'geometry': {
+      'type': 'Point',
+      'coordinates': [-71.254028, 46.829853]
+    }
+  };
 
   constructor(
     protected languageService: LanguageService,

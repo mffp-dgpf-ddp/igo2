@@ -23,6 +23,11 @@ import { environment } from '../environments/environment';
 import { PortalModule } from './pages';
 import { AppComponent } from './app.component';
 
+import { ZoneSelectionModule } from "projects/geo/src/lib/components/zone-selection/zone-selection.module";
+import { FeatureViewerModule } from "projects/geo/src/lib/components/feature-viewer/feature-viewer.module";
+import { IonicModule } from '@ionic/angular';
+
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -33,7 +38,10 @@ import { AppComponent } from './app.component';
     IgoMessageModule,
     IgoSpinnerModule,
     IgoStopPropagationModule,
-    PortalModule
+    PortalModule,
+    ZoneSelectionModule,
+    FeatureViewerModule,
+    IonicModule
   ],
   providers: [
     provideConfigOptions({
@@ -50,4 +58,4 @@ import { AppComponent } from './app.component';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

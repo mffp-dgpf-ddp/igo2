@@ -3,3 +3,15 @@
 @mixin app-theming($theme) {
   @include app-portal-theming($theme);
 }
+
+app-portal{
+  max-height: 1%;
+}
+
+app-zone-selection{
+  max-height:50%;
+}
+
+app-feature-viewer{
+  max-height: 49%;
+}
