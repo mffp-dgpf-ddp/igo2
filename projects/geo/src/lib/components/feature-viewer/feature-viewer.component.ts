@@ -13,6 +13,7 @@ import {
   OverlayService,
   SearchService,
   CapabilitiesService,
+  FeatureMotion,
 } from '@igo2/geo';
 
 import {
@@ -110,8 +111,8 @@ export class FeatureViewerComponent implements OnChanges, OnInit {
 
   ngOnInit() {
     if (this.feature !== undefined && this.feature !== null) {
-      //this.map = this.mapService.getMap();
-      //this.updateMap();
+      // this.map = this.mapService.getMap();
+      // this.updateMap();
       this.addFeature(this.feature);
     }
   }
@@ -121,15 +122,15 @@ export class FeatureViewerComponent implements OnChanges, OnInit {
     setTimeout(() => {
       this.map.ol.updateSize();
       this.view.zoom = 30;
-      //this.mapService.getMap().ol.updateSize();
+      // this.mapService.getMap().ol.updateSize();
     }, 600);
   }
 
   addFeature(feature: any) {
 
     setTimeout(() => {
-      this.overlayService.clear();
-      this.overlayService.setFeatures([feature], OverlayAction.ZoomIfOutMapExtent)
+      this.map.overlay.clear();
+      this.map.overlay.setFeatures([feature], FeatureMotion.Default);
       this.map.setView({ center: this.feature.geometry.coordinates, zoom: this.view.zoom });
       this.mapService.getMap().setView({ center: this.feature.geometry.coordinates, zoom: this.view.zoom });
       this.mapImageService.setMap(this.map);

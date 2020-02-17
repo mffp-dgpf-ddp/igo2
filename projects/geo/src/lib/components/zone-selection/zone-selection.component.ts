@@ -12,7 +12,8 @@ import {
   OverlayService,
   SearchService,
   CapabilitiesService,
-  SearchSourceService
+  SearchSourceService,
+  IgoMap
 } from '@igo2/geo';
 
 import {
@@ -32,9 +33,22 @@ import { MapState, ContextState, SearchState, ToolState, QueryState } from '@igo
   styleUrls: ['./zone-selection.component.scss'],
   animations: [controlSlideX(), controlSlideY(), mapSlideX(), mapSlideY()]
 })
-export class ZoneSelectionComponent extends PortalComponent {
+export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/ {
 
   private bbox;
+
+  map_ = new IgoMap({
+    controls: {
+      scaleLine: true,
+      attribution: {
+        collapsed: true
+      }
+    }
+  });
+  public view_ = {
+    center: [-73, 47.2],
+    zoom: 15
+  };
 
   constructor(
     public bboxService: BboxService,
@@ -58,7 +72,7 @@ export class ZoneSelectionComponent extends PortalComponent {
     private modalController: ModalController,
 
   ) {
-    super(
+    /*super(
       route,
       // private workspaceState: WorkspaceState,
       authService,
@@ -74,8 +88,8 @@ export class ZoneSelectionComponent extends PortalComponent {
       toolState,
       searchSourceService,
       searchService,
-      configService);
-    this.mapService.setMap(this.map);
+      configService);*/
+    // this.mapService.setMap(this.map);
   }
 
   /*
@@ -95,6 +109,22 @@ export class ZoneSelectionComponent extends PortalComponent {
     private searchSourceService: SearchSourceService,
     private searchService: SearchService,
     private configService: ConfigService*/
+
+  ngOnInit() {
+    this.dataSourceService
+      .createAsyncDataSource({
+        type: 'osm'
+      })
+      .subscribe(dataSource => {
+        this.map_.addLayer(
+          this.layerService.createLayer({
+            title: 'OSM',
+            source: dataSource
+          })
+        );
+      });
+    this.updateMap();
+  }
 
   updateMap() {
     // Sans cela la carte n'affichait pas

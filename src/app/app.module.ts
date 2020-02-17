@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   provideConfigOptions,
   IgoMessageModule,
+  IgoGestureModule,
   RouteService
 } from '@igo2/core';
 import { IgoSpinnerModule, IgoStopPropagationModule } from '@igo2/common';
@@ -16,17 +17,17 @@ import {
   provideNominatimSearchSource,
   provideCoordinatesReverseSearchSource,
   provideILayerSearchSource,
-  provideOsrmRoutingSource
+  provideStoredQueriesSearchSource,
+  provideOsrmDirectionsSource,
+  provideStyleListOptions
 } from '@igo2/geo';
 
 import { environment } from '../environments/environment';
 import { PortalModule } from './pages';
 import { AppComponent } from './app.component';
-
-import { ZoneSelectionModule } from "projects/geo/src/lib/components/zone-selection/zone-selection.module";
-import { FeatureViewerModule } from "projects/geo/src/lib/components/feature-viewer/feature-viewer.module";
+import { ZoneSelectionModule } from 'projects/geo/src/lib/components/zone-selection/zone-selection.module';
+import { FeatureViewerModule } from 'projects/geo/src/lib/components/feature-viewer/feature-viewer.module';
 import { IonicModule } from '@ionic/angular';
-
 
 @NgModule({
   declarations: [AppComponent],
@@ -35,6 +36,7 @@ import { IonicModule } from '@ionic/angular';
     BrowserAnimationsModule,
     RouterModule.forRoot([]),
     IgoAuthModule.forRoot(),
+    IgoGestureModule.forRoot(),
     IgoMessageModule,
     IgoSpinnerModule,
     IgoStopPropagationModule,
@@ -48,14 +50,19 @@ import { IonicModule } from '@ionic/angular';
       default: environment.igo,
       path: './config/config.json'
     }),
+    provideStyleListOptions({
+      default: environment.igo,
+      path: './config/style-list.json'
+    }),
     RouteService,
     provideNominatimSearchSource(),
     provideIChercheSearchSource(),
     provideIChercheReverseSearchSource(),
     provideCoordinatesReverseSearchSource(),
     provideILayerSearchSource(),
-    provideOsrmRoutingSource()
+    provideStoredQueriesSearchSource(),
+    provideOsrmDirectionsSource()
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

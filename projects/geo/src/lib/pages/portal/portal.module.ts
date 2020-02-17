@@ -41,6 +41,7 @@ import { AppToastPanelModule } from './toast-panel/toast-panel.module';
 import { AppSidenavModule } from './sidenav/sidenav.module';
 
 import { PortalComponent } from './portal.component';
+import { ZoneSelectionModule } from '../../components/zone-selection/zone-selection.module';
 
 @NgModule({
   imports: [
@@ -71,7 +72,8 @@ import { PortalComponent } from './portal.component';
     MapOverlayModule,
     IgoContextManagerModule,
     IgoContextMapButtonModule,
-    IgoEntityTableModule
+    IgoEntityTableModule,
+    ZoneSelectionModule
   ],
   exports: [PortalComponent],
   declarations: [PortalComponent]

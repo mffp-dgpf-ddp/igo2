@@ -36,7 +36,6 @@ import {
 import { IgoIntegrationModule } from '@igo2/integration';
 
 import { FeatureViewerComponent } from './feature-viewer.component';
-import { PortalModule } from '../../pages/portal/portal.module';
 
 @NgModule({
   imports: [
@@ -63,8 +62,7 @@ import { PortalModule } from '../../pages/portal/portal.module';
     IgoIntegrationModule,
     IgoContextManagerModule,
     IgoContextMapButtonModule,
-    IgoEntityTableModule,
-    PortalModule
+    IgoEntityTableModule
   ],
   exports: [FeatureViewerComponent],
   declarations: [FeatureViewerComponent],
