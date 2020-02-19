@@ -23,7 +23,7 @@ import {
 } from '@igo2/geo';
 
 import { environment } from '../environments/environment';
-import { PortalModule } from './pages';
+import { PortalModule } from './pages/portal/portal.module';
 import { AppComponent } from './app.component';
 import { ZoneSelectionModule } from './components/zone-selection/zone-selection.module';
 import { FeatureViewerModule } from './components/feature-viewer/feature-viewer.module';
