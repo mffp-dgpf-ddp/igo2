@@ -25,8 +25,6 @@ import {
 import { environment } from '../environments/environment';
 import { PortalModule } from './pages';
 import { AppComponent } from './app.component';
-import { ZoneSelectionModule } from 'projects/geo/src/lib/components/zone-selection/zone-selection.module';
-import { FeatureViewerModule } from 'projects/geo/src/lib/components/feature-viewer/feature-viewer.module';
 import { IonicModule } from '@ionic/angular';
 
 @NgModule({
@@ -41,8 +39,6 @@ import { IonicModule } from '@ionic/angular';
     IgoSpinnerModule,
     IgoStopPropagationModule,
     PortalModule,
-    ZoneSelectionModule,
-    FeatureViewerModule,
     IonicModule
   ],
   providers: [
