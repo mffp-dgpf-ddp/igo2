@@ -7,7 +7,9 @@ import {
   provideConfigOptions,
   IgoMessageModule,
   IgoGestureModule,
-  RouteService
+  RouteService,
+  NetworkService,
+  NetworkIonicService
 } from '@igo2/core';
 import { IgoSpinnerModule, IgoStopPropagationModule } from '@igo2/common';
 import { IgoAuthModule } from '@igo2/auth';
@@ -30,6 +32,7 @@ import { FeatureViewerModule } from './components/feature-viewer/feature-viewer.
 import { IonicModule } from '@ionic/angular';
 import { BboxService } from './services/bbox.service';
 import { MapImageService } from './services/map-image.service';
+import { Network } from '@ionic-native/network/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -59,6 +62,8 @@ import { MapImageService } from './services/map-image.service';
     RouteService,
     BboxService,
     MapImageService,
+    Network,
+    { provide: NetworkService, useExisting: NetworkIonicService },
     provideNominatimSearchSource(),
     provideIChercheSearchSource(),
     provideIChercheReverseSearchSource(),

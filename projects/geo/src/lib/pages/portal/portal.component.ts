@@ -112,6 +112,8 @@ export class PortalComponent implements OnInit, OnDestroy {
 
   private context$$: Subscription;
 
+  public igoEnabled = false;
+
   public igoSearchPointerSummaryEnabled = false;
 
   public tableStore = new EntityStore([]);

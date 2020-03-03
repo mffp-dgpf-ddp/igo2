@@ -44,10 +44,6 @@
       [pointerPositionByKeyDelay]="500"
       (pointerPositionByKeyCoord)="searchCoordinate($event)"
 
-      igoSearchPointerSummary
-      [igoSearchPointerSummaryDelay]="500"
-      [igoSearchPointerSummaryEnabled]=igoSearchPointerSummaryEnabled
-
       #mapBrowser
       igoQuery
       [waitForAllQueries]="true"
@@ -55,6 +51,7 @@
       igoMapContext
       igoLayerContext
       igoDropGeoFile
+      igoMapOffline
       (query)="onMapQuery($event)"
       [map]="map"
       [igoContextMenu]=contextMenu

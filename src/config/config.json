@@ -29,5 +29,6 @@
     ]
   },
   "sidenavTitle": "Menu - Carte",
-  "theme": "blue-theme"
+  "theme": "blue-theme",
+  "offlineButton": true
 }

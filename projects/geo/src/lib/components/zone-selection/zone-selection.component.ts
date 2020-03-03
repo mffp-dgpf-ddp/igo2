@@ -129,7 +129,7 @@ export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/
   updateMap() {
     // Sans cela la carte n'affichait pas
     setTimeout(() => {
-      this.mapService.getMap().ol.updateSize();
+      this.map_.ol.updateSize();
     }, 600);
   }
 
@@ -138,7 +138,7 @@ export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/
   }
 
   selectZone() {
-    this.bbox = this.mapService.getMap().ol.getView().calculateExtent(this.mapService.getMap().ol.getSize());
+    this.bbox = this.map_.ol.getView().calculateExtent(this.map_.ol.getSize());
     this.bboxService.setBBOX(this.bbox);
     this.close();
   }

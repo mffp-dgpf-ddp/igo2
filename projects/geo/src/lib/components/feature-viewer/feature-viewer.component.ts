@@ -112,7 +112,7 @@ export class FeatureViewerComponent implements OnChanges, OnInit {
   ngOnInit() {
     if (this.feature !== undefined && this.feature !== null) {
       // this.map = this.mapService.getMap();
-      // this.updateMap();
+      this.updateMap();
       this.addFeature(this.feature);
     }
   }
@@ -132,7 +132,7 @@ export class FeatureViewerComponent implements OnChanges, OnInit {
       this.map.overlay.clear();
       this.map.overlay.setFeatures([feature], FeatureMotion.Default);
       this.map.setView({ center: this.feature.geometry.coordinates, zoom: this.view.zoom });
-      this.mapService.getMap().setView({ center: this.feature.geometry.coordinates, zoom: this.view.zoom });
+      // this.mapService.getMap().setView({ center: this.feature.geometry.coordinates, zoom: this.view.zoom });
       this.mapImageService.setMap(this.map);
       this.updateMap();
     }, 1000);
