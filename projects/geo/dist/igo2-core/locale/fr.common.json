@@ -1,0 +1,23 @@
+{
+  "igo": {
+    "common": {
+      "confirmDialog": {
+        "cancelBtn": "Annuler",
+        "confirmBtn": "Confirmer",
+        "title": "Confirmation"
+      },
+      "table": {
+        "filter": "Filtre"
+      },
+      "form": {
+        "errors": {
+          "required": "Ce champ est requis"
+        }
+      },
+      "actionbar": {
+        "scrollUp": "Défiler vers le haut",
+        "scrollDown": "Défiler vers le bas"
+      }
+    }
+  }
+}

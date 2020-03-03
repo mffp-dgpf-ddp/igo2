@@ -1,0 +1,8 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { FeatureStoreLoadingStrategy } from './loading';
+export { FeatureStoreLoadingLayerStrategy } from './loading-layer';
+export { FeatureStoreSelectionStrategy } from './selection';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9AaWdvMi9nZW8vIiwic291cmNlcyI6WyJsaWIvZmVhdHVyZS9zaGFyZWQvc3RyYXRlZ2llcy9pbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQUEsNENBQWMsV0FBVyxDQUFDO0FBQzFCLGlEQUFjLGlCQUFpQixDQUFDO0FBQ2hDLDhDQUFjLGFBQWEsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCAqIGZyb20gJy4vbG9hZGluZyc7XHJcbmV4cG9ydCAqIGZyb20gJy4vbG9hZGluZy1sYXllcic7XHJcbmV4cG9ydCAqIGZyb20gJy4vc2VsZWN0aW9uJztcclxuIl19

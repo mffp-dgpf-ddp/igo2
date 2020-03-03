@@ -1,0 +1,36 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export { DataService } from './data.service';
+export { DataSource } from './datasource';
+export {} from './datasource.interface';
+export { FeatureDataSource } from './feature-datasource';
+export {} from './feature-datasource.interface';
+export { OSMDataSource } from './osm-datasource';
+export {} from './osm-datasource.interface';
+export { XYZDataSource } from './xyz-datasource';
+export {} from './xyz-datasource.interface';
+export { WFSDataSource } from './wfs-datasource';
+export {} from './wfs-datasource.interface';
+export { WFSService } from './wfs.service';
+export { WMSDataSource } from './wms-datasource';
+export {} from './wms-datasource.interface';
+export { formatWFSQueryString, checkWfsParams, getFormatFromOptions, defaultEpsg, defaultMaxFeatures, defaultWfsVersion, defaultFieldNameGeometry, gmlRegex, jsonRegex } from './wms-wfs.utils';
+export { WMTSDataSource } from './wmts-datasource';
+export {} from './wmts-datasource.interface';
+export { CartoDataSource } from './carto-datasource';
+export {} from './carto-datasource.interface';
+export { ArcGISRestDataSource } from './arcgisrest-datasource';
+export {} from './arcgisrest-datasource.interface';
+export { TileArcGISRestDataSource } from './tilearcgisrest-datasource';
+export {} from './tilearcgisrest-datasource.interface';
+export { WebSocketDataSource } from './websocket-datasource';
+export {} from './websocket-datasource.interface';
+export { MVTDataSource } from './mvt-datasource';
+export {} from './mvt-datasource.interface';
+export { ClusterDataSource } from './cluster-datasource';
+export {} from './cluster-datasource.interface';
+export {} from './any-datasource';
+export {} from './any-datasource.interface';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9AaWdvMi9nZW8vIiwic291cmNlcyI6WyJsaWIvZGF0YXNvdXJjZS9zaGFyZWQvZGF0YXNvdXJjZXMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLDRCQUFjLGdCQUFnQixDQUFDO0FBQy9CLDJCQUFjLGNBQWMsQ0FBQztBQUM3QixlQUFjLHdCQUF3QixDQUFDO0FBQ3ZDLGtDQUFjLHNCQUFzQixDQUFDO0FBQ3JDLGVBQWMsZ0NBQWdDLENBQUM7QUFDL0MsOEJBQWMsa0JBQWtCLENBQUM7QUFDakMsZUFBYyw0QkFBNEIsQ0FBQztBQUMzQyw4QkFBYyxrQkFBa0IsQ0FBQztBQUNqQyxlQUFjLDRCQUE0QixDQUFDO0FBQzNDLDhCQUFjLGtCQUFrQixDQUFDO0FBQ2pDLGVBQWMsNEJBQTRCLENBQUM7QUFDM0MsMkJBQWMsZUFBZSxDQUFDO0FBQzlCLDhCQUFjLGtCQUFrQixDQUFDO0FBQ2pDLGVBQWMsNEJBQTRCLENBQUM7QUFDM0MsOEtBQWMsaUJBQWlCLENBQUM7QUFDaEMsK0JBQWMsbUJBQW1CLENBQUM7QUFDbEMsZUFBYyw2QkFBNkIsQ0FBQztBQUM1QyxnQ0FBYyxvQkFBb0IsQ0FBQztBQUNuQyxlQUFjLDhCQUE4QixDQUFDO0FBQzdDLHFDQUFjLHlCQUF5QixDQUFDO0FBQ3hDLGVBQWMsbUNBQW1DLENBQUM7QUFDbEQseUNBQWMsNkJBQTZCLENBQUM7QUFDNUMsZUFBYyx1Q0FBdUMsQ0FBQztBQUN0RCxvQ0FBYyx3QkFBd0IsQ0FBQztBQUN2QyxlQUFjLGtDQUFrQyxDQUFDO0FBQ2pELDhCQUFjLGtCQUFrQixDQUFDO0FBQ2pDLGVBQWMsNEJBQTRCLENBQUM7QUFDM0Msa0NBQWMsc0JBQXNCLENBQUM7QUFDckMsZUFBYyxnQ0FBZ0MsQ0FBQztBQUMvQyxlQUFjLGtCQUFrQixDQUFDO0FBQ2pDLGVBQWMsNEJBQTRCLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgKiBmcm9tICcuL2RhdGEuc2VydmljZSc7XHJcbmV4cG9ydCAqIGZyb20gJy4vZGF0YXNvdXJjZSc7XHJcbmV4cG9ydCAqIGZyb20gJy4vZGF0YXNvdXJjZS5pbnRlcmZhY2UnO1xyXG5leHBvcnQgKiBmcm9tICcuL2ZlYXR1cmUtZGF0YXNvdXJjZSc7XHJcbmV4cG9ydCAqIGZyb20gJy4vZmVhdHVyZS1kYXRhc291cmNlLmludGVyZmFjZSc7XHJcbmV4cG9ydCAqIGZyb20gJy4vb3NtLWRhdGFzb3VyY2UnO1xyXG5leHBvcnQgKiBmcm9tICcuL29zbS1kYXRhc291cmNlLmludGVyZmFjZSc7XHJcbmV4cG9ydCAqIGZyb20gJy4veHl6LWRhdGFzb3VyY2UnO1xyXG5leHBvcnQgKiBmcm9tICcuL3h5ei1kYXRhc291cmNlLmludGVyZmFjZSc7XHJcbmV4cG9ydCAqIGZyb20gJy4vd2ZzLWRhdGFzb3VyY2UnO1xyXG5leHBvcnQgKiBmcm9tICcuL3dmcy1kYXRhc291cmNlLmludGVyZmFjZSc7XHJcbmV4cG9ydCAqIGZyb20gJy4vd2ZzLnNlcnZpY2UnO1xyXG5leHBvcnQgKiBmcm9tICcuL3dtcy1kYXRhc291cmNlJztcclxuZXhwb3J0ICogZnJvbSAnLi93bXMtZGF0YXNvdXJjZS5pbnRlcmZhY2UnO1xyXG5leHBvcnQgKiBmcm9tICcuL3dtcy13ZnMudXRpbHMnO1xyXG5leHBvcnQgKiBmcm9tICcuL3dtdHMtZGF0YXNvdXJjZSc7XHJcbmV4cG9ydCAqIGZyb20gJy4vd210cy1kYXRhc291cmNlLmludGVyZmFjZSc7XHJcbmV4cG9ydCAqIGZyb20gJy4vY2FydG8tZGF0YXNvdXJjZSc7XHJcbmV4cG9ydCAqIGZyb20gJy4vY2FydG8tZGF0YXNvdXJjZS5pbnRlcmZhY2UnO1xyXG5leHBvcnQgKiBmcm9tICcuL2FyY2dpc3Jlc3QtZGF0YXNvdXJjZSc7XHJcbmV4cG9ydCAqIGZyb20gJy4vYXJjZ2lzcmVzdC1kYXRhc291cmNlLmludGVyZmFjZSc7XHJcbmV4cG9ydCAqIGZyb20gJy4vdGlsZWFyY2dpc3Jlc3QtZGF0YXNvdXJjZSc7XHJcbmV4cG9ydCAqIGZyb20gJy4vdGlsZWFyY2dpc3Jlc3QtZGF0YXNvdXJjZS5pbnRlcmZhY2UnO1xyXG5leHBvcnQgKiBmcm9tICcuL3dlYnNvY2tldC1kYXRhc291cmNlJztcclxuZXhwb3J0ICogZnJvbSAnLi93ZWJzb2NrZXQtZGF0YXNvdXJjZS5pbnRlcmZhY2UnO1xyXG5leHBvcnQgKiBmcm9tICcuL212dC1kYXRhc291cmNlJztcclxuZXhwb3J0ICogZnJvbSAnLi9tdnQtZGF0YXNvdXJjZS5pbnRlcmZhY2UnO1xyXG5leHBvcnQgKiBmcm9tICcuL2NsdXN0ZXItZGF0YXNvdXJjZSc7XHJcbmV4cG9ydCAqIGZyb20gJy4vY2x1c3Rlci1kYXRhc291cmNlLmludGVyZmFjZSc7XHJcbmV4cG9ydCAqIGZyb20gJy4vYW55LWRhdGFzb3VyY2UnO1xyXG5leHBvcnQgKiBmcm9tICcuL2FueS1kYXRhc291cmNlLmludGVyZmFjZSc7XHJcbiJdfQ==

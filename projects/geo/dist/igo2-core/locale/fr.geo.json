@@ -1,0 +1,467 @@
+{
+  "igo": {
+    "geo": {
+      "catalog": {
+        "layer.addToMap": "Ajouter à la carte",
+        "layer.addToMapOutRange": "Ajouter à la carte. La donnée est non visible à l'échelle active. Veuillez zoomer +/- si vous voulez l'apercevoir à la carte.",
+        "layer.removeFromMap": "Retirer de la carte",
+        "layer.removeFromMapOutRange": "Retirer de la carte. La donnée est non visible à l'échelle active. Veuillez zoomer +/- si vous voulez l'apercevoir à la carte.",
+        "group.addToMap": "Ajouter toutes les couches de ce groupe à la carte",
+        "group.removeFromMap": "Retirer toutes les couches de ce groupe de la carte",
+        "baseLayers": "Fonds de carte"
+      },
+      "clickOnMap": {
+        "clickedFeature": "Entités cliquées"
+      },
+      "baselayersSwitcher": {
+        "title": "Fonds de carte"
+      },
+      "dropGeoFile": {
+        "invalid": {
+          "text": "Le fichier '{{value}}' est invalide. ({{mimeType}})",
+          "title": "Fichier invalide"
+        },
+        "empty": {
+          "text": "Le fichier '{{value}}' est vide, impossible d'importer",
+          "title": "Fichier vide"
+        },
+        "success": {
+          "text": "La couche '{{value}}' a été ajoutée à la carte",
+          "title": "Fichier importé"
+        },
+        "unreadable": {
+          "text": "Le fichier '{{value}}' est impossible à lire",
+          "title": "Fichier illisible"
+        },
+        "tooLarge": {
+          "text": "Le fichier '{{value}}' est trop volumineux (Maximun: 30 Mo)",
+          "title": "Fichier trop volumineux"
+        },
+        "invalidSRS": {
+          "text": "La projection est valide. Elle doit commencer par EPSG:",
+          "title": "Projection invalid"
+        }
+      },
+      "export": {
+        "nothing": {
+          "text": "Impossible d’exporter, donnée non valide ou aucune donnée sélectionnée.",
+          "title": "Donnée non valide ou non présente"
+        },
+        "failed": {
+          "text": "Impossible d’exporter, problème de donnée rencontré.",
+          "title": "Problème d’exportation"
+        }
+      },
+      "importExportForm": {
+        "exportButton": "Exporter",
+        "exportFormatPlaceholder": "Format",
+        "exportLayerPlaceholder": "Données géospatiales",
+        "exportTabTitle": "Exporter",
+        "importButton": "Importer",
+        "importProjPlaceholder": "Système de coordonnées",
+        "importTabTitle": "Importer",
+        "importClarifications": "Précisions",
+        "importSizeMax": "La taille limite du fichier est de 30 Mo.",
+        "importShpZip": "Les shapefiles doivent être compressés (zippés)"
+      },
+      "operators": {
+        "And": "Et",
+        "Or": "Ou",
+        "PropertyIsEqualTo": "=",
+        "PropertyIsNotEqualTo": "!=",
+        "PropertyIsLike": "≈",
+        "PropertyIsGreaterThan": ">",
+        "PropertyIsGreaterThanOrEqualTo": ">=",
+        "PropertyIsLessThan": "<",
+        "PropertyIsLessThanOrEqualTo": "<=",
+        "PropertyIsBetween": "entre",
+        "During": "durant",
+        "PropertyIsNull": "est nul",
+        "Intersects": "intersecte",
+        "Within": "contenu dans",
+        "Contains": "contient"
+      },
+      "sourceFields": {
+        "selectField": "Choisir un champ"
+      },
+      "filter": {
+        "addFilter": "Ajouter un filtre vide à la liste courante",
+        "removeFilter": "Supprimer le présent filtre à la liste des filtres",
+        "toggleFilterState": "Activer/désactiver le présent filtre",
+        "refreshFilters": "Mettre à jour la source de donnée avec les filtres actifs de la liste. Pour activer ce boutton, la couche doit etre visible (et dans les échelles permises) ou veillez modifier le présent filtre.",
+        "layerFiltered": "Cette couche d'information est présentement filtrée.",
+        "layerFilterable": "Cette couche d'information est filtrable",
+        "filterBy": "Filtrer par",
+        "advancedOgcFilters": "Filtres avancés",
+        "placeholder": "Saisir une valeur",
+        "placeholderSnrc": "Ex: 21L14",
+        "selectOperator": "Choisir un opérateur"
+      },
+      "spatialSelector": {
+        "fixedExtent": "Étendue fixe",
+        "btnSetExtent": "Définir l'étendue du filtre selon l'étendue courante de la carte",
+        "snrc": "SNRC",
+        "selectFeature": "",
+        "drawFeature": ""
+      },
+      "layer": {
+        "hideLayer": "Masquer la couche",
+        "lowerLayer": "Mettre en arrière",
+        "filterPlaceholder": "Filtrer la liste de couches",
+        "opacity": "Opacité",
+        "raiseLayer": "Mettre en avant",
+        "moreOptions": "Options sur la couche",
+        "removeLayer": "Retirer la couche de la carte",
+        "showFeaturesList": "Afficher la liste des entités",
+        "showLayer": "Afficher la couche",
+        "subsetLayersListKeyword": "Limiter l'affichage de la liste selon le titre ou  par type (wms, wfs,...)",
+        "deleteKeyword": "Supprimer le mot-clé",
+        "subsetLayersListOnlyVisible": "Conserver les couches visibles",
+        "subsetLayersListOnlyInRange": "Conserver les couches de la plage d'échelle active",
+        "sortAlphabetically": "Trier la liste des couches en ordre alphabétique",
+        "sortMapOrder": "Replacer les couches selon l'ordre cartographique",
+        "resetLayersList": "Rétablir l'affichage de l'ensemble des couches",
+        "trackFeature": "Suivre l'entité",
+        "legend": {
+          "default": "Défaut",
+          "loadingLegendText": "Chargement de la légende",
+          "noLegendText": "Aucune légende disponible pour cette couche",
+          "noLegendScale": "Aucune légende disponible pour cette échelle",
+          "selectStyle": "Sélectionner le style de la légende"
+        }
+      },
+      "download": {
+        "action": "Télécharger les données associées",
+        "title": "Téléchargement des données",
+        "start": "Vérifiez la progression du téléchargement dans votre navigateur",
+        "end": "Terminé"
+      },
+      "mapButtons": {
+        "baselayerSwitcher": "Changer le fond de carte",
+        "geolocate": "Afficher votre position",
+        "offline": "Passer en mode hors-ligne",
+        "online": "Passer en mode en ligne",
+        "zoomIn": "Zoomer ({{zoom}})",
+        "zoomOut": "Dézoomer ({{zoom}})",
+        "resetRotation": "Réinitialiser la carte vers le nord",
+        "tipRotation": "Maintenez les touches Alt et Majuscule (shift) tout en cliquant sur la carte pour faire pivoter la carte"
+      },
+      "metadata": {
+        "show": "Montrer les métadonnées"
+      },
+      "printForm": {
+        "corsErrorMessageBody": "Impossible d'imprimer dû à des droits d'accès non détenus",
+        "corsErrorMessageHeader": "Impression",
+        "comment": "Commentaire",
+        "doZipFile": "Compresser le fichier",
+        "outputFormat": "Format de sortie",
+        "paperFormat": "Format du papier",
+        "paperFormats": {
+          "A0": "A0",
+          "A1": "A1",
+          "A2": "A2",
+          "A3": "A3",
+          "A4": "A4",
+          "A5": "A5",
+          "Letter": "Lettre",
+          "Legal": "Légal"
+        },
+        "imageFormat": "Format de l'image",
+        "orientation": "Orientation",
+        "landscape": "Paysage",
+        "portrait": "Portrait",
+        "projection": "Projection",
+        "resolution": "Résolution",
+        "saveBtn": "Sauvegarder",
+        "scale": "Échelle",
+        "showLegend": "Afficher la légende",
+        "showProjection": "Afficher la projection",
+        "showScale": "Afficher l'échelle",
+        "title": "Titre"
+      },
+      "directionsForm": {
+        "start": "Début",
+        "intermediate": "Intermédiaire",
+        "end": "Fin",
+        "directionsBtn": "Obtenir l'itinéraire",
+        "resetDirectionsBtn": "Supprimer l'itinéraire",
+        "zoomRoute": "Zoomer sur l'itinéraire",
+        "null": "",
+        "directions": "Itinéraire",
+        "raiseStop": "Prioriser l'arrêt",
+        "lowerStop": "Reporter l'arrêt plus loin dans le parcours",
+        "addStop": "Ajouter un arrêt",
+        "removeStop": "Supprimer l'arrêt",
+        "drivingOptions": "Choix d'itinéraires",
+        "summary": "Résumé de l'itinéraire",
+        "stopsList": "Liste des lieux d'arrêts",
+        "instructions": "Indications",
+        "copy": "Copier l'itinéraire",
+        "geolocate": "Utiliser sa localisation comme point d'arrêt",
+        "link": "Lien",
+        "dialog": {
+          "copyMsg": "Itinéraire copié dans le presse-papier",
+          "copyMsgLink": "Le lien de l'itinéraire est copié dans le presse-papier",
+          "copyTitle": "Itinéraire"
+        }
+      },
+      "directions": {
+        "uturn": "demi-tour",
+        "sharp right": "fortement à droite",
+        "right": "droite",
+        "slight right": "légèrement à droite",
+        "sharp left": "fortement à gauche",
+        "left": "gauche",
+        "slight left": "légèrement à gauche",
+        "straight": "tout droit"
+      },
+      "cardinalPoints": {
+        "n": "nord",
+        "ne": "nord-est",
+        "e": "est",
+        "se": "sud-est",
+        "s": "sud",
+        "sw": "sud-ouest",
+        "w": "ouest",
+        "nw": "nord-ouest"
+      },
+      "search": {
+        "placeholder": "Rechercher une localisation ou une couche de données",
+        "feature.title": "Localisation",
+        "feature.placeholder": "Rechercher une localisation",
+        "layer.title": "Couche de données",
+        "layer.placeholder": "Rechercher une couche de données.",
+        "ichercheReverse.name": "Recherche par coordonnées",
+        "ilayer": {
+          "name": "Couches",
+          "properties": {
+            "abstract": "Description",
+            "groupTitle": "Groupe",
+            "title": "Titre",
+            "type": "Type",
+            "url": "URL",
+            "metadataUrl": "Métadonnées"
+          },
+          "type": {
+            "layer": "Couche",
+            "groupLayer": "Groupe de couches"
+          }
+        },
+        "nominatim": {
+          "type": {
+            "food": "Restauration",
+            "health": "Santé",
+            "entertainment": "Divertissement",
+            "finance": "Finance"
+          },
+          "country": {
+            "all": "Le monde",
+            "canada": "Canada"
+          }
+        },
+        "icherche": {
+          "name": "iCherche",
+          "type": {
+            "address": "Adresse",
+            "oldAddress": "Ancienne adresse",
+            "district": "Arrondissement",
+            "postalCode": "Code Postal",
+            "city": "Municipalité",
+            "oldCity": "Ancienne municipalité",
+            "mrc": "MRC",
+            "regadmin": "Région administrative",
+            "road": "Route",
+            "place": "Lieu",
+            "sumi": "Borne SUMI",
+            "km": "Repère kilométrique",
+            "entreprise": "Entreprise"
+          },
+          "restrictExtent": {
+            "map": "À l'étendue de la carte",
+            "quebec": "Au Québec"
+          }
+        },
+        "coordinates": {
+          "name": "Coordonnées",
+          "coord": "Coordonnée (longitude, latitude)"
+        },
+        "menu.tooltip": "Options de recherche",
+        "settings": {
+          "title": "Paramètres"
+        },
+        "pointerSearchSummary": {
+          "title": "Position du curseur",
+          "tooltip": "Afficher les coordonnées du curseur ainsi que d'autres informations sur sa position en fonction des types de résultats activées. Utiliser F2 pour activer / désactiver."
+        },
+        "searchSources": {
+          "settings": {
+            "results type": "Type de résultat",
+            "ecmax": "Écart maximal",
+            "radius": "Rayon de recherche",
+            "results limit": "Nombre de résultats",
+            "multiple object": "Objet multiple",
+            "restrictExtent": "Restreint l'étendue",
+            "selectAll": "Tout sélectionner",
+            "unselectAll": "Tout désélectionner",
+            "true": "Oui",
+            "false": "Non"
+          }
+        },
+        "displayMoreResults": "Afficher plus de résultats"
+      },
+      "geometry": {
+        "geometry": "Geometrie",
+        "point": "Point",
+        "line": "Ligne",
+        "polygon": "Surface"
+      },
+      "targetHtmlUrl": "Ouvrir le lien externe",
+      "timeFilter": {
+        "date": "Date",
+        "endDate": "Date de fin",
+        "startDate": "Date de début"
+      },
+      "spatialFilter": {
+        "predefined": "Zone Prédéfinie",
+        "draw": "Dessin",
+        "polygon": "Polygone",
+        "point": "Cercle",
+        "drawPolygon": "Dessiner un polygone",
+        "drawCircle": "Dessiner un cercle",
+        "searchLabel": "Rechercher par",
+        "search": "Recherche",
+        "drawControl": "Activer le contrôle de dessin",
+        "listLabel": "Zone",
+        "entity": "Entité",
+        "layer": "Couche",
+        "goSearch": "Lancer la recherche",
+        "removeLayer": "Retirer les résultats",
+        "clearForm": "Retirer le dessin",
+        "clearSearch": "Réinitialiser",
+        "Address": "Adresses",
+        "Thematics": "Thématiques",
+        "searchResults": "Résultats de la recherche",
+        "type": "Type",
+        "radius": "Rayon",
+        "radiusAlert": "Le rayon doit être compris entre 0 et 10000",
+        "maxSizeAlert": "Le nombre de résultats excède 10000. Certains pourraient être manquants.",
+        "zeroResults": "Aucun résultat ne correspond à cette recherche.",
+        "warning": "Avertissement",
+        "freehandControl": "À main levée",
+        "group": {
+          "toponyme": "Toponyme",
+          "culturel": "Culturel",
+          "education": "Éducation",
+          "sante": "Santé",
+          "securite": "Sécurité"
+        }
+      },
+      "terrapi": {
+        "AdmRegion": "Régions administratives",
+        "Mun": "Municipalités",
+        "Arrond": "Arrondissements",
+        "CircFed": "Circonscriptions fédérales",
+        "CircProv": "Circonscriptions provinciales",
+        "DirReg": "Directions régionales",
+        "MRC": "MRC",
+        "RegTour": "Régions touristiques",
+        "bornes": "Bornes sumi",
+        "hydro": "Hydrographie",
+        "routes": "Routes",
+        "bati": "Bâtiments",
+        "geographie": "Lieux naturels",
+        "parc": "Parcs",
+        "secteur": "Secteurs",
+        "immeubles": "Immeubles patrimoniaux",
+        "sites": "Sites patrimoniaux",
+        "cpe": "Centre de la petite enfance",
+        "public": "Écoles publiques",
+        "prive": "Écoles privés",
+        "gouvernemental": "Écoles gouvernementales",
+        "colleges": "Collèges",
+        "universites": "Universités",
+        "aine": "Résidences pour aînés",
+        "ambulance": "Zones d'ambulance",
+        "clinique": "Cliniques",
+        "etabl": "Établissements de santé",
+        "gmf": "Groupes de médecins de famille",
+        "naissance": "Maisons de naissances",
+        "pharmacie": "Pharmacies",
+        "casernes": "Casernes de pompiers",
+        "correctionnel": "Centres correctionnels",
+        "organisme": "Organismes de sécurité",
+        "palais-justice": "Palais de justice",
+        "penitencier-fed": "Pénitenciers fédéraux",
+        "penitencier-prov": "Pénitenciers provinciaux",
+        "polices": "Poste de police"
+      },
+      "measure": {
+        "dialog": {
+          "title": "Sommes de la sélection",
+          "length.title": "Distance",
+          "area.title": "Superficie",
+          "lengthInMeters": "Mètres",
+          "lengthInKilometers": "Kilomètres",
+          "lengthInMiles": "Miles",
+          "lengthInFeet": "Pieds",
+          "areaInSquareMeters": "Mètres²",
+          "areaInSquareKilometers": "Kilomètres²",
+          "areaInSquareMiles": "Miles²",
+          "areaInHectares": "Hectares",
+          "areaInAcres": "Acres",
+          "perimeterInMeters": "Périmètre en mètres"
+        },
+        "area": "Superficie",
+        "areaHeader": "Superficie",
+        "length": "Distance",
+        "lengthHeader": "Distance / Périmètre",
+        "perimeter": "Périmètre",
+        "meters": "Mètres",
+        "m": "m",
+        "kilometers": "Kilomètres",
+        "km": "km",
+        "miles": "Miles",
+        "mi": "mi",
+        "feet": "Pieds",
+        "ft": "pi",
+        "squareMeters": "Mètres²",
+        "m²": "m²",
+        "squareKilometers": "Kilomètres²",
+        "km²": "km²",
+        "squareMiles": "Miles²",
+        "mi²": "mi²",
+        "squareFeet": "Pieds²",
+        "ft²": "pi²",
+        "hectares": "Hectares",
+        "ha": "ha",
+        "acres": "Acres",
+        "ac": "ac",
+        "toggleActive": "Activer le contrôle de mesure",
+        "toggleMapTooltips": "Mesures sur la carte",
+        "toggleAutoUnits": "Unités automatiques",
+        "actionbar": {
+          "calculate.tooltip": "Calculer",
+          "delete.tooltip": "Supprimer",
+          "modify.tooltip": "Modifier"
+        }
+      },
+      "workspace": {
+        "ogcFilter.close": "Fermer",
+        "ogcFilter.title": "Filtres",
+        "ogcFilter.tooltip": "Appliquer des filtres sur la couche",
+        "wfsDownload.title": "Télécharger les données associées",
+        "wfsDownload.tooltip": "Télécharger les données associées"
+      },
+      "network": {
+        "online": {
+          "message": "En ligne",
+          "title": "Statut:"
+        },
+        "offline": {
+          "message": "Hors-Ligne",
+          "title": "Statut:"
+        }
+      }
+    }
+  }
+}

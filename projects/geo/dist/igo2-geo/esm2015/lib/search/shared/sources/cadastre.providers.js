@@ -1,0 +1,31 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { HttpClient } from '@angular/common/http';
+import { ConfigService } from '@igo2/core';
+import { SearchSource } from './source';
+import { CadastreSearchSource } from './cadastre';
+/**
+ * Cadastre search source factory
+ * @ignore
+ * @param {?} http
+ * @param {?} config
+ * @return {?}
+ */
+export function cadastreSearchSourceFactory(http, config) {
+    return new CadastreSearchSource(http, config.getConfig(`searchSources.${CadastreSearchSource.id}`));
+}
+/**
+ * Function that returns a provider for the Cadastre search source
+ * @return {?}
+ */
+export function provideCadastreSearchSource() {
+    return {
+        provide: SearchSource,
+        useFactory: cadastreSearchSourceFactory,
+        multi: true,
+        deps: [HttpClient, ConfigService]
+    };
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY2FkYXN0cmUucHJvdmlkZXJzLmpzIiwic291cmNlUm9vdCI6Im5nOi8vQGlnbzIvZ2VvLyIsInNvdXJjZXMiOlsibGliL3NlYXJjaC9zaGFyZWQvc291cmNlcy9jYWRhc3RyZS5wcm92aWRlcnMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLE9BQU8sRUFBRSxVQUFVLEVBQUUsTUFBTSxzQkFBc0IsQ0FBQztBQUVsRCxPQUFPLEVBQUUsYUFBYSxFQUFFLE1BQU0sWUFBWSxDQUFDO0FBRTNDLE9BQU8sRUFBRSxZQUFZLEVBQUUsTUFBTSxVQUFVLENBQUM7QUFDeEMsT0FBTyxFQUFFLG9CQUFvQixFQUFFLE1BQU0sWUFBWSxDQUFDOzs7Ozs7OztBQU1sRCxNQUFNLFVBQVUsMkJBQTJCLENBQ3pDLElBQWdCLEVBQ2hCLE1BQXFCO0lBRXJCLE9BQU8sSUFBSSxvQkFBb0IsQ0FDN0IsSUFBSSxFQUNKLE1BQU0sQ0FBQyxTQUFTLENBQUMsaUJBQWlCLG9CQUFvQixDQUFDLEVBQUUsRUFBRSxDQUFDLENBQzdELENBQUM7QUFDSixDQUFDOzs7OztBQUtELE1BQU0sVUFBVSwyQkFBMkI7SUFDekMsT0FBTztRQUNMLE9BQU8sRUFBRSxZQUFZO1FBQ3JCLFVBQVUsRUFBRSwyQkFBMkI7UUFDdkMsS0FBSyxFQUFFLElBQUk7UUFDWCxJQUFJLEVBQUUsQ0FBQyxVQUFVLEVBQUUsYUFBYSxDQUFDO0tBQ2xDLENBQUM7QUFDSixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgSHR0cENsaWVudCB9IGZyb20gJ0Bhbmd1bGFyL2NvbW1vbi9odHRwJztcclxuXHJcbmltcG9ydCB7IENvbmZpZ1NlcnZpY2UgfSBmcm9tICdAaWdvMi9jb3JlJztcclxuXHJcbmltcG9ydCB7IFNlYXJjaFNvdXJjZSB9IGZyb20gJy4vc291cmNlJztcclxuaW1wb3J0IHsgQ2FkYXN0cmVTZWFyY2hTb3VyY2UgfSBmcm9tICcuL2NhZGFzdHJlJztcclxuXHJcbi8qKlxyXG4gKiBDYWRhc3RyZSBzZWFyY2ggc291cmNlIGZhY3RvcnlcclxuICogQGlnbm9yZVxyXG4gKi9cclxuZXhwb3J0IGZ1bmN0aW9uIGNhZGFzdHJlU2VhcmNoU291cmNlRmFjdG9yeShcclxuICBodHRwOiBIdHRwQ2xpZW50LFxyXG4gIGNvbmZpZzogQ29uZmlnU2VydmljZVxyXG4pIHtcclxuICByZXR1cm4gbmV3IENhZGFzdHJlU2VhcmNoU291cmNlKFxyXG4gICAgaHR0cCxcclxuICAgIGNvbmZpZy5nZXRDb25maWcoYHNlYXJjaFNvdXJjZXMuJHtDYWRhc3RyZVNlYXJjaFNvdXJjZS5pZH1gKSxcclxuICApO1xyXG59XHJcblxyXG4vKipcclxuICogRnVuY3Rpb24gdGhhdCByZXR1cm5zIGEgcHJvdmlkZXIgZm9yIHRoZSBDYWRhc3RyZSBzZWFyY2ggc291cmNlXHJcbiAqL1xyXG5leHBvcnQgZnVuY3Rpb24gcHJvdmlkZUNhZGFzdHJlU2VhcmNoU291cmNlKCkge1xyXG4gIHJldHVybiB7XHJcbiAgICBwcm92aWRlOiBTZWFyY2hTb3VyY2UsXHJcbiAgICB1c2VGYWN0b3J5OiBjYWRhc3RyZVNlYXJjaFNvdXJjZUZhY3RvcnksXHJcbiAgICBtdWx0aTogdHJ1ZSxcclxuICAgIGRlcHM6IFtIdHRwQ2xpZW50LCBDb25maWdTZXJ2aWNlXVxyXG4gIH07XHJcbn1cclxuIl19

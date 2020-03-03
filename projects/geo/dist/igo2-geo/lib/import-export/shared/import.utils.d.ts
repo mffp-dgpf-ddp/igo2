@@ -1,0 +1,17 @@
+import { MessageService, LanguageService } from '@igo2/core';
+import { Feature } from '../../feature/shared/feature.interfaces';
+import { VectorLayer } from '../../layer/shared/layers/vector-layer';
+import { IgoMap } from '../../map/shared/map';
+import { StyleService } from '../../layer/shared/style.service';
+import { StyleListService } from '../style-list/style-list.service';
+export declare function addLayerAndFeaturesToMap(features: Feature[], map: IgoMap, layerTitle: string): VectorLayer;
+export declare function addLayerAndFeaturesStyledToMap(features: Feature[], map: IgoMap, layerTitle: string, styleListService: StyleListService, styleService: StyleService): VectorLayer;
+export declare function handleFileImportSuccess(file: File, features: Feature[], map: IgoMap, messageService: MessageService, languageService: LanguageService, styleListService?: StyleListService, styleService?: StyleService): void;
+export declare function handleFileImportError(file: File, error: Error, messageService: MessageService, languageService: LanguageService): void;
+export declare function handleInvalidFileImportError(file: File, error: Error, messageService: MessageService, languageService: LanguageService): void;
+export declare function handleUnreadbleFileImportError(file: File, error: Error, messageService: MessageService, languageService: LanguageService): void;
+export declare function handleSizeFileImportError(file: File, error: Error, messageService: MessageService, languageService: LanguageService): void;
+export declare function handleNothingToImportError(file: File, messageService: MessageService, languageService: LanguageService): void;
+export declare function handleSRSImportError(file: File, messageService: MessageService, languageService: LanguageService): void;
+export declare function getFileExtension(file: File): string;
+export declare function computeLayerTitleFromFile(file: File): string;

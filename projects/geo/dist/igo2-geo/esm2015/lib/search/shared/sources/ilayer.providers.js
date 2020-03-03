@@ -1,0 +1,53 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { HttpClient } from '@angular/common/http';
+import { ConfigService, LanguageService } from '@igo2/core';
+import { SearchSource } from './source';
+import { ILayerSearchSource, ILayerSearchResultFormatter } from './ilayer';
+/**
+ * ILayer search result formatter factory
+ * @ignore
+ * @param {?} languageService
+ * @return {?}
+ */
+export function ilayerSearchResultFormatterFactory(languageService) {
+    return new ILayerSearchResultFormatter(languageService);
+}
+/**
+ * Function that returns a provider for the ILayer search result formatter
+ * @return {?}
+ */
+export function provideILayerSearchResultFormatter() {
+    return {
+        provide: ILayerSearchResultFormatter,
+        useFactory: ilayerSearchResultFormatterFactory,
+        deps: [LanguageService]
+    };
+}
+/**
+ * ILayer search source factory
+ * @ignore
+ * @param {?} http
+ * @param {?} languageService
+ * @param {?} config
+ * @param {?} formatter
+ * @return {?}
+ */
+export function ilayerSearchSourceFactory(http, languageService, config, formatter) {
+    return new ILayerSearchSource(http, languageService, config.getConfig(`searchSources.${ILayerSearchSource.id}`), formatter);
+}
+/**
+ * Function that returns a provider for the ILayer search source
+ * @return {?}
+ */
+export function provideILayerSearchSource() {
+    return {
+        provide: SearchSource,
+        useFactory: ilayerSearchSourceFactory,
+        multi: true,
+        deps: [HttpClient, LanguageService, ConfigService, ILayerSearchResultFormatter]
+    };
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaWxheWVyLnByb3ZpZGVycy5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BpZ28yL2dlby8iLCJzb3VyY2VzIjpbImxpYi9zZWFyY2gvc2hhcmVkL3NvdXJjZXMvaWxheWVyLnByb3ZpZGVycy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQUEsT0FBTyxFQUFFLFVBQVUsRUFBRSxNQUFNLHNCQUFzQixDQUFDO0FBRWxELE9BQU8sRUFBRSxhQUFhLEVBQUUsZUFBZSxFQUFFLE1BQU0sWUFBWSxDQUFDO0FBRTVELE9BQU8sRUFBRSxZQUFZLEVBQUUsTUFBTSxVQUFVLENBQUM7QUFDeEMsT0FBTyxFQUFFLGtCQUFrQixFQUFFLDJCQUEyQixFQUFFLE1BQU0sVUFBVSxDQUFDOzs7Ozs7O0FBTTNFLE1BQU0sVUFBVSxrQ0FBa0MsQ0FDaEQsZUFBZ0M7SUFFaEMsT0FBTyxJQUFJLDJCQUEyQixDQUFDLGVBQWUsQ0FBQyxDQUFDO0FBQzFELENBQUM7Ozs7O0FBS0QsTUFBTSxVQUFVLGtDQUFrQztJQUNoRCxPQUFPO1FBQ0wsT0FBTyxFQUFFLDJCQUEyQjtRQUNwQyxVQUFVLEVBQUUsa0NBQWtDO1FBQzlDLElBQUksRUFBRSxDQUFDLGVBQWUsQ0FBQztLQUN4QixDQUFDO0FBQ0osQ0FBQzs7Ozs7Ozs7OztBQU1ELE1BQU0sVUFBVSx5QkFBeUIsQ0FDdkMsSUFBZ0IsRUFDaEIsZUFBZ0MsRUFDaEMsTUFBcUIsRUFDckIsU0FBc0M7SUFFdEMsT0FBTyxJQUFJLGtCQUFrQixDQUMzQixJQUFJLEVBQ0osZUFBZSxFQUNmLE1BQU0sQ0FBQyxTQUFTLENBQUMsaUJBQWlCLGtCQUFrQixDQUFDLEVBQUUsRUFBRSxDQUFDLEVBQzFELFNBQVMsQ0FDVixDQUFDO0FBQ0osQ0FBQzs7Ozs7QUFLRCxNQUFNLFVBQVUseUJBQXlCO0lBQ3ZDLE9BQU87UUFDTCxPQUFPLEVBQUUsWUFBWTtRQUNyQixVQUFVLEVBQUUseUJBQXlCO1FBQ3JDLEtBQUssRUFBRSxJQUFJO1FBQ1gsSUFBSSxFQUFFLENBQUMsVUFBVSxFQUFFLGVBQWUsRUFBRSxhQUFhLEVBQUUsMkJBQTJCLENBQUM7S0FDaEYsQ0FBQztBQUNKLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJpbXBvcnQgeyBIdHRwQ2xpZW50IH0gZnJvbSAnQGFuZ3VsYXIvY29tbW9uL2h0dHAnO1xyXG5cclxuaW1wb3J0IHsgQ29uZmlnU2VydmljZSwgTGFuZ3VhZ2VTZXJ2aWNlIH0gZnJvbSAnQGlnbzIvY29yZSc7XHJcblxyXG5pbXBvcnQgeyBTZWFyY2hTb3VyY2UgfSBmcm9tICcuL3NvdXJjZSc7XHJcbmltcG9ydCB7IElMYXllclNlYXJjaFNvdXJjZSwgSUxheWVyU2VhcmNoUmVzdWx0Rm9ybWF0dGVyIH0gZnJvbSAnLi9pbGF5ZXInO1xyXG5cclxuLyoqXHJcbiAqIElMYXllciBzZWFyY2ggcmVzdWx0IGZvcm1hdHRlciBmYWN0b3J5XHJcbiAqIEBpZ25vcmVcclxuICovXHJcbmV4cG9ydCBmdW5jdGlvbiBpbGF5ZXJTZWFyY2hSZXN1bHRGb3JtYXR0ZXJGYWN0b3J5KFxyXG4gIGxhbmd1YWdlU2VydmljZTogTGFuZ3VhZ2VTZXJ2aWNlXHJcbikge1xyXG4gIHJldHVybiBuZXcgSUxheWVyU2VhcmNoUmVzdWx0Rm9ybWF0dGVyKGxhbmd1YWdlU2VydmljZSk7XHJcbn1cclxuXHJcbi8qKlxyXG4gKiBGdW5jdGlvbiB0aGF0IHJldHVybnMgYSBwcm92aWRlciBmb3IgdGhlIElMYXllciBzZWFyY2ggcmVzdWx0IGZvcm1hdHRlclxyXG4gKi9cclxuZXhwb3J0IGZ1bmN0aW9uIHByb3ZpZGVJTGF5ZXJTZWFyY2hSZXN1bHRGb3JtYXR0ZXIoKSB7XHJcbiAgcmV0dXJuIHtcclxuICAgIHByb3ZpZGU6IElMYXllclNlYXJjaFJlc3VsdEZvcm1hdHRlcixcclxuICAgIHVzZUZhY3Rvcnk6IGlsYXllclNlYXJjaFJlc3VsdEZvcm1hdHRlckZhY3RvcnksXHJcbiAgICBkZXBzOiBbTGFuZ3VhZ2VTZXJ2aWNlXVxyXG4gIH07XHJcbn1cclxuXHJcbi8qKlxyXG4gKiBJTGF5ZXIgc2VhcmNoIHNvdXJjZSBmYWN0b3J5XHJcbiAqIEBpZ25vcmVcclxuICovXHJcbmV4cG9ydCBmdW5jdGlvbiBpbGF5ZXJTZWFyY2hTb3VyY2VGYWN0b3J5KFxyXG4gIGh0dHA6IEh0dHBDbGllbnQsXHJcbiAgbGFuZ3VhZ2VTZXJ2aWNlOiBMYW5ndWFnZVNlcnZpY2UsXHJcbiAgY29uZmlnOiBDb25maWdTZXJ2aWNlLFxyXG4gIGZvcm1hdHRlcjogSUxheWVyU2VhcmNoUmVzdWx0Rm9ybWF0dGVyXHJcbikge1xyXG4gIHJldHVybiBuZXcgSUxheWVyU2VhcmNoU291cmNlKFxyXG4gICAgaHR0cCxcclxuICAgIGxhbmd1YWdlU2VydmljZSxcclxuICAgIGNvbmZpZy5nZXRDb25maWcoYHNlYXJjaFNvdXJjZXMuJHtJTGF5ZXJTZWFyY2hTb3VyY2UuaWR9YCksXHJcbiAgICBmb3JtYXR0ZXJcclxuICApO1xyXG59XHJcblxyXG4vKipcclxuICogRnVuY3Rpb24gdGhhdCByZXR1cm5zIGEgcHJvdmlkZXIgZm9yIHRoZSBJTGF5ZXIgc2VhcmNoIHNvdXJjZVxyXG4gKi9cclxuZXhwb3J0IGZ1bmN0aW9uIHByb3ZpZGVJTGF5ZXJTZWFyY2hTb3VyY2UoKSB7XHJcbiAgcmV0dXJuIHtcclxuICAgIHByb3ZpZGU6IFNlYXJjaFNvdXJjZSxcclxuICAgIHVzZUZhY3Rvcnk6IGlsYXllclNlYXJjaFNvdXJjZUZhY3RvcnksXHJcbiAgICBtdWx0aTogdHJ1ZSxcclxuICAgIGRlcHM6IFtIdHRwQ2xpZW50LCBMYW5ndWFnZVNlcnZpY2UsIENvbmZpZ1NlcnZpY2UsIElMYXllclNlYXJjaFJlc3VsdEZvcm1hdHRlcl1cclxuICB9O1xyXG59XHJcbiJdfQ==

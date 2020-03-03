@@ -1,0 +1,45 @@
+import { OnDestroy, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { BehaviorSubject } from 'rxjs';
+import { MessageService, LanguageService, ConfigService } from '@igo2/core';
+import { IgoMap } from '../../map/shared/map';
+import { VectorLayer } from '../../layer/shared/layers/vector-layer';
+import { ExportOptions } from '../shared/export.interface';
+import { ExportService } from '../shared/export.service';
+import { ImportService } from '../shared/import.service';
+import { StyleService } from '../../layer/shared/style.service';
+import { StyleListService } from '../style-list/style-list.service';
+export declare class ImportExportComponent implements OnDestroy, OnInit {
+    private importService;
+    private exportService;
+    private languageService;
+    private messageService;
+    private styleListService;
+    private styleService;
+    private formBuilder;
+    private config;
+    form: FormGroup;
+    formats: {
+        GeoJSON: "GeoJSON";
+        GML: "GML";
+        GPX: "GPX";
+        KML: "KML";
+        Shapefile: "Shapefile";
+        CSV: "CSV";
+    };
+    layers: VectorLayer[];
+    inputProj: string;
+    loading$: BehaviorSubject<boolean>;
+    private layers$$;
+    private espgCodeRegex;
+    map: IgoMap;
+    constructor(importService: ImportService, exportService: ExportService, languageService: LanguageService, messageService: MessageService, styleListService: StyleListService, styleService: StyleService, formBuilder: FormBuilder, config: ConfigService);
+    ngOnInit(): void;
+    ngOnDestroy(): void;
+    importFiles(files: File[]): void;
+    handleExportFormSubmit(data: ExportOptions): void;
+    private buildForm;
+    private onFileImportSuccess;
+    private onFileImportError;
+    private onFileExportError;
+}

@@ -1,0 +1,40 @@
+{
+  "name": "@igo2/core",
+  "version": "1.2.0",
+  "description": "IGO Library",
+  "author": "MSP",
+  "keywords": [
+    "igo"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/infra-geo-ouverte/igo2-lib#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/infra-geo-ouverte/igo2-lib.git"
+  },
+  "bugs": {
+    "url": "https://github.com/infra-geo-ouverte/igo2-lib/issues"
+  },
+  "dependencies": {
+    "@ngx-translate/core": "^10.0.1",
+    "angular2-notifications": "^2.0.0",
+    "tslib": "^1.9.0"
+  },
+  "peerDependencies": {
+    "@angular/common": "^7.2.6",
+    "@angular/core": "^7.2.6",
+    "@angular/cdk": "^7.3.3",
+    "@igo2/utils": "^1.2.0",
+    "rxjs": "^6.4.0"
+  },
+  "main": "bundles/igo2-core.umd.js",
+  "module": "fesm5/igo2-core.js",
+  "es2015": "fesm2015/igo2-core.js",
+  "esm5": "esm5/igo2-core.js",
+  "esm2015": "esm2015/igo2-core.js",
+  "fesm5": "fesm5/igo2-core.js",
+  "fesm2015": "fesm2015/igo2-core.js",
+  "typings": "igo2-core.d.ts",
+  "metadata": "igo2-core.metadata.json",
+  "sideEffects": false
+}

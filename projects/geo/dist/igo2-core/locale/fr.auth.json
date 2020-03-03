@@ -1,0 +1,21 @@
+{
+  "igo": {
+    "auth": {
+      "accessAnonymous": "Rester anonyme",
+      "connection": "Connexion",
+      "login": "Connecter",
+      "password": "Mot de passe",
+      "signOut": "Se déconnecter",
+      "user": "Utilisateur",
+      "welcome": "Bienvenue {{name}}!",
+      "deconnection": "Vous êtes déconnecté",
+      "home": "Retourner à la page d'accueil",
+      "error": {
+        "Password expired": "Votre mot de passe est expiré",
+        "Maximun logins exceeded": "Nombre maximal de connexions dépassé",
+        "Wrong password": "Mot de passe incorrect",
+        "Invalid username": "Utilisateur invalide"
+      }
+    }
+  }
+}

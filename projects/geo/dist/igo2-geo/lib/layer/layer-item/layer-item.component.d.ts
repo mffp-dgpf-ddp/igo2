@@ -1,0 +1,32 @@
+import { OnInit, OnDestroy } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+import { Layer } from '../shared/layers';
+import { NetworkService, ConnectionState } from '@igo2/core';
+export declare class LayerItemComponent implements OnInit, OnDestroy {
+    private networkService;
+    showLegend$: BehaviorSubject<boolean>;
+    inResolutionRange$: BehaviorSubject<boolean>;
+    queryBadgeHidden$: BehaviorSubject<boolean>;
+    tooltipText: string;
+    state: ConnectionState;
+    private resolution$$;
+    layer: Layer;
+    toggleLegendOnVisibilityChange: boolean;
+    expandLegendIfVisible: boolean;
+    updateLegendOnResolutionChange: boolean;
+    orderable: boolean;
+    lowerDisabled: boolean;
+    raiseDisabled: boolean;
+    queryBadge: boolean;
+    readonly removable: boolean;
+    opacity: number;
+    constructor(networkService: NetworkService);
+    ngOnInit(): void;
+    ngOnDestroy(): void;
+    toggleLegend(collapsed: boolean): void;
+    toggleLegendOnClick(): void;
+    toggleVisibility(): void;
+    computeTooltip(): string;
+    private onResolutionChange;
+    private updateQueryBadge;
+}
