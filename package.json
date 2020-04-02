@@ -56,7 +56,7 @@
     "@igo2/auth": "^1.2.0",
     "@igo2/common": "^1.2.0",
     "@igo2/context": "^1.2.0",
-    "@igo2/core": "file:dist/igo2-core",
+    "@igo2/core": "1.2.0",
     "@igo2/geo": "file:dist/igo2-geo",
     "@igo2/integration": "^1.2.0",
     "@igo2/utils": "^1.2.0",

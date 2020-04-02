@@ -1,0 +1,26 @@
+{
+    "default": {
+        "style": {
+            "fill": {
+                "color": "blue"
+            },
+            "stroke": {
+                "color": "black"
+            }
+        }
+    },
+    "populated_places": {
+        "clusterStyle": {
+            "fill": {
+                "color": "red"
+            },
+            "stroke": {
+                "color": "black"
+            }
+        },
+        "clusterParam" : {
+            "clusterRange": [2, 5]
+        },
+        "distance" : 70
+    }
+}
