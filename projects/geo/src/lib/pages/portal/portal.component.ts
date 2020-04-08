@@ -240,6 +240,8 @@ export class PortalComponent implements OnInit, OnDestroy {
   //   return this.workspaceState.workspace$.value;
   // }
 
+  public _routerSubscription: any;
+
   constructor(
     public route: ActivatedRoute,
     // private workspaceState: WorkspaceState,
@@ -260,6 +262,12 @@ export class PortalComponent implements OnInit, OnDestroy {
   ) {
     this.hasExpansionPanel = this.configService.getConfig('hasExpansionPanel');
     this.forceCoordsNA = this.configService.getConfig('forceCoordsNA');
+
+    this._routerSubscription = this.route.url.subscribe(url => {
+      setTimeout(() => {
+        this.map.ol.updateSize();
+      }, 1000);
+    });
   }
 
   ngOnInit() {

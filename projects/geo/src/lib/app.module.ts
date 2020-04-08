@@ -33,6 +33,7 @@ import { IonicModule } from '@ionic/angular';
 import { BboxService } from './services/bbox.service';
 import { MapImageService } from './services/map-image.service';
 import { Network } from '@ionic-native/network/ngx';
+import { FeatureLayerService } from './services/feature-layer.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -61,6 +62,7 @@ import { Network } from '@ionic-native/network/ngx';
     }),
     RouteService,
     BboxService,
+    FeatureLayerService,
     MapImageService,
     Network,
     { provide: NetworkService, useExisting: NetworkIonicService },
