@@ -37,6 +37,19 @@ export class FeatureLayerService {
   }
 
   public addFeaturesOnNewMapLayer(features : Feature[], layerId : string, layerName : string){
+    let baseStyle = {
+      circle: {
+       fill: {
+         color: "red"
+       },
+       stroke: {
+         color: "black"
+       },
+       radius: 4,
+      }
+    };
+
+    let style = this.styleService.createStyle(baseStyle);
     const sourceOptions : FeatureDataSourceOptions & QueryableDataSourceOptions = {
       queryable: true,
       type: 'vector'
@@ -52,7 +65,8 @@ export class FeatureLayerService {
       title: `Résultats ${layerName}`,
       source: featureSource,
       sourceOptions: sourceOptions,
-      id: layerId
+      id: layerId,
+      style : style,
     })
     this.mapService.getMap().addLayer(layer);
   }
