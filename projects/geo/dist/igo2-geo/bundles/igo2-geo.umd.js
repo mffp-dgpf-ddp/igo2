@@ -9685,6 +9685,7 @@
     IgoMap = /** @class */ (function () {
         function IgoMap(options) {
             this.offlineButtonToggle$ = new rxjs.BehaviorSubject(false);
+            this.offlineButtonState = false;
             this.layers$ = new rxjs.BehaviorSubject([]);
             this.geolocation$ = new rxjs.BehaviorSubject(undefined);
             this.defaultOptions = {
@@ -10327,6 +10328,8 @@
                         if (_this.geolocationFeature &&
                             _this.overlay.dataSource.ol.getFeatureById(_this.geolocationFeature.getId())) {
                             _this.overlay.dataSource.ol.removeFeature(_this.geolocationFeature);
+                        }
+                        if (_this.bufferFeature) {
                             _this.buffer.dataSource.ol.removeFeature(_this.bufferFeature);
                         }
                         _this.geolocationFeature = new olFeature({ geometry: geometry });
@@ -10440,6 +10443,7 @@
          */
             function (offline) {
                 this.offlineButtonToggle$.next(offline);
+                this.offlineButtonState = offline;
             };
         return IgoMap;
     }());
@@ -10564,42 +10568,52 @@
                  * @param {?} layer
                  * @return {?}
                  */function (layer) {
-                    if (layer.options.sourceOptions.type === 'mvt') {
-                        sourceOptions = (( /** @type {?} */(layer.options.sourceOptions)));
-                        layer.ol.getSource().clear();
-                    }
-                    else if (layer.options.sourceOptions.type === 'xyz') {
-                        sourceOptions = (( /** @type {?} */(layer.options.sourceOptions)));
-                    }
-                    else if (layer.options.sourceOptions.type === 'vector') {
-                        sourceOptions = (( /** @type {?} */(layer.options.sourceOptions)));
-                    }
-                    else if (layer.options.sourceOptions.type === 'cluster') {
-                        sourceOptions = (( /** @type {?} */(layer.options.sourceOptions)));
-                    }
-                    else {
-                        if (_this.networkState.connection === false || _this.offlineButtonState.connection === false) {
-                            layer.ol.setMaxResolution(0);
-                            return;
+                    if (layer.options.sourceOptions) {
+                        if (layer.options.sourceOptions.type === 'mvt') {
+                            sourceOptions = (( /** @type {?} */(layer.options.sourceOptions)));
+                            layer.ol.getSource().clear();
                         }
-                        else if (_this.networkState.connection === true || _this.offlineButtonState.connection === true) {
-                            layer.ol.setMaxResolution(Infinity);
-                            return;
+                        else if (layer.options.sourceOptions.type === 'xyz') {
+                            sourceOptions = (( /** @type {?} */(layer.options.sourceOptions)));
                         }
-                    }
-                    if (sourceOptions.pathOffline && _this.networkState.connection === false ||
-                        sourceOptions.pathOffline && _this.offlineButtonState.connection === false) {
-                        if (sourceOptions.type === 'vector' || sourceOptions.type === 'cluster') {
-                            return;
+                        else if (layer.options.sourceOptions.type === 'vector') {
+                            sourceOptions = (( /** @type {?} */(layer.options.sourceOptions)));
                         }
-                        layer.ol.getSource().setUrl(sourceOptions.pathOffline);
-                    }
-                    else if (sourceOptions.pathOffline && _this.networkState.connection === false ||
-                        sourceOptions.pathOffline && _this.offlineButtonState.connection === true) {
-                        if (sourceOptions.type === 'vector' || sourceOptions.type === 'cluster') {
-                            return;
+                        else if (layer.options.sourceOptions.type === 'cluster') {
+                            sourceOptions = (( /** @type {?} */(layer.options.sourceOptions)));
                         }
-                        layer.ol.getSource().setUrl(sourceOptions.url);
+                        else {
+                            if (_this.networkState.connection === false || _this.offlineButtonState.connection === false) {
+                                layer.ol.setMaxResolution(0);
+                                return;
+                            }
+                            else if (_this.networkState.connection === true || _this.offlineButtonState.connection === true) {
+                                layer.ol.setMaxResolution(Infinity);
+                                return;
+                            }
+                        }
+                        if (sourceOptions.pathOffline && _this.networkState.connection === false ||
+                            sourceOptions.pathOffline && _this.offlineButtonState.connection === false) {
+                            if (sourceOptions.type === 'vector' || sourceOptions.type === 'cluster') {
+                                return;
+                            }
+                            layer.ol.getSource().setUrl(sourceOptions.pathOffline);
+                        }
+                        else if (sourceOptions.pathOffline && _this.networkState.connection === false ||
+                            sourceOptions.pathOffline && _this.offlineButtonState.connection === true) {
+                            if (sourceOptions.type === 'vector' || sourceOptions.type === 'cluster') {
+                                return;
+                            }
+                            layer.ol.getSource().setUrl(sourceOptions.url);
+                        }
+                        else {
+                            if (_this.networkState.connection === false || _this.offlineButtonState.connection === false) {
+                                layer.ol.setMaxResolution(0);
+                            }
+                            else if (_this.networkState.connection === true || _this.offlineButtonState.connection === true) {
+                                layer.ol.setMaxResolution(Infinity);
+                            }
+                        }
                     }
                     else {
                         if (_this.networkState.connection === false || _this.offlineButtonState.connection === false) {
@@ -18718,6 +18732,8 @@
                 var allowedFieldsAndAlias = feature.meta ? feature.meta.alias : undefined;
                 /** @type {?} */
                 var properties = {};
+                /** @type {?} */
+                var offlineButtonState = this.map.offlineButtonState;
                 if (allowedFieldsAndAlias) {
                     Object.keys(allowedFieldsAndAlias).forEach(( /**
                      * @param {?} field
@@ -18728,25 +18744,40 @@
                     return properties;
                 }
                 else {
-                    if (this.state.connection && feature.meta && feature.meta.excludeAttribute) {
-                        /** @type {?} */
-                        var excludeAttribute = feature.meta.excludeAttribute;
-                        excludeAttribute.forEach(( /**
-                         * @param {?} attribute
-                         * @return {?}
-                         */function (attribute) {
-                            delete feature.properties[attribute];
-                        }));
+                    if (!offlineButtonState) {
+                        if (this.state.connection && feature.meta && feature.meta.excludeAttribute) {
+                            /** @type {?} */
+                            var excludeAttribute = feature.meta.excludeAttribute;
+                            excludeAttribute.forEach(( /**
+                             * @param {?} attribute
+                             * @return {?}
+                             */function (attribute) {
+                                delete feature.properties[attribute];
+                            }));
+                        }
+                        else if (!this.state.connection && feature.meta && feature.meta.excludeAttributeOffline) {
+                            /** @type {?} */
+                            var excludeAttributeOffline = feature.meta.excludeAttributeOffline;
+                            excludeAttributeOffline.forEach(( /**
+                             * @param {?} attribute
+                             * @return {?}
+                             */function (attribute) {
+                                delete feature.properties[attribute];
+                            }));
+                        }
+                        return feature.properties;
                     }
-                    else if (!this.state.connection && feature.meta && feature.meta.excludeAttributeOffline) {
-                        /** @type {?} */
-                        var excludeAttributeOffline = feature.meta.excludeAttributeOffline;
-                        excludeAttributeOffline.forEach(( /**
-                         * @param {?} attribute
-                         * @return {?}
-                         */function (attribute) {
-                            delete feature.properties[attribute];
-                        }));
+                    else {
+                        if (feature.meta && feature.meta.excludeAttributeOffline) {
+                            /** @type {?} */
+                            var excludeAttributeOffline = feature.meta.excludeAttributeOffline;
+                            excludeAttributeOffline.forEach(( /**
+                             * @param {?} attribute
+                             * @return {?}
+                             */function (attribute) {
+                                delete feature.properties[attribute];
+                            }));
+                        }
                     }
                     return feature.properties;
                 }
@@ -18769,6 +18800,7 @@
         };
         FeatureDetailsComponent.propDecorators = {
             source: [{ type: i0.Input }],
+            map: [{ type: i0.Input }],
             feature: [{ type: i0.Input }]
         };
         return FeatureDetailsComponent;
@@ -27785,69 +27817,57 @@
          */function (feature) { return featureToOl(feature, map.projection); }));
         /** @type {?} */
         var style;
+        /** @type {?} */
+        var distance;
         if (styleListService.getStyleList(layerTitle.toString() + '.styleByAttribute')) {
             /** @type {?} */
             var styleByAttribute_1 = styleListService.getStyleList(layerTitle.toString() + '.styleByAttribute');
-            /** @type {?} */
-            var styleBy = ( /**
+            style = ( /**
              * @param {?} feature
              * @return {?}
              */function (feature) {
                 return styleService.createStyleByAttribute(feature, styleByAttribute_1);
             });
-            style = styleBy;
+        }
+        else if (styleListService.getStyleList(layerTitle.toString() + '.clusterStyle')) {
+            /** @type {?} */
+            var clusterParam_1 = styleListService.getStyleList(layerTitle.toString() + '.clusterParam');
+            distance = styleListService.getStyleList(layerTitle.toString() + '.distance');
+            /** @type {?} */
+            var baseStyle_1 = styleService.createStyle(styleListService.getStyleList(layerTitle.toString() + '.clusterStyle'));
+            style = ( /**
+             * @param {?} feature
+             * @return {?}
+             */function (feature) {
+                return styleService.createClusterStyle(feature, clusterParam_1, baseStyle_1);
+            });
         }
         else if (styleListService.getStyleList(layerTitle.toString() + '.style')) {
+            style = styleService.createStyle(styleListService.getStyleList(layerTitle.toString() + '.style'));
+        }
+        else {
+            style = styleService.createStyle(styleListService.getStyleList('default.style'));
+        }
+        /** @type {?} */
+        var source;
+        if (styleListService.getStyleList(layerTitle.toString() + '.clusterStyle')) {
             /** @type {?} */
-            var radius = styleListService.getStyleList(layerTitle.toString() + '.style.radius');
-            /** @type {?} */
-            var stroke = new olstyle.Stroke({
-                color: styleListService.getStyleList(layerTitle.toString() + '.style.stroke.color'),
-                width: styleListService.getStyleList(layerTitle.toString() + '.style.stroke.width')
-            });
-            /** @type {?} */
-            var fill = new olstyle.Fill({
-                color: styleListService.getStyleList(layerTitle.toString() + '.style.fill.color')
-            });
-            style = new olstyle.Style({
-                stroke: stroke,
-                fill: fill,
-                image: new olstyle.Circle({
-                    radius: radius ? radius : 5,
-                    stroke: stroke,
-                    fill: fill
-                })
-            });
+            var sourceOptions = {
+                distance: distance,
+                type: 'cluster',
+                queryable: true
+            };
+            source = new ClusterDataSource(sourceOptions);
+            source.ol.source.addFeatures(olFeatures);
         }
         else {
             /** @type {?} */
-            var radius = styleListService.getStyleList('default.style.radius');
-            /** @type {?} */
-            var stroke = new olstyle.Stroke({
-                color: styleListService.getStyleList('default.style.stroke.color'),
-                width: styleListService.getStyleList('default.style.stroke.width')
-            });
-            /** @type {?} */
-            var fill = new olstyle.Fill({
-                color: styleListService.getStyleList('default.style.fill.color')
-            });
-            style = new olstyle.Style({
-                stroke: stroke,
-                fill: fill,
-                image: new olstyle.Circle({
-                    radius: radius ? radius : 5,
-                    stroke: stroke,
-                    fill: fill
-                })
-            });
+            var sourceOptions = {
+                queryable: true
+            };
+            source = new FeatureDataSource(sourceOptions);
+            source.ol.addFeatures(olFeatures);
         }
-        /** @type {?} */
-        var sourceOptions = {
-            queryable: true
-        };
-        /** @type {?} */
-        var source = new FeatureDataSource(sourceOptions);
-        source.ol.addFeatures(olFeatures);
         /** @type {?} */
         var layer = new VectorLayer({
             title: layerTitle,

@@ -45,7 +45,7 @@ import { __decorate, __metadata } from 'tslib';
 import 'ol/geom/GeometryType';
 import OlPoint from 'ol/geom/Point';
 import OlOverlay from 'ol/Overlay';
-import { createEmpty, extend, boundingExtent, buffer, getSize, containsExtent, getArea, getCenter } from 'ol/extent';
+import { createEmpty, extend, boundingExtent, buffer, getCenter, getSize, containsExtent, getArea } from 'ol/extent';
 import { getLength, getArea as getArea$1 } from 'ol/sphere';
 import OlStyle from 'ol/style/Style';
 import OlLineString from 'ol/geom/LineString';
@@ -84,7 +84,7 @@ import olWKT from 'ol/format/WKT';
 import { BehaviorSubject, combineLatest, Observable, of, ReplaySubject, EMPTY, timer, Subject, fromEvent, forkJoin, zip, throwError } from 'rxjs';
 import * as olformat from 'ol/format';
 import { GeoJSON, KML, GML, GPX, WMSCapabilities, WMTSCapabilities, WFS, WMSGetFeatureInfo, WKT, TopoJSON, EsriJSON } from 'ol/format';
-import { Injectable, Component, Input, Output, EventEmitter, ChangeDetectionStrategy, Directive, Self, Pipe, ChangeDetectorRef, NgModule, Injector, Inject, Optional, InjectionToken, ViewChild, HostListener, ApplicationRef, ViewChildren, ContentChild, APP_INITIALIZER, defineInjectable, inject, INJECTOR } from '@angular/core';
+import { Injectable, Component, Input, ChangeDetectionStrategy, Output, EventEmitter, Directive, Self, Pipe, ChangeDetectorRef, NgModule, Injector, Inject, Optional, InjectionToken, ViewChild, HostListener, ApplicationRef, ViewChildren, ContentChild, APP_INITIALIZER, defineInjectable, inject, INJECTOR } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { map, debounce, debounceTime, skip, distinctUntilChanged, catchError, mergeMap, first, take } from 'rxjs/operators';
 import { uuid, ObjectUtils, Watcher, SubjectStatus, downloadContent, strEnum, Clipboard } from '@igo2/utils';
@@ -7926,6 +7926,7 @@ class IgoMap {
      */
     constructor(options) {
         this.offlineButtonToggle$ = new BehaviorSubject(false);
+        this.offlineButtonState = false;
         this.layers$ = new BehaviorSubject([]);
         this.geolocation$ = new BehaviorSubject(undefined);
         this.defaultOptions = {
@@ -8359,6 +8360,8 @@ class IgoMap {
                 if (this.geolocationFeature &&
                     this.overlay.dataSource.ol.getFeatureById(this.geolocationFeature.getId())) {
                     this.overlay.dataSource.ol.removeFeature(this.geolocationFeature);
+                }
+                if (this.bufferFeature) {
                     this.buffer.dataSource.ol.removeFeature(this.bufferFeature);
                 }
                 this.geolocationFeature = new olFeature({ geometry });
@@ -8457,6 +8460,7 @@ class IgoMap {
      */
     onOfflineToggle(offline) {
         this.offlineButtonToggle$.next(offline);
+        this.offlineButtonState = offline;
     }
 }
 
@@ -8585,42 +8589,52 @@ class MapOfflineDirective {
          * @return {?}
          */
         layer => {
-            if (layer.options.sourceOptions.type === 'mvt') {
-                sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
-                layer.ol.getSource().clear();
-            }
-            else if (layer.options.sourceOptions.type === 'xyz') {
-                sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
-            }
-            else if (layer.options.sourceOptions.type === 'vector') {
-                sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
-            }
-            else if (layer.options.sourceOptions.type === 'cluster') {
-                sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
-            }
-            else {
-                if (this.networkState.connection === false || this.offlineButtonState.connection === false) {
-                    layer.ol.setMaxResolution(0);
-                    return;
+            if (layer.options.sourceOptions) {
+                if (layer.options.sourceOptions.type === 'mvt') {
+                    sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
+                    layer.ol.getSource().clear();
                 }
-                else if (this.networkState.connection === true || this.offlineButtonState.connection === true) {
-                    layer.ol.setMaxResolution(Infinity);
-                    return;
+                else if (layer.options.sourceOptions.type === 'xyz') {
+                    sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
                 }
-            }
-            if (sourceOptions.pathOffline && this.networkState.connection === false ||
-                sourceOptions.pathOffline && this.offlineButtonState.connection === false) {
-                if (sourceOptions.type === 'vector' || sourceOptions.type === 'cluster') {
-                    return;
+                else if (layer.options.sourceOptions.type === 'vector') {
+                    sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
                 }
-                layer.ol.getSource().setUrl(sourceOptions.pathOffline);
-            }
-            else if (sourceOptions.pathOffline && this.networkState.connection === false ||
-                sourceOptions.pathOffline && this.offlineButtonState.connection === true) {
-                if (sourceOptions.type === 'vector' || sourceOptions.type === 'cluster') {
-                    return;
+                else if (layer.options.sourceOptions.type === 'cluster') {
+                    sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
                 }
-                layer.ol.getSource().setUrl(sourceOptions.url);
+                else {
+                    if (this.networkState.connection === false || this.offlineButtonState.connection === false) {
+                        layer.ol.setMaxResolution(0);
+                        return;
+                    }
+                    else if (this.networkState.connection === true || this.offlineButtonState.connection === true) {
+                        layer.ol.setMaxResolution(Infinity);
+                        return;
+                    }
+                }
+                if (sourceOptions.pathOffline && this.networkState.connection === false ||
+                    sourceOptions.pathOffline && this.offlineButtonState.connection === false) {
+                    if (sourceOptions.type === 'vector' || sourceOptions.type === 'cluster') {
+                        return;
+                    }
+                    layer.ol.getSource().setUrl(sourceOptions.pathOffline);
+                }
+                else if (sourceOptions.pathOffline && this.networkState.connection === false ||
+                    sourceOptions.pathOffline && this.offlineButtonState.connection === true) {
+                    if (sourceOptions.type === 'vector' || sourceOptions.type === 'cluster') {
+                        return;
+                    }
+                    layer.ol.getSource().setUrl(sourceOptions.url);
+                }
+                else {
+                    if (this.networkState.connection === false || this.offlineButtonState.connection === false) {
+                        layer.ol.setMaxResolution(0);
+                    }
+                    else if (this.networkState.connection === true || this.offlineButtonState.connection === true) {
+                        layer.ol.setMaxResolution(Infinity);
+                    }
+                }
             }
             else {
                 if (this.networkState.connection === false || this.offlineButtonState.connection === false) {
@@ -15350,6 +15364,8 @@ class FeatureDetailsComponent {
         const allowedFieldsAndAlias = feature.meta ? feature.meta.alias : undefined;
         /** @type {?} */
         const properties = {};
+        /** @type {?} */
+        const offlineButtonState = this.map.offlineButtonState;
         if (allowedFieldsAndAlias) {
             Object.keys(allowedFieldsAndAlias).forEach((/**
              * @param {?} field
@@ -15361,27 +15377,43 @@ class FeatureDetailsComponent {
             return properties;
         }
         else {
-            if (this.state.connection && feature.meta && feature.meta.excludeAttribute) {
-                /** @type {?} */
-                const excludeAttribute = feature.meta.excludeAttribute;
-                excludeAttribute.forEach((/**
-                 * @param {?} attribute
-                 * @return {?}
-                 */
-                attribute => {
-                    delete feature.properties[attribute];
-                }));
+            if (!offlineButtonState) {
+                if (this.state.connection && feature.meta && feature.meta.excludeAttribute) {
+                    /** @type {?} */
+                    const excludeAttribute = feature.meta.excludeAttribute;
+                    excludeAttribute.forEach((/**
+                     * @param {?} attribute
+                     * @return {?}
+                     */
+                    attribute => {
+                        delete feature.properties[attribute];
+                    }));
+                }
+                else if (!this.state.connection && feature.meta && feature.meta.excludeAttributeOffline) {
+                    /** @type {?} */
+                    const excludeAttributeOffline = feature.meta.excludeAttributeOffline;
+                    excludeAttributeOffline.forEach((/**
+                     * @param {?} attribute
+                     * @return {?}
+                     */
+                    attribute => {
+                        delete feature.properties[attribute];
+                    }));
+                }
+                return feature.properties;
             }
-            else if (!this.state.connection && feature.meta && feature.meta.excludeAttributeOffline) {
-                /** @type {?} */
-                const excludeAttributeOffline = feature.meta.excludeAttributeOffline;
-                excludeAttributeOffline.forEach((/**
-                 * @param {?} attribute
-                 * @return {?}
-                 */
-                attribute => {
-                    delete feature.properties[attribute];
-                }));
+            else {
+                if (feature.meta && feature.meta.excludeAttributeOffline) {
+                    /** @type {?} */
+                    const excludeAttributeOffline = feature.meta.excludeAttributeOffline;
+                    excludeAttributeOffline.forEach((/**
+                     * @param {?} attribute
+                     * @return {?}
+                     */
+                    attribute => {
+                        delete feature.properties[attribute];
+                    }));
+                }
             }
             return feature.properties;
         }
@@ -15403,6 +15435,7 @@ FeatureDetailsComponent.ctorParameters = () => [
 ];
 FeatureDetailsComponent.propDecorators = {
     source: [{ type: Input }],
+    map: [{ type: Input }],
     feature: [{ type: Input }]
 };
 
@@ -22590,70 +22623,59 @@ function addLayerAndFeaturesStyledToMap(features, map$$1, layerTitle, styleListS
     (feature) => featureToOl(feature, map$$1.projection)));
     /** @type {?} */
     let style$$1;
+    /** @type {?} */
+    let distance;
     if (styleListService.getStyleList(layerTitle.toString() + '.styleByAttribute')) {
         /** @type {?} */
         const styleByAttribute = styleListService.getStyleList(layerTitle.toString() + '.styleByAttribute');
-        /** @type {?} */
-        const styleBy = (/**
+        style$$1 = (/**
          * @param {?} feature
          * @return {?}
          */
         feature => {
             return styleService.createStyleByAttribute(feature, styleByAttribute);
         });
-        style$$1 = styleBy;
+    }
+    else if (styleListService.getStyleList(layerTitle.toString() + '.clusterStyle')) {
+        /** @type {?} */
+        const clusterParam = styleListService.getStyleList(layerTitle.toString() + '.clusterParam');
+        distance = styleListService.getStyleList(layerTitle.toString() + '.distance');
+        /** @type {?} */
+        const baseStyle = styleService.createStyle(styleListService.getStyleList(layerTitle.toString() + '.clusterStyle'));
+        style$$1 = (/**
+         * @param {?} feature
+         * @return {?}
+         */
+        feature => {
+            return styleService.createClusterStyle(feature, clusterParam, baseStyle);
+        });
     }
     else if (styleListService.getStyleList(layerTitle.toString() + '.style')) {
+        style$$1 = styleService.createStyle(styleListService.getStyleList(layerTitle.toString() + '.style'));
+    }
+    else {
+        style$$1 = styleService.createStyle(styleListService.getStyleList('default.style'));
+    }
+    /** @type {?} */
+    let source;
+    if (styleListService.getStyleList(layerTitle.toString() + '.clusterStyle')) {
         /** @type {?} */
-        const radius = styleListService.getStyleList(layerTitle.toString() + '.style.radius');
-        /** @type {?} */
-        const stroke = new Stroke({
-            color: styleListService.getStyleList(layerTitle.toString() + '.style.stroke.color'),
-            width: styleListService.getStyleList(layerTitle.toString() + '.style.stroke.width')
-        });
-        /** @type {?} */
-        const fill = new Fill({
-            color: styleListService.getStyleList(layerTitle.toString() + '.style.fill.color')
-        });
-        style$$1 = new Style({
-            stroke,
-            fill,
-            image: new Circle({
-                radius: radius ? radius : 5,
-                stroke,
-                fill
-            })
-        });
+        const sourceOptions = {
+            distance,
+            type: 'cluster',
+            queryable: true
+        };
+        source = new ClusterDataSource(sourceOptions);
+        source.ol.source.addFeatures(olFeatures);
     }
     else {
         /** @type {?} */
-        const radius = styleListService.getStyleList('default.style.radius');
-        /** @type {?} */
-        const stroke = new Stroke({
-            color: styleListService.getStyleList('default.style.stroke.color'),
-            width: styleListService.getStyleList('default.style.stroke.width')
-        });
-        /** @type {?} */
-        const fill = new Fill({
-            color: styleListService.getStyleList('default.style.fill.color')
-        });
-        style$$1 = new Style({
-            stroke,
-            fill,
-            image: new Circle({
-                radius: radius ? radius : 5,
-                stroke,
-                fill
-            })
-        });
+        const sourceOptions = {
+            queryable: true
+        };
+        source = new FeatureDataSource(sourceOptions);
+        source.ol.addFeatures(olFeatures);
     }
-    /** @type {?} */
-    const sourceOptions = {
-        queryable: true
-    };
-    /** @type {?} */
-    const source = new FeatureDataSource(sourceOptions);
-    source.ol.addFeatures(olFeatures);
     /** @type {?} */
     const layer = new VectorLayer({
         title: layerTitle,

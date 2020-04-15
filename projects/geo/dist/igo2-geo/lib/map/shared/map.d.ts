@@ -12,6 +12,7 @@ import { FeatureDataSource } from '../../datasource/shared/datasources/feature-d
 export declare class IgoMap {
     ol: olMap;
     offlineButtonToggle$: BehaviorSubject<boolean>;
+    offlineButtonState: boolean;
     layers$: BehaviorSubject<Layer[]>;
     status$: Subject<SubjectStatus>;
     geolocation$: BehaviorSubject<any>;
