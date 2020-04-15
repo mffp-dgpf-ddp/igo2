@@ -84,7 +84,7 @@ import { BehaviorSubject, combineLatest, Observable, of, ReplaySubject, EMPTY, t
 import * as olformat from 'ol/format';
 import { GeoJSON, KML, GML, GPX, WMSCapabilities, WMTSCapabilities, WFS, WMSGetFeatureInfo, WKT, TopoJSON, EsriJSON } from 'ol/format';
 import { __extends, __read, __values, __decorate, __metadata, __spread, __assign } from 'tslib';
-import { Injectable, Component, Input, ChangeDetectionStrategy, Output, EventEmitter, Directive, Self, Pipe, ChangeDetectorRef, Injector, NgModule, Inject, Optional, InjectionToken, ApplicationRef, ViewChildren, ContentChild, HostListener, ViewChild, APP_INITIALIZER, defineInjectable, inject, INJECTOR } from '@angular/core';
+import { Injectable, Component, Input, ChangeDetectionStrategy, Output, EventEmitter, Pipe, Directive, Self, ChangeDetectorRef, NgModule, Injector, Inject, Optional, InjectionToken, ApplicationRef, ViewChildren, ContentChild, HostListener, ViewChild, APP_INITIALIZER, defineInjectable, inject, INJECTOR } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { map, debounce, debounceTime, skip, distinctUntilChanged, catchError, mergeMap, first, take } from 'rxjs/operators';
 import { uuid, ObjectUtils, Watcher, SubjectStatus, downloadContent, strEnum, Clipboard } from '@igo2/utils';
@@ -9836,6 +9836,7 @@ var
 IgoMap = /** @class */ (function () {
     function IgoMap(options) {
         this.offlineButtonToggle$ = new BehaviorSubject(false);
+        this.offlineButtonState = false;
         this.layers$ = new BehaviorSubject([]);
         this.geolocation$ = new BehaviorSubject(undefined);
         this.defaultOptions = {
@@ -10480,6 +10481,8 @@ IgoMap = /** @class */ (function () {
                 if (_this.geolocationFeature &&
                     _this.overlay.dataSource.ol.getFeatureById(_this.geolocationFeature.getId())) {
                     _this.overlay.dataSource.ol.removeFeature(_this.geolocationFeature);
+                }
+                if (_this.bufferFeature) {
                     _this.buffer.dataSource.ol.removeFeature(_this.bufferFeature);
                 }
                 _this.geolocationFeature = new olFeature({ geometry: geometry });
@@ -10594,6 +10597,7 @@ IgoMap = /** @class */ (function () {
      */
     function (offline) {
         this.offlineButtonToggle$.next(offline);
+        this.offlineButtonState = offline;
     };
     return IgoMap;
 }());
@@ -10730,42 +10734,52 @@ var MapOfflineDirective = /** @class */ (function () {
          * @return {?}
          */
         function (layer) {
-            if (layer.options.sourceOptions.type === 'mvt') {
-                sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
-                layer.ol.getSource().clear();
-            }
-            else if (layer.options.sourceOptions.type === 'xyz') {
-                sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
-            }
-            else if (layer.options.sourceOptions.type === 'vector') {
-                sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
-            }
-            else if (layer.options.sourceOptions.type === 'cluster') {
-                sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
-            }
-            else {
-                if (_this.networkState.connection === false || _this.offlineButtonState.connection === false) {
-                    layer.ol.setMaxResolution(0);
-                    return;
+            if (layer.options.sourceOptions) {
+                if (layer.options.sourceOptions.type === 'mvt') {
+                    sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
+                    layer.ol.getSource().clear();
                 }
-                else if (_this.networkState.connection === true || _this.offlineButtonState.connection === true) {
-                    layer.ol.setMaxResolution(Infinity);
-                    return;
+                else if (layer.options.sourceOptions.type === 'xyz') {
+                    sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
                 }
-            }
-            if (sourceOptions.pathOffline && _this.networkState.connection === false ||
-                sourceOptions.pathOffline && _this.offlineButtonState.connection === false) {
-                if (sourceOptions.type === 'vector' || sourceOptions.type === 'cluster') {
-                    return;
+                else if (layer.options.sourceOptions.type === 'vector') {
+                    sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
                 }
-                layer.ol.getSource().setUrl(sourceOptions.pathOffline);
-            }
-            else if (sourceOptions.pathOffline && _this.networkState.connection === false ||
-                sourceOptions.pathOffline && _this.offlineButtonState.connection === true) {
-                if (sourceOptions.type === 'vector' || sourceOptions.type === 'cluster') {
-                    return;
+                else if (layer.options.sourceOptions.type === 'cluster') {
+                    sourceOptions = ((/** @type {?} */ (layer.options.sourceOptions)));
                 }
-                layer.ol.getSource().setUrl(sourceOptions.url);
+                else {
+                    if (_this.networkState.connection === false || _this.offlineButtonState.connection === false) {
+                        layer.ol.setMaxResolution(0);
+                        return;
+                    }
+                    else if (_this.networkState.connection === true || _this.offlineButtonState.connection === true) {
+                        layer.ol.setMaxResolution(Infinity);
+                        return;
+                    }
+                }
+                if (sourceOptions.pathOffline && _this.networkState.connection === false ||
+                    sourceOptions.pathOffline && _this.offlineButtonState.connection === false) {
+                    if (sourceOptions.type === 'vector' || sourceOptions.type === 'cluster') {
+                        return;
+                    }
+                    layer.ol.getSource().setUrl(sourceOptions.pathOffline);
+                }
+                else if (sourceOptions.pathOffline && _this.networkState.connection === false ||
+                    sourceOptions.pathOffline && _this.offlineButtonState.connection === true) {
+                    if (sourceOptions.type === 'vector' || sourceOptions.type === 'cluster') {
+                        return;
+                    }
+                    layer.ol.getSource().setUrl(sourceOptions.url);
+                }
+                else {
+                    if (_this.networkState.connection === false || _this.offlineButtonState.connection === false) {
+                        layer.ol.setMaxResolution(0);
+                    }
+                    else if (_this.networkState.connection === true || _this.offlineButtonState.connection === true) {
+                        layer.ol.setMaxResolution(Infinity);
+                    }
+                }
             }
             else {
                 if (_this.networkState.connection === false || _this.offlineButtonState.connection === false) {
@@ -19070,6 +19084,8 @@ var FeatureDetailsComponent = /** @class */ (function () {
         var allowedFieldsAndAlias = feature.meta ? feature.meta.alias : undefined;
         /** @type {?} */
         var properties = {};
+        /** @type {?} */
+        var offlineButtonState = this.map.offlineButtonState;
         if (allowedFieldsAndAlias) {
             Object.keys(allowedFieldsAndAlias).forEach((/**
              * @param {?} field
@@ -19081,27 +19097,43 @@ var FeatureDetailsComponent = /** @class */ (function () {
             return properties;
         }
         else {
-            if (this.state.connection && feature.meta && feature.meta.excludeAttribute) {
-                /** @type {?} */
-                var excludeAttribute = feature.meta.excludeAttribute;
-                excludeAttribute.forEach((/**
-                 * @param {?} attribute
-                 * @return {?}
-                 */
-                function (attribute) {
-                    delete feature.properties[attribute];
-                }));
+            if (!offlineButtonState) {
+                if (this.state.connection && feature.meta && feature.meta.excludeAttribute) {
+                    /** @type {?} */
+                    var excludeAttribute = feature.meta.excludeAttribute;
+                    excludeAttribute.forEach((/**
+                     * @param {?} attribute
+                     * @return {?}
+                     */
+                    function (attribute) {
+                        delete feature.properties[attribute];
+                    }));
+                }
+                else if (!this.state.connection && feature.meta && feature.meta.excludeAttributeOffline) {
+                    /** @type {?} */
+                    var excludeAttributeOffline = feature.meta.excludeAttributeOffline;
+                    excludeAttributeOffline.forEach((/**
+                     * @param {?} attribute
+                     * @return {?}
+                     */
+                    function (attribute) {
+                        delete feature.properties[attribute];
+                    }));
+                }
+                return feature.properties;
             }
-            else if (!this.state.connection && feature.meta && feature.meta.excludeAttributeOffline) {
-                /** @type {?} */
-                var excludeAttributeOffline = feature.meta.excludeAttributeOffline;
-                excludeAttributeOffline.forEach((/**
-                 * @param {?} attribute
-                 * @return {?}
-                 */
-                function (attribute) {
-                    delete feature.properties[attribute];
-                }));
+            else {
+                if (feature.meta && feature.meta.excludeAttributeOffline) {
+                    /** @type {?} */
+                    var excludeAttributeOffline = feature.meta.excludeAttributeOffline;
+                    excludeAttributeOffline.forEach((/**
+                     * @param {?} attribute
+                     * @return {?}
+                     */
+                    function (attribute) {
+                        delete feature.properties[attribute];
+                    }));
+                }
             }
             return feature.properties;
         }
@@ -19122,6 +19154,7 @@ var FeatureDetailsComponent = /** @class */ (function () {
     ]; };
     FeatureDetailsComponent.propDecorators = {
         source: [{ type: Input }],
+        map: [{ type: Input }],
         feature: [{ type: Input }]
     };
     return FeatureDetailsComponent;
@@ -28278,70 +28311,59 @@ function addLayerAndFeaturesStyledToMap(features, map$$1, layerTitle, styleListS
     function (feature) { return featureToOl(feature, map$$1.projection); }));
     /** @type {?} */
     var style$$1;
+    /** @type {?} */
+    var distance;
     if (styleListService.getStyleList(layerTitle.toString() + '.styleByAttribute')) {
         /** @type {?} */
         var styleByAttribute_1 = styleListService.getStyleList(layerTitle.toString() + '.styleByAttribute');
-        /** @type {?} */
-        var styleBy = (/**
+        style$$1 = (/**
          * @param {?} feature
          * @return {?}
          */
         function (feature) {
             return styleService.createStyleByAttribute(feature, styleByAttribute_1);
         });
-        style$$1 = styleBy;
+    }
+    else if (styleListService.getStyleList(layerTitle.toString() + '.clusterStyle')) {
+        /** @type {?} */
+        var clusterParam_1 = styleListService.getStyleList(layerTitle.toString() + '.clusterParam');
+        distance = styleListService.getStyleList(layerTitle.toString() + '.distance');
+        /** @type {?} */
+        var baseStyle_1 = styleService.createStyle(styleListService.getStyleList(layerTitle.toString() + '.clusterStyle'));
+        style$$1 = (/**
+         * @param {?} feature
+         * @return {?}
+         */
+        function (feature) {
+            return styleService.createClusterStyle(feature, clusterParam_1, baseStyle_1);
+        });
     }
     else if (styleListService.getStyleList(layerTitle.toString() + '.style')) {
+        style$$1 = styleService.createStyle(styleListService.getStyleList(layerTitle.toString() + '.style'));
+    }
+    else {
+        style$$1 = styleService.createStyle(styleListService.getStyleList('default.style'));
+    }
+    /** @type {?} */
+    var source;
+    if (styleListService.getStyleList(layerTitle.toString() + '.clusterStyle')) {
         /** @type {?} */
-        var radius = styleListService.getStyleList(layerTitle.toString() + '.style.radius');
-        /** @type {?} */
-        var stroke = new Stroke({
-            color: styleListService.getStyleList(layerTitle.toString() + '.style.stroke.color'),
-            width: styleListService.getStyleList(layerTitle.toString() + '.style.stroke.width')
-        });
-        /** @type {?} */
-        var fill = new Fill({
-            color: styleListService.getStyleList(layerTitle.toString() + '.style.fill.color')
-        });
-        style$$1 = new Style({
-            stroke: stroke,
-            fill: fill,
-            image: new Circle({
-                radius: radius ? radius : 5,
-                stroke: stroke,
-                fill: fill
-            })
-        });
+        var sourceOptions = {
+            distance: distance,
+            type: 'cluster',
+            queryable: true
+        };
+        source = new ClusterDataSource(sourceOptions);
+        source.ol.source.addFeatures(olFeatures);
     }
     else {
         /** @type {?} */
-        var radius = styleListService.getStyleList('default.style.radius');
-        /** @type {?} */
-        var stroke = new Stroke({
-            color: styleListService.getStyleList('default.style.stroke.color'),
-            width: styleListService.getStyleList('default.style.stroke.width')
-        });
-        /** @type {?} */
-        var fill = new Fill({
-            color: styleListService.getStyleList('default.style.fill.color')
-        });
-        style$$1 = new Style({
-            stroke: stroke,
-            fill: fill,
-            image: new Circle({
-                radius: radius ? radius : 5,
-                stroke: stroke,
-                fill: fill
-            })
-        });
+        var sourceOptions = {
+            queryable: true
+        };
+        source = new FeatureDataSource(sourceOptions);
+        source.ol.addFeatures(olFeatures);
     }
-    /** @type {?} */
-    var sourceOptions = {
-        queryable: true
-    };
-    /** @type {?} */
-    var source = new FeatureDataSource(sourceOptions);
-    source.ol.addFeatures(olFeatures);
     /** @type {?} */
     var layer = new VectorLayer({
         title: layerTitle,
