@@ -37,6 +37,19 @@ export class FeatureLayerService {
   }
 
   public addFeaturesOnNewMapLayer(features : Feature[], layerId : string, layerName : string){
+    let baseStyle = {
+      circle: {
+       fill: {
+         color: "red"
+       },
+       stroke: {
+         color: "black"
+       },
+       radius: 4,
+      }
+    };
+
+    let style = this.styleService.createStyle(baseStyle);
     const sourceOptions : FeatureDataSourceOptions & QueryableDataSourceOptions = {
       queryable: true,
       type: 'vector'
@@ -48,11 +61,18 @@ export class FeatureLayerService {
     if(grifResultsLayer !== undefined){
       this.mapService.getMap().removeLayer(grifResultsLayer);
     }
+
+
+    let date = new Date();
+    let today = date.getDate()+'-'+(date.getMonth()+1)+'-'+date.getFullYear();
+    let time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+
     const layer = new VectorLayer({
-      title: `Résultats ${layerName}`,
+      title: `Résultats ${layerName} ${today} ${time}`,
       source: featureSource,
       sourceOptions: sourceOptions,
-      id: layerId
+      id: layerId,
+      style : style,
     })
     this.mapService.getMap().addLayer(layer);
   }
@@ -99,8 +119,13 @@ export class FeatureLayerService {
     let style = feature =>{
       return this.styleService.createClusterStyle(feature,clusterParam,baseStyler);
     };
+
+    let date = new Date();
+    let today = date.getDate()+'-'+(date.getMonth()+1)+'-'+date.getFullYear();
+    let time = date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+
     const layer = new VectorLayer({
-      title: `Résultats ${layerName}`,
+      title: `Résultats ${layerName} ${today} ${time}`,
       source: featureSource,
       id : layerId,
       style : style
