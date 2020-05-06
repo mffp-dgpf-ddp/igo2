@@ -21,7 +21,9 @@ import {
   provideILayerSearchSource,
   provideStoredQueriesSearchSource,
   provideOsrmDirectionsSource,
-  provideStyleListOptions
+  provideStyleListOptions,
+  PrintService,
+  PrintIonicService
 } from '@igo2/geo';
 
 import { environment } from '../environments/environment';
@@ -33,6 +35,8 @@ import { IonicModule } from '@ionic/angular';
 import { BboxService } from './services/bbox.service';
 import { MapImageService } from './services/map-image.service';
 import { Network } from '@ionic-native/network/ngx';
+import { File } from '@ionic-native/file/ngx';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { FeatureLayerService } from './services/feature-layer.service';
 
 @NgModule({
@@ -65,7 +69,10 @@ import { FeatureLayerService } from './services/feature-layer.service';
     FeatureLayerService,
     MapImageService,
     Network,
+    File,
+    FileOpener,
     { provide: NetworkService, useExisting: NetworkIonicService },
+    { provide: PrintService, useExisting: PrintIonicService },
     provideNominatimSearchSource(),
     provideIChercheSearchSource(),
     provideIChercheReverseSearchSource(),
