@@ -1,15 +1,13 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 
-import { MediaService, ConfigService, MessageService, Message } from '@igo2/core';
+import { MediaService, ConfigService } from '@igo2/core';
 import { AuthService } from '@igo2/auth';
-import { ContextService } from '@igo2/context';
 import {
   DataSourceService,
   LayerService,
   MapService,
-  OverlayService,
   SearchService,
   CapabilitiesService,
   SearchSourceService,
@@ -22,9 +20,10 @@ import {
   mapSlideX,
   mapSlideY
 } from '../../pages/portal/portal.animation';
-import { PortalComponent } from '../../pages/portal/portal.component';
 import { BboxService } from '../../services/bbox.service';
 import { MapState, ContextState, SearchState, ToolState, QueryState } from '@igo2/integration';
+import olCircle from 'ol/geom/Circle';
+import olFeature from 'ol/Feature';
 
 
 @Component({
@@ -35,7 +34,10 @@ import { MapState, ContextState, SearchState, ToolState, QueryState } from '@igo
 })
 export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/ {
 
+  @Input() public zoneSelectionMode: string;
   private bbox;
+  private radius;
+  private clickPosition;
 
   map_ = new IgoMap({
     controls: {
@@ -53,7 +55,6 @@ export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/
   constructor(
     public bboxService: BboxService,
     public route: ActivatedRoute,
-    // private workspaceState: WorkspaceState,
     public authService: AuthService,
     public mediaService: MediaService,
     public layerService: LayerService,
@@ -72,43 +73,8 @@ export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/
     private modalController: ModalController,
 
   ) {
-    /*super(
-      route,
-      // private workspaceState: WorkspaceState,
-      authService,
-      mediaService,
-      layerService,
-      dataSourceService,
-      cdRef,
-      capabilitiesService,
-      contextState,
-      mapState,
-      searchState,
-      queryState,
-      toolState,
-      searchSourceService,
-      searchService,
-      configService);*/
-    // this.mapService.setMap(this.map);
-  }
 
-  /*
-      private route: ActivatedRoute,
-    // private workspaceState: WorkspaceState,
-    public authService: AuthService,
-    public mediaService: MediaService,
-    public layerService: LayerService,
-    public dataSourceService: DataSourceService,
-    public cdRef: ChangeDetectorRef,
-    public capabilitiesService: CapabilitiesService,
-    private contextState: ContextState,
-    private mapState: MapState,
-    private searchState: SearchState,
-    private queryState: QueryState,
-    private toolState: ToolState,
-    private searchSourceService: SearchSourceService,
-    private searchService: SearchService,
-    private configService: ConfigService*/
+  }
 
   ngOnInit() {
     this.dataSourceService
@@ -124,6 +90,13 @@ export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/
         );
       });
     this.updateMap();
+
+    if(this.zoneSelectionMode == 'rayon'){
+      this.map_.ol.on('click', function(event){
+        this.clickPosition = this.map_.ol.getLonLatFromViewPortPx(event.pixel);
+        this.createArea();
+      })
+    }
   }
 
   updateMap() {
@@ -142,5 +115,21 @@ export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/
     this.bboxService.setBBOX(this.bbox);
     this.close();
   }
-}
 
+  setRadius(radius: number){
+    this.radius = radius;
+  }
+
+  getRadius(){
+    return this.radius;
+  }
+
+  createArea(){
+    const lonLat = this.map_.ol.getLonLatFromViewPortPx(this.clickPosition);
+    const circle = new olCircle(lonLat, this.radius);
+    const bufferFeature = new olFeature(circle);
+    this.map_.overlay.addOlFeature(bufferFeature)
+    this.updateMap();
+  }
+
+}
