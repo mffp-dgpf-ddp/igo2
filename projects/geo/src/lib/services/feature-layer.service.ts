@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
-import Point from 'ol/geom/Point';
-//import Feature from 'ol/Feature';
 import {MapService, FeatureDataSourceOptions, QueryableDataSourceOptions, FeatureDataSource, VectorLayer, Layer, ClusterDataSourceOptions, ClusterDataSource, Feature, FEATURE, featureToOl, StyleService} from "@igo2/geo";
 import { ClusterParam, ClusterRange } from '@igo2/geo/lib/layer/shared/clusterParam';
-import { map } from 'rxjs/operators';
 
 
 @Injectable({
@@ -11,10 +8,70 @@ import { map } from 'rxjs/operators';
 })
 export class FeatureLayerService {
 
+  private baseStyle;
+  private clusterStyle;
+
   constructor(
     private mapService : MapService,
     private styleService : StyleService
-    ) { }
+    ) {
+        this.resetStyles();
+     }
+
+
+  resetStyles(){
+    this.baseStyle = {
+      circle: {
+       fill: {
+         color: "red"
+       },
+       stroke: {
+         color: "black"
+       },
+       radius: 4
+      }
+    };
+
+    this.clusterStyle = {
+      circle: {
+       fill: {
+         color: "red"
+       },
+       stroke: {
+         color: "black"
+       },
+       radius: 4
+      }
+    };
+  }
+
+
+  setBaseStyle(strokeColor : string, fillColor: string, radius: number){
+    this.baseStyle = {
+      circle: {
+        fill: {
+          color: fillColor
+        },
+        stroke: {
+          color: strokeColor
+        },
+        radius: radius,
+      }
+    }
+  }
+
+  setClusterStyle(strokeColor : string, fillColor: string){
+    this.clusterStyle = {
+      circle: {
+        fill: {
+          color: fillColor
+        },
+        stroke: {
+          color: strokeColor
+        }
+       }
+    }
+  }
 
 
   geojsonToFeature(geogson : any[]){
@@ -78,32 +135,11 @@ export class FeatureLayerService {
   }
 
   public addFeaturesOnNewClusterMapLayer(features : Feature[], layerId : string, layerName : string){
-    let baseStyle = {
-      circle: {
-       fill: {
-         color: "green"
-       },
-       stroke: {
-         color: "black"
-       },
-       radius: 4
-      }
-    };
 
-    let baseStyler = {
-      circle: {
-       fill: {
-         color: "red"
-       },
-       stroke: {
-         color: "black"
-       }
-      }
-    };
     let clusterRange : ClusterRange ={
       minRadius : 2,
       maxRadius : 5,
-      style : baseStyle
+      style : this.baseStyle
     }
 
     const clusterParam: ClusterParam ={
@@ -117,7 +153,7 @@ export class FeatureLayerService {
     const featureSource = new ClusterDataSource(sourceOptions);
     featureSource.ol.source.addFeatures(features);
     let style = feature =>{
-      return this.styleService.createClusterStyle(feature,clusterParam,baseStyler);
+      return this.styleService.createClusterStyle(feature,clusterParam,this.clusterStyle);
     };
 
     let date = new Date();

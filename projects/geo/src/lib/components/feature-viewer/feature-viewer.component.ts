@@ -66,22 +66,6 @@ export class FeatureViewerComponent implements OnChanges, OnInit {
     public capabilitiesService: CapabilitiesService,
     public messageService: MessageService
   ) {
-    /*  super(
-        route,
-        configService,
-        authService,
-        featureService,
-        mediaService,
-        toolService,
-        searchService,
-        overlayService,
-        mapService,
-        layerService,
-        dataSourceService,
-        contextService,
-        cdRef,
-        capabilitiesService,
-        messageService);*/
     this.dataSourceService
       .createAsyncDataSource({
         type: 'osm'
@@ -111,7 +95,6 @@ export class FeatureViewerComponent implements OnChanges, OnInit {
 
   ngOnInit() {
     if (this.feature !== undefined && this.feature !== null) {
-      // this.map = this.mapService.getMap();
       this.updateMap();
       this.addFeature(this.feature);
     }
@@ -121,8 +104,7 @@ export class FeatureViewerComponent implements OnChanges, OnInit {
     // Sans cela la carte n'affichait pas
     setTimeout(() => {
       this.map.ol.updateSize();
-      this.view.zoom = 30;
-      // this.mapService.getMap().ol.updateSize();
+      this.view.zoom = 4;
     }, 600);
   }
 
@@ -132,7 +114,6 @@ export class FeatureViewerComponent implements OnChanges, OnInit {
       this.map.overlay.clear();
       this.map.overlay.setFeatures([feature], FeatureMotion.Default);
       this.map.setView({ center: this.feature.geometry.coordinates, zoom: this.view.zoom });
-      // this.mapService.getMap().setView({ center: this.feature.geometry.coordinates, zoom: this.view.zoom });
       this.mapImageService.setMap(this.map);
       this.updateMap();
     }, 1000);
