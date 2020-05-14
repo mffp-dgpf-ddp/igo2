@@ -1,19 +1,21 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
+import { transform } from 'ol/proj';
+import { ListenerFunction } from 'ol/events';
+import { MapBrowserPointerEvent as OlMapBrowserPointerEvent } from 'ol/MapBrowserEvent';
 
-import { MediaService, ConfigService, MessageService, Message } from '@igo2/core';
+import { MediaService, ConfigService } from '@igo2/core';
 import { AuthService } from '@igo2/auth';
-import { ContextService } from '@igo2/context';
 import {
   DataSourceService,
   LayerService,
   MapService,
-  OverlayService,
   SearchService,
   CapabilitiesService,
   SearchSourceService,
-  IgoMap
+  IgoMap,
+  MapViewOptions
 } from '@igo2/geo';
 
 import {
@@ -22,9 +24,12 @@ import {
   mapSlideX,
   mapSlideY
 } from '../../pages/portal/portal.animation';
-import { PortalComponent } from '../../pages/portal/portal.component';
 import { BboxService } from '../../services/bbox.service';
 import { MapState, ContextState, SearchState, ToolState, QueryState } from '@igo2/integration';
+import olCircle from 'ol/geom/Circle';
+import olFeature from 'ol/Feature';
+import { CoordService } from '../../services/coord.service';
+import { projection } from '@angular/core/src/render3';
 
 
 @Component({
@@ -35,7 +40,12 @@ import { MapState, ContextState, SearchState, ToolState, QueryState } from '@igo
 })
 export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/ {
 
+  @Input() public zoneSelectionMode: string;
   private bbox;
+  private radius;
+  private clickPosition;
+  private lastCirclePosition;
+  private mapClickListener: ListenerFunction;
 
   map_ = new IgoMap({
     controls: {
@@ -43,17 +53,14 @@ export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/
       attribution: {
         collapsed: true
       }
-    }
+    },
   });
-  public view_ = {
-    center: [-73, 47.2],
-    zoom: 15
-  };
+
 
   constructor(
     public bboxService: BboxService,
+    public coordService: CoordService,
     public route: ActivatedRoute,
-    // private workspaceState: WorkspaceState,
     public authService: AuthService,
     public mediaService: MediaService,
     public layerService: LayerService,
@@ -72,43 +79,8 @@ export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/
     private modalController: ModalController,
 
   ) {
-    /*super(
-      route,
-      // private workspaceState: WorkspaceState,
-      authService,
-      mediaService,
-      layerService,
-      dataSourceService,
-      cdRef,
-      capabilitiesService,
-      contextState,
-      mapState,
-      searchState,
-      queryState,
-      toolState,
-      searchSourceService,
-      searchService,
-      configService);*/
-    // this.mapService.setMap(this.map);
+    this.radius = 1000;
   }
-
-  /*
-      private route: ActivatedRoute,
-    // private workspaceState: WorkspaceState,
-    public authService: AuthService,
-    public mediaService: MediaService,
-    public layerService: LayerService,
-    public dataSourceService: DataSourceService,
-    public cdRef: ChangeDetectorRef,
-    public capabilitiesService: CapabilitiesService,
-    private contextState: ContextState,
-    private mapState: MapState,
-    private searchState: SearchState,
-    private queryState: QueryState,
-    private toolState: ToolState,
-    private searchSourceService: SearchSourceService,
-    private searchService: SearchService,
-    private configService: ConfigService*/
 
   ngOnInit() {
     this.dataSourceService
@@ -123,14 +95,30 @@ export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/
           })
         );
       });
+    if (this.zoneSelectionMode == 'coord') {
+      this.listenToMapClick();
+    }
+    setTimeout(() => {
+      if (this.coordService.coord !== undefined && this.coordService.coord !== null) {
+        this.createArea(transform(this.coordService.coord, 'EPSG:4326', this.map_.projection));
+      }
+    }, 1000);
     this.updateMap();
   }
+
+  private listenToMapClick() {
+    this.mapClickListener = this.map_.ol.on(
+      'singleclick',
+      (event: OlMapBrowserPointerEvent) => this.onPointerEvent(event)
+    );
+  }
+
 
   updateMap() {
     // Sans cela la carte n'affichait pas
     setTimeout(() => {
       this.map_.ol.updateSize();
-    }, 600);
+    }, 1100);
   }
 
   close() {
@@ -142,5 +130,33 @@ export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/
     this.bboxService.setBBOX(this.bbox);
     this.close();
   }
+
+  setRadius(radius: number) {
+    this.radius = radius;
+    this.coordService.setRadius(radius);
+    if (this.coordService.coord !== undefined && this.coordService.coord !== null) {
+      this.map_.overlay.clear();
+      this.createArea(transform(this.coordService.coord, 'EPSG:4326', this.map_.projection));
+    }
+  }
+
+  getRadius() {
+    return this.radius;
+  }
+
+  createArea(coord: any) {
+    const circle = new olCircle(coord, this.radius);
+    const bufferFeature = new olFeature(circle);
+    this.map_.overlay.addOlFeature(bufferFeature);
+  }
+
+  private onPointerEvent(event: OlMapBrowserPointerEvent) {
+    const lonlat = transform(event.coordinate, this.map_.projection, 'EPSG:4326');
+    this.coordService.setCoord(lonlat);
+    this.map_.overlay.clear();
+    this.createArea(event.coordinate);
+    this.updateMap();
+  }
+
 }
 
