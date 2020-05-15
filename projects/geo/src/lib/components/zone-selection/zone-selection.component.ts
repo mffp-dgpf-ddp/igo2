@@ -1,6 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
+import { transform } from 'ol/proj';
+import { ListenerFunction } from 'ol/events';
+import { MapBrowserPointerEvent as OlMapBrowserPointerEvent } from 'ol/MapBrowserEvent';
 
 import { MediaService, ConfigService } from '@igo2/core';
 import { AuthService } from '@igo2/auth';
@@ -11,7 +14,8 @@ import {
   SearchService,
   CapabilitiesService,
   SearchSourceService,
-  IgoMap
+  IgoMap,
+  MapViewOptions
 } from '@igo2/geo';
 
 import {
@@ -24,6 +28,8 @@ import { BboxService } from '../../services/bbox.service';
 import { MapState, ContextState, SearchState, ToolState, QueryState } from '@igo2/integration';
 import olCircle from 'ol/geom/Circle';
 import olFeature from 'ol/Feature';
+import { CoordService } from '../../services/coord.service';
+import { projection } from '@angular/core/src/render3';
 
 
 @Component({
@@ -38,6 +44,8 @@ export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/
   private bbox;
   private radius;
   private clickPosition;
+  private lastCirclePosition;
+  private mapClickListener: ListenerFunction;
 
   map_ = new IgoMap({
     controls: {
@@ -45,15 +53,13 @@ export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/
       attribution: {
         collapsed: true
       }
-    }
+    },
   });
-  public view_ = {
-    center: [-73, 47.2],
-    zoom: 15
-  };
+
 
   constructor(
     public bboxService: BboxService,
+    public coordService: CoordService,
     public route: ActivatedRoute,
     public authService: AuthService,
     public mediaService: MediaService,
@@ -73,7 +79,7 @@ export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/
     private modalController: ModalController,
 
   ) {
-
+    this.radius = 1000;
   }
 
   ngOnInit() {
@@ -89,21 +95,30 @@ export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/
           })
         );
       });
-    this.updateMap();
-
-    if(this.zoneSelectionMode == 'rayon'){
-      this.map_.ol.on('click', function(event){
-        this.clickPosition = this.map_.ol.getLonLatFromViewPortPx(event.pixel);
-        this.createArea();
-      })
+    if (this.zoneSelectionMode == 'coord') {
+      this.listenToMapClick();
     }
+    setTimeout(() => {
+      if (this.coordService.coord !== undefined && this.coordService.coord !== null) {
+        this.createArea(transform(this.coordService.coord, 'EPSG:4326', this.map_.projection));
+      }
+    }, 1000);
+    this.updateMap();
   }
+
+  private listenToMapClick() {
+    this.mapClickListener = this.map_.ol.on(
+      'singleclick',
+      (event: OlMapBrowserPointerEvent) => this.onPointerEvent(event)
+    );
+  }
+
 
   updateMap() {
     // Sans cela la carte n'affichait pas
     setTimeout(() => {
       this.map_.ol.updateSize();
-    }, 600);
+    }, 1100);
   }
 
   close() {
@@ -116,20 +131,32 @@ export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/
     this.close();
   }
 
-  setRadius(radius: number){
+  setRadius(radius: number) {
     this.radius = radius;
+    this.coordService.setRadius(radius);
+    if (this.coordService.coord !== undefined && this.coordService.coord !== null) {
+      this.map_.overlay.clear();
+      this.createArea(transform(this.coordService.coord, 'EPSG:4326', this.map_.projection));
+    }
   }
 
-  getRadius(){
+  getRadius() {
     return this.radius;
   }
 
-  createArea(){
-    const lonLat = this.map_.ol.getLonLatFromViewPortPx(this.clickPosition);
-    const circle = new olCircle(lonLat, this.radius);
+  createArea(coord: any) {
+    const circle = new olCircle(coord, this.radius);
     const bufferFeature = new olFeature(circle);
-    this.map_.overlay.addOlFeature(bufferFeature)
+    this.map_.overlay.addOlFeature(bufferFeature);
+  }
+
+  private onPointerEvent(event: OlMapBrowserPointerEvent) {
+    const lonlat = transform(event.coordinate, this.map_.projection, 'EPSG:4326');
+    this.coordService.setCoord(lonlat);
+    this.map_.overlay.clear();
+    this.createArea(event.coordinate);
     this.updateMap();
   }
 
 }
+

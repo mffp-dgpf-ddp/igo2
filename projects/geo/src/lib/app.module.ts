@@ -38,6 +38,7 @@ import { Network } from '@ionic-native/network/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import { FeatureLayerService } from './services/feature-layer.service';
+import { CoordService } from './services/coord.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -66,6 +67,7 @@ import { FeatureLayerService } from './services/feature-layer.service';
     }),
     RouteService,
     BboxService,
+    CoordService,
     FeatureLayerService,
     MapImageService,
     Network,
@@ -83,4 +85,4 @@ import { FeatureLayerService } from './services/feature-layer.service';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

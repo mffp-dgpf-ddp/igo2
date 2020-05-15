@@ -6,11 +6,7 @@
   </div>
 </mat-toolbar> -->
 <mat-sidenav-container>
-  <igo-map-browser 
-    #mapBrowser 
-    igoLayerContext
-    igoMapContext
-    [map]="map_" >
+  <igo-map-browser #mapBrowser igoLayerContext igoMapContext [map]="map_">
 
     <igo-zoom-button [map]="map_" color="primary">
     </igo-zoom-button>
@@ -19,19 +15,17 @@
     <igo-rotation-button [map]="map_" color="primary"></igo-rotation-button>
     <igo-user-button [map]="map_" color="primary">
     </igo-user-button>
-    <igo-baselayers-switcher [map]="map_" 
-    [useStaticIcon]="true"
-    [useStaticIcon]="true">
+    <igo-baselayers-switcher [map]="map_" [useStaticIcon]="true" [useStaticIcon]="true">
     </igo-baselayers-switcher>
   </igo-map-browser>
-<!--
+  <!--
   <app-map-overlay
     [@controlStateX]="(mediaService.media$ | async) !== 'mobile' &&
                             sidenavOpened ? 'right' : 'left'">
   </app-map-overlay>
 </mat-sidenav-container>
 -->
-<!--<ng-template #contextMenu>
+  <!--<ng-template #contextMenu>
   <igo-actionbar
     [store]="contextMenuStore"
     [withIcon]="false"
@@ -39,7 +33,7 @@
     mode="context">
   </igo-actionbar>
 </ng-template> -->
-<!--
+  <!--
 <mat-toolbar>
   <button class="footer-button" id='btmFooter' mat-stroked-button color="primary">Annuler</button>
   <button class="footer-button " id='btmFooter' mat-stroked-button color="primary">Sélectionner</button>
@@ -48,7 +42,7 @@
 
 
 
-<!--
+  <!--
 <ion-footer>
   <ion-grid>
     <ion-row>
