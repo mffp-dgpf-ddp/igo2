@@ -1,0 +1,61 @@
+{
+    "default": {
+        "style": {
+			"fill": {
+				"color": "blue"
+		    },
+		    "scale": 1.9,
+            "stroke": {
+                "color": "green",
+				"width":4
+            },
+            "circle": {
+                "fill": {
+                    "color": "green"
+                },
+                "stroke": {
+                    "color": "black"
+                },
+                "radius": 8
+            }
+        }
+    },
+    "bureaux_locaux_cluste": {
+		"clusterStyle": {
+            "circle":{
+                "fill": {
+                    "color": "orange"
+                },
+                "stroke": {
+                    "color": "black"
+                },
+                "radius": 4
+			}
+		},
+        "clusterParam" : {
+            "clusterRange": [2, 5]
+        },
+        "distance" : 70
+	},
+    "bureaux_locaux_cluster": {
+        "styleByAttribute": {
+            "type": "circle",
+            "attribute": "type",
+            "data": ["local", "regional"],
+            "fill": ["blue", "red"],
+            "stroke": ["black", "black"],
+            "label": "type"
+        }
+    },
+    "countries": {
+        "style": {
+            "fill": {
+                "color": "red"
+            },
+            "stroke": {
+                "color": "black",
+                "width": 4
+            }
+        }
+    }
+}

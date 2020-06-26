@@ -1,5 +1,6 @@
 {
   "uri": "_default",
+  "base": "_base",
   "title": "Default Context",
   "map": {
     "view": {
@@ -50,14 +51,11 @@
     },
     {
       "title": "bureaux - geoson - public - cluster",
-      "clusterParam": {
-        "clusterRange": [2, 5]
-      },
       "visible": true,
-      "style": {
+      "clusterBaseStyle": {
         "circle": {
           "fill": {
-            "color": "red"
+            "color": "blue"
           },
           "stroke": {
             "color": "black"
@@ -67,12 +65,9 @@
       },
       "sourceOptions": {
         "queryable": true,
-        "excludeAttribute": ["no_bureau"],
-        "excludeAttributeOffline": ["no_region"],
         "type": "cluster",
-        "distance": 70,
-        "url": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/geojson/bureaux_locaux3857.geojson",
-        "pathOffline": "https://io.ion.igo2/_app_file_/storage/emulated/0/Android/data/io.ionic.igo2/files/geojson/bureaux_locaux3857.geojson"
+        "distance": 10,
+        "url": "https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_50m_populated_places.geojson"
       }
     },
     {
@@ -181,6 +176,7 @@
     "contextManager",
     "map",
     "catalog",
+    "importExport",
     "about"
   ],
   "tools": [
@@ -204,6 +200,9 @@
     },
     {
       "name": "catalog"
+    },
+    {
+      "name": "importExport"
     },
     {
       "name": "map",

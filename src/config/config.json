@@ -30,5 +30,6 @@
   },
   "sidenavTitle": "Menu - Carte",
   "theme": "blue-theme",
-  "offlineButton": true
+  "offlineButton": true,
+  "importWithStyle": true
 }
