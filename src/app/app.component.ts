@@ -4,6 +4,7 @@ import { Title, Meta } from '@angular/platform-browser';
 import { LanguageService, ConfigService, AnalyticsService } from '@igo2/core';
 import { AuthOptions } from '@igo2/auth';
 import { AnalyticsListenerService } from '@igo2/integration';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-root',
@@ -29,8 +30,15 @@ export class AppComponent {
     private analyticsListenerService: AnalyticsListenerService,
     private renderer: Renderer2,
     private titleService: Title,
-    private metaService: Meta
+    private metaService: Meta,
+    private platform: Platform
   ) {
+    this.platform.ready().then(() => {
+      if (this.platform.is('cordova')) {
+        if (this.platform.is('android')) {
+        }
+      }
+    });
     this.authConfig = this.configService.getConfig('auth');
 
     const title = this.configService.getConfig('title');
