@@ -31,5 +31,6 @@
   "sidenavTitle": "Menu - Carte",
   "theme": "blue-theme",
   "offlineButton": true,
-  "importWithStyle": true
+  "importWithStyle": true,
+  "ExportContextDirectory": "file:///storage/emulated/0/Android/data/io.ionic.igo2/"
 }
