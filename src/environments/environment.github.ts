@@ -2,9 +2,8 @@ import { LanguageOptions } from '@igo2/core';
 import {
   SearchSourceOptions,
   ImportExportServiceOptions,
-  OptionsApiOptions,
-  Projection,
-  SpatialFilterOptions
+  CatalogServiceOptions,
+  Projection
 } from '@igo2/geo';
 
 interface Environment {
@@ -13,12 +12,11 @@ interface Environment {
     app: {
       forceCoordsNA: boolean;
     };
+    catalog?: CatalogServiceOptions;
     importExport?: ImportExportServiceOptions;
     language?: LanguageOptions;
     searchSources?: { [key: string]: SearchSourceOptions };
-    optionsApi?: OptionsApiOptions;
     projections?: Projection[];
-    spatialFilter?: SpatialFilterOptions;
   };
 }
 
@@ -26,10 +24,25 @@ export const environment: Environment = {
   production: true,
   igo: {
     app: {
-      forceCoordsNA: true
+      forceCoordsNA: false
+    },
+    catalog: {
+      sources: [
+        {
+          id: 'Gououvert',
+          title: 'Gouvouvert',
+          url: 'https://geoegl.msp.gouv.qc.ca/apis/ws/igo_gouvouvert.fcgi'
+        },
+        {
+          id: 'glace',
+          title: 'Carte de glace',
+          url: 'https://geoegl.msp.gouv.qc.ca/apis/ws/radarsat.fcgi',
+          showLegend: true
+        }
+      ]
     },
     importExport: {
-      url: '/apis/ogre'
+      url: 'https://geoegl.msp.gouv.qc.ca/apis/ogre'
     },
     language: {
       prefix: './locale/'
@@ -42,10 +55,10 @@ export const environment: Environment = {
         available: false
       },
       icherche: {
-        searchUrl: '/apis/icherche',
+        searchUrl: 'https://geoegl.msp.gouv.qc.ca/apis/icherche',
         order: 2,
         params: {
-          limit: '5'
+          limit: '8'
         }
       },
       coordinatesreverse: {
@@ -53,12 +66,12 @@ export const environment: Environment = {
       },
       icherchereverse: {
         showInPointerSummary: true,
-        searchUrl: '/apis/terrapi',
+        searchUrl: 'https://geoegl.msp.gouv.qc.ca/apis/terrapi',
         order: 3,
         enabled: true
       },
       ilayer: {
-        searchUrl: '/apis/icherche/layers',
+        searchUrl: 'https://geoegl.msp.gouv.qc.ca/apis/icherche/layers',
         order: 4,
         params: {
           limit: '5'
@@ -67,12 +80,6 @@ export const environment: Environment = {
       cadastre: {
         enabled: false
       }
-    },
-    optionsApi: {
-      url: '/apis/igo2/layers/options'
-    },
-    spatialFilter: {
-      url: '/apis/terrapi/'
     },
     projections: [
       {

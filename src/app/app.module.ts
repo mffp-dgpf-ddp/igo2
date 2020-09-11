@@ -6,6 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   provideConfigOptions,
   IgoMessageModule,
+  IgoGestureModule,
   RouteService
 } from '@igo2/core';
 import { IgoSpinnerModule, IgoStopPropagationModule } from '@igo2/common';
@@ -16,7 +17,10 @@ import {
   provideNominatimSearchSource,
   provideCoordinatesReverseSearchSource,
   provideILayerSearchSource,
-  provideOsrmRoutingSource
+  provideStoredQueriesSearchSource,
+  provideOsrmDirectionsSource,
+  provideOptionsApi,
+  provideCadastreSearchSource
 } from '@igo2/geo';
 
 import { environment } from '../environments/environment';
@@ -30,6 +34,7 @@ import { AppComponent } from './app.component';
     BrowserAnimationsModule,
     RouterModule.forRoot([]),
     IgoAuthModule.forRoot(),
+    IgoGestureModule.forRoot(),
     IgoMessageModule,
     IgoSpinnerModule,
     IgoStopPropagationModule,
@@ -46,7 +51,10 @@ import { AppComponent } from './app.component';
     provideIChercheReverseSearchSource(),
     provideCoordinatesReverseSearchSource(),
     provideILayerSearchSource(),
-    provideOsrmRoutingSource()
+    provideStoredQueriesSearchSource(),
+    provideOsrmDirectionsSource(),
+    provideOptionsApi(),
+    provideCadastreSearchSource()
   ],
   bootstrap: [AppComponent]
 })

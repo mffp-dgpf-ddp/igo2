@@ -5,13 +5,34 @@ import {
   EventEmitter,
   HostBinding,
   HostListener,
-  ChangeDetectionStrategy
+  ChangeDetectionStrategy,
+  OnInit
 } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import olFormatGeoJSON from 'ol/format/GeoJSON';
 
-import { getEntityTitle, EntityStore } from '@igo2/common';
-import { Feature, SearchResult } from '@igo2/geo';
-import { Media, MediaService } from '@igo2/core';
+import {
+  getEntityTitle,
+  EntityStore,
+  ActionStore,
+  Action,
+  ActionbarMode
+} from '@igo2/common';
+import {
+  Feature,
+  SearchResult,
+  IgoMap,
+  FeatureMotion,
+  moveToOlFeatures,
+  createOverlayMarkerStyle,
+  createOverlayDefaultStyle
+} from '@igo2/geo';
+import {
+  Media,
+  MediaService,
+  LanguageService,
+  StorageService
+} from '@igo2/core';
 
 @Component({
   selector: 'app-toast-panel',
@@ -19,13 +40,22 @@ import { Media, MediaService } from '@igo2/core';
   styleUrls: ['./toast-panel.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class ToastPanelComponent {
+export class ToastPanelComponent implements OnInit {
   static SWIPE_ACTION = {
     RIGHT: 'swiperight',
     LEFT: 'swipeleft',
     UP: 'swipeup',
     DOWN: 'swipedown'
   };
+
+  @Input()
+  get map(): IgoMap {
+    return this._map;
+  }
+  set map(value: IgoMap) {
+    this._map = value;
+  }
+  private _map: IgoMap;
 
   @Input()
   get store(): EntityStore<SearchResult<Feature>> {
@@ -53,10 +83,39 @@ export class ToastPanelComponent {
   }
   private _opened = true;
 
-  @Output() openedChange = new EventEmitter<boolean>();
+  get zoomAuto(): boolean {
+    return this.storageService.get('zoomAuto') as boolean;
+  }
 
-  @Output() resultSelect = new EventEmitter<SearchResult<Feature>>();
-  @Output() resultFocus = new EventEmitter<SearchResult<Feature>>();
+  // To allow the toast to use much larger extent on the map
+  get fullExtent(): boolean {
+    return this.storageService.get('fullExtent') as boolean;
+  }
+
+  public fullExtent$: BehaviorSubject<boolean> = new BehaviorSubject(
+    this.fullExtent
+  );
+  public notfullExtent$: BehaviorSubject<boolean> = new BehaviorSubject(
+    !this.fullExtent
+  );
+
+  public icon = 'menu';
+
+  public actionStore = new ActionStore([]);
+  public actionbarMode = ActionbarMode.Overlay;
+
+  private multiple$ = new BehaviorSubject(false);
+  private isResultSelected$ = new BehaviorSubject(false);
+  private initialized = true;
+
+  private format = new olFormatGeoJSON();
+
+  public withZoomButton = true;
+
+  @Output() openedChange = new EventEmitter<boolean>();
+  @Output() zoomAutoEvent = new EventEmitter<boolean>();
+
+  @Output() fullExtentEvent = new EventEmitter<boolean>();
 
   resultSelected$ = new BehaviorSubject<SearchResult<Feature>>(undefined);
 
@@ -67,7 +126,45 @@ export class ToastPanelComponent {
 
   @HostBinding('style.visibility')
   get displayStyle() {
-    return this.results.length ? 'visible' : 'hidden';
+    if (this.results.length) {
+      if (this.results.length === 1 && this.initialized) {
+        this.selectResult(this.results[0]);
+      }
+      return 'visible';
+    }
+    return 'hidden';
+  }
+
+  @HostBinding('class.app-full-toast-panel-opened')
+  get hasFullOpenedClass() {
+    return this.opened && this.fullExtent;
+  }
+
+  @HostListener('document:keydown.escape', ['$event']) onEscapeHandler(
+    event: KeyboardEvent
+  ) {
+    this.clear();
+  }
+
+  @HostListener('document:keydown.backspace', ['$event']) onBackHandler(
+    event: KeyboardEvent
+  ) {
+    this.unselectResult();
+  }
+
+  @HostListener('document:keydown.z', ['$event']) onZoomHandler(
+    event: KeyboardEvent
+  ) {
+    if (this.isResultSelected$.getValue() === true) {
+      const olFeature = this.format.readFeature(
+        this.resultSelected$.getValue().data,
+        {
+          dataProjection: this.resultSelected$.getValue().data.projection,
+          featureProjection: this.map.projection
+        }
+      );
+      moveToOlFeatures(this.map, [olFeature], FeatureMotion.Default);
+    }
   }
 
   get results(): SearchResult<Feature>[] {
@@ -75,16 +172,204 @@ export class ToastPanelComponent {
     return this.store.all();
   }
 
+  get multiple(): Observable<boolean> {
+    this.results.length
+      ? this.multiple$.next(true)
+      : this.multiple$.next(false);
+    return this.multiple$;
+  }
+
+  private getSelectedMarkerStyle(feature: Feature) {
+    if (!feature.geometry || feature.geometry.type === 'Point') {
+      return createOverlayMarkerStyle({
+        text: feature.meta.mapTitle,
+        outlineColor: [0, 255, 255]
+      });
+    } else {
+      return createOverlayDefaultStyle({
+        text: feature.meta.mapTitle,
+        strokeWidth: 4,
+        strokeColor: [0, 255, 255]
+      });
+    }
+  }
+
+  private getMarkerStyle(feature: Feature) {
+    if (!feature.geometry || feature.geometry.type === 'Point') {
+      return createOverlayMarkerStyle({
+        text: feature.meta.mapTitle,
+        opacity: 0.5,
+        outlineColor: [0, 255, 255]
+      });
+    } else if (
+      feature.geometry.type === 'LineString' ||
+      feature.geometry.type === 'MultiLineString'
+    ) {
+      return createOverlayDefaultStyle({
+        text: feature.meta.mapTitle,
+        strokeOpacity: 0.5,
+        strokeColor: [0, 255, 255]
+      });
+    } else {
+      return createOverlayDefaultStyle({
+        text: feature.meta.mapTitle,
+        fillOpacity: 0.15,
+        strokeColor: [0, 255, 255]
+      });
+    }
+  }
+
   constructor(
-    public mediaService: MediaService
-    ) {}
+    public mediaService: MediaService,
+    public languageService: LanguageService,
+    private storageService: StorageService
+  ) {}
+
+  ngOnInit() {
+    this.store.entities$.subscribe(() => {
+      this.initialized = true;
+    });
+
+    this.actionStore.load([
+      {
+        id: 'list',
+        title: this.languageService.translate.instant('toastPanel.backToList'),
+        icon: 'format-list-bulleted-square',
+        tooltip: this.languageService.translate.instant(
+          'toastPanel.listButton'
+        ),
+        display: () => {
+          return this.isResultSelected$;
+        },
+        handler: () => {
+          this.unselectResult();
+        }
+      },
+      {
+        id: 'zoomFeature',
+        title: this.languageService.translate.instant(
+          'toastPanel.zoomOnFeature'
+        ),
+        icon: 'magnify-plus-outline',
+        tooltip: this.languageService.translate.instant(
+          'toastPanel.zoomOnFeatureTooltip'
+        ),
+        display: () => {
+          return this.isResultSelected$;
+        },
+        handler: () => {
+          const olFeature = this.format.readFeature(
+            this.resultSelected$.getValue().data,
+            {
+              dataProjection: this.resultSelected$.getValue().data.projection,
+              featureProjection: this.map.projection
+            }
+          );
+          moveToOlFeatures(this.map, [olFeature], FeatureMotion.Zoom);
+        }
+      },
+      {
+        id: 'zoomResults',
+        title: this.languageService.translate.instant(
+          'toastPanel.zoomOnFeatures'
+        ),
+        tooltip: this.languageService.translate.instant(
+          'toastPanel.zoomOnFeaturesTooltip'
+        ),
+        icon: 'magnify-scan',
+        availability: () => {
+          return this.multiple;
+        },
+        handler: () => {
+          const olFeatures = [];
+          for (const result of this.store.all()) {
+            const olFeature = this.format.readFeature(result.data, {
+              dataProjection: result.data.projection,
+              featureProjection: this.map.projection
+            });
+            olFeatures.push(olFeature);
+          }
+          moveToOlFeatures(this.map, olFeatures, FeatureMotion.Zoom);
+        }
+      },
+      {
+        id: 'zoomAuto',
+        title: this.languageService.translate.instant('toastPanel.zoomAuto'),
+        tooltip: this.languageService.translate.instant(
+          'toastPanel.zoomAutoTooltip'
+        ),
+        checkbox: true,
+        checkCondition: this.storageService.get('zoomAuto') as boolean,
+        handler: () => {
+          this.storageService.set('zoomAuto', !this.storageService.get(
+            'zoomAuto'
+          ) as boolean);
+          this.zoomAutoEvent.emit(this.zoomAuto);
+          if (this.zoomAuto && this.isResultSelected$.value === true) {
+            this.selectResult(this.resultSelected$.getValue());
+          }
+        }
+      },
+      {
+        id: 'fullExtent',
+        title: this.languageService.translate.instant('toastPanel.fullExtent'),
+        tooltip: this.languageService.translate.instant(
+          'toastPanel.fullExtentTooltip'
+        ),
+        icon: 'resize',
+        display: () => {
+          return this.notfullExtent$;
+        },
+        handler: () => {
+          this.storageService.set('fullExtent', true);
+          this.fullExtent$.next(true);
+          this.notfullExtent$.next(false);
+          this.fullExtentEvent.emit(this.fullExtent);
+        }
+      },
+      {
+        id: 'standardExtent',
+        title: this.languageService.translate.instant(
+          'toastPanel.standardExtent'
+        ),
+        tooltip: this.languageService.translate.instant(
+          'toastPanel.standardExtentTooltip'
+        ),
+        icon: 'resize',
+        display: () => {
+          return this.fullExtent$;
+        },
+        handler: () => {
+          this.storageService.set('fullExtent', false);
+          this.fullExtent$.next(false);
+          this.notfullExtent$.next(true);
+          this.fullExtentEvent.emit(this.fullExtent);
+        }
+      }
+    ]);
+  }
 
   getTitle(result: SearchResult) {
     return getEntityTitle(result);
   }
 
   focusResult(result: SearchResult<Feature>) {
-    this.resultFocus.emit(result);
+    this.map.overlay.removeFeature(result.data);
+
+    result.data.meta.style = this.getSelectedMarkerStyle(result.data);
+    result.data.meta.style.setZIndex(2000);
+    this.map.overlay.addFeature(result.data, FeatureMotion.None);
+  }
+
+  unfocusResult(result: SearchResult<Feature>, force?) {
+    if (!force && this.store.state.get(result).focused) {
+      return;
+    }
+    this.map.overlay.removeFeature(result.data);
+
+    result.data.meta.style = this.getMarkerStyle(result.data);
+    result.data.meta.style.setZIndex(undefined);
+    this.map.overlay.addFeature(result.data, FeatureMotion.None);
   }
 
   selectResult(result: SearchResult<Feature>) {
@@ -97,27 +382,67 @@ export class ToastPanelComponent {
       true
     );
     this.resultSelected$.next(result);
-    this.resultSelect.emit(result);
+
+    const features = [];
+    for (const feature of this.store.all()) {
+      if (feature.meta.id === result.meta.id) {
+        feature.data.meta.style = this.getSelectedMarkerStyle(feature.data);
+        feature.data.meta.style.setZIndex(2000);
+      } else {
+        feature.data.meta.style = this.getMarkerStyle(feature.data);
+      }
+      features.push(feature.data);
+    }
+    this.map.overlay.removeFeatures(features);
+    this.map.overlay.addFeatures(features, FeatureMotion.None);
+
+    if (this.zoomAuto) {
+      const olFeature = this.format.readFeature(
+        this.resultSelected$.getValue().data,
+        {
+          dataProjection: this.resultSelected$.getValue().data.projection,
+          featureProjection: this.map.projection
+        }
+      );
+      moveToOlFeatures(this.map, [olFeature], FeatureMotion.Default);
+    }
+
+    this.isResultSelected$.next(true);
+    this.initialized = false;
   }
 
   unselectResult() {
     this.resultSelected$.next(undefined);
-    this.resultSelect.emit(undefined);
+    this.isResultSelected$.next(false);
     this.store.state.clear();
+
+    const features = [];
+    for (const feature of this.store.all()) {
+      feature.data.meta.style = this.getMarkerStyle(feature.data);
+      features.push(feature.data);
+    }
+    this.map.overlay.setFeatures(features, FeatureMotion.None, 'map');
   }
 
   clear() {
+    this.map.overlay.removeFeatures(this.store.all().map(f => f.data));
     this.store.clear();
     this.unselectResult();
   }
 
   isMobile(): boolean {
-    return (
-      this.mediaService.getMedia() === Media.Mobile
-    );
+    return this.mediaService.getMedia() === Media.Mobile;
   }
 
-  @HostListener('document:keydown.ArrowLeft')
+  handleKeyboardEvent(event) {
+    event.preventDefault();
+    if (event.keyCode === 37) {
+      this.previousResult();
+    } else if (event.keyCode === 39) {
+      this.nextResult();
+    }
+  }
+
   previousResult() {
     if (!this.resultSelected$.value) {
       return;
@@ -129,7 +454,6 @@ export class ToastPanelComponent {
     }
   }
 
-  @HostListener('document:keydown.ArrowRight')
   nextResult() {
     if (!this.resultSelected$.value) {
       return;
@@ -139,6 +463,17 @@ export class ToastPanelComponent {
     if (nextResult) {
       this.selectResult(nextResult);
     }
+  }
+
+  zoomTo() {
+    const olFeature = this.format.readFeature(
+      this.resultSelected$.getValue().data,
+      {
+        dataProjection: this.resultSelected$.getValue().data.projection,
+        featureProjection: this.map.projection
+      }
+    );
+    moveToOlFeatures(this.map, [olFeature], FeatureMotion.Zoom);
   }
 
   swipe(action: string) {
@@ -154,9 +489,18 @@ export class ToastPanelComponent {
   }
 
   onToggleClick(e: MouseEvent) {
-/*     if (e.srcElement.className !== 'igo-panel-title') {
+    if (e.srcElement.className !== 'igo-panel-title') {
       return;
-    } */
+    }
     this.opened = !this.opened;
+  }
+
+  /**
+   * Invoke the action handler
+   * @internal
+   */
+  onTriggerAction(action: Action) {
+    const args = action.args || [];
+    action.handler(...args);
   }
 }

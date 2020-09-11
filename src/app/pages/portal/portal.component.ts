@@ -7,8 +7,8 @@ import {
   ElementRef
 } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
-import { Subscription, of } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { Subscription, of, BehaviorSubject } from 'rxjs';
+import { debounceTime, take } from 'rxjs/operators';
 
 import { MapBrowserPointerEvent as OlMapBrowserPointerEvent } from 'ol/MapBrowserEvent';
 import * as olProj from 'ol/proj';
@@ -17,7 +17,9 @@ import {
   MediaService,
   Media,
   MediaOrientation,
-  ConfigService
+  ConfigService,
+  LanguageService,
+  MessageService
 } from '@igo2/core';
 import {
   // ActionbarMode,
@@ -31,12 +33,10 @@ import {
   Tool
 } from '@igo2/common';
 import { AuthService } from '@igo2/auth';
-import { DetailedContext, Context } from '@igo2/context';
+import { DetailedContext } from '@igo2/context';
 import {
   DataSourceService,
   Feature,
-  // FEATURE,
-  FeatureMotion,
   featureToSearchResult,
   GoogleLinks,
   IgoMap,
@@ -47,7 +47,17 @@ import {
   SearchSource,
   SearchService,
   SearchSourceService,
-  CapabilitiesService
+  CapabilitiesService,
+  sourceCanSearch,
+  sourceCanReverseSearch,
+  generateWMSIdFromSourceOptions,
+  generateWMTSIdFromSourceOptions,
+  WMSDataSourceOptions,
+  WMTSDataSourceOptions,
+  FEATURE,
+  ImportService,
+  handleFileImportError,
+  handleFileImportSuccess
 } from '@igo2/geo';
 
 import {
@@ -68,6 +78,7 @@ import {
   mapSlideX,
   mapSlideY
 } from './portal.animation';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-portal',
@@ -89,20 +100,22 @@ export class PortalComponent implements OnInit, OnDestroy {
   public hasExpansionPanel = false;
   public expansionPanelExpanded = false;
   public toastPanelOpened = true;
+  public fullExtent;
   public sidenavOpened = false;
   public searchBarTerm = '';
+  public onSettingsChange$ = new BehaviorSubject<boolean>(undefined);
+  public termDefinedInUrl = false;
+  private addedLayers$$: Subscription[] = [];
+  public forceCoordsNA = false;
 
   public contextMenuStore = new ActionStore([]);
   private contextMenuCoord: [number, number];
 
   private contextLoaded = false;
 
-  // public searchResult: SearchResult;
-  // public queryResults: SearchResult[];
-
   private context$$: Subscription;
-  private searchResults$$: Subscription;
-  private focusedSearchResult$$: Subscription;
+
+  public igoSearchPointerSummaryEnabled = false;
 
   public tableStore = new EntityStore([]);
   public tableTemplate = {
@@ -149,24 +162,17 @@ export class PortalComponent implements OnInit, OnDestroy {
 
   get backdropShown(): boolean {
     return (
-      this.mediaService.media$.value === Media.Mobile && this.sidenavOpened
+      (this.isMobile() || (this.isTablet() && this.isPortrait())) &&
+      this.sidenavOpened
     );
   }
 
   get toastPanelShown(): boolean {
     return true;
-    // return (
-    //   this.mediaService.media$.value === Media.Mobile && !this.sidenavOpened
-    // );
   }
 
   get expansionPanelBackdropShown(): boolean {
     return false;
-    // return (
-    //   this.expansionPanelExpanded &&
-    //   this.toastPanelOpened &&
-    //   this.mediaService.media$.value !== Media.Mobile
-    // );
   }
 
   // get actionbarMode(): ActionbarMode {
@@ -251,9 +257,17 @@ export class PortalComponent implements OnInit, OnDestroy {
     private toolState: ToolState,
     private searchSourceService: SearchSourceService,
     private searchService: SearchService,
-    private configService: ConfigService
+    private configService: ConfigService,
+    private importService: ImportService,
+    private http: HttpClient,
+    private languageService: LanguageService,
+    private messageService: MessageService
   ) {
     this.hasExpansionPanel = this.configService.getConfig('hasExpansionPanel');
+    this.forceCoordsNA = this.configService.getConfig('app.forceCoordsNA');
+    this.igoSearchPointerSummaryEnabled = this.configService.getConfig(
+      'hasSearchPointerSummary'
+    );
   }
 
   ngOnInit() {
@@ -293,13 +307,26 @@ export class PortalComponent implements OnInit, OnDestroy {
       { id: '5', name: 'Name 5', description: 'Description 5' }
     ]);
 
+    this.queryStore.count$.subscribe(i => {
+      this.map.viewController.padding[2] = i ? 280 : 0;
+    });
     this.readQueryParams();
+
+    this.onSettingsChange$.subscribe(() => {
+      this.searchState.setSearchSettingsChange();
+    });
   }
 
   ngOnDestroy() {
     this.context$$.unsubscribe();
-    this.searchResults$$.unsubscribe();
-    this.focusedSearchResult$$.unsubscribe();
+  }
+
+  /**
+   * Cancel ongoing add layer, if any
+   */
+  private cancelOngoingAddLayer() {
+    this.addedLayers$$.forEach((sub: Subscription) => sub.unsubscribe());
+    this.addedLayers$$ = [];
   }
 
   onBackdropClick() {
@@ -338,7 +365,9 @@ export class PortalComponent implements OnInit, OnDestroy {
   }
 
   onSearchTermChange(term?: string) {
-    if (term === undefined || term === '') {
+    this.searchState.setSearchTerm(term);
+    const termWithoutHashtag = term.replace(/(#[^\s]*)/g, '').trim();
+    if (termWithoutHashtag.length < 2) {
       this.onClearSearch();
       return;
     }
@@ -348,12 +377,18 @@ export class PortalComponent implements OnInit, OnDestroy {
   onSearch(event: { research: Research; results: SearchResult[] }) {
     const results = event.results;
 
-    // TODO: add property in searchSource
-    const reverseSearch =
-      event.research.source.getId().indexOf('reverse') !== -1;
-    const enabledSources = this.searchSourceService
-      .getEnabledSources()
-      .filter(s => (s.getId().indexOf('reverse') !== -1) === reverseSearch);
+    const isReverseSearch = !sourceCanSearch(event.research.source);
+
+    let enabledSources;
+    if (isReverseSearch) {
+      enabledSources = this.searchSourceService
+        .getEnabledSources()
+        .filter(sourceCanReverseSearch);
+    } else {
+      enabledSources = this.searchSourceService
+        .getEnabledSources()
+        .filter(sourceCanSearch);
+    }
 
     const newResults = this.searchStore.entities$.value
       .filter(
@@ -365,12 +400,18 @@ export class PortalComponent implements OnInit, OnDestroy {
     this.searchStore.load(newResults);
   }
 
+  onSearchSettingsChange() {
+    this.onSettingsChange$.next(true);
+  }
+
   private closeSidenav() {
     this.sidenavOpened = false;
+    this.map.viewController.padding[3] = 0;
   }
 
   private openSidenav() {
     this.sidenavOpened = true;
+    this.map.viewController.padding[3] = this.isMobile() ? 0 : 400;
   }
 
   private toggleSidenav() {
@@ -384,18 +425,37 @@ export class PortalComponent implements OnInit, OnDestroy {
   }
 
   private onChangeContext(context: DetailedContext) {
+    this.cancelOngoingAddLayer();
     if (context === undefined) {
       return;
     }
 
     this.route.queryParams.pipe(debounceTime(250)).subscribe(params => {
-      if (params['context'] === context.uri) {
+      if (!params['context'] || params['context'] === context.uri) {
         this.readLayersQueryParams(params);
       }
     });
 
     if (this.contextLoaded) {
-      this.toolbox.activateTool('mapDetails');
+      const contextManager = this.toolbox.getTool('contextManager');
+      const contextManagerOptions = contextManager
+        ? contextManager.options
+        : {};
+      let toolToOpen = contextManagerOptions.toolToOpenOnContextChange;
+
+      if (!toolToOpen) {
+        const toolOrderToOpen = ['mapTools', 'map', 'mapDetails', 'mapLegend'];
+        for (const toolName of toolOrderToOpen) {
+          if (this.toolbox.getTool(toolName)) {
+            toolToOpen = toolName;
+            break;
+          }
+        }
+      }
+
+      if (toolToOpen) {
+        this.toolbox.activateTool(toolToOpen);
+      }
     }
 
     this.contextLoaded = true;
@@ -412,25 +472,18 @@ export class PortalComponent implements OnInit, OnDestroy {
   }
 
   toastOpenedChange(opened: boolean) {
+    this.map.viewController.padding[2] = opened ? 280 : 0;
     this.toastPanelOpened = opened;
-  }
-
-  addFeatureToMap(result: SearchResult<Feature>) {
-    const feature = result ? result.data : undefined;
-
-    // Somethimes features have no geometry. It happens with some GetFeatureInfo
-    if (!feature || feature.geometry === undefined) {
-      this.map.overlay.clear();
-      return;
-    }
-
-    this.map.overlay.setFeatures([feature], FeatureMotion.Default);
   }
 
   public onClearSearch() {
     this.searchStore.clear();
-    this.map.overlay.clear();
-    // this.closeToastPanel();
+    this.map.overlay.removeFeatures(
+      this.searchStore
+        .all()
+        .filter(f => f.meta.dataType === FEATURE)
+        .map(f => f.data as Feature)
+    );
   }
 
   private getQuerySearchSource(): SearchSource {
@@ -450,9 +503,13 @@ export class PortalComponent implements OnInit, OnDestroy {
     const contextmenuPoint = event;
     const boundingMapBrowser = this.mapBrowser.nativeElement.getBoundingClientRect();
     contextmenuPoint.y =
-      contextmenuPoint.y - boundingMapBrowser.top + window.scrollY;
+      contextmenuPoint.y -
+      boundingMapBrowser.top +
+      (window.scrollY || window.pageYOffset);
     contextmenuPoint.x =
-      contextmenuPoint.x - boundingMapBrowser.left + window.scrollX;
+      contextmenuPoint.x -
+      boundingMapBrowser.left +
+      (window.scrollX || window.pageXOffset);
     const pixel = [contextmenuPoint.x, contextmenuPoint.y];
 
     const coord = this.map.ol.getCoordinateFromPixel(pixel);
@@ -461,26 +518,15 @@ export class PortalComponent implements OnInit, OnDestroy {
   }
 
   private openGoogleMaps(coord: [number, number]) {
-    window.open(GoogleLinks.getGoogleMapsLink(coord[0], coord[1]));
+    window.open(GoogleLinks.getGoogleMapsCoordLink(coord[0], coord[1]));
   }
 
   private openGoogleStreetView(coord: [number, number]) {
     window.open(GoogleLinks.getGoogleStreetViewLink(coord[0], coord[1]));
   }
 
-  private searchCoordinate(coord: [number, number]) {
+  searchCoordinate(coord: [number, number]) {
     this.searchBarTerm = coord.map(c => c.toFixed(6)).join(', ');
-    const results = this.searchService.reverseSearch(coord);
-
-    this.onBeforeSearch();
-    for (const i in results) {
-      if (!results[i]) {
-        continue;
-      }
-      results[i].request.subscribe((_results: SearchResult<Feature>[]) => {
-        this.onSearch({ research: results[i], results: _results });
-      });
-    }
   }
 
   updateMapBrowserClass(e) {
@@ -525,6 +571,26 @@ export class PortalComponent implements OnInit, OnDestroy {
     } else {
       e.element.classList.remove('toast-offset-attribution');
     }
+  }
+
+  getExtent() {
+    if (!this.sidenavOpened) {
+      if (this.fullExtent) {
+        return 'fullStandard';
+      } else {
+        return 'standard';
+      }
+    } else if (this.sidenavOpened) {
+      if (this.fullExtent) {
+        return 'fullOffsetX';
+      } else {
+        return 'standardOffsetX';
+      }
+    }
+  }
+
+  onPointerSummaryStatusChange(value) {
+    this.igoSearchPointerSummaryEnabled = value;
   }
 
   getExpansionPanelStatus() {
@@ -614,14 +680,42 @@ export class PortalComponent implements OnInit, OnDestroy {
 
   private readQueryParams() {
     this.route.queryParams.pipe(debounceTime(250)).subscribe(params => {
-      this.readLayersQueryParams(params);
       this.readToolParams(params);
       this.readSearchParams(params);
+      this.readFocusFirst(params);
     });
+  }
+
+  private computeFocusFirst() {
+    setTimeout(() => {
+      const resultItem: any = document
+        .getElementsByTagName('igo-search-results-item')
+        .item(0);
+      if (resultItem) {
+        resultItem.click();
+      }
+    }, 1);
+  }
+
+  private readFocusFirst(params: Params) {
+    if (params['sf'] === '1' && this.termDefinedInUrl) {
+      const entities$$ = this.searchStore.entities$
+        .pipe(
+          debounceTime(500),
+          take(1)
+        )
+        .subscribe(entities => {
+          entities$$.unsubscribe();
+          if (entities.length) {
+            this.computeFocusFirst();
+          }
+        });
+    }
   }
 
   private readSearchParams(params: Params) {
     if (params['search']) {
+      this.termDefinedInUrl = true;
       this.searchBarTerm = params['search'];
     }
   }
@@ -639,24 +733,33 @@ export class PortalComponent implements OnInit, OnDestroy {
   }
 
   private readLayersQueryParams(params: Params) {
-    if (params['layers'] && params['wmsUrl']) {
-      const layersByService = params['layers'].split('),(');
+    this.readLayersQueryParamsWMS(params);
+    this.readLayersQueryParamsWMTS(params);
+    this.readVectorQueryParams(params);
+  }
+
+  private readLayersQueryParamsWMS(params: Params) {
+    if ((params['layers'] || params['wmsLayers']) && params['wmsUrl']) {
+      const nameParamLayers =  (params['wmsLayers']) ? 'wmsLayers' : 'layers';  // for maintain compatibility
+      const layersByService = params[nameParamLayers].split('),(');
       const urls = params['wmsUrl'].split(',');
       let cnt = 0;
       urls.forEach(url => {
-        let currentLayersByService = layersByService[cnt];
-        currentLayersByService = currentLayersByService.startsWith('(')
-          ? currentLayersByService.substr(1)
-          : currentLayersByService;
-        currentLayersByService = currentLayersByService.endsWith(')')
-          ? currentLayersByService.slice(0, -1)
-          : currentLayersByService;
-        currentLayersByService = currentLayersByService.split(',');
+        const currentLayersByService = this.extractLayersByService(layersByService[cnt]);
         currentLayersByService.forEach(layer => {
           const layerFromUrl = layer.split(':igoz');
-          this.addLayerByName(
+          const layerOptions = {
+            url: url,
+            params: { LAYERS: layerFromUrl[0] }
+          };
+          const id = generateWMSIdFromSourceOptions(
+            layerOptions as WMSDataSourceOptions
+          );
+          const visibility = this.computeLayerVisibilityFromUrl(params, id);
+          this.addWmsLayerByName(
             url,
             layerFromUrl[0],
+            visibility,
             parseInt(layerFromUrl[1] || 1000, 10)
           );
         });
@@ -665,22 +768,181 @@ export class PortalComponent implements OnInit, OnDestroy {
     }
   }
 
-  private addLayerByName(url: string, name: string, zIndex: number = 100000) {
-    this.layerService
-      .createAsyncLayer({
-        zIndex: zIndex,
-        sourceOptions: {
-          optionsFromCapabilities: true,
-          type: 'wms',
-          url: url,
-          params: {
-            layers: name,
-            version: '1.3.0'
-          }
-        }
-      })
-      .subscribe(l => {
-        this.map.addLayer(l);
+  private readLayersQueryParamsWMTS(params: Params) {
+    if (params['wmtsLayers'] && params['wmtsUrl']) {
+      const layersByService = params['wmtsLayers'].split('),(');
+      const urls = params['wmtsUrl'].split(',');
+      let cnt = 0;
+      urls.forEach(url => {
+        const currentLayersByService = this.extractLayersByService(layersByService[cnt]);
+        currentLayersByService.forEach(layer => {
+          const layerFromUrl = layer.split(':igoz');
+          const layerOptions = {
+            url: url,
+            layer: layerFromUrl[0]
+          };
+          const id = generateWMTSIdFromSourceOptions(
+            layerOptions as WMTSDataSourceOptions
+          );
+          const visibility = this.computeLayerVisibilityFromUrl(params, id);
+          this.addWmtsLayerByName(
+            url,
+            layerFromUrl[0],
+            visibility,
+            parseInt(layerFromUrl[1] || 1000, 10)
+          );
+        });
+        cnt += 1;
       });
+    }
+  }
+
+  private readVectorQueryParams(params: Params) {
+    if (params['vector']) {
+      const url = params['vector'] as string;
+      const lastIndex = url.lastIndexOf('/');
+      const fileName = url.slice(lastIndex + 1, url.length);
+
+      this.http.get(`${url}`, {responseType: 'blob'}).
+        subscribe((data) => {
+          const file = new File([data], fileName, {type: data.type, lastModified: Date.now()});
+          this.importService.import(file).
+            subscribe(
+              (features: Feature[]) => this.onFileImportSuccess(file, features),
+              (error: Error) => this.onFileImportError(file, error)
+            );
+        });
+    }
+  }
+
+  private onFileImportSuccess(file: File, features: Feature[]) {
+    handleFileImportSuccess(
+      file,
+      features,
+      this.map,
+      this.messageService,
+      this.languageService
+    );
+  }
+
+  private onFileImportError(file: File, error: Error) {
+    handleFileImportError(
+      file,
+      error,
+      this.messageService,
+      this.languageService
+    );
+  }
+
+  private extractLayersByService(layersByService: string): any[] {
+    let outLayersByService = layersByService;
+    outLayersByService = outLayersByService.startsWith('(')
+      ? outLayersByService.substr(1)
+      : outLayersByService;
+    outLayersByService = outLayersByService.endsWith(')')
+      ? outLayersByService.slice(0, -1)
+      : outLayersByService;
+    return outLayersByService.split(',');
+  }
+
+  private addWmsLayerByName(
+    url: string,
+    name: string,
+    visibility: boolean = true,
+    zIndex: number = 100000
+  ) {
+    if (!this.contextLoaded) {
+      return;
+    }
+    this.addedLayers$$.push(
+      this.layerService
+        .createAsyncLayer({
+          zIndex: zIndex,
+          visible: visibility,
+          sourceOptions: {
+            optionsFromCapabilities: true,
+            type: 'wms',
+            url: url,
+            params: {
+              layers: name,
+              version: '1.3.0'
+            }
+          }
+        })
+        .subscribe(l => {
+          this.map.addLayer(l);
+        })
+    );
+  }
+
+  private addWmtsLayerByName(
+    url: string,
+    name: string,
+    visibility: boolean = true,
+    zIndex: number = 100000
+  ) {
+    if (!this.contextLoaded) {
+      return;
+    }
+    this.addedLayers$$.push(
+      this.layerService
+        .createAsyncLayer({
+          zIndex: zIndex,
+          visible: visibility,
+          sourceOptions: {
+            optionsFromCapabilities: true,
+            type: 'wmts',
+            url: url,
+            crossOrigin: true,
+            // matrixSet: 'GoogleMapsCompatibleExt2:epsg:3857',
+            version: '1.0.0',
+            layer: name
+          }
+        })
+        .subscribe(l => {
+          this.map.addLayer(l);
+        })
+    );
+  }
+
+  private computeLayerVisibilityFromUrl(
+    params: Params,
+    currentLayerid: string
+  ): boolean {
+    const queryParams = params;
+    let visible = true;
+    if (!queryParams || !currentLayerid) {
+      return visible;
+    }
+    let visibleOnLayersParams = '';
+    let visibleOffLayersParams = '';
+    let visiblelayers: string[] = [];
+    let invisiblelayers: string[] = [];
+    if (queryParams['visiblelayers']) {
+      visibleOnLayersParams = queryParams['visiblelayers'];
+    }
+    if (queryParams['invisiblelayers']) {
+      visibleOffLayersParams = queryParams['invisiblelayers'];
+    }
+
+    /* This order is important because to control whichever
+     the order of * param. First whe open and close everything.*/
+    if (visibleOnLayersParams === '*') {
+      visible = true;
+    }
+    if (visibleOffLayersParams === '*') {
+      visible = false;
+    }
+
+    // After, managing named layer by id (context.json OR id from datasource)
+    visiblelayers = visibleOnLayersParams.split(',');
+    invisiblelayers = visibleOffLayersParams.split(',');
+    if (visiblelayers.indexOf(currentLayerid) > -1) {
+      visible = true;
+    }
+    if (invisiblelayers.indexOf(currentLayerid) > -1) {
+      visible = false;
+    }
+    return visible;
   }
 }
