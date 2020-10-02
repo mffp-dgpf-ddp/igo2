@@ -1,0 +1,22 @@
+ype_but_a_better_type_may_be_inferred_from_usage.code,
+            // Parameter declarations
+            ts.Diagnostics.Parameter_0_implicitly_has_an_1_type_but_a_better_type_may_be_inferred_from_usage.code,
+            ts.Diagnostics.Rest_parameter_0_implicitly_has_an_any_type_but_a_better_type_may_be_inferred_from_usage.code,
+            // Get Accessor declarations
+            ts.Diagnostics.Property_0_implicitly_has_type_any_but_a_better_type_for_its_get_accessor_may_be_inferred_from_usage.code,
+            ts.Diagnostics._0_implicitly_has_an_1_return_type_but_a_better_type_may_be_inferred_from_usage.code,
+            // Set Accessor declarations
+            ts.Diagnostics.Property_0_implicitly_has_type_any_but_a_better_type_for_its_set_accessor_may_be_inferred_from_usage.code,
+            // Property declarations
+            ts.Diagnostics.Member_0_implicitly_has_an_1_type_but_a_better_type_may_be_inferred_from_usage.code,
+        ];
+        codefix.registerCodeFix({
+            errorCodes: errorCodes,
+            getCodeActions: function (context) {
+                var sourceFile = context.sourceFile, program = context.program, start = context.span.start, errorCode = context.errorCode, cancellationToken = context.cancellationToken, host = context.host;
+                var token = ts.getTokenAtPosition(sourceFile, start);
+                var declaration;
+                var changes = ts.textChanges.ChangeTracker.with(context, function (changes) { declaration = doChange(changes, sourceFile, token, errorCode, program, cancellationToken, /*markSeen*/ ts.returnTrue, host); });
+                var name = declaration && ts.getNameOfDeclaration(declaration);
+                return !name || changes.length === 0 ? undefined
+                    : [codefix.createCodeFixAction(f

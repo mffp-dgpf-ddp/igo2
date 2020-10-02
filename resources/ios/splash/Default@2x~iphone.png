@@ -1,0 +1,262 @@
+2 /* NamedImports */)
+                    ? { kind: 2 /* AddToExisting */, importClause: importClause, importKind: importKind }
+                    : undefined;
+            });
+        }
+        function getNamespaceImportName(declaration) {
+            if (declaration.kind === 249 /* ImportDeclaration */) {
+                var namedBindings = declaration.importClause && ts.isImportClause(declaration.importClause) && declaration.importClause.namedBindings;
+                return namedBindings && namedBindings.kind === 251 /* NamespaceImport */ ? namedBindings.name : undefined;
+            }
+            else {
+                return declaration.name;
+            }
+        }
+        function getExistingImportDeclarations(_a, checker, sourceFile) {
+            var moduleSymbol = _a.moduleSymbol, importKind = _a.importKind, exportedSymbolIsTypeOnly = _a.exportedSymbolIsTypeOnly;
+            // Can't use an es6 import for a type in JS.
+            return exportedSymbolIsTypeOnly && ts.isSourceFileJS(sourceFile) ? ts.emptyArray : ts.mapDefined(sourceFile.imports, function (moduleSpecifier) {
+                var i = ts.importFromModuleSpecifier(moduleSpecifier);
+                return (i.kind === 249 /* ImportDeclaration */ || i.kind === 248 /* ImportEqualsDeclaration */)
+                    && checker.getSymbolAtLocation(moduleSpecifier) === moduleSymbol ? { declaration: i, importKind: importKind } : undefined;
+            });
+        }
+        function getNewImportInfos(program, sourceFile, position, moduleSymbols, host, preferences) {
+            var isJs = ts.isSourceFileJS(sourceFile);
+            var choicesForEachExportingModule = ts.flatMap(moduleSymbols, function (_a) {
+                var moduleSymbol = _a.moduleSymbol, importKind = _a.importKind, exportedSymbolIsTypeOnly = _a.exportedSymbolIsTypeOnly;
+                return ts.moduleSpecifiers.getModuleSpecifiers(moduleSymbol, program.getCompilerOptions(), sourceFile, host, program.getSourceFiles(), preferences, program.redirectTargetsMap)
+                    .map(function (moduleSpecifier) {
+                    // `position` should only be undefined at a missing jsx namespace, in which case we shouldn't be looking for pure types.
+                    return exportedSymbolIsTypeOnly && isJs ? { kind: 1 /* ImportType */, moduleSpecifier: moduleSpecifier, position: ts.Debug.assertDefined(position) } : { kind: 3 /* AddNew */, moduleSpecifier: moduleSpecifier, importKind: importKind };
+                });
+            });
+            // Sort to keep the shortest paths first
+            return ts.sort(choicesForEachExportingModule, function (a, b) { return a.moduleSpecifier.length - b.moduleSpecifier.length; });
+        }
+        function getFixesForAddImport(exportInfos, existingImports, program, sourceFile, position, host, preferences) {
+            var existingDeclaration = ts.firstDefined(existingImports, newImportInfoFromExistingSpecifier);
+            return existingDeclaration ? [existingDeclaration] : getNewImportInfos(program, sourceFile, position, exportInfos, host, preferences);
+        }
+        function newImportInfoFromExistingSpecifier(_a) {
+            var declaration = _a.declaration, importKind = _a.importKind;
+            var expression = declaration.kind === 249 /* ImportDeclaration */
+                ? declaration.moduleSpecifier
+                : declaration.moduleReference.kind === 259 /* ExternalModuleReference */
+                    ? declaration.moduleReference.expression
+                    : undefined;
+            return expression && ts.isStringLiteral(expression) ? { kind: 3 /* AddNew */, moduleSpecifier: expression.text, importKind: importKind } : undefined;
+        }
+        function getFixesInfo(context, errorCode, pos) {
+            var symbolToken = ts.getTokenAtPosition(context.sourceFile, pos);
+            var info = errorCode === ts.Diagnostics._0_refers_to_a_UMD_global_but_the_current_file_is_a_module_Consider_adding_an_import_instead.code
+                ? getFixesInfoForUMDImport(context, symbolToken)
+                : ts.isIdentifier(symbolToken) ? getFixesInfoForNonUMDImport(context, symbolToken) : undefined;
+            return info && __assign({}, info, { fixes: ts.sort(info.fixes, function (a, b) { return a.kind - b.kind; }) });
+        }
+        function getFixesInfoForUMDImport(_a, token) {
+            var sourceFile = _a.sourceFile, program = _a.program, host = _a.host, preferences = _a.preferences;
+            var checker = program.getTypeChecker();
+            var umdSymbol = getUmdSymbol(token, checker);
+            if (!umdSymbol)
+                return undefined;
+            var symbol = checker.getAliasedSymbol(umdSymbol);
+            var symbolName = umdSymbol.name;
+            var exportInfos = [{ moduleSymbol: symbol, importKind: getUmdImportKind(program.getCompilerOptions()), exportedSymbolIsTypeOnly: false }];
+            var fixes = getFixForImport(exportInfos, symbolName, ts.isIdentifier(token) ? token.getStart(sourceFile) : undefined, program, sourceFile, host, preferences);
+            return { fixes: fixes, symbolName: symbolName };
+        }
+        function getUmdSymbol(token, checker) {
+            // try the identifier to see if it is the umd symbol
+            var umdSymbol = ts.isIdentifier(token) ? checker.getSymbolAtLocation(token) : undefined;
+            if (ts.isUMDExportSymbol(umdSymbol))
+                return umdSymbol;
+            // The error wasn't for the symbolAtLocation, it was for the JSX tag itself, which needs access to e.g. `React`.
+            var parent = token.parent;
+            return (ts.isJsxOpeningLikeElement(parent) && parent.tagName === token) || ts.isJsxOpeningFragment(parent)
+                ? ts.tryCast(checker.resolveName(checker.getJsxNamespace(parent), ts.isJsxOpeningLikeElement(parent) ? token : parent, 67220415 /* Value */, /*excludeGlobals*/ false), ts.isUMDExportSymbol)
+                : undefined;
+        }
+        function getUmdImportKind(compilerOptions) {
+            // Import a synthetic `default` if enabled.
+            if (ts.getAllowSyntheticDefaultImports(compilerOptions)) {
+                return 1 /* Default */;
+            }
+            // When a synthetic `default` is unavailable, use `import..require` if the module kind supports it.
+            var moduleKind = ts.getEmitModuleKind(compilerOptions);
+            switch (moduleKind) {
+                case ts.ModuleKind.AMD:
+                case ts.ModuleKind.CommonJS:
+                case ts.ModuleKind.UMD:
+                    return 3 /* Equals */;
+                case ts.ModuleKind.System:
+                case ts.ModuleKind.ES2015:
+                case ts.ModuleKind.ESNext:
+                case ts.ModuleKind.None:
+                    // Fall back to the `import * as ns` style import.
+                    return 2 /* Namespace */;
+                default:
+                    return ts.Debug.assertNever(moduleKind);
+            }
+        }
+        function getFixesInfoForNonUMDImport(_a, symbolToken) {
+            var sourceFile = _a.sourceFile, program = _a.program, cancellationToken = _a.cancellationToken, host = _a.host, preferences = _a.preferences;
+            var checker = program.getTypeChecker();
+            // If we're at `<Foo/>`, we must check if `Foo` is already in scope, and if so, get an import for `React` instead.
+            var symbolName = ts.isJsxOpeningLikeElement(symbolToken.parent)
+                && symbolToken.parent.tagName === symbolToken
+                && (ts.isIntrinsicJsxName(symbolToken.text) || checker.resolveName(symbolToken.text, symbolToken, 67108863 /* All */, /*excludeGlobals*/ false))
+                ? checker.getJsxNamespace(sourceFile)
+                : symbolToken.text;
+            // "default" is a keyword and not a legal identifier for the import, so we don't expect it here
+            ts.Debug.assert(symbolName !== "default" /* Default */);
+            var fixes = ts.arrayFrom(ts.flatMapIterator(getExportInfos(symbolName, ts.getMeaningFromLocation(symbolToken), cancellationToken, sourceFile, checker, program).entries(), function (_a) {
+                var _ = _a[0], exportInfos = _a[1];
+                return getFixForImport(exportInfos, symbolName, symbolToken.getStart(sourceFile), program, sourceFile, host, preferences);
+            }));
+            return { fixes: fixes, symbolName: symbolName };
+        }
+        // Returns a map from an exported symbol's ID to a list of every way it's (re-)exported.
+        function getExportInfos(symbolName, currentTokenMeaning, cancellationToken, sourceFile, checker, program) {
+            // For each original symbol, keep all re-exports of that symbol together so we can call `getCodeActionsForImport` on the whole group at once.
+            // Maps symbol id to info for modules providing that symbol (original export + re-exports).
+            var originalSymbolToExportInfos = ts.createMultiMap();
+            function addSymbol(moduleSymbol, exportedSymbol, importKind) {
+                originalSymbolToExportInfos.add(ts.getUniqueSymbolId(exportedSymbol, checker).toString(), { moduleSymbol: moduleSymbol, importKind: importKind, exportedSymbolIsTypeOnly: isTypeOnlySymbol(exportedSymbol, checker) });
+            }
+            forEachExternalModuleToImportFrom(checker, sourceFile, program.getSourceFiles(), function (moduleSymbol) {
+                cancellationToken.throwIfCancellationRequested();
+                var defaultInfo = getDefaultLikeExportInfo(moduleSymbol, checker, program.getCompilerOptions());
+                if (defaultInfo && defaultInfo.name === symbolName && symbolHasMeaning(defaultInfo.symbolForMeaning, currentTokenMeaning)) {
+                    addSymbol(moduleSymbol, defaultInfo.symbol, defaultInfo.kind);
+                }
+                // check exports with the same name
+                var exportSymbolWithIdenticalName = checker.tryGetMemberInModuleExportsAndProperties(symbolName, moduleSymbol);
+                if (exportSymbolWithIdenticalName && symbolHasMeaning(exportSymbolWithIdenticalName, currentTokenMeaning)) {
+                    addSymbol(moduleSymbol, exportSymbolWithIdenticalName, 0 /* Named */);
+                }
+            });
+            return originalSymbolToExportInfos;
+        }
+        function getDefaultLikeExportInfo(moduleSymbol, checker, compilerOptions) {
+            var exported = getDefaultLikeExportWorker(moduleSymbol, checker);
+            if (!exported)
+                return undefined;
+            var symbol = exported.symbol, kind = exported.kind;
+            var info = getDefaultExportInfoWorker(symbol, moduleSymbol, checker, compilerOptions);
+            return info && __assign({ symbol: symbol, kind: kind }, info);
+        }
+        function getDefaultLikeExportWorker(moduleSymbol, checker) {
+            var defaultExport = checker.tryGetMemberInModuleExports("default" /* Default */, moduleSymbol);
+            if (defaultExport)
+                return { symbol: defaultExport, kind: 1 /* Default */ };
+            var exportEquals = checker.resolveExternalModuleSymbol(moduleSymbol);
+            return exportEquals === moduleSymbol ? undefined : { symbol: exportEquals, kind: 3 /* Equals */ };
+        }
+        function getDefaultExportInfoWorker(defaultExport, moduleSymbol, checker, compilerOptions) {
+            var localSymbol = ts.getLocalSymbolForExportDefault(defaultExport);
+            if (localSymbol)
+                return { symbolForMeaning: localSymbol, name: localSymbol.name };
+            var name = getNameForExportDefault(defaultExport);
+            if (name !== undefined)
+                return { symbolForMeaning: defaultExport, name: name };
+            if (defaultExport.flags & 2097152 /* Alias */) {
+                var aliased = checker.getImmediateAliasedSymbol(defaultExport);
+                return aliased && getDefaultExportInfoWorker(aliased, ts.Debug.assertDefined(aliased.parent), checker, compilerOptions);
+            }
+            else {
+                return { symbolForMeaning: defaultExport, name: moduleSymbolToValidIdentifier(moduleSymbol, compilerOptions.target) };
+            }
+        }
+        function getNameForExportDefault(symbol) {
+            return symbol.declarations && ts.firstDefined(symbol.declarations, function (declaration) {
+                if (ts.isExportAssignment(declaration)) {
+                    if (ts.isIdentifier(declaration.expression)) {
+                        return declaration.expression.text;
+                    }
+                }
+                else if (ts.isExportSpecifier(declaration)) {
+                    ts.Debug.assert(declaration.name.text === "default" /* Default */);
+                    return declaration.propertyName && declaration.propertyName.text;
+                }
+            });
+        }
+        function codeActionForFix(context, sourceFile, symbolName, fix, quotePreference) {
+            var diag;
+            var changes = ts.textChanges.ChangeTracker.with(context, function (tracker) {
+                diag = codeActionForFixWorker(tracker, sourceFile, symbolName, fix, quotePreference);
+            });
+            return codefix.createCodeFixAction("import", changes, diag, codefix.importFixId, ts.Diagnostics.Add_all_missing_imports);
+        }
+        function codeActionForFixWorker(changes, sourceFile, symbolName, fix, quotePreference) {
+            switch (fix.kind) {
+                case 0 /* UseNamespace */:
+                    addNamespaceQualifier(changes, sourceFile, fix);
+                    return [ts.Diagnostics.Change_0_to_1, symbolName, fix.namespacePrefix + "." + symbolName];
+                case 1 /* ImportType */:
+                    addImportType(changes, sourceFile, fix, quotePreference);
+                    return [ts.Diagnostics.Change_0_to_1, symbolName, getImportTypePrefix(fix.moduleSpecifier, quotePreference) + symbolName];
+                case 2 /* AddToExisting */: {
+                    var importClause = fix.importClause, importKind = fix.importKind;
+                    doAddExistingFix(changes, sourceFile, importClause, importKind === 1 /* Default */ ? symbolName : undefined, importKind === 0 /* Named */ ? [symbolName] : ts.emptyArray);
+                    var moduleSpecifierWithoutQuotes = ts.stripQuotes(importClause.parent.moduleSpecifier.getText());
+                    return [importKind === 1 /* Default */ ? ts.Diagnostics.Add_default_import_0_to_existing_import_declaration_from_1 : ts.Diagnostics.Add_0_to_existing_import_declaration_from_1, symbolName, moduleSpecifierWithoutQuotes]; // you too!
+                }
+                case 3 /* AddNew */: {
+                    var importKind = fix.importKind, moduleSpecifier = fix.moduleSpecifier;
+                    addNewImports(changes, sourceFile, moduleSpecifier, quotePreference, importKind === 1 /* Default */ ? { defaultImport: symbolName, namedImports: ts.emptyArray, namespaceLikeImport: undefined }
+                        : importKind === 0 /* Named */ ? { defaultImport: undefined, namedImports: [symbolName], namespaceLikeImport: undefined }
+                            : { defaultImport: undefined, namedImports: ts.emptyArray, namespaceLikeImport: { importKind: importKind, name: symbolName } });
+                    return [importKind === 1 /* Default */ ? ts.Diagnostics.Import_default_0_from_module_1 : ts.Diagnostics.Import_0_from_module_1, symbolName, moduleSpecifier];
+                }
+                default:
+                    return ts.Debug.assertNever(fix);
+            }
+        }
+        function doAddExistingFix(changes, sourceFile, clause, defaultImport, namedImports) {
+            if (defaultImport) {
+                ts.Debug.assert(!clause.name);
+                changes.insertNodeAt(sourceFile, clause.getStart(sourceFile), ts.createIdentifier(defaultImport), { suffix: ", " });
+            }
+            if (namedImports.length) {
+                var specifiers = namedImports.map(function (name) { return ts.createImportSpecifier(/*propertyName*/ undefined, ts.createIdentifier(name)); });
+                if (clause.namedBindings && ts.cast(clause.namedBindings, ts.isNamedImports).elements.length) {
+                    for (var _i = 0, specifiers_1 = specifiers; _i < specifiers_1.length; _i++) {
+                        var spec = specifiers_1[_i];
+                        changes.insertNodeInListAfter(sourceFile, ts.last(ts.cast(clause.namedBindings, ts.isNamedImports).elements), spec);
+                    }
+                }
+                else {
+                    if (specifiers.length) {
+                        var namedImports_1 = ts.createNamedImports(specifiers);
+                        if (clause.namedBindings) {
+                            changes.replaceNode(sourceFile, clause.namedBindings, namedImports_1);
+                        }
+                        else {
+                            changes.insertNodeAfter(sourceFile, ts.Debug.assertDefined(clause.name), namedImports_1);
+                        }
+                    }
+                }
+            }
+        }
+        function addNamespaceQualifier(changes, sourceFile, _a) {
+            var namespacePrefix = _a.namespacePrefix, position = _a.position;
+            changes.insertText(sourceFile, position, namespacePrefix + ".");
+        }
+        function addImportType(changes, sourceFile, _a, quotePreference) {
+            var moduleSpecifier = _a.moduleSpecifier, position = _a.position;
+            changes.insertText(sourceFile, position, getImportTypePrefix(moduleSpecifier, quotePreference));
+        }
+        function getImportTypePrefix(moduleSpecifier, quotePreference) {
+            var quote = ts.getQuoteFromPreference(quotePreference);
+            return "import(" + quote + moduleSpecifier + quote + ").";
+        }
+        function addNewImports(changes, sourceFile, moduleSpecifier, quotePreference, _a) {
+            var defaultImport = _a.defaultImport, namedImports = _a.namedImports, namespaceLikeImport = _a.namespaceLikeImport;
+            var quotedModuleSpecifier = ts.makeStringLiteral(moduleSpecifier, quotePreference);
+            if (defaultImport !== undefined || namedImports.length) {
+                ts.insertImport(changes, sourceFile, ts.makeImport(defaultImport === undefined ? undefined : ts.createIdentifier(defaultImport), namedImports.map(function (n) { return ts.createImportSpecifier(/*propertyName*/ undefined, ts.createIdentifier(n)); }), moduleSpecifier, quotePreference));
+            }
+            if (namespaceLikeImport) {
+                ts.insertImport(changes, sourceFile, namespaceLikeImport.importKind === 3 /* Equals */
+                    ? ts.createImportEqualsDeclaration(/*decorators*/ undefined, /*modifiers*/ undefined, ts.createIdentifier(namespaceLikeImport.name), ts.

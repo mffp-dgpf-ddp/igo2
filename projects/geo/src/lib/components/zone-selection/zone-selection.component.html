@@ -1,0 +1,63 @@
+<!--<mat-toolbar class="md-padding">
+  <div class="md-toolbar-tools">
+    <h3 flex>
+      Sélectionner la zone de recherche
+    </h3>
+  </div>
+</mat-toolbar> -->
+<mat-sidenav-container>
+  <igo-map-browser 
+    #mapBrowser 
+    igoLayerContext
+    igoMapContext
+    [map]="map_" >
+
+    <igo-zoom-button [map]="map_" color="primary">
+    </igo-zoom-button>
+    <igo-geolocate-button [map]="map_" color="primary">
+    </igo-geolocate-button>
+    <igo-rotation-button [map]="map_" color="primary"></igo-rotation-button>
+    <igo-user-button [map]="map_" color="primary">
+    </igo-user-button>
+    <igo-baselayers-switcher [map]="map_" 
+    [useStaticIcon]="true"
+    [useStaticIcon]="true">
+    </igo-baselayers-switcher>
+  </igo-map-browser>
+<!--
+  <app-map-overlay
+    [@controlStateX]="(mediaService.media$ | async) !== 'mobile' &&
+                            sidenavOpened ? 'right' : 'left'">
+  </app-map-overlay>
+</mat-sidenav-container>
+-->
+<!--<ng-template #contextMenu>
+  <igo-actionbar
+    [store]="contextMenuStore"
+    [withIcon]="false"
+    [horizontal]="true"
+    mode="context">
+  </igo-actionbar>
+</ng-template> -->
+<!--
+<mat-toolbar>
+  <button class="footer-button" id='btmFooter' mat-stroked-button color="primary">Annuler</button>
+  <button class="footer-button " id='btmFooter' mat-stroked-button color="primary">Sélectionner</button>
+</mat-toolbar> -->
+
+
+
+
+<!--
+<ion-footer>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-6>
+        <ion-button fill="outline" expand="block" color="primary" (click)="close()">Annuler</ion-button>
+      </ion-col>
+      <ion-col col-6>
+        <ion-button fill="outline" expand="block" color="primary" (click)="selectZone()">Sélectionner</ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-footer> -->

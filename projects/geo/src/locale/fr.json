@@ -1,0 +1,33 @@
+{
+  "welcome": "Bienvenue dans IGO",
+  "menu": {
+    "close": "Fermer le menu",
+    "open": "Menu"
+  },
+  "toastPanel": {
+    "title": "Entités trouvées sur la carte",
+    "listButton": "Retourner à la liste des entités",
+    "backToList": "Retourner à la liste",
+    "zoomOnFeature": "Zoom sur l'élément",
+    "zoomOnFeatureTooltip": "Zoomer sur l'élément sélectionné ( raccouci clavier = z )",
+    "zoomOnFeatures": "Zoom sur les éléments",
+    "zoomOnFeaturesTooltip": "Zoomer sur les éléments sélectionnés",
+    "zoomAuto": "Zoom auto",
+    "zoomAutoTooltip": "Zoom automatique",
+    "fullExtent": "Agrandir",
+    "fullExtentTooltip": "Agrandir la fenêtre",
+    "standardExtent": "Réduire",
+    "standardExtentTooltip": "Réduire la fenêtre",
+    "previousFeatureTooltip": "Élément précédent ( raccouci clavier = flèche gauche )",
+    "nextFeatureTooltip": "Prochain élément ( raccouci clavier = flèche droite )"
+  },
+  "IGO": "IGO",
+  "noEntityStore": "Aucune table disponible pour ce jeu de données",
+  "coordinates": "Afficher les coordonnées",
+  "googleMap": "Afficher sur Google maps",
+  "googleStreetView": "Afficher sur Google Street view",
+  "oldBrowser": {
+    "title": "Navigateur obsolète",
+    "message": "IGO2 ne supporte pas pleinement votre navigateur. Veuillez le mettre à jour ou utilisez un navigateur différent."
+  }
+}

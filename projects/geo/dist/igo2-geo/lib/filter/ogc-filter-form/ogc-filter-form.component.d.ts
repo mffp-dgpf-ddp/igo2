@@ -1,0 +1,41 @@
+import { OnInit } from '@angular/core';
+import { OgcInterfaceFilterOptions, OgcFilterableDataSource } from '../../filter/shared/ogc-filter.interface';
+import { WktService } from '../../wkt/shared/wkt.service';
+import { IgoMap } from '../../map';
+import { FloatLabelType } from '@angular/material';
+import { BehaviorSubject } from 'rxjs';
+import { SourceFieldsOptionsParams } from '../../datasource/shared/datasources/datasource.interface';
+export declare class OgcFilterFormComponent implements OnInit {
+    private wktService;
+    allOgcFilterOperators: any;
+    ogcFilterOperators$: BehaviorSubject<{
+        [key: string]: any;
+    }>;
+    igoSpatialSelectors: any;
+    value: string;
+    inputOperator: any;
+    fields$: BehaviorSubject<SourceFieldsOptionsParams[]>;
+    values: any[];
+    color: string;
+    snrc: string;
+    disabled: any;
+    baseOverlayName: string;
+    currentFilter$: BehaviorSubject<any>;
+    refreshFilters: () => void;
+    datasource: OgcFilterableDataSource;
+    map: IgoMap;
+    currentFilter: any;
+    floatLabel: FloatLabelType;
+    readonly activeFilters: OgcInterfaceFilterOptions[];
+    constructor(wktService: WktService);
+    ngOnInit(): void;
+    updateField(): void;
+    toggleFilterState(event: any, filter: OgcInterfaceFilterOptions, property: any): void;
+    deleteFilter(filter: OgcInterfaceFilterOptions): void;
+    changeNumericProperty(filter: OgcInterfaceFilterOptions, property: any, value: any): void;
+    private removeOverlayByID;
+    changeOperator(filter: any): void;
+    changeCaseSensitive(matchCase: any): void;
+    changeProperty(filter: OgcInterfaceFilterOptions, property: any, value: any): void;
+    changeGeometry(filter: any, value?: any): void;
+}

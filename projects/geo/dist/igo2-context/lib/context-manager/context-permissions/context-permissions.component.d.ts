@@ -1,0 +1,32 @@
+import { EventEmitter, OnInit, ChangeDetectorRef } from '@angular/core';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { Context, ContextPermission, ContextPermissionsList, ContextProfils } from '../shared/context.interface';
+import { HttpClient } from '@angular/common/http';
+import { Subscription } from 'rxjs';
+import { AuthService } from '@igo2/auth';
+export declare class ContextPermissionsComponent implements OnInit {
+    private formBuilder;
+    private cd;
+    private http;
+    authService: AuthService;
+    form: FormGroup;
+    context: Context;
+    private _context;
+    permissions: ContextPermissionsList;
+    private _permissions;
+    profils: ContextProfils[];
+    private _profils;
+    readonly canWrite: boolean;
+    private baseUrlProfils;
+    formControl: FormControl;
+    formValueChanges$$: Subscription;
+    addPermission: EventEmitter<ContextPermission>;
+    removePermission: EventEmitter<ContextPermission>;
+    scopeChanged: EventEmitter<Context>;
+    constructor(formBuilder: FormBuilder, cd: ChangeDetectorRef, http: HttpClient, authService: AuthService);
+    ngOnInit(): void;
+    displayFn(profil?: ContextProfils): string | undefined;
+    handleFormSubmit(value: any): void;
+    private buildForm;
+    onProfilSelected(value: any): void;
+}

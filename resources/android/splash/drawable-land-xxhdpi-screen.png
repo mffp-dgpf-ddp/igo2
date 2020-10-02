@@ -1,0 +1,1023 @@
+                     else {
+                                if (patternElement.kind !== 205) {
+                                    error(patternElement, ts.Diagnostics.Initializer_provides_no_value_for_this_binding_element_and_the_binding_element_has_no_default_value);
+                                }
+                                elementTypes.push(strictNullChecks ? implicitNeverType : undefinedWideningType);
+                            }
+                        }
+                    }
+                    if (elementTypes.length) {
+                        return createTupleType(elementTypes);
+                    }
+                }
+            }
+            return createArrayType(elementTypes.length ?
+                getUnionType(elementTypes, 2) :
+                strictNullChecks ? implicitNeverType : undefinedWideningType);
+        }
+        function isNumericName(name) {
+            switch (name.kind) {
+                case 146:
+                    return isNumericComputedName(name);
+                case 71:
+                    return isNumericLiteralName(name.escapedText);
+                case 8:
+                case 9:
+                    return isNumericLiteralName(name.text);
+                default:
+                    return false;
+            }
+        }
+        function isNumericComputedName(name) {
+            return isTypeAssignableToKind(checkComputedPropertyName(name), 84);
+        }
+        function isInfinityOrNaNString(name) {
+            return name === "Infinity" || name === "-Infinity" || name === "NaN";
+        }
+        function isNumericLiteralName(name) {
+            return (+name).toString() === name;
+        }
+        function checkComputedPropertyName(node) {
+            var links = getNodeLinks(node.expression);
+            if (!links.resolvedType) {
+                links.resolvedType = checkExpression(node.expression);
+                if (links.resolvedType.flags & 12288 ||
+                    !isTypeAssignableToKind(links.resolvedType, 34 | 84 | 1536) &&
+                        !isTypeAssignableTo(links.resolvedType, stringNumberSymbolType)) {
+                    error(node, ts.Diagnostics.A_computed_property_name_must_be_of_type_string_number_symbol_or_any);
+                }
+                else {
+                    checkThatExpressionIsProperSymbolReference(node.expression, links.resolvedType, true);
+                }
+            }
+            return links.resolvedType;
+        }
+        function getObjectLiteralIndexInfo(propertyNodes, offset, properties, kind) {
+            var propTypes = [];
+            for (var i = 0; i < properties.length; i++) {
+                if (kind === 0 || isNumericName(propertyNodes[i + offset].name)) {
+                    propTypes.push(getTypeOfSymbol(properties[i]));
+                }
+            }
+            var unionType = propTypes.length ? getUnionType(propTypes, 2) : undefinedType;
+            return createIndexInfo(unionType, false);
+        }
+        function checkObjectLiteral(node, checkMode) {
+            var inDestructuringPattern = ts.isAssignmentTarget(node);
+            checkGrammarObjectLiteralExpression(node, inDestructuringPattern);
+            var propertiesTable;
+            var propertiesArray = [];
+            var spread = emptyObjectType;
+            var propagatedFlags = 8388608;
+            var contextualType = getApparentTypeOfContextualType(node);
+            var contextualTypeHasPattern = contextualType && contextualType.pattern &&
+                (contextualType.pattern.kind === 179 || contextualType.pattern.kind === 183);
+            var isInJSFile = ts.isInJavaScriptFile(node) && !ts.isInJsonFile(node);
+            var isJSObjectLiteral = !contextualType && isInJSFile;
+            var typeFlags = 0;
+            var patternWithComputedProperties = false;
+            var hasComputedStringProperty = false;
+            var hasComputedNumberProperty = false;
+            if (isInJSFile && node.properties.length === 0) {
+                var symbol = getSymbolOfNode(node);
+                if (symbol.exports) {
+                    propertiesTable = symbol.exports;
+                    symbol.exports.forEach(function (symbol) { return propertiesArray.push(getMergedSymbol(symbol)); });
+                    return createObjectLiteralType();
+                }
+            }
+            propertiesTable = ts.createSymbolTable();
+            var offset = 0;
+            for (var i = 0; i < node.properties.length; i++) {
+                var memberDecl = node.properties[i];
+                var member = getSymbolOfNode(memberDecl);
+                var computedNameType = memberDecl.name && memberDecl.name.kind === 146 && !ts.isWellKnownSymbolSyntactically(memberDecl.name.expression) ?
+                    checkComputedPropertyName(memberDecl.name) : undefined;
+                if (memberDecl.kind === 269 ||
+                    memberDecl.kind === 270 ||
+                    ts.isObjectLiteralMethod(memberDecl)) {
+                    var type = memberDecl.kind === 269 ? checkPropertyAssignment(memberDecl, checkMode) :
+                        memberDecl.kind === 270 ? checkExpressionForMutableLocation(memberDecl.name, checkMode) :
+                            checkObjectLiteralMethod(memberDecl, checkMode);
+                    if (isInJSFile) {
+                        var jsDocType = getTypeForDeclarationFromJSDocComment(memberDecl);
+                        if (jsDocType) {
+                            checkTypeAssignableTo(type, jsDocType, memberDecl);
+                            type = jsDocType;
+                        }
+                    }
+                    typeFlags |= type.flags;
+                    var nameType = computedNameType && computedNameType.flags & 1120 ?
+                        computedNameType : undefined;
+                    var prop = nameType ?
+                        createSymbol(4 | member.flags, getLateBoundNameFromType(nameType), 1024) :
+                        createSymbol(4 | member.flags, member.escapedName);
+                    if (nameType) {
+                        prop.nameType = nameType;
+                    }
+                    if (inDestructuringPattern) {
+                        var isOptional = (memberDecl.kind === 269 && hasDefaultValue(memberDecl.initializer)) ||
+                            (memberDecl.kind === 270 && memberDecl.objectAssignmentInitializer);
+                        if (isOptional) {
+                            prop.flags |= 16777216;
+                        }
+                    }
+                    else if (contextualTypeHasPattern && !(ts.getObjectFlags(contextualType) & 512)) {
+                        var impliedProp = getPropertyOfType(contextualType, member.escapedName);
+                        if (impliedProp) {
+                            prop.flags |= impliedProp.flags & 16777216;
+                        }
+                        else if (!compilerOptions.suppressExcessPropertyErrors && !getIndexInfoOfType(contextualType, 0)) {
+                            error(memberDecl.name, ts.Diagnostics.Object_literal_may_only_specify_known_properties_and_0_does_not_exist_in_type_1, symbolToString(member), typeToString(contextualType));
+                        }
+                    }
+                    prop.declarations = member.declarations;
+                    prop.parent = member.parent;
+                    if (member.valueDeclaration) {
+                        prop.valueDeclaration = member.valueDeclaration;
+                    }
+                    prop.type = type;
+                    prop.target = member;
+                    member = prop;
+                }
+                else if (memberDecl.kind === 271) {
+                    if (languageVersion < 2) {
+                        checkExternalEmitHelpers(memberDecl, 2);
+                    }
+                    if (propertiesArray.length > 0) {
+                        spread = getSpreadType(spread, createObjectLiteralType(), node.symbol, propagatedFlags, 0);
+                        propertiesArray = [];
+                        propertiesTable = ts.createSymbolTable();
+                        hasComputedStringProperty = false;
+                        hasComputedNumberProperty = false;
+                        typeFlags = 0;
+                    }
+                    var type = checkExpression(memberDecl.expression);
+                    if (!isValidSpreadType(type)) {
+                        error(memberDecl, ts.Diagnostics.Spread_types_may_only_be_created_from_object_types);
+                        return unknownType;
+                    }
+                    spread = getSpreadType(spread, type, node.symbol, propagatedFlags, 0);
+                    offset = i + 1;
+                    continue;
+                }
+                else {
+                    ts.Debug.assert(memberDecl.kind === 155 || memberDecl.kind === 156);
+                    checkNodeDeferred(memberDecl);
+                }
+                if (computedNameType && !(computedNameType.flags & 1120)) {
+                    if (isTypeAssignableTo(computedNameType, stringNumberSymbolType)) {
+                        if (isTypeAssignableTo(computedNameType, numberType)) {
+                            hasComputedNumberProperty = true;
+                        }
+                        else {
+                            hasComputedStringProperty = true;
+                        }
+                        if (inDestructuringPattern) {
+                            patternWithComputedProperties = true;
+                        }
+                    }
+                }
+                else {
+                    propertiesTable.set(member.escapedName, member);
+                }
+                propertiesArray.push(member);
+            }
+            if (contextualTypeHasPattern) {
+                for (var _i = 0, _a = getPropertiesOfType(contextualType); _i < _a.length; _i++) {
+                    var prop = _a[_i];
+                    if (!propertiesTable.get(prop.escapedName) && !(spread && getPropertyOfType(spread, prop.escapedName))) {
+                        if (!(prop.flags & 16777216)) {
+                            error(prop.valueDeclaration || prop.bindingElement, ts.Diagnostics.Initializer_provides_no_value_for_this_binding_element_and_the_binding_element_has_no_default_value);
+                        }
+                        propertiesTable.set(prop.escapedName, prop);
+                        propertiesArray.push(prop);
+                    }
+                }
+            }
+            if (spread !== emptyObjectType) {
+                if (propertiesArray.length > 0) {
+                    spread = getSpreadType(spread, createObjectLiteralType(), node.symbol, propagatedFlags, 0);
+                }
+                return spread;
+            }
+            return createObjectLiteralType();
+            function createObjectLiteralType() {
+                var stringIndexInfo = isJSObjectLiteral ? jsObjectLiteralIndexInfo : hasComputedStringProperty ? getObjectLiteralIndexInfo(node.properties, offset, propertiesArray, 0) : undefined;
+                var numberIndexInfo = hasComputedNumberProperty && !isJSObjectLiteral ? getObjectLiteralIndexInfo(node.properties, offset, propertiesArray, 1) : undefined;
+                var result = createAnonymousType(node.symbol, propertiesTable, ts.emptyArray, ts.emptyArray, stringIndexInfo, numberIndexInfo);
+                var freshObjectLiteralFlag = compilerOptions.suppressExcessPropertyErrors ? 0 : 8388608;
+                result.flags |= 33554432 | freshObjectLiteralFlag | (typeFlags & 117440512);
+                result.objectFlags |= 128;
+                if (patternWithComputedProperties) {
+                    result.objectFlags |= 512;
+                }
+                if (inDestructuringPattern) {
+                    result.pattern = node;
+                }
+                if (!(result.flags & 12288)) {
+                    propagatedFlags |= (result.flags & 117440512);
+                }
+                return result;
+            }
+        }
+        function isValidSpreadType(type) {
+            return !!(type.flags & (1 | 134217728) ||
+                getFalsyFlags(type) & 14560 && isValidSpreadType(removeDefinitelyFalsyTypes(type)) ||
+                type.flags & 65536 && !isGenericMappedType(type) ||
+                type.flags & 393216 && !ts.forEach(type.types, function (t) { return !isValidSpreadType(t); }));
+        }
+        function checkJsxSelfClosingElement(node, checkMode) {
+            checkJsxOpeningLikeElementOrOpeningFragment(node, checkMode);
+            return getJsxElementTypeAt(node) || anyType;
+        }
+        function checkJsxElement(node, checkMode) {
+            checkJsxOpeningLikeElementOrOpeningFragment(node.openingElement, checkMode);
+            if (isJsxIntrinsicIdentifier(node.closingElement.tagName)) {
+                getIntrinsicTagSymbol(node.closingElement);
+            }
+            else {
+                checkExpression(node.closingElement.tagName);
+            }
+            return getJsxElementTypeAt(node) || anyType;
+        }
+        function checkJsxFragment(node, checkMode) {
+            checkJsxOpeningLikeElementOrOpeningFragment(node.openingFragment, checkMode);
+            if (compilerOptions.jsx === 2 && (compilerOptions.jsxFactory || ts.getSourceFileOfNode(node).pragmas.has("jsx"))) {
+                error(node, compilerOptions.jsxFactory
+                    ? ts.Diagnostics.JSX_fragment_is_not_supported_when_using_jsxFactory
+                    : ts.Diagnostics.JSX_fragment_is_not_supported_when_using_an_inline_JSX_factory_pragma);
+            }
+            return getJsxElementTypeAt(node) || anyType;
+        }
+        function isUnhyphenatedJsxName(name) {
+            return !ts.stringContains(name, "-");
+        }
+        function isJsxIntrinsicIdentifier(tagName) {
+            switch (tagName.kind) {
+                case 184:
+                case 99:
+                    return false;
+                case 71:
+                    return ts.isIntrinsicJsxName(tagName.escapedText);
+                default:
+                    ts.Debug.fail();
+            }
+        }
+        function checkJsxAttribute(node, checkMode) {
+            return node.initializer
+                ? checkExpressionForMutableLocation(node.initializer, checkMode)
+                : trueType;
+        }
+        function createJsxAttributesTypeFromAttributesProperty(openingLikeElement, checkMode) {
+            var attributes = openingLikeElement.attributes;
+            var attributesTable = ts.createSymbolTable();
+            var spread = emptyObjectType;
+            var hasSpreadAnyType = false;
+            var typeToIntersect;
+            var explicitlySpecifyChildrenAttribute = false;
+            var jsxChildrenPropertyName = getJsxElementChildrenPropertyName(getJsxNamespaceAt(openingLikeElement));
+            for (var _i = 0, _a = attributes.properties; _i < _a.length; _i++) {
+                var attributeDecl = _a[_i];
+                var member = attributeDecl.symbol;
+                if (ts.isJsxAttribute(attributeDecl)) {
+                    var exprType = checkJsxAttribute(attributeDecl, checkMode);
+                    var attributeSymbol = createSymbol(4 | 33554432 | member.flags, member.escapedName);
+                    attributeSymbol.declarations = member.declarations;
+                    attributeSymbol.parent = member.parent;
+                    if (member.valueDeclaration) {
+                        attributeSymbol.valueDeclaration = member.valueDeclaration;
+                    }
+                    attributeSymbol.type = exprType;
+                    attributeSymbol.target = member;
+                    attributesTable.set(attributeSymbol.escapedName, attributeSymbol);
+                    if (attributeDecl.name.escapedText === jsxChildrenPropertyName) {
+                        explicitlySpecifyChildrenAttribute = true;
+                    }
+                }
+                else {
+                    ts.Debug.assert(attributeDecl.kind === 263);
+                    if (attributesTable.size > 0) {
+                        spread = getSpreadType(spread, createJsxAttributesType(), attributes.symbol, 0, 4096);
+                        attributesTable = ts.createSymbolTable();
+                    }
+                    var exprType = checkExpressionCached(attributeDecl.expression, checkMode);
+                    if (isTypeAny(exprType)) {
+                        hasSpreadAnyType = true;
+                    }
+                    if (isValidSpreadType(exprType)) {
+                        spread = getSpreadType(spread, exprType, openingLikeElement.symbol, 0, 4096);
+                    }
+                    else {
+                        typeToIntersect = typeToIntersect ? getIntersectionType([typeToIntersect, exprType]) : exprType;
+                    }
+                }
+            }
+            if (!hasSpreadAnyType) {
+                if (attributesTable.size > 0) {
+                    spread = getSpreadType(spread, createJsxAttributesType(), attributes.symbol, 0, 4096);
+                }
+            }
+            var parent = openingLikeElement.parent.kind === 254 ? openingLikeElement.parent : undefined;
+            if (parent && parent.openingElement === openingLikeElement && parent.children.length > 0) {
+                var childrenTypes = checkJsxChildren(parent, checkMode);
+                if (!hasSpreadAnyType && jsxChildrenPropertyName && jsxChildrenPropertyName !== "") {
+                    if (explicitlySpecifyChildrenAttribute) {
+                        error(attributes, ts.Diagnostics._0_are_specified_twice_The_attribute_named_0_will_be_overwritten, ts.unescapeLeadingUnderscores(jsxChildrenPropertyName));
+                    }
+                    var childrenPropSymbol = createSymbol(4 | 33554432, jsxChildrenPropertyName);
+                    childrenPropSymbol.type = childrenTypes.length === 1 ?
+                        childrenTypes[0] :
+                        createArrayType(getUnionType(childrenTypes));
+                    var childPropMap = ts.createSymbolTable();
+                    childPropMap.set(jsxChildrenPropertyName, childrenPropSymbol);
+                    spread = getSpreadType(spread, createAnonymousType(attributes.symbol, childPropMap, ts.emptyArray, ts.emptyArray, undefined, undefined), attributes.symbol, 0, 4096);
+                }
+            }
+            if (hasSpreadAnyType) {
+                return anyType;
+            }
+            if (typeToIntersect && spread !== emptyObjectType) {
+                return getIntersectionType([typeToIntersect, spread]);
+            }
+            return typeToIntersect || (spread === emptyObjectType ? createJsxAttributesType() : spread);
+            function createJsxAttributesType() {
+                var result = createAnonymousType(attributes.symbol, attributesTable, ts.emptyArray, ts.emptyArray, undefined, undefined);
+                result.flags |= 33554432;
+                result.objectFlags |= 128 | 4096;
+                return result;
+            }
+        }
+        function checkJsxChildren(node, checkMode) {
+            var childrenTypes = [];
+            for (var _i = 0, _a = node.children; _i < _a.length; _i++) {
+                var child = _a[_i];
+                if (child.kind === 10) {
+                    if (!child.containsOnlyWhiteSpaces) {
+                        childrenTypes.push(stringType);
+                    }
+                }
+                else {
+                    childrenTypes.push(checkExpressionForMutableLocation(child, checkMode));
+                }
+            }
+            return childrenTypes;
+        }
+        function checkJsxAttributes(node, checkMode) {
+            return createJsxAttributesTypeFromAttributesProperty(node.parent, checkMode);
+        }
+        function getJsxType(name, location) {
+            var namespace = getJsxNamespaceAt(location);
+            var exports = namespace && getExportsOfSymbol(namespace);
+            var typeSymbol = exports && getSymbol(exports, name, 67901928);
+            return typeSymbol ? getDeclaredTypeOfSymbol(typeSymbol) : unknownType;
+        }
+        function getIntrinsicTagSymbol(node) {
+            var links = getNodeLinks(node);
+            if (!links.resolvedSymbol) {
+                var intrinsicElementsType = getJsxType(JsxNames.IntrinsicElements, node);
+                if (intrinsicElementsType !== unknownType) {
+                    if (!ts.isIdentifier(node.tagName))
+                        return ts.Debug.fail();
+                    var intrinsicProp = getPropertyOfType(intrinsicElementsType, node.tagName.escapedText);
+                    if (intrinsicProp) {
+                        links.jsxFlags |= 1;
+                        return links.resolvedSymbol = intrinsicProp;
+                    }
+                    var indexSignatureType = getIndexTypeOfType(intrinsicElementsType, 0);
+                    if (indexSignatureType) {
+                        links.jsxFlags |= 2;
+                        return links.resolvedSymbol = intrinsicElementsType.symbol;
+                    }
+                    error(node, ts.Diagnostics.Property_0_does_not_exist_on_type_1, ts.idText(node.tagName), "JSX." + JsxNames.IntrinsicElements);
+                    return links.resolvedSymbol = unknownSymbol;
+                }
+                else {
+                    if (noImplicitAny) {
+                        error(node, ts.Diagnostics.JSX_element_implicitly_has_type_any_because_no_interface_JSX_0_exists, ts.unescapeLeadingUnderscores(JsxNames.IntrinsicElements));
+                    }
+                    return links.resolvedSymbol = unknownSymbol;
+                }
+            }
+            return links.resolvedSymbol;
+        }
+        function instantiateJsxSignatures(node, signatures) {
+            var instantiatedSignatures = [];
+            var candidateForTypeArgumentError;
+            var hasTypeArgumentError = !!node.typeArguments;
+            for (var _i = 0, signatures_3 = signatures; _i < signatures_3.length; _i++) {
+                var signature = signatures_3[_i];
+                if (signature.typeParameters) {
+                    var isJavascript = ts.isInJavaScriptFile(node);
+                    var typeArgumentInstantiated = getJsxSignatureTypeArgumentInstantiation(signature, node, isJavascript, false);
+                    if (typeArgumentInstantiated) {
+                        hasTypeArgumentError = false;
+                        instantiatedSignatures.push(typeArgumentInstantiated);
+                    }
+                    else {
+                        if (node.typeArguments && hasCorrectTypeArgumentArity(signature, node.typeArguments)) {
+                            candidateForTypeArgumentError = signature;
+                        }
+                        var inferenceContext = createInferenceContext(signature.typeParameters, signature, isJavascript ? 4 : 0);
+                        var typeArguments = inferJsxTypeArguments(signature, node, inferenceContext);
+                        instantiatedSignatures.push(getSignatureInstantiation(signature, typeArguments, isJavascript));
+                    }
+                }
+                else {
+                    instantiatedSignatures.push(signature);
+                }
+            }
+            if (node.typeArguments && hasTypeArgumentError) {
+                if (candidateForTypeArgumentError) {
+                    checkTypeArguments(candidateForTypeArgumentError, node.typeArguments, true);
+                }
+                else if (node.typeArguments.length !== 0) {
+                    diagnostics.add(getTypeArgumentArityError(node, signatures, node.typeArguments));
+                }
+            }
+            return instantiatedSignatures;
+        }
+        function getJsxSignatureTypeArgumentInstantiation(signature, node, isJavascript, reportErrors) {
+            if (!node.typeArguments) {
+                return;
+            }
+            if (!hasCorrectTypeArgumentArity(signature, node.typeArguments)) {
+                return;
+            }
+            var args = checkTypeArguments(signature, node.typeArguments, reportErrors);
+            if (!args) {
+                return;
+            }
+            return getSignatureInstantiation(signature, args, isJavascript);
+        }
+        function getJsxNamespaceAt(location) {
+            var namespaceName = getJsxNamespace(location);
+            var resolvedNamespace = resolveName(location, namespaceName, 1920, undefined, namespaceName, false);
+            if (resolvedNamespace) {
+                var candidate = getSymbol(getExportsOfSymbol(resolveSymbol(resolvedNamespace)), JsxNames.JSX, 1920);
+                if (candidate) {
+                    return candidate;
+                }
+            }
+            return getGlobalSymbol(JsxNames.JSX, 1920, undefined);
+        }
+        function getNameFromJsxElementAttributesContainer(nameOfAttribPropContainer, jsxNamespace) {
+            var jsxElementAttribPropInterfaceSym = jsxNamespace && getSymbol(jsxNamespace.exports, nameOfAttribPropContainer, 67901928);
+            var jsxElementAttribPropInterfaceType = jsxElementAttribPropInterfaceSym && getDeclaredTypeOfSymbol(jsxElementAttribPropInterfaceSym);
+            var propertiesOfJsxElementAttribPropInterface = jsxElementAttribPropInterfaceType && getPropertiesOfType(jsxElementAttribPropInterfaceType);
+            if (propertiesOfJsxElementAttribPropInterface) {
+                if (propertiesOfJsxElementAttribPropInterface.length === 0) {
+                    return "";
+                }
+                else if (propertiesOfJsxElementAttribPropInterface.length === 1) {
+                    return propertiesOfJsxElementAttribPropInterface[0].escapedName;
+                }
+                else if (propertiesOfJsxElementAttribPropInterface.length > 1) {
+                    error(jsxElementAttribPropInterfaceSym.declarations[0], ts.Diagnostics.The_global_type_JSX_0_may_not_have_more_than_one_property, ts.unescapeLeadingUnderscores(nameOfAttribPropContainer));
+                }
+            }
+            return undefined;
+        }
+        function getJsxElementPropertiesName(jsxNamespace) {
+            return getNameFromJsxElementAttributesContainer(JsxNames.ElementAttributesPropertyNameContainer, jsxNamespace);
+        }
+        function getJsxElementChildrenPropertyName(jsxNamespace) {
+            return getNameFromJsxElementAttributesContainer(JsxNames.ElementChildrenAttributeNameContainer, jsxNamespace);
+        }
+        function getApparentTypeOfJsxPropsType(propsType) {
+            if (!propsType) {
+                return undefined;
+            }
+            if (propsType.flags & 262144) {
+                var propsApparentType = [];
+                for (var _i = 0, _a = propsType.types; _i < _a.length; _i++) {
+                    var t = _a[_i];
+                    propsApparentType.push(getApparentType(t));
+                }
+                return getIntersectionType(propsApparentType);
+            }
+            return getApparentType(propsType);
+        }
+        function defaultTryGetJsxStatelessFunctionAttributesType(openingLikeElement, elementType, elemInstanceType, elementClassType) {
+            ts.Debug.assert(!(elementType.flags & 131072));
+            if (!elementClassType || !isTypeAssignableTo(elemInstanceType, elementClassType)) {
+                var jsxStatelessElementType = getJsxStatelessElementTypeAt(openingLikeElement);
+                if (jsxStatelessElementType) {
+                    var callSignature = getResolvedJsxStatelessFunctionSignature(openingLikeElement, elementType, undefined);
+                    if (callSignature !== unknownSignature) {
+                        var callReturnType = callSignature && getReturnTypeOfSignature(callSignature);
+                        var paramType = callReturnType && (callSignature.parameters.length === 0 ? emptyObjectType : getTypeOfSymbol(callSignature.parameters[0]));
+                        paramType = getApparentTypeOfJsxPropsType(paramType);
+                        if (callReturnType && isTypeAssignableTo(callReturnType, jsxStatelessElementType)) {
+                            var intrinsicAttributes = getJsxType(JsxNames.IntrinsicAttributes, openingLikeElement);
+                            if (intrinsicAttributes !== unknownType) {
+                                paramType = intersectTypes(intrinsicAttributes, paramType);
+                            }
+                            return paramType;
+                        }
+                    }
+                }
+            }
+            return undefined;
+        }
+        function tryGetAllJsxStatelessFunctionAttributesType(openingLikeElement, elementType, elemInstanceType, elementClassType) {
+            ts.Debug.assert(!(elementType.flags & 131072));
+            if (!elementClassType || !isTypeAssignableTo(elemInstanceType, elementClassType)) {
+                var jsxStatelessElementType = getJsxStatelessElementTypeAt(openingLikeElement);
+                if (jsxStatelessElementType) {
+                    var candidatesOutArray = [];
+                    getResolvedJsxStatelessFunctionSignature(openingLikeElement, elementType, candidatesOutArray);
+                    var result = void 0;
+                    var allMatchingAttributesType = void 0;
+                    for (var _i = 0, candidatesOutArray_1 = candidatesOutArray; _i < candidatesOutArray_1.length; _i++) {
+                        var candidate = candidatesOutArray_1[_i];
+                        var callReturnType = getReturnTypeOfSignature(candidate);
+                        var paramType = callReturnType && (candidate.parameters.length === 0 ? emptyObjectType : getTypeOfSymbol(candidate.parameters[0]));
+                        paramType = getApparentTypeOfJsxPropsType(paramType);
+                        if (callReturnType && isTypeAssignableTo(callReturnType, jsxStatelessElementType)) {
+                            var shouldBeCandidate = true;
+                            for (var _a = 0, _b = openingLikeElement.attributes.properties; _a < _b.length; _a++) {
+                                var attribute = _b[_a];
+                                if (ts.isJsxAttribute(attribute) &&
+                                    isUnhyphenatedJsxName(attribute.name.escapedText) &&
+                                    !getPropertyOfType(paramType, attribute.name.escapedText)) {
+                                    shouldBeCandidate = false;
+                                    break;
+                                }
+                            }
+                            if (shouldBeCandidate) {
+                                result = intersectTypes(result, paramType);
+                            }
+                            allMatchingAttributesType = intersectTypes(allMatchingAttributesType, paramType);
+                        }
+                    }
+                    if (!result) {
+                        result = allMatchingAttributesType;
+                    }
+                    var intrinsicAttributes = getJsxType(JsxNames.IntrinsicAttributes, openingLikeElement);
+                    if (intrinsicAttributes !== unknownType) {
+                        result = intersectTypes(intrinsicAttributes, result);
+                    }
+                    return result;
+                }
+            }
+            return undefined;
+        }
+        function getInstantiatedJsxSignatures(openingLikeElement, elementType, reportErrors) {
+            var links = getNodeLinks(openingLikeElement);
+            if (!links.resolvedSignatures) {
+                links.resolvedSignatures = ts.createMap();
+            }
+            var cacheKey = "" + getTypeId(elementType);
+            if (links.resolvedSignatures.get(cacheKey) && links.resolvedSignatures.get(cacheKey) === resolvingSignaturesArray) {
+                return;
+            }
+            else if (links.resolvedSignatures.get(cacheKey)) {
+                return links.resolvedSignatures.get(cacheKey);
+            }
+            links.resolvedSignatures.set(cacheKey, resolvingSignaturesArray);
+            var signatures = getSignaturesOfType(elementType, 1);
+            if (signatures.length === 0) {
+                signatures = getSignaturesOfType(elementType, 0);
+                if (signatures.length === 0) {
+                    if (reportErrors) {
+                        error(openingLikeElement.tagName, ts.Diagnostics.JSX_element_type_0_does_not_have_any_construct_or_call_signatures, ts.getTextOfNode(openingLikeElement.tagName));
+                    }
+                    return;
+                }
+            }
+            var results = instantiateJsxSignatures(openingLikeElement, signatures);
+            links.resolvedSignatures.set(cacheKey, results);
+            return results;
+        }
+        function resolveCustomJsxElementAttributesType(openingLikeElement, shouldIncludeAllStatelessAttributesType, elementType, elementClassType) {
+            if (elementType.flags & 131072) {
+                var types = elementType.types;
+                return getUnionType(types.map(function (type) {
+                    return resolveCustomJsxElementAttributesType(openingLikeElement, shouldIncludeAllStatelessAttributesType, type, elementClassType);
+                }), 2);
+            }
+            if (isTypeAny(elementType)) {
+                return elementType;
+            }
+            else if (elementType.flags & 2) {
+                return anyType;
+            }
+            else if (elementType.flags & 32) {
+                var intrinsicElementsType = getJsxType(JsxNames.IntrinsicElements, openingLikeElement);
+                if (intrinsicElementsType !== unknownType) {
+                    var stringLiteralTypeName = elementType.value;
+                    var intrinsicProp = getPropertyOfType(intrinsicElementsType, ts.escapeLeadingUnderscores(stringLiteralTypeName));
+                    if (intrinsicProp) {
+                        return getTypeOfSymbol(intrinsicProp);
+                    }
+                    var indexSignatureType = getIndexTypeOfType(intrinsicElementsType, 0);
+                    if (indexSignatureType) {
+                        return indexSignatureType;
+                    }
+                    error(openingLikeElement, ts.Diagnostics.Property_0_does_not_exist_on_type_1, stringLiteralTypeName, "JSX." + JsxNames.IntrinsicElements);
+                }
+                return anyType;
+            }
+            var instantiatedSignatures = getInstantiatedJsxSignatures(openingLikeElement, elementType, true);
+            if (!ts.length(instantiatedSignatures)) {
+                return unknownType;
+            }
+            var elemInstanceType = getUnionType(ts.map(instantiatedSignatures, getReturnTypeOfSignature), 2);
+            var statelessAttributesType = shouldIncludeAllStatelessAttributesType ?
+                tryGetAllJsxStatelessFunctionAttributesType(openingLikeElement, elementType, elemInstanceType, elementClassType) :
+                defaultTryGetJsxStatelessFunctionAttributesType(openingLikeElement, elementType, elemInstanceType, elementClassType);
+            if (statelessAttributesType) {
+                return statelessAttributesType;
+            }
+            if (elementClassType) {
+                checkTypeRelatedTo(elemInstanceType, elementClassType, assignableRelation, openingLikeElement, ts.Diagnostics.JSX_element_type_0_is_not_a_constructor_function_for_JSX_elements);
+            }
+            var isJs = ts.isInJavaScriptFile(openingLikeElement);
+            return getUnionType(ts.map(instantiatedSignatures, function (sig) { return getJsxPropsTypeFromClassType(sig, isJs, openingLikeElement, true); }));
+        }
+        function getIntrinsicAttributesTypeFromJsxOpeningLikeElement(node) {
+            ts.Debug.assert(isJsxIntrinsicIdentifier(node.tagName));
+            var links = getNodeLinks(node);
+            if (!links.resolvedJsxElementAttributesType) {
+                var symbol = getIntrinsicTagSymbol(node);
+                if (links.jsxFlags & 1) {
+                    return links.resolvedJsxElementAttributesType = getTypeOfSymbol(symbol);
+                }
+                else if (links.jsxFlags & 2) {
+                    return links.resolvedJsxElementAttributesType = getIndexInfoOfSymbol(symbol, 0).type;
+                }
+                else {
+                    return links.resolvedJsxElementAttributesType = unknownType;
+                }
+            }
+            return links.resolvedJsxElementAttributesType;
+        }
+        function getCustomJsxElementAttributesType(node, shouldIncludeAllStatelessAttributesType) {
+            return resolveCustomJsxElementAttributesType(node, shouldIncludeAllStatelessAttributesType, checkExpression(node.tagName), getJsxElem ts.getClassLikeDeclarationOfSymbol(type.symbol);
+                if (!classDeclaration || ts.hasModifier(classDeclaration, 128 /* Abstract */))
+                    return undefined;
+                var constructorDeclaration = ts.getFirstConstructorWithBody(classDeclaration);
+                if (constructorDeclaration && constructorDeclaration.parameters.length)
+                    return undefined;
+                return ts.createNew(ts.createIdentifier(type.symbol.name), /*typeArguments*/ undefined, /*argumentsArray*/ undefined);
+            }
+            else if (checker.isArrayLikeType(type)) {
+                return ts.createArrayLiteral();
+            }
+            return undefined;
+        }
+    })(codefix = ts.codefix || (ts.codefix = {}));
+})(ts || (ts = {}));
+var ts;
+(function (ts) {
+    function generateTypesForModule(name, moduleValue, formatSettings) {
+        return generateTypesForModuleOrGlobal(name, moduleValue, formatSettings, 0 /* ExportEquals */);
+    }
+    ts.generateTypesForModule = generateTypesForModule;
+    function generateTypesForGlobal(name, globalValue, formatSettings) {
+        return generateTypesForModuleOrGlobal(name, globalValue, formatSettings, 3 /* Global */);
+    }
+    ts.generateTypesForGlobal = generateTypesForGlobal;
+    function generateTypesForModuleOrGlobal(name, globalValue, formatSettings, outputKind) {
+        return valueInfoToDeclarationFileText(ts.inspectValue(name, globalValue), formatSettings, outputKind);
+    }
+    /* @internal */
+    function valueInfoToDeclarationFileText(valueInfo, formatSettings, outputKind) {
+        if (outputKind === void 0) { outputKind = 0 /* ExportEquals */; }
+        return ts.textChanges.getNewFileText(toStatements(valueInfo, outputKind), 3 /* TS */, formatSettings.newLineCharacter || "\n", ts.formatting.getFormatContext(formatSettings));
+    }
+    ts.valueInfoToDeclarationFileText = valueInfoToDeclarationFileText;
+    var OutputKind;
+    (function (OutputKind) {
+        OutputKind[OutputKind["ExportEquals"] = 0] = "ExportEquals";
+        OutputKind[OutputKind["NamedExport"] = 1] = "NamedExport";
+        OutputKind[OutputKind["NamespaceMember"] = 2] = "NamespaceMember";
+        OutputKind[OutputKind["Global"] = 3] = "Global";
+    })(OutputKind || (OutputKind = {}));
+    function toNamespaceMemberStatements(info) {
+        return toStatements(info, 2 /* NamespaceMember */);
+    }
+    function toStatements(info, kind) {
+        var isDefault = info.name === "default" /* Default */;
+        var name = isDefault ? "_default" : info.name;
+        if (!isValidIdentifier(name) || isDefault && kind !== 1 /* NamedExport */)
+            return ts.emptyArray;
+        var modifiers = isDefault && info.kind === 2 /* FunctionOrClass */ ? [ts.createModifier(85 /* ExportKeyword */), ts.createModifier(80 /* DefaultKeyword */)]
+            : kind === 3 /* Global */ || kind === 0 /* ExportEquals */ ? [ts.createModifier(125 /* DeclareKeyword */)]
+                : kind === 1 /* NamedExport */ ? [ts.createModifier(85 /* ExportKeyword */)]
+                    : undefined;
+        var exportEquals = function () { return kind === 0 /* ExportEquals */ ? [exportEqualsOrDefault(info.name, /*isExportEquals*/ true)] : ts.emptyArray; };
+        var exportDefault = function () { return isDefault ? [exportEqualsOrDefault("_default", /*isExportEquals*/ false)] : ts.emptyArray; };
+        switch (info.kind) {
+            case 2 /* FunctionOrClass */:
+                return exportEquals().concat(functionOrClassToStatements(modifiers, name, info));
+            case 3 /* Object */:
+                var members = info.members, hasNontrivialPrototype = info.hasNontrivialPrototype;
+                if (!hasNontrivialPrototype) {
+                    if (kind === 0 /* ExportEquals */) {
+                        return ts.flatMap(members, function (v) { return toStatements(v, 1 /* NamedExport */); });
+                    }
+                    if (members.some(function (m) { return m.kind === 2 /* FunctionOrClass */; })) {
+                        // If some member is a function, use a namespace so it gets a FunctionDeclaration or ClassDeclaration.
+                        return exportDefault().concat([createNamespace(modifiers, name, ts.flatMap(members, toNamespaceMemberStatements))]);
+                    }
+                }
+            // falls through
+            case 0 /* Const */:
+            case 1 /* Array */: {
+                var comment = info.kind === 0 /* Const */ ? info.comment : undefined;
+                var constVar = ts.createVariableStatement(modifiers, ts.createVariableDeclarationList([ts.createVariableDeclaration(name, toType(info))], 2 /* Const */));
+                return exportEquals().concat(exportDefault(), [addComment(constVar, comment)]);
+            }
+            default:
+                return ts.Debug.assertNever(info);
+        }
+    }
+    function exportEqualsOrDefault(name, isExportEquals) {
+        return ts.createExportAssignment(/*decorators*/ undefined, /*modifiers*/ undefined, isExportEquals, ts.createIdentifier(name));
+    }
+    function functionOrClassToStatements(modifiers, name, _a) {
+        var source = _a.source, prototypeMembers = _a.prototypeMembers, namespaceMembers = _a.namespaceMembers;
+        var fnAst = parseClassOrFunctionBody(source);
+        var _b = fnAst === undefined ? { parameters: ts.emptyArray, returnType: anyType() } : getParametersAndReturnType(fnAst), parameters = _b.parameters, returnType = _b.returnType;
+        var protoOrInstanceMembers = ts.createMap();
+        if (typeof fnAst === "object")
+            getConstructorFunctionInstanceProperties(fnAst, protoOrInstanceMembers);
+        for (var _i = 0, prototypeMembers_1 = prototypeMembers; _i < prototypeMembers_1.length; _i++) {
+            var p = prototypeMembers_1[_i];
+            // ignore non-functions on the prototype
+            if (p.kind === 2 /* FunctionOrClass */) {
+                var m = tryGetMethod(p);
+                if (m) {
+                    protoOrInstanceMembers.set(p.name, m);
+                }
+            }
+        }
+        var classStaticMembers = protoOrInstanceMembers.size !== 0 || fnAst === undefined || typeof fnAst !== "number" && fnAst.kind === 157 /* Constructor */ ? [] : undefined;
+        var namespaceStatements = ts.flatMap(namespaceMembers, function (info) {
+            if (!isValidIdentifier(info.name))
+                return undefined;
+            if (classStaticMembers) {
+                switch (info.kind) {
+                    case 3 /* Object */:
+                        if (info.members.some(function (m) { return m.kind === 2 /* FunctionOrClass */; })) {
+                            break;
+                        }
+                    // falls through
+                    case 1 /* Array */:
+                    case 0 /* Const */:
+                        classStaticMembers.push(addComment(ts.createProperty(/*decorators*/ undefined, [ts.createModifier(116 /* StaticKeyword */)], info.name, /*questionOrExclamationToken*/ undefined, toType(info), /*initializer*/ undefined), info.kind === 0 /* Const */ ? info.comment : undefined));
+                        return undefined;
+                    case 2 /* FunctionOrClass */:
+                        if (!info.namespaceMembers.length) { // Else, can't merge a static method with a namespace. Must make it a function on the namespace.
+                            var sig = tryGetMethod(info, [ts.createModifier(116 /* StaticKeyword */)]);
+                            if (sig) {
+                                classStaticMembers.push(sig);
+                                return undefined;
+                            }
+                        }
+                        break;
+                    default:
+                        ts.Debug.assertNever(info);
+                }
+            }
+            return toStatements(info, 2 /* NamespaceMember */);
+        });
+        var decl = classStaticMembers
+            ? ts.createClassDeclaration(
+            /*decorators*/ undefined, modifiers, name, 
+            /*typeParameters*/ undefined, 
+            /*heritageClauses*/ undefined, classStaticMembers.concat((parameters.length ? [ts.createConstructor(/*decorators*/ undefined, /*modifiers*/ undefined, parameters, /*body*/ undefined)] : ts.emptyArray), ts.arrayFrom(protoOrInstanceMembers.values())))
+            : ts.createFunctionDeclaration(/*decorators*/ undefined, modifiers, /*asteriskToken*/ undefined, name, /*typeParameters*/ undefined, parameters, returnType, /*body*/ undefined);
+        return [decl].concat((namespaceStatements.length === 0 ? ts.emptyArray : [createNamespace(modifiers && modifiers.map(function (m) { return ts.getSynthesizedDeepClone(m); }), name, namespaceStatements)]));
+    }
+    function tryGetMethod(_a, modifiers) {
+        var name = _a.name, source = _a.source;
+        if (!isValidIdentifier(name))
+            return undefined;
+        var fnAst = parseClassOrFunctionBody(source);
+        if (fnAst === undefined || (typeof fnAst !== "number" && fnAst.kind === 157 /* Constructor */))
+            return undefined;
+        var sig = getParametersAndReturnType(fnAst);
+        return sig && ts.createMethod(
+        /*decorators*/ undefined, modifiers, 
+        /*asteriskToken*/ undefined, name, 
+        /*questionToken*/ undefined, 
+        /*typeParameters*/ undefined, sig.parameters, sig.returnType, 
+        /*body*/ undefined);
+    }
+    function toType(info) {
+        switch (info.kind) {
+            case 0 /* Const */:
+                return ts.createTypeReferenceNode(info.typeName, /*typeArguments*/ undefined);
+            case 1 /* Array */:
+                return ts.createArrayTypeNode(toType(info.inner));
+            case 2 /* FunctionOrClass */:
+                return ts.createTypeReferenceNode("Function", /*typeArguments*/ undefined); // Normally we create a FunctionDeclaration, but this can happen for a function in an array.
+            case 3 /* Object */:
+                return ts.createTypeLiteralNode(info.members.map(function (m) { return ts.createPropertySignature(/*modifiers*/ undefined, toPropertyName(m.name), /*questionToken*/ undefined, toType(m), /*initializer*/ undefined); }));
+            default:
+                return ts.Debug.assertNever(info);
+        }
+    }
+    function toPropertyName(name) {
+        return ts.isIdentifierText(name, 6 /* ESNext */) ? ts.createIdentifier(name) : ts.createStringLiteral(name);
+    }
+    // Parses assignments to "this.x" in the constructor into class property declarations
+    function getConstructorFunctionInstanceProperties(fnAst, members) {
+        forEachOwnNodeOfFunction(fnAst, function (node) {
+            if (ts.isAssignmentExpression(node, /*excludeCompoundAssignment*/ true) &&
+                ts.isPropertyAccessExpression(node.left) && node.left.expression.kind === 100 /* ThisKeyword */) {
+                var name_4 = node.left.name.text;
+                if (!ts.isJsPrivate(name_4)) {
+                    ts.getOrUpdate(members, name_4, function () { return ts.createProperty(/*decorators*/ undefined, /*modifiers*/ undefined, name_4, /*questionOrExclamationToken*/ undefined, anyType(), /*initializer*/ undefined); });
+                }
+            }
+        });
+    }
+    function getParametersAndReturnType(fnAst) {
+        if (typeof fnAst === "number") {
+            return { parameters: ts.fill(fnAst, function (i) { return makeParameter("p" + i, anyType()); }), returnType: anyType() };
+        }
+        var usedArguments = false, hasReturn = false;
+        forEachOwnNodeOfFunction(fnAst, function (node) {
+            usedArguments = usedArguments || ts.isIdentifier(node) && node.text === "arguments";
+            hasReturn = hasReturn || ts.isReturnStatement(node) && !!node.expression && node.expression.kind !== 200 /* VoidExpression */;
+        });
+        var parameters = fnAst.parameters.map(function (p) { return makeParameter("" + p.name.getText(), inferParameterType(fnAst, p)); }).concat((usedArguments ? [makeRestParameter()] : ts.emptyArray));
+        return { parameters: parameters, returnType: hasReturn ? anyType() : ts.createKeywordTypeNode(106 /* VoidKeyword */) };
+    }
+    function makeParameter(name, type) {
+        return ts.createParameter(/*decorators*/ undefined, /*modifiers*/ undefined, /*dotDotDotToken*/ undefined, name, /*questionToken*/ undefined, type);
+    }
+    function makeRestParameter() {
+        return ts.createParameter(/*decorators*/ undefined, /*modifiers*/ undefined, ts.createToken(25 /* DotDotDotToken */), "args", /*questionToken*/ undefined, ts.createArrayTypeNode(anyType()));
+    }
+    /** Returns 'undefined' for class with no declared constructor */
+    function parseClassOrFunctionBody(source) {
+        if (typeof source === "number")
+            return source;
+        var classOrFunction = ts.tryCast(parseExpression(source), function (node) { return ts.isFunctionExpression(node) || ts.isArrowFunction(node) || ts.isClassExpression(node); });
+        return classOrFunction
+            ? ts.isClassExpression(classOrFunction) ? ts.find(classOrFunction.members, ts.isConstructorDeclaration) : classOrFunction
+            // If that didn't parse, it's a method `m() {}`. Parse again inside of an object literal.
+            : ts.cast(ts.first(ts.cast(parseExpression("{ " + source + " }"), ts.isObjectLiteralExpression).properties), ts.isMethodDeclaration);
+    }
+    function parseExpression(expr) {
+        var text = "const _ = " + expr;
+        var srcFile = ts.createSourceFile("test.ts", text, 6 /* Latest */, /*setParentNodes*/ true);
+        return ts.first(ts.cast(ts.first(srcFile.statements), ts.isVariableStatement).declarationList.declarations).initializer;
+    }
+    function inferParameterType(_fn, _param) {
+        // TODO: Inspect function body for clues (see inferFromUsage.ts)
+        return anyType();
+    }
+    // Descends through all nodes in a function, but not in nested functions.
+    function forEachOwnNodeOfFunction(fnAst, cb) {
+        fnAst.body.forEachChild(function recur(node) {
+            cb(node);
+            if (!ts.isFunctionLike(node))
+                node.forEachChild(recur);
+        });
+    }
+    function isValidIdentifier(name) {
+        var keyword = ts.stringToToken(name);
+        return !(keyword && ts.isNonContextualKeyword(keyword)) && ts.isIdentifierText(name, 6 /* ESNext */);
+    }
+    function addComment(node, comment) {
+        if (comment !== undefined)
+            ts.addSyntheticLeadingComment(node, 2 /* SingleLineCommentTrivia */, comment);
+        return node;
+    }
+    function anyType() {
+        return ts.createKeywordTypeNode(120 /* AnyKeyword */);
+    }
+    function createNamespace(modifiers, name, statements) {
+        return ts.createModuleDeclaration(/*decorators*/ undefined, modifiers, ts.createIdentifier(name), ts.createModuleBlock(statements), 16 /* Namespace */);
+    }
+})(ts || (ts = {}));
+/* @internal */
+var ts;
+(function (ts) {
+    var codefix;
+    (function (codefix) {
+        var fixId = "requireInTs";
+        var errorCodes = [ts.Diagnostics.require_call_may_be_converted_to_an_import.code];
+        codefix.registerCodeFix({
+            errorCodes: errorCodes,
+            getCodeActions: function (context) {
+                var changes = ts.textChanges.ChangeTracker.with(context, function (t) { return doChange(t, context.sourceFile, context.span.start, context.program); });
+                return [codefix.createCodeFixAction(fixId, changes, ts.Diagnostics.Convert_require_to_import, fixId, ts.Diagnostics.Convert_all_require_to_import)];
+            },
+            fixIds: [fixId],
+            getAllCodeActions: function (context) { return codefix.codeFixAll(context, errorCodes, function (changes, diag) { return doChange(changes, diag.file, diag.start, context.program); }); },
+        });
+        function doChange(changes, sourceFile, pos, program) {
+            var _a = getInfo(sourceFile, pos), statement = _a.statement, name = _a.name, required = _a.required;
+            changes.replaceNode(sourceFile, statement, ts.getAllowSyntheticDefaultImports(program.getCompilerOptions())
+                ? ts.createImportDeclaration(/*decorators*/ undefined, /*modifiers*/ undefined, ts.createImportClause(name, /*namedBindings*/ undefined), required)
+                : ts.createImportEqualsDeclaration(/*decorators*/ undefined, /*modifiers*/ undefined, name, ts.createExternalModuleReference(required)));
+        }
+        function getInfo(sourceFile, pos) {
+            var parent = ts.getTokenAtPosition(sourceFile, pos).parent;
+            if (!ts.isRequireCall(parent, /*checkArgumentIsStringLiteralLike*/ true))
+                throw ts.Debug.failBadSyntaxKind(parent);
+            var decl = ts.cast(parent.parent, ts.isVariableDeclaration);
+            return { statement: ts.cast(decl.parent.parent, ts.isVariableStatement), name: ts.cast(decl.name, ts.isIdentifier), required: parent.arguments[0] };
+        }
+    })(codefix = ts.codefix || (ts.codefix = {}));
+})(ts || (ts = {}));
+/* @internal */
+var ts;
+(function (ts) {
+    var codefix;
+    (function (codefix) {
+        var fixId = "useDefaultImport";
+        var errorCodes = [ts.Diagnostics.Import_may_be_converted_to_a_default_import.code];
+        codefix.registerCodeFix({
+            errorCodes: errorCodes,
+            getCodeActions: function (context) {
+                var sourceFile = context.sourceFile, start = context.span.start;
+                var info = getInfo(sourceFile, start);
+                if (!info)
+                    return undefined;
+                var changes = ts.textChanges.ChangeTracker.with(context, function (t) { return doChange(t, sourceFile, info, context.preferences); });
+                return [codefix.createCodeFixAction(fixId, changes, ts.Diagnostics.Convert_to_default_import, fixId, ts.Diagnostics.Convert_all_to_default_imports)];
+            },
+            fixIds: [fixId],
+            getAllCodeActions: function (context) { return codefix.codeFixAll(context, errorCodes, function (changes, diag) {
+                var info = getInfo(diag.file, diag.start);
+                if (info)
+                    doChange(changes, diag.file, info, context.preferences);
+            }); },
+        });
+        function getInfo(sourceFile, pos) {
+            var name = ts.getTokenAtPosition(sourceFile, pos);
+            if (!ts.isIdentifier(name))
+                return undefined; // bad input
+            var parent = name.parent;
+            if (ts.isImportEqualsDeclaration(parent) && ts.isExternalModuleReference(parent.moduleReference)) {
+                return { importNode: parent, name: name, moduleSpecifier: parent.moduleReference.expression };
+            }
+            else if (ts.isNamespaceImport(parent)) {
+                var importNode = parent.parent.parent;
+                return { importNode: importNode, name: name, moduleSpecifier: importNode.moduleSpecifier };
+            }
+        }
+        function doChange(changes, sourceFile, info, preferences) {
+            changes.replaceNode(sourceFile, info.importNode, ts.makeImport(info.name, /*namedImports*/ undefined, info.moduleSpecifier, ts.getQuotePreference(sourceFile, preferences)));
+        }
+    })(codefix = ts.codefix || (ts.codefix = {}));
+})(ts || (ts = {}));
+/* @internal */
+var ts;
+(function (ts) {
+    var codefix;
+    (function (codefix) {
+        var fixIdAddMissingTypeof = "fixAddModuleReferTypeMissingTypeof";
+        var fixId = fixIdAddMissingTypeof;
+        var errorCodes = [ts.Diagnostics.Module_0_does_not_refer_to_a_type_but_is_used_as_a_type_here_Did_you_mean_typeof_import_0.code];
+        codefix.registerCodeFix({
+            errorCodes: errorCodes,
+            getCodeActions: function (context) {
+                var sourceFile = context.sourceFile, span = context.span;
+                var importType = getImportTypeNode(sourceFile, span.start);
+                var changes = ts.textChanges.ChangeTracker.with(context, function (t) { return doChange(t, sourceFile, importType); });
+                return [codefix.createCodeFixAction(fixId, changes, ts.Diagnostics.Add_missing_typeof, fixId, ts.Diagnostics.Add_missing_typeof)];
+            },
+            fixIds: [fixId],
+            getAllCodeActions: function (context) { return codefix.codeFixAll(context, errorCodes, function (changes, diag) {
+                return doChange(changes, context.sourceFile, getImportTypeNode(diag.file, diag.start));
+            }); },
+        });
+        function getImportTypeNode(sourceFile, pos) {
+            var token = ts.getTokenAtPosition(sourceFile, pos);
+            ts.Debug.assert(token.kind === 92 /* ImportKeyword */);
+            ts.Debug.assert(token.parent.kind === 183 /* ImportType */);
+            return token.parent;
+        }
+        function doChange(changes, sourceFile, importType) {
+            var newTypeNode = ts.updateImportTypeNode(importType, importType.argument, importType.qualifier, importType.typeArguments, /* isTypeOf */ true);
+            changes.replaceNode(sourceFile, importType, newTypeNode);
+        }
+    })(codefix = ts.codefix || (ts.codefix = {}));
+})(ts || (ts = {}));
+/* @internal */
+var ts;
+(function (ts) {
+    var codefix;
+    (function (codefix) {
+        var fixIdAddMissingTypeof = "fixConvertToMappedObjectType";
+        var fixId = fixIdAddMissingTypeof;
+        var errorCodes = [ts.Diagnostics.An_index_signature_parameter_type_cannot_be_a_union_type_Consider_using_a_mapped_object_type_instead.code];
+        codefix.registerCodeFix({
+            errorCodes: errorCodes,
+            getCodeActions: function (context) {
+                var sourceFile = context.sourceFile, span = context.span;
+                var info = getInfo(sourceFile, span.start);
+                if (!info)
+                    return undefined;
+                var changes = ts.textChanges.ChangeTracker.with(context, function (t) { return doChange(t, sourceFile, info); });
+                var name = ts.idText(info.container.name);
+                return [codefix.createCodeFixAction(fixId, changes, 

@@ -1,0 +1,16 @@
+{
+  "name": "@mffp.dgpf.ddp.techno/igo2",
+  "version": "0.0.32",
+  "peerDependencies": {
+    "@angular/common": "^6.0.0-rc.0 || ^6.0.0",
+    "@angular/core": "^6.0.0-rc.0 || ^6.0.0",
+    "@angular/router": "^7.2.2",
+    "@igo2/auth": "^1.4.3",
+    "@igo2/common": "^1.4.3",
+    "@igo2/context": "file:dist/igo2-context",
+    "@igo2/core": "file:dist/igo2-core",
+    "@igo2/geo": "file:dist/igo2-geo",
+    "@igo2/integration": "^1.4.3",
+    "@igo2/utils": "^1.4.3"
+  }
+}

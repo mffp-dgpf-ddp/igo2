@@ -1,0 +1,30 @@
+import { Observable, BehaviorSubject } from 'rxjs';
+import { CapabilitiesService } from './capabilities.service';
+import { OptionsService } from './options/options.service';
+import { WFSService } from './datasources/wfs.service';
+import { DataSource, AnyDataSourceOptions } from './datasources';
+import { LanguageService, MessageService } from '@igo2/core';
+import { ProjectionService } from '../../map/shared/projection.service';
+export declare class DataSourceService {
+    private capabilitiesService;
+    private optionsService;
+    private wfsDataSourceService;
+    private languageService;
+    private messageService;
+    private projectionService;
+    datasources$: BehaviorSubject<DataSource[]>;
+    constructor(capabilitiesService: CapabilitiesService, optionsService: OptionsService, wfsDataSourceService: WFSService, languageService: LanguageService, messageService: MessageService, projectionService: ProjectionService);
+    createAsyncDataSource(context: AnyDataSourceOptions): Observable<DataSource>;
+    private createOSMDataSource;
+    private createFeatureDataSource;
+    private createWebSocketDataSource;
+    private createWFSDataSource;
+    private createWMSDataSource;
+    private createWMTSDataSource;
+    private createXYZDataSource;
+    private createCartoDataSource;
+    private createArcGISRestDataSource;
+    private createTileArcGISRestDataSource;
+    private createMVTDataSource;
+    private createClusterDataSource;
+}

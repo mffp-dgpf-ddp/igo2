@@ -1,0 +1,157 @@
+                    return childKind !== 250 /* ImportClause */ ||
+                            (!!child.namedBindings && child.namedBindings.kind !== 252 /* NamedImports */);
+                    case 260 /* JsxElement */:
+                        return childKind !== 263 /* JsxClosingElement */;
+                    case 264 /* JsxFragment */:
+                        return childKind !== 266 /* JsxClosingFragment */;
+                    case 174 /* IntersectionType */:
+                    case 173 /* UnionType */:
+                        if (childKind === 168 /* TypeLiteral */) {
+                            return false;
+                        }
+                    // falls through
+                }
+                // No explicit rule for given nodes so the result will follow the default value argument
+                return indentByDefault;
+            }
+            SmartIndenter.nodeWillIndentChild = nodeWillIndentChild;
+            function isControlFlowEndingStatement(kind, parent) {
+                switch (kind) {
+                    case 230 /* ReturnStatement */:
+                    case 234 /* ThrowStatement */:
+                    case 228 /* ContinueStatement */:
+                    case 229 /* BreakStatement */:
+                        return parent.kind !== 218 /* Block */;
+                    default:
+                        return false;
+                }
+            }
+            /**
+             * True when the parent node should indent the given child by an explicit rule.
+             * @param isNextChild If true, we are judging indent of a hypothetical child *after* this one, not the current child.
+             */
+            function shouldIndentChildNode(settings, parent, child, sourceFile, isNextChild) {
+                if (isNextChild === void 0) { isNextChild = false; }
+                return nodeWillIndentChild(settings, parent, child, sourceFile, /*indentByDefault*/ false)
+                    && !(isNextChild && child && isControlFlowEndingStatement(child.kind, parent));
+            }
+            SmartIndenter.shouldIndentChildNode = shouldIndentChildNode;
+            function rangeIsOnOneLine(sourceFile, range) {
+                var rangeStart = ts.skipTrivia(sourceFile.text, range.pos);
+                var startLine = sourceFile.getLineAndCharacterOfPosition(rangeStart).line;
+                var endLine = sourceFile.getLineAndCharacterOfPosition(range.end).line;
+                return startLine === endLine;
+            }
+        })(SmartIndenter = formatting.SmartIndenter || (formatting.SmartIndenter = {}));
+    })(formatting = ts.formatting || (ts.formatting = {}));
+})(ts || (ts = {}));
+/* @internal */
+var ts;
+(function (ts) {
+    var textChanges;
+    (function (textChanges_3) {
+        /**
+         * Currently for simplicity we store recovered positions on the node itself.
+         * It can be changed to side-table later if we decide that current design is too invasive.
+         */
+        function getPos(n) {
+            var result = n.__pos;
+            ts.Debug.assert(typeof result === "number");
+            return result;
+        }
+        function setPos(n, pos) {
+            ts.Debug.assert(typeof pos === "number");
+            n.__pos = pos;
+        }
+        function getEnd(n) {
+            var result = n.__end;
+            ts.Debug.assert(typeof result === "number");
+            return result;
+        }
+        function setEnd(n, end) {
+            ts.Debug.assert(typeof end === "number");
+            n.__end = end;
+        }
+        var Position;
+        (function (Position) {
+            Position[Position["FullStart"] = 0] = "FullStart";
+            Position[Position["Start"] = 1] = "Start";
+        })(Position = textChanges_3.Position || (textChanges_3.Position = {}));
+        function skipWhitespacesAndLineBreaks(text, start) {
+            return ts.skipTrivia(text, start, /*stopAfterLineBreak*/ false, /*stopAtComments*/ true);
+        }
+        function hasCommentsBeforeLineBreak(text, start) {
+            var i = start;
+            while (i < text.length) {
+                var ch = text.charCodeAt(i);
+                if (ts.isWhiteSpaceSingleLine(ch)) {
+                    i++;
+                    continue;
+                }
+                return ch === 47 /* slash */;
+            }
+            return false;
+        }
+        textChanges_3.useNonAdjustedPositions = {
+            useNonAdjustedStartPosition: true,
+            useNonAdjustedEndPosition: true,
+        };
+        var ChangeKind;
+        (function (ChangeKind) {
+            ChangeKind[ChangeKind["Remove"] = 0] = "Remove";
+            ChangeKind[ChangeKind["ReplaceWithSingleNode"] = 1] = "ReplaceWithSingleNode";
+            ChangeKind[ChangeKind["ReplaceWithMultipleNodes"] = 2] = "ReplaceWithMultipleNodes";
+            ChangeKind[ChangeKind["Text"] = 3] = "Text";
+        })(ChangeKind || (ChangeKind = {}));
+        function getAdjustedRange(sourceFile, startNode, endNode, options) {
+            return { pos: getAdjustedStartPosition(sourceFile, startNode, options, Position.Start), end: getAdjustedEndPosition(sourceFile, endNode, options) };
+        }
+        function getAdjustedStartPosition(sourceFile, node, options, position) {
+            if (options.useNonAdjustedStartPosition) {
+                return node.getStart(sourceFile);
+            }
+            var fullStart = node.getFullStart();
+            var start = node.getStart(sourceFile);
+            if (fullStart === start) {
+                return start;
+            }
+            var fullStartLine = ts.getLineStartPositionForPosition(fullStart, sourceFile);
+            var startLine = ts.getLineStartPositionForPosition(start, sourceFile);
+            if (startLine === fullStartLine) {
+                // full start and start of the node are on the same line
+                //   a,     b;
+                //    ^     ^
+                //    |   start
+                // fullstart
+                // when b is replaced - we usually want to keep the leading trvia
+                // when b is deleted - we delete it
+                return position === Position.Start ? start : fullStart;
+            }
+            // get start position of the line following the line that contains fullstart position
+            // (but only if the fullstart isn't the very beginning of the file)
+            var nextLineStart = fullStart > 0 ? 1 : 0;
+            var adjustedStartPosition = ts.getStartPositionOfLine(ts.getLineOfLocalPosition(sourceFile, fullStartLine) + nextLineStart, sourceFile);
+            // skip whitespaces/newlines
+            adjustedStartPosition = skipWhitespacesAndLineBreaks(sourceFile.text, adjustedStartPosition);
+            return ts.getStartPositionOfLine(ts.getLineOfLocalPosition(sourceFile, adjustedStartPosition), sourceFile);
+        }
+        function getAdjustedEndPosition(sourceFile, node, options) {
+            var end = node.end;
+            if (options.useNonAdjustedEndPosition || ts.isExpression(node)) {
+                return end;
+            }
+            var newEnd = ts.skipTrivia(sourceFile.text, end, /*stopAfterLineBreak*/ true);
+            return newEnd !== end && ts.isLineBreak(sourceFile.text.charCodeAt(newEnd - 1))
+                ? newEnd
+                : end;
+        }
+        /**
+         * Checks if 'candidate' argument is a legal separator in the list that contains 'node' as an element
+         */
+        function isSeparator(node, candidate) {
+            return !!candidate && !!node.parent && (candidate.kind === 27 /* CommaToken */ || (candidate.kind === 26 /* SemicolonToken */ && node.parent.kind === 188 /* ObjectLiteralExpression */));
+        }
+        function spaces(count) {
+            var s = "";
+            for (var i = 0; i < count; i++) {
+        

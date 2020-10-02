@@ -1,0 +1,142 @@
+<mat-sidenav-container class="app-main-container">
+  <mat-sidenav-content>
+
+    <igo-backdrop
+      [shown]="backdropShown"
+      (click)="onBackdropClick()">
+    </igo-backdrop>
+
+    <button
+      mat-icon-button
+      id="menu-button"
+      class="menu-button"
+      color="primary"
+      tooltip-position="below"
+      matTooltipShowDelay="500"
+      [matTooltip]="(sidenavOpened ? 'menu.close' : 'menu.open') | translate"
+      (click)="onToggleSidenavClick()">
+      <mat-icon svgIcon="menu">
+      </mat-icon>
+    </button>
+
+    <igo-search-bar
+      #searchBar
+      [term]="searchBarTerm"
+      [minLength]="minSearchTermLength"
+      [searchSettings]="true"
+      [pointerSummaryEnabled]="igoSearchPointerSummaryEnabled"
+      [forceNA]="forceCoordsNA"
+      [store]="searchStore"
+      (searchTermChange)="onSearchTermChange($event)"
+      (pointerSummaryStatus)="onPointerSummaryStatusChange($event)"
+      (search)="onSearch($event)"
+      (clearFeature)="onClearSearch()"
+      (searchSettingsChange)="onSearchSettingsChange()">
+    </igo-search-bar>
+
+    <app-sidenav
+      [map]="map"
+      [(opened)]="sidenavOpened"
+      (toolChange)="toolChanged($event)">
+    </app-sidenav>
+
+    <igo-map-browser
+
+      igoSearchPointerSummary
+      [igoSearchPointerSummaryDelay]="500"
+      [igoSearchPointerSummaryEnabled]=igoSearchPointerSummaryEnabled
+
+      #mapBrowser
+      igoQuery
+      [waitForAllQueries]="true"
+      [queryFeatures]="true"
+      igoMapContext
+      igoLayerContext
+      igoDropGeoFile
+      (query)="onMapQuery($event)"
+      [map]="map"
+      [igoContextMenu]=contextMenu
+      (menuPosition)="onContextMenuOpen($event)"
+      [ngClass]="{'igo-attribution-offset': map.getBaseLayers().length > 1}"
+      [@mapStateX]="sidenavOpened ? 'right' : 'left'"
+      (@mapStateX.start)="updateMapBrowserClass($event)"
+      [@mapStateY]="getExpansionToastPanelStatus()"
+      (@mapStateY.start)="updateMapBrowserClass($event)">
+
+      <igo-zoom-button [map]="map" color="primary"
+        [@controlsOffsetY]="expansionPanelExpanded">
+      </igo-zoom-button>
+      <igo-offline-button [map]="map" color="primary"
+        [@controlsOffsetY]="expansionPanelExpanded"
+        [@mobileOffsetY]="getToastPanelStatus()">
+      </igo-offline-button>
+      <igo-geolocate-button [map]="map" color="primary"
+        [@controlsOffsetY]="expansionPanelExpanded"
+        [@mobileOffsetY]="getToastPanelStatus()">
+      </igo-geolocate-button>
+      <igo-rotation-button [showIfNoRotation]="false" [map]="map" color="primary"></igo-rotation-button>
+      <igo-user-button [map]="map" color="primary"
+        [@controlsOffsetY]="expansionPanelExpanded"
+        [@mobileOffsetY]="getToastPanelStatus()">
+      </igo-user-button>
+      <igo-baselayers-switcher [map]="map"
+        [useStaticIcon]="true"
+        [@baselayersStateY]="expansionPanelExpanded ? 'up' : 'close'"
+        [@baselayersWithToastPanel]="getBaselayersSwitcherStatus()"
+        [useStaticIcon]="true">
+      </igo-baselayers-switcher>
+    </igo-map-browser>
+
+    <app-map-overlay
+      [@controlStateY]="expansionPanelExpanded ? 'up' : 'down'"
+      [@controlStateX]="(mediaService.media$ | async) !== 'mobile' &&
+                              sidenavOpened ? 'right' : 'left'">
+    </app-map-overlay>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>
+
+<app-expansion-panel
+  *ngIf="hasExpansionPanel"
+  [(expanded)]="expansionPanelExpanded"
+  [@expansionPanelSize]="getExpansionPanelStatus()"
+  [@toastOffsetY]="(isMobile() && !toastPanelOpened && queryState.store.entities$.value.length > 0 && !expansionPanelExpanded) ? 'true' : 'false'">
+
+  <ng-container expansionPanelHeader>
+    <!-- <igo-workspace-selector igoWorkspaceSelector [store]="workspaceStore" [map]="map"></igo-workspace-selector> -->
+    <!-- <igo-actionbar
+      *ngIf="workspace"
+      [store]="workspace.actionStore"
+      [horizontal]="true"
+      [xPosition]="'after'"
+      [yPosition]="'above'"
+      [withToggleButton]="true"
+      [withTitle]="actionbarWithTitle"
+      [mode]="actionbarMode">
+    </igo-actionbar> -->
+  </ng-container>
+
+  <igo-entity-table
+    [store]="tableStore"
+    [template]="tableTemplate">
+  </igo-entity-table>
+</app-expansion-panel>
+
+<app-toast-panel *ngIf="!(queryStore.empty$ | async)"
+  [map]="map"
+  [store]="queryStore"
+  [@toastPanelOffsetX]="(isMobile() || !isLandscape()) ? undefined : getExtent()"
+  [@toastPanelOffsetY]="expansionPanelExpanded"
+  [@toastPanelMobileSidenav]="(isMobile() && sidenavOpened) || (isTablet() && isPortrait() && sidenavOpened)"
+  (openedChange)="toastOpenedChange($event)"
+  (fullExtentEvent)="fullExtent = $event">
+</app-toast-panel>
+
+<ng-template #contextMenu>
+  <igo-actionbar
+    [store]="contextMenuStore"
+    [withIcon]="false"
+    [horizontal]="true"
+    mode="context">
+  </igo-actionbar>
+</ng-template>

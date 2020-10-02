@@ -1,0 +1,9 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+export {} from './geometry.interfaces';
+export { GeometrySliceError, GeometrySliceMultiPolygonError, GeometrySliceLineStringError, GeometrySliceTooManyIntersectionError } from './geometry.errors';
+export { createDrawInteractionStyle, createDrawHoleInteractionStyle, sliceOlGeometry, sliceOlLineString, sliceOlPolygon, addLinearRingToOlPolygon, getMousePositionFromOlGeometryEvent } from './geometry.utils';
+export { DrawControl, ModifyControl, SliceControl } from './controls';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9AaWdvMi9nZW8vIiwic291cmNlcyI6WyJsaWIvZ2VvbWV0cnkvc2hhcmVkL2luZGV4LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7QUFBQSxlQUFjLHVCQUF1QixDQUFDO0FBQ3RDLHdJQUFjLG1CQUFtQixDQUFDO0FBQ2xDLDhMQUFjLGtCQUFrQixDQUFDO0FBQ2pDLHlEQUFjLFlBQVksQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCAqIGZyb20gJy4vZ2VvbWV0cnkuaW50ZXJmYWNlcyc7XHJcbmV4cG9ydCAqIGZyb20gJy4vZ2VvbWV0cnkuZXJyb3JzJztcclxuZXhwb3J0ICogZnJvbSAnLi9nZW9tZXRyeS51dGlscyc7XHJcbmV4cG9ydCAqIGZyb20gJy4vY29udHJvbHMnO1xyXG4iXX0=

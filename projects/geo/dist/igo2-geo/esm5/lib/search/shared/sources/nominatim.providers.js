@@ -1,0 +1,31 @@
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+import { HttpClient } from '@angular/common/http';
+import { ConfigService } from '@igo2/core';
+import { SearchSource } from './source';
+import { NominatimSearchSource } from './nominatim';
+/**
+ * Nominatim search source factory
+ * @ignore
+ * @param {?} http
+ * @param {?} config
+ * @return {?}
+ */
+export function nominatimSearchSourceFactory(http, config) {
+    return new NominatimSearchSource(http, config.getConfig("searchSources." + NominatimSearchSource.id));
+}
+/**
+ * Function that returns a provider for the Nominatim search source
+ * @return {?}
+ */
+export function provideNominatimSearchSource() {
+    return {
+        provide: SearchSource,
+        useFactory: nominatimSearchSourceFactory,
+        multi: true,
+        deps: [HttpClient, ConfigService]
+    };
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibm9taW5hdGltLnByb3ZpZGVycy5qcyIsInNvdXJjZVJvb3QiOiJuZzovL0BpZ28yL2dlby8iLCJzb3VyY2VzIjpbImxpYi9zZWFyY2gvc2hhcmVkL3NvdXJjZXMvbm9taW5hdGltLnByb3ZpZGVycy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQUEsT0FBTyxFQUFFLFVBQVUsRUFBRSxNQUFNLHNCQUFzQixDQUFDO0FBRWxELE9BQU8sRUFBRSxhQUFhLEVBQUUsTUFBTSxZQUFZLENBQUM7QUFFM0MsT0FBTyxFQUFFLFlBQVksRUFBRSxNQUFNLFVBQVUsQ0FBQztBQUN4QyxPQUFPLEVBQUUscUJBQXFCLEVBQUUsTUFBTSxhQUFhLENBQUM7Ozs7Ozs7O0FBTXBELE1BQU0sVUFBVSw0QkFBNEIsQ0FDMUMsSUFBZ0IsRUFDaEIsTUFBcUI7SUFFckIsT0FBTyxJQUFJLHFCQUFxQixDQUM5QixJQUFJLEVBQ0osTUFBTSxDQUFDLFNBQVMsQ0FBQyxtQkFBaUIscUJBQXFCLENBQUMsRUFBSSxDQUFDLENBQzlELENBQUM7QUFDSixDQUFDOzs7OztBQUtELE1BQU0sVUFBVSw0QkFBNEI7SUFDMUMsT0FBTztRQUNMLE9BQU8sRUFBRSxZQUFZO1FBQ3JCLFVBQVUsRUFBRSw0QkFBNEI7UUFDeEMsS0FBSyxFQUFFLElBQUk7UUFDWCxJQUFJLEVBQUUsQ0FBQyxVQUFVLEVBQUUsYUFBYSxDQUFDO0tBQ2xDLENBQUM7QUFDSixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiaW1wb3J0IHsgSHR0cENsaWVudCB9IGZyb20gJ0Bhbmd1bGFyL2NvbW1vbi9odHRwJztcclxuXHJcbmltcG9ydCB7IENvbmZpZ1NlcnZpY2UgfSBmcm9tICdAaWdvMi9jb3JlJztcclxuXHJcbmltcG9ydCB7IFNlYXJjaFNvdXJjZSB9IGZyb20gJy4vc291cmNlJztcclxuaW1wb3J0IHsgTm9taW5hdGltU2VhcmNoU291cmNlIH0gZnJvbSAnLi9ub21pbmF0aW0nO1xyXG5cclxuLyoqXHJcbiAqIE5vbWluYXRpbSBzZWFyY2ggc291cmNlIGZhY3RvcnlcclxuICogQGlnbm9yZVxyXG4gKi9cclxuZXhwb3J0IGZ1bmN0aW9uIG5vbWluYXRpbVNlYXJjaFNvdXJjZUZhY3RvcnkoXHJcbiAgaHR0cDogSHR0cENsaWVudCxcclxuICBjb25maWc6IENvbmZpZ1NlcnZpY2VcclxuKSB7XHJcbiAgcmV0dXJuIG5ldyBOb21pbmF0aW1TZWFyY2hTb3VyY2UoXHJcbiAgICBodHRwLFxyXG4gICAgY29uZmlnLmdldENvbmZpZyhgc2VhcmNoU291cmNlcy4ke05vbWluYXRpbVNlYXJjaFNvdXJjZS5pZH1gKVxyXG4gICk7XHJcbn1cclxuXHJcbi8qKlxyXG4gKiBGdW5jdGlvbiB0aGF0IHJldHVybnMgYSBwcm92aWRlciBmb3IgdGhlIE5vbWluYXRpbSBzZWFyY2ggc291cmNlXHJcbiAqL1xyXG5leHBvcnQgZnVuY3Rpb24gcHJvdmlkZU5vbWluYXRpbVNlYXJjaFNvdXJjZSgpIHtcclxuICByZXR1cm4ge1xyXG4gICAgcHJvdmlkZTogU2VhcmNoU291cmNlLFxyXG4gICAgdXNlRmFjdG9yeTogbm9taW5hdGltU2VhcmNoU291cmNlRmFjdG9yeSxcclxuICAgIG11bHRpOiB0cnVlLFxyXG4gICAgZGVwczogW0h0dHBDbGllbnQsIENvbmZpZ1NlcnZpY2VdXHJcbiAgfTtcclxufVxyXG4iXX0=

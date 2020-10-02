@@ -1,0 +1,393 @@
+ ts.emptyArray && !hasCovariantVoidArgument(target, variances)) {
+                            if (!(reportErrors && ts.some(variances, function (v) { return v === 0; }))) {
+                                return 0;
+                            }
+                            originalErrorInfo = errorInfo;
+                            errorInfo = saveErrorInfo;
+                        }
+                    }
+                    var sourceIsPrimitive = !!(source.flags & 16382);
+                    if (relation !== identityRelation) {
+                        source = getApparentType(source);
+                    }
+                    if (source.flags & (65536 | 262144) && target.flags & 65536) {
+                        var reportStructuralErrors = reportErrors && errorInfo === saveErrorInfo && !sourceIsPrimitive;
+                        if (isPartialMappedType(target) && !isGenericMappedType(source) && isEmptyObjectType(source)) {
+                            result = -1;
+                        }
+                        else if (isGenericMappedType(target)) {
+                            result = isGenericMappedType(source) ? mappedTypeRelatedTo(source, target, reportStructuralErrors) : 0;
+                        }
+                        else {
+                            result = propertiesRelatedTo(source, target, reportStructuralErrors);
+                            if (result) {
+                                result &= signaturesRelatedTo(source, target, 0, reportStructuralErrors);
+                                if (result) {
+                                    result &= signaturesRelatedTo(source, target, 1, reportStructuralErrors);
+                                    if (result) {
+                                        result &= indexTypesRelatedTo(source, target, 0, sourceIsPrimitive, reportStructuralErrors);
+                                        if (result) {
+                                            result &= indexTypesRelatedTo(source, target, 1, sourceIsPrimitive, reportStructuralErrors);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (result) {
+                            if (!originalErrorInfo) {
+                                errorInfo = saveErrorInfo;
+                                return result;
+                            }
+                            errorInfo = originalErrorInfo;
+                        }
+                    }
+                }
+                return 0;
+            }
+            function mappedTypeRelatedTo(source, target, reportErrors) {
+                var modifiersRelated = relation === comparableRelation || (relation === identityRelation ? getMappedTypeModifiers(source) === getMappedTypeModifiers(target) :
+                    getCombinedMappedTypeOptionality(source) <= getCombinedMappedTypeOptionality(target));
+                if (modifiersRelated) {
+                    var result_2;
+                    if (result_2 = isRelatedTo(getConstraintTypeFromMappedType(target), getConstraintTypeFromMappedType(source), reportErrors)) {
+                        var mapper = createTypeMapper([getTypeParameterFromMappedType(source)], [getTypeParameterFromMappedType(target)]);
+                        return result_2 & isRelatedTo(instantiateType(getTemplateTypeFromMappedType(source), mapper), getTemplateTypeFromMappedType(target), reportErrors);
+                    }
+                }
+                return 0;
+            }
+            function propertiesRelatedTo(source, target, reportErrors) {
+                if (relation === identityRelation) {
+                    return propertiesIdenticalTo(source, target);
+                }
+                var requireOptionalProperties = relation === subtypeRelation && !isObjectLiteralType(source) && !isEmptyArrayLiteralType(source);
+                var unmatchedProperty = getUnmatchedProperty(source, target, requireOptionalProperties);
+                if (unmatchedProperty) {
+                    if (reportErrors) {
+                        reportError(ts.Diagnostics.Property_0_is_missing_in_type_1, symbolToString(unmatchedProperty), typeToString(source));
+                    }
+                    return 0;
+                }
+                if (isObjectLiteralType(target)) {
+                    for (var _i = 0, _a = getPropertiesOfType(source); _i < _a.length; _i++) {
+                        var sourceProp = _a[_i];
+                        if (!getPropertyOfObjectType(target, sourceProp.escapedName)) {
+                            var sourceType = getTypeOfSymbol(sourceProp);
+                            if (!(sourceType === undefinedType || sourceType === undefinedWideningType)) {
+                                if (reportErrors) {
+                                    reportError(ts.Diagnostics.Property_0_does_not_exist_on_type_1, symbolToString(sourceProp), typeToString(target));
+                                }
+                                return 0;
+                            }
+                        }
+                    }
+                }
+                var result = -1;
+                var properties = getPropertiesOfObjectType(target);
+                for (var _b = 0, properties_3 = properties; _b < properties_3.length; _b++) {
+                    var targetProp = properties_3[_b];
+                    if (!(targetProp.flags & 4194304)) {
+                        var sourceProp = getPropertyOfType(source, targetProp.escapedName);
+                        if (sourceProp && sourceProp !== targetProp) {
+                            if (isIgnoredJsxProperty(source, sourceProp, getTypeOfSymbol(targetProp))) {
+                                continue;
+                            }
+                            var sourcePropFlags = ts.getDeclarationModifierFlagsFromSymbol(sourceProp);
+                            var targetPropFlags = ts.getDeclarationModifierFlagsFromSymbol(targetProp);
+                            if (sourcePropFlags & 8 || targetPropFlags & 8) {
+                                var hasDifferingDeclarations = sourceProp.valueDeclaration !== targetProp.valueDeclaration;
+                                if (ts.getCheckFlags(sourceProp) & 256 && hasDifferingDeclarations) {
+                                    if (reportErrors) {
+                                        reportError(ts.Diagnostics.Property_0_has_conflicting_declarations_and_is_inaccessible_in_type_1, symbolToString(sourceProp), typeToString(source));
+                                    }
+                                    return 0;
+                                }
+                                if (hasDifferingDeclarations) {
+                                    if (reportErrors) {
+                                        if (sourcePropFlags & 8 && targetPropFlags & 8) {
+                                            reportError(ts.Diagnostics.Types_have_separate_declarations_of_a_private_property_0, symbolToString(targetProp));
+                                        }
+                                        else {
+                                            reportError(ts.Diagnostics.Property_0_is_private_in_type_1_but_not_in_type_2, symbolToString(targetProp), typeToString(sourcePropFlags & 8 ? source : target), typeToString(sourcePropFlags & 8 ? target : source));
+                                        }
+                                    }
+                                    return 0;
+                                }
+                            }
+                            else if (targetPropFlags & 16) {
+                                if (!isValidOverrideOf(sourceProp, targetProp)) {
+                                    if (reportErrors) {
+                                        reportError(ts.Diagnostics.Property_0_is_protected_but_type_1_is_not_a_class_derived_from_2, symbolToString(targetProp), typeToString(getDeclaringClass(sourceProp) || source), typeToString(getDeclaringClass(targetProp) || target));
+                                    }
+                                    return 0;
+                                }
+                            }
+                            else if (sourcePropFlags & 16) {
+                                if (reportErrors) {
+                                    reportError(ts.Diagnostics.Property_0_is_protected_in_type_1_but_public_in_type_2, symbolToString(targetProp), typeToString(source), typeToString(target));
+                                }
+                                return 0;
+                            }
+                            var related = isRelatedTo(getTypeOfSymbol(sourceProp), getTypeOfSymbol(targetProp), reportErrors);
+                            if (!related) {
+                                if (reportErrors) {
+                                    reportError(ts.Diagnostics.Types_of_property_0_are_incompatible, symbolToString(targetProp));
+                                }
+                                return 0;
+                            }
+                            result &= related;
+                            if (relation !== comparableRelation && sourceProp.flags & 16777216 && !(targetProp.flags & 16777216)) {
+                                if (reportErrors) {
+                                    reportError(ts.Diagnostics.Property_0_is_optional_in_type_1_but_required_in_type_2, symbolToString(targetProp), typeToString(source), typeToString(target));
+                                }
+                                return 0;
+                            }
+                        }
+                    }
+                }
+                return result;
+            }
+            function isWeakType(type) {
+                if (type.flags & 65536) {
+                    var resolved = resolveStructuredTypeMembers(type);
+                    return resolved.callSignatures.length === 0 && resolved.constructSignatures.length === 0 &&
+                        !resolved.stringIndexInfo && !resolved.numberIndexInfo &&
+                        resolved.properties.length > 0 &&
+                        ts.every(resolved.properties, function (p) { return !!(p.flags & 16777216); });
+                }
+                if (type.flags & 262144) {
+                    return ts.every(type.types, isWeakType);
+                }
+                return false;
+            }
+            function hasCommonProperties(source, target) {
+                var isComparingJsxAttributes = !!(ts.getObjectFlags(source) & 4096);
+                for (var _i = 0, _a = getPropertiesOfType(source); _i < _a.length; _i++) {
+                    var prop = _a[_i];
+                    if (isKnownProperty(target, prop.escapedName, isComparingJsxAttributes)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            function propertiesIdenticalTo(source, target) {
+                if (!(source.flags & 65536 && target.flags & 65536)) {
+                    return 0;
+                }
+                var sourceProperties = getPropertiesOfObjectType(source);
+                var targetProperties = getPropertiesOfObjectType(target);
+                if (sourceProperties.length !== targetProperties.length) {
+                    return 0;
+                }
+                var result = -1;
+                for (var _i = 0, sourceProperties_1 = sourceProperties; _i < sourceProperties_1.length; _i++) {
+                    var sourceProp = sourceProperties_1[_i];
+                    var targetProp = getPropertyOfObjectType(target, sourceProp.escapedName);
+                    if (!targetProp) {
+                        return 0;
+                    }
+                    var related = compareProperties(sourceProp, targetProp, isRelatedTo);
+                    if (!related) {
+                        return 0;
+                    }
+                    result &= related;
+                }
+                return result;
+            }
+            function signaturesRelatedTo(source, target, kind, reportErrors) {
+                if (relation === identityRelation) {
+                    return signaturesIdenticalTo(source, target, kind);
+                }
+                if (target === anyFunctionType || source === anyFunctionType) {
+                    return -1;
+                }
+                var sourceSignatures = getSignaturesOfType(source, kind);
+                var targetSignatures = getSignaturesOfType(target, kind);
+                if (kind === 1 && sourceSignatures.length && targetSignatures.length) {
+                    if (ts.isAbstractConstructorType(source) && !ts.isAbstractConstructorType(target)) {
+                        if (reportErrors) {
+                            reportError(ts.Diagnostics.Cannot_assign_an_abstract_constructor_type_to_a_non_abstract_constructor_type);
+                        }
+                        return 0;
+                    }
+                    if (!constructorVisibilitiesAreCompatible(sourceSignatures[0], targetSignatures[0], reportErrors)) {
+                        return 0;
+                    }
+                }
+                var result = -1;
+                var saveErrorInfo = errorInfo;
+                if (ts.getObjectFlags(source) & 64 && ts.getObjectFlags(target) & 64 && source.symbol === target.symbol) {
+                    for (var i = 0; i < targetSignatures.length; i++) {
+                        var related = signatureRelatedTo(sourceSignatures[i], targetSignatures[i], true, reportErrors);
+                        if (!related) {
+                            return 0;
+                        }
+                        result &= related;
+                    }
+                }
+                else if (sourceSignatures.length === 1 && targetSignatures.length === 1) {
+                    var eraseGenerics = relation === comparableRelation || compilerOptions.noStrictGenericChecks;
+                    result = signatureRelatedTo(sourceSignatures[0], targetSignatures[0], eraseGenerics, reportErrors);
+                }
+                else {
+                    outer: for (var _i = 0, targetSignatures_1 = targetSignatures; _i < targetSignatures_1.length; _i++) {
+                        var t = targetSignatures_1[_i];
+                        var shouldElaborateErrors = reportErrors;
+                        for (var _a = 0, sourceSignatures_1 = sourceSignatures; _a < sourceSignatures_1.length; _a++) {
+                            var s = sourceSignatures_1[_a];
+                            var related = signatureRelatedTo(s, t, true, shouldElaborateErrors);
+                            if (related) {
+                                result &= related;
+                                errorInfo = saveErrorInfo;
+                                continue outer;
+                            }
+                            shouldElaborateErrors = false;
+                        }
+                        if (shouldElaborateErrors) {
+                            reportError(ts.Diagnostics.Type_0_provides_no_match_for_the_signature_1, typeToString(source), signatureToString(t, undefined, undefined, kind));
+                        }
+                        return 0;
+                    }
+                }
+                return result;
+            }
+            function signatureRelatedTo(source, target, erase, reportErrors) {
+                return compareSignaturesRelated(erase ? getErasedSignature(source) : source, erase ? getErasedSignature(target) : target, 0, false, reportErrors, reportError, isRelatedTo);
+            }
+            function signaturesIdenticalTo(source, target, kind) {
+                var sourceSignatures = getSignaturesOfType(source, kind);
+                var targetSignatures = getSignaturesOfType(target, kind);
+                if (sourceSignatures.length !== targetSignatures.length) {
+                    return 0;
+                }
+                var result = -1;
+                for (var i = 0; i < sourceSignatures.length; i++) {
+                    var related = compareSignaturesIdentical(sourceSignatures[i], targetSignatures[i], false, false, false, isRelatedTo);
+                    if (!related) {
+                        return 0;
+                    }
+                    result &= related;
+                }
+                return result;
+            }
+            function eachPropertyRelatedTo(source, target, kind, reportErrors) {
+                var result = -1;
+                for (var _i = 0, _a = getPropertiesOfObjectType(source); _i < _a.length; _i++) {
+                    var prop = _a[_i];
+                    if (isIgnoredJsxProperty(source, prop, undefined)) {
+                        continue;
+                    }
+                    if (prop.nameType && prop.nameType.flags & 1024) {
+                        continue;
+                    }
+                    if (kind === 0 || isNumericLiteralName(prop.escapedName)) {
+                        var related = isRelatedTo(getTypeOfSymbol(prop), target, reportErrors);
+                        if (!related) {
+                            if (reportErrors) {
+                                reportError(ts.Diagnostics.Property_0_is_incompatible_with_index_signature, symbolToString(prop));
+                            }
+                            return 0;
+                        }
+                        result &= related;
+                    }
+                }
+                return result;
+            }
+            function indexInfoRelatedTo(sourceInfo, targetInfo, reportErrors) {
+                var related = isRelatedTo(sourceInfo.type, targetInfo.type, reportErrors);
+                if (!related && reportErrors) {
+                    reportError(ts.Diagnostics.Index_signatures_are_incompatible);
+                }
+                return related;
+            }
+            function indexTypesRelatedTo(source, target, kind, sourceIsPrimitive, reportErrors) {
+                if (relation === identityRelation) {
+                    return indexTypesIdenticalTo(source, target, kind);
+                }
+                var targetInfo = getIndexInfoOfType(target, kind);
+                if (!targetInfo || targetInfo.type.flags & 1 && !sourceIsPrimitive) {
+                    return -1;
+                }
+                var sourceInfo = getIndexInfoOfType(source, kind) ||
+                    kind === 1 && getIndexInfoOfType(source, 0);
+                if (sourceInfo) {
+                    return indexInfoRelatedTo(sourceInfo, targetInfo, reportErrors);
+                }
+                if (isGenericMappedType(source)) {
+                    return kind === 0 && isRelatedTo(getTemplateTypeFromMappedType(source), targetInfo.type, reportErrors);
+                }
+                if (isObjectTypeWithInferableIndex(source)) {
+                    var related = -1;
+                    if (kind === 0) {
+                        var sourceNumberInfo = getIndexInfoOfType(source, 1);
+                        if (sourceNumberInfo) {
+                            related = indexInfoRelatedTo(sourceNumberInfo, targetInfo, reportErrors);
+                        }
+                    }
+                    if (related) {
+                        related &= eachPropertyRelatedTo(source, targetInfo.type, kind, reportErrors);
+                    }
+                    return related;
+                }
+                if (reportErrors) {
+                    reportError(ts.Diagnostics.Index_signature_is_missing_in_type_0, typeToString(source));
+                }
+                return 0;
+            }
+            function indexTypesIdenticalTo(source, target, indexKind) {
+                var targetInfo = getIndexInfoOfType(target, indexKind);
+                var sourceInfo = getIndexInfoOfType(source, indexKind);
+                if (!sourceInfo && !targetInfo) {
+                    return -1;
+                }
+                if (sourceInfo && targetInfo && sourceInfo.isReadonly === targetInfo.isReadonly) {
+                    return isRelatedTo(sourceInfo.type, targetInfo.type);
+                }
+                return 0;
+            }
+            function constructorVisibilitiesAreCompatible(sourceSignature, targetSignature, reportErrors) {
+                if (!sourceSignature.declaration || !targetSignature.declaration) {
+                    return true;
+                }
+                var sourceAccessibility = ts.getSelectedModifierFlags(sourceSignature.declaration, 24);
+                var targetAccessibility = ts.getSelectedModifierFlags(targetSignature.declaration, 24);
+                if (targetAccessibility === 8) {
+                    return true;
+                }
+                if (targetAccessibility === 16 && sourceAccessibility !== 8) {
+                    return true;
+                }
+                if (targetAccessibility !== 16 && !sourceAccessibility) {
+                    return true;
+                }
+                if (reportErrors) {
+                    reportError(ts.Diagnostics.Cannot_assign_a_0_constructor_type_to_a_1_constructor_type, visibilityToString(sourceAccessibility), visibilityToString(targetAccessibility));
+                }
+                return false;
+            }
+        }
+        function getMarkerTypeReference(type, source, target) {
+            var result = createTypeReference(type, ts.map(type.typeParameters, function (t) { return t === source ? target : t; }));
+            result.objectFlags |= 8192;
+            return result;
+        }
+        function getVariances(type) {
+            if (!strictFunctionTypes) {
+                return ts.emptyArray;
+            }
+            var typeParameters = type.typeParameters || ts.emptyArray;
+            var variances = type.variances;
+            if (!variances) {
+                if (type === globalArrayType || type === globalReadonlyArrayType) {
+                    variances = [1];
+                }
+                else {
+                    type.variances = ts.emptyArray;
+                    variances = [];
+                    for (var _i = 0, typeParameters_1 = typeParameters; _i < typeParameters_1.length; _i++) {
+                        var tp = typeParameters_1[_i];
+                        var typeWithSuper = getMarkerTypeReference(type, tp, markerSuperType);
+                        var typeWithSub = getMarkerTypeReference(type, tp, markerSubType);
+                        var variance = (isTypeAssignableTo(typeWithSub, typeWithSuper) ? 1 : 0) |
+                            (isTypeAssignableTo(typeWithSuper, typeWithSub) ? 2 : 0);
+                        if (variance === 3 && isTypeAssignable

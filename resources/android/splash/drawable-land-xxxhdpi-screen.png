@@ -1,0 +1,1088 @@
+ (existing)
+                return existing;
+            changes.insertNodeAtObjectStart(tsconfig, paths.initializer, makeDefaultPathMapping());
+            return defaultTypesDirectoryName;
+        }
+        function createJsonPropertyAssignment(name, initializer) {
+            return ts.createPropertyAssignment(ts.createStringLiteral(name), initializer);
+        }
+        function findProperty(obj, name) {
+            return ts.find(obj.properties, function (p) { return ts.isPropertyAssignment(p) && !!p.name && ts.isStringLiteral(p.name) && p.name.text === name; });
+        }
+        function getInstallCommand(fileName, packageName) {
+            return { type: "install package", file: fileName, packageName: packageName };
+        }
+        function tryGetImportedPackageName(sourceFile, pos) {
+            var moduleName = ts.cast(ts.getTokenAtPosition(sourceFile, pos), ts.isStringLiteral).text;
+            var packageName = ts.parsePackageName(moduleName).packageName;
+            return ts.isExternalModuleNameRelative(packageName) ? undefined : packageName;
+        }
+        function getTypesPackageNameToInstall(packageName, host, diagCode) {
+            return diagCode === errorCodeCannotFindModule
+                ? (ts.JsTyping.nodeCoreModules.has(packageName) ? "@types/node" : undefined)
+                : (host.isKnownTypesPackageName(packageName) ? ts.getTypesPackageName(packageName) : undefined); // TODO: GH#18217
+        }
+    })(codefix = ts.codefix || (ts.codefix = {}));
+})(ts || (ts = {}));
+/* @internal */
+var ts;
+(function (ts) {
+    var codefix;
+    (function (codefix) {
+        var errorCodes = [
+            ts.Diagnostics.Non_abstract_class_0_does_not_implement_inherited_abstract_member_1_from_class_2.code,
+            ts.Diagnostics.Non_abstract_class_expression_does_not_implement_inherited_abstract_member_0_from_class_1.code,
+        ];
+        var fixId = "fixClassDoesntImplementInheritedAbstractMember";
+        codefix.registerCodeFix({
+            errorCodes: errorCodes,
+            getCodeActions: function (context) {
+                var program = context.program, sourceFile = context.sourceFile, span = context.span;
+                var changes = ts.textChanges.ChangeTracker.with(context, function (t) {
+                    return addMissingMembers(getClass(sourceFile, span.start), sourceFile, program.getTypeChecker(), t, context.preferences);
+                });
+                return changes.length === 0 ? undefined : [codefix.createCodeFixAction(fixId, changes, ts.Diagnostics.Implement_inherited_abstract_class, fixId, ts.Diagnostics.Implement_all_inherited_abstract_classes)];
+            },
+            fixIds: [fixId],
+            getAllCodeActions: function (context) {
+                var seenClassDeclarations = ts.createMap();
+                return codefix.codeFixAll(context, errorCodes, function (changes, diag) {
+                    var classDeclaration = getClass(diag.file, diag.start);
+                    if (ts.addToSeen(seenClassDeclarations, ts.getNodeId(classDeclaration))) {
+                        addMissingMembers(classDeclaration, context.sourceFile, context.program.getTypeChecker(), changes, context.preferences);
+                    }
+                });
+            },
+        });
+        function getClass(sourceFile, pos) {
+            // Token is the identifier in the case of a class declaration
+            // or the class keyword token in the case of a class expression.
+            var token = ts.getTokenAtPosition(sourceFile, pos);
+            return ts.cast(token.parent, ts.isClassLike);
+        }
+        function addMissingMembers(classDeclaration, sourceFile, checker, changeTracker, preferences) {
+            var extendsNode = ts.getEffectiveBaseTypeNode(classDeclaration);
+            var instantiatedExtendsType = checker.getTypeAtLocation(extendsNode);
+            // Note that this is ultimately derived from a map indexed by symbol names,
+            // so duplicates cannot occur.
+            var abstractAndNonPrivateExtendsSymbols = checker.getPropertiesOfType(instantiatedExtendsType).filter(symbolPointsToNonPrivateAndAbstractMember);
+            codefix.createMissingMemberNodes(classDeclaration, abstractAndNonPrivateExtendsSymbols, checker, preferences, function (member) { return changeTracker.insertNodeAtClassStart(sourceFile, classDeclaration, member); });
+        }
+        function symbolPointsToNonPrivateAndAbstractMember(symbol) {
+            // See `codeFixClassExtendAbstractProtectedProperty.ts` in https://github.com/Microsoft/TypeScript/pull/11547/files
+            // (now named `codeFixClassExtendAbstractPrivateProperty.ts`)
+            var flags = ts.getModifierFlags(ts.first(symbol.getDeclarations()));
+            return !(flags & 8 /* Private */) && !!(flags & 128 /* Abstract */);
+        }
+    })(codefix = ts.codefix || (ts.codefix = {}));
+})(ts || (ts = {}));
+/* @internal */
+var ts;
+(function (ts) {
+    var codefix;
+    (function (codefix) {
+        var fixId = "classSuperMustPrecedeThisAccess";
+        var errorCodes = [ts.Diagnostics.super_must_be_called_before_accessing_this_in_the_constructor_of_a_derived_class.code];
+        codefix.registerCodeFix({
+            errorCodes: errorCodes,
+            getCodeActions: function (context) {
+                var sourceFile = context.sourceFile, span = context.span;
+                var nodes = getNodes(sourceFile, span.start);
+                if (!nodes)
+                    return undefined;
+                var constructor = nodes.constructor, superCall = nodes.superCall;
+                var changes = ts.textChanges.ChangeTracker.with(context, function (t) { return doChange(t, sourceFile, constructor, superCall); });
+                return [codefix.createCodeFixAction(fixId, changes, ts.Diagnostics.Make_super_call_the_first_statement_in_the_constructor, fixId, ts.Diagnostics.Make_all_super_calls_the_first_statement_in_their_constructor)];
+            },
+            fixIds: [fixId],
+            getAllCodeActions: function (context) {
+                var sourceFile = context.sourceFile;
+                var seenClasses = ts.createMap(); // Ensure we only do this once per class.
+                return codefix.codeFixAll(context, errorCodes, function (changes, diag) {
+                    var nodes = getNodes(diag.file, diag.start);
+                    if (!nodes)
+                        return;
+                    var constructor = nodes.constructor, superCall = nodes.superCall;
+                    if (ts.addToSeen(seenClasses, ts.getNodeId(constructor.parent))) {
+                        doChange(changes, sourceFile, constructor, superCall);
+                    }
+                });
+            },
+        });
+        function doChange(changes, sourceFile, constructor, superCall) {
+            changes.insertNodeAtConstructorStart(sourceFile, constructor, superCall);
+            changes.delete(sourceFile, superCall);
+        }
+        function getNodes(sourceFile, pos) {
+            var token = ts.getTokenAtPosition(sourceFile, pos);
+            if (token.kind !== 100 /* ThisKeyword */)
+                return undefined;
+            var constructor = ts.getContainingFunction(token);
+            var superCall = findSuperCall(constructor.body);
+            // figure out if the `this` access is actually inside the supercall
+            // i.e. super(this.a), since in that case we won't suggest a fix
+            return superCall && !superCall.expression.arguments.some(function (arg) { return ts.isPropertyAccessExpression(arg) && arg.expression === token; }) ? { constructor: constructor, superCall: superCall } : undefined;
+        }
+        function findSuperCall(n) {
+            return ts.isExpressionStatement(n) && ts.isSuperCall(n.expression)
+                ? n
+                : ts.isFunctionLike(n)
+                    ? undefined
+                    : ts.forEachChild(n, findSuperCall);
+        }
+    })(codefix = ts.codefix || (ts.codefix = {}));
+})(ts || (ts = {}));
+/* @internal */
+var ts;
+(function (ts) {
+    var codefix;
+    (function (codefix) {
+        var fixId = "constructorForDerivedNeedSuperCall";
+        var errorCodes = [ts.Diagnostics.Constructors_for_derived_classes_must_contain_a_super_call.code];
+        codefix.registerCodeFix({
+            errorCodes: errorCodes,
+            getCodeActions: function (context) {
+                var sourceFile = context.sourceFile, span = context.span;
+                var ctr = getNode(sourceFile, span.start);
+                var changes = ts.textChanges.ChangeTracker.with(context, function (t) { return doChange(t, sourceFile, ctr); });
+                return [codefix.createCodeFixAction(fixId, changes, ts.Diagnostics.Add_missing_super_call, fixId, ts.Diagnostics.Add_all_missing_super_calls)];
+            },
+            fixIds: [fixId],
+            getAllCodeActions: function (context) { return codefix.codeFixAll(context, errorCodes, function (changes, diag) {
+                return doChange(changes, context.sourceFile, getNode(diag.file, diag.start));
+            }); },
+        });
+        function getNode(sourceFile, pos) {
+            var token = ts.getTokenAtPosition(sourceFile, pos);
+            ts.Debug.assert(token.kind === 124 /* ConstructorKeyword */);
+            return token.parent;
+        }
+        function doChange(changes, sourceFile, ctr) {
+            var superCall = ts.createStatement(ts.createCall(ts.createSuper(), /*typeArguments*/ undefined, /*argumentsArray*/ ts.emptyArray));
+            changes.insertNodeAtConstructorStart(sourceFile, ctr, superCall);
+        }
+    })(codefix = ts.codefix || (ts.codefix = {}));
+})(ts || (ts = {}));
+/* @internal */
+var ts;
+(function (ts) {
+    var codefix;
+    (function (codefix) {
+        var fixId = "extendsInterfaceBecomesImplements";
+        var errorCodes = [ts.Diagnostics.Cannot_extend_an_interface_0_Did_you_mean_implements.code];
+        codefix.registerCodeFix({
+            errorCodes: errorCodes,
+            getCodeActions: function (context) {
+                var sourceFile = context.sourceFile;
+                var nodes = getNodes(sourceFile, context.span.start);
+                if (!nodes)
+                    return undefined;
+                var extendsToken = nodes.extendsToken, heritageClauses = nodes.heritageClauses;
+                var changes = ts.textChanges.ChangeTracker.with(context, function (t) { return doChanges(t, sourceFile, extendsToken, heritageClauses); });
+                return [codefix.createCodeFixAction(fixId, changes, ts.Diagnostics.Change_extends_to_implements, fixId, ts.Diagnostics.Change_all_extended_interfaces_to_implements)];
+            },
+            fixIds: [fixId],
+            getAllCodeActions: function (context) { return codefix.codeFixAll(context, errorCodes, function (changes, diag) {
+                var nodes = getNodes(diag.file, diag.start);
+                if (nodes)
+                    doChanges(changes, diag.file, nodes.extendsToken, nodes.heritageClauses);
+            }); },
+        });
+        function getNodes(sourceFile, pos) {
+            var token = ts.getTokenAtPosition(sourceFile, pos);
+            var heritageClauses = ts.getContainingClass(token).heritageClauses;
+            var extendsToken = heritageClauses[0].getFirstToken();
+            return extendsToken.kind === 86 /* ExtendsKeyword */ ? { extendsToken: extendsToken, heritageClauses: heritageClauses } : undefined;
+        }
+        function doChanges(changes, sourceFile, extendsToken, heritageClauses) {
+            changes.replaceNode(sourceFile, extendsToken, ts.createToken(109 /* ImplementsKeyword */));
+            // If there is already an implements clause, replace the implements keyword with a comma.
+            if (heritageClauses.length === 2 &&
+                heritageClauses[0].token === 86 /* ExtendsKeyword */ &&
+                heritageClauses[1].token === 109 /* ImplementsKeyword */) {
+                var implementsToken = heritageClauses[1].getFirstToken();
+                var implementsFullStart = implementsToken.getFullStart();
+                changes.replaceRange(sourceFile, { pos: implementsFullStart, end: implementsFullStart }, ts.createToken(27 /* CommaToken */));
+                // Rough heuristic: delete trailing whitespace after keyword so that it's not excessive.
+                // (Trailing because leading might be indentation, which is more sensitive.)
+                var text = sourceFile.text;
+                var end = implementsToken.end;
+                while (end < text.length && ts.isWhiteSpaceSingleLine(text.charCodeAt(end))) {
+                    end++;
+                }
+                changes.deleteRange(sourceFile, { pos: implementsToken.getStart(), end: end });
+            }
+        }
+    })(codefix = ts.codefix || (ts.codefix = {}));
+})(ts || (ts = {}));
+/* @internal */
+var ts;
+(function (ts) {
+    var codefix;
+    (function (codefix) {
+        var fixId = "forgottenThisPropertyAccess";
+        var didYouMeanStaticMemberCode = ts.Diagnostics.Cannot_find_name_0_Did_you_mean_the_static_member_1_0.code;
+        var errorCodes = [
+            ts.Diagnostics.Cannot_find_name_0_Did_you_mean_the_instance_member_this_0.code,
+            didYouMeanStaticMemberCode,
+        ];
+        codefix.registerCodeFix({
+            errorCodes: errorCodes,
+            getCodeActions: function (context) {
+                var sourceFile = context.sourceFile;
+                var info = getInfo(sourceFile, context.span.start, context.errorCode);
+                if (!info) {
+                    return undefined;
+                }
+                var changes = ts.textChanges.ChangeTracker.with(context, function (t) { return doChange(t, sourceFile, info); });
+                return [codefix.createCodeFixAction(fixId, changes, [ts.Diagnostics.Add_0_to_unresolved_variable, info.className || "this"], fixId, ts.Diagnostics.Add_qualifier_to_all_unresolved_variables_matching_a_member_name)];
+            },
+            fixIds: [fixId],
+            getAllCodeActions: function (context) { return codefix.codeFixAll(context, errorCodes, function (changes, diag) {
+                var info = getInfo(diag.file, diag.start, diag.code);
+                if (info)
+                    doChange(changes, context.sourceFile, info);
+            }); },
+        });
+        function getInfo(sourceFile, pos, diagCode) {
+            var node = ts.getTokenAtPosition(sourceFile, pos);
+            if (!ts.isIdentifier(node))
+                return undefined;
+            return { node: node, className: diagCode === didYouMeanStaticMemberCode ? ts.getContainingClass(node).name.text : undefined };
+        }
+        function doChange(changes, sourceFile, _a) {
+            var node = _a.node, className = _a.className;
+            // TODO (https://github.com/Microsoft/TypeScript/issues/21246): use shared helper
+            ts.suppressLeadingAndTrailingTrivia(node);
+            changes.replaceNode(sourceFile, node, ts.createPropertyAccess(className ? ts.createIdentifier(className) : ts.createThis(), node));
+        }
+    })(codefix = ts.codefix || (ts.codefix = {}));
+})(ts || (ts = {}));
+/* @internal */
+var ts;
+(function (ts) {
+    var codefix;
+    (function (codefix) {
+        var fixName = "unusedIdentifier";
+        var fixIdPrefix = "unusedIdentifier_prefix";
+        var fixIdDelete = "unusedIdentifier_delete";
+        var fixIdInfer = "unusedIdentifier_infer";
+        var errorCodes = [
+            ts.Diagnostics._0_is_declared_but_its_value_is_never_read.code,
+            ts.Diagnostics._0_is_declared_but_never_used.code,
+            ts.Diagnostics.Property_0_is_declared_but_its_value_is_never_read.code,
+            ts.Diagnostics.All_imports_in_import_declaration_are_unused.code,
+            ts.Diagnostics.All_destructured_elements_are_unused.code,
+            ts.Diagnostics.All_variables_are_unused.code,
+            ts.Diagnostics.All_type_parameters_are_unused.code,
+        ];
+        codefix.registerCodeFix({
+            errorCodes: errorCodes,
+            getCodeActions: function (context) {
+                var errorCode = context.errorCode, sourceFile = context.sourceFile, program = context.program;
+                var checker = program.getTypeChecker();
+                var sourceFiles = program.getSourceFiles();
+                var token = ts.getTokenAtPosition(sourceFile, context.span.start);
+                if (ts.isJSDocTemplateTag(token)) {
+                    return [createDeleteFix(ts.textChanges.ChangeTracker.with(context, function (t) { return t.delete(sourceFile, token); }), ts.Diagnostics.Remove_template_tag)];
+                }
+                if (token.kind === 28 /* LessThanToken */) {
+                    var changes = ts.textChanges.ChangeTracker.with(context, function (t) { return deleteTypeParameters(t, sourceFile, token); });
+                    return [createDeleteFix(changes, ts.Diagnostics.Remove_type_parameters)];
+                }
+                var importDecl = tryGetFullImport(token);
+                if (importDecl) {
+                    var changes = ts.textChanges.ChangeTracker.with(context, function (t) { return t.delete(sourceFile, importDecl); });
+                    return [createDeleteFix(changes, [ts.Diagnostics.Remove_import_from_0, ts.showModuleSpecifier(importDecl)])];
+                }
+                var delDestructure = ts.textChanges.ChangeTracker.with(context, function (t) {
+                    return tryDeleteFullDestructure(token, t, sourceFile, checker, sourceFiles, /*isFixAll*/ false);
+                });
+                if (delDestructure.length) {
+                    return [createDeleteFix(delDestructure, ts.Diagnostics.Remove_destructuring)];
+                }
+                var delVar = ts.textChanges.ChangeTracker.with(context, function (t) { return tryDeleteFullVariableStatement(sourceFile, token, t); });
+                if (delVar.length) {
+                    return [createDeleteFix(delVar, ts.Diagnostics.Remove_variable_statement)];
+                }
+                var result = [];
+                if (token.kind === 127 /* InferKeyword */) {
+                    var changes = ts.textChanges.ChangeTracker.with(context, function (t) { return changeInferToUnknown(t, sourceFile, token); });
+                    var name = ts.cast(token.parent, ts.isInferTypeNode).typeParameter.name.text;
+                    result.push(codefix.createCodeFixAction(fixName, changes, [ts.Diagnostics.Replace_infer_0_with_unknown, name], fixIdInfer, ts.Diagnostics.Replace_all_unused_infer_with_unknown));
+                }
+                else {
+                    var deletion = ts.textChanges.ChangeTracker.with(context, function (t) {
+                        return tryDeleteDeclaration(sourceFile, token, t, checker, sourceFiles, /*isFixAll*/ false);
+                    });
+                    if (deletion.length) {
+                        var name = ts.isComputedPropertyName(token.parent) ? token.parent : token;
+                        result.push(createDeleteFix(deletion, [ts.Diagnostics.Remove_declaration_for_Colon_0, name.getText(sourceFile)]));
+                    }
+                }
+                var prefix = ts.textChanges.ChangeTracker.with(context, function (t) { return tryPrefixDeclaration(t, errorCode, sourceFile, token); });
+                if (prefix.length) {
+                    result.push(codefix.createCodeFixAction(fixName, prefix, [ts.Diagnostics.Prefix_0_with_an_underscore, token.getText(sourceFile)], fixIdPrefix, ts.Diagnostics.Prefix_all_unused_declarations_with_where_possible));
+                }
+                return result;
+            },
+            fixIds: [fixIdPrefix, fixIdDelete, fixIdInfer],
+            getAllCodeActions: function (context) {
+                var sourceFile = context.sourceFile, program = context.program;
+                var checker = program.getTypeChecker();
+                var sourceFiles = program.getSourceFiles();
+                return codefix.codeFixAll(context, errorCodes, function (changes, diag) {
+                    var token = ts.getTokenAtPosition(sourceFile, diag.start);
+                    switch (context.fixId) {
+                        case fixIdPrefix:
+                            tryPrefixDeclaration(changes, diag.code, sourceFile, token);
+                            break;
+                        case fixIdDelete: {
+                            if (token.kind === 127 /* InferKeyword */)
+                                break; // Can't delete
+                            var importDecl = tryGetFullImport(token);
+                            if (importDecl) {
+                                changes.delete(sourceFile, importDecl);
+                            }
+                            else if (ts.isJSDocTemplateTag(token)) {
+                                changes.delete(sourceFile, token);
+                            }
+                            else if (token.kind === 28 /* LessThanToken */) {
+                                deleteTypeParameters(changes, sourceFile, token);
+                            }
+                            else if (!tryDeleteFullDestructure(token, changes, sourceFile, checker, sourceFiles, /*isFixAll*/ true) &&
+                                !tryDeleteFullVariableStatement(sourceFile, token, changes)) {
+                                tryDeleteDeclaration(sourceFile, token, changes, checker, sourceFiles, /*isFixAll*/ true);
+                            }
+                            break;
+                        }
+                        case fixIdInfer:
+                            if (token.kind === 127 /* InferKeyword */) {
+                                changeInferToUnknown(changes, sourceFile, token);
+                            }
+                            break;
+                        default:
+                            ts.Debug.fail(JSON.stringify(context.fixId));
+                    }
+                });
+            },
+        });
+        function changeInferToUnknown(changes, sourceFile, token) {
+            changes.replaceNode(sourceFile, token.parent, ts.createKeywordTypeNode(143 /* UnknownKeyword */));
+        }
+        function createDeleteFix(changes, diag) {
+            return codefix.createCodeFixAction(fixName, changes, diag, fixIdDelete, ts.Diagnostics.Delete_all_unused_declarations);
+        }
+        function deleteTypeParameters(changes, sourceFile, token) {
+            changes.delete(sourceFile, ts.Debug.assertDefined(ts.cast(token.parent, ts.isDeclarationWithTypeParameterChildren).typeParameters));
+        }
+        // Sometimes the diagnostic span is an entire ImportDeclaration, so we should remove the whole thing.
+        function tryGetFullImport(token) {
+            return token.kind === 92 /* ImportKeyword */ ? ts.tryCast(token.parent, ts.isImportDeclaration) : undefined;
+        }
+        function tryDeleteFullDestructure(token, changes, sourceFile, checker, sourceFiles, isFixAll) {
+            if (token.kind !== 18 /* OpenBraceToken */ || !ts.isObjectBindingPattern(token.parent))
+                return false;
+            var decl = token.parent.parent;
+            if (decl.kind === 151 /* Parameter */) {
+                tryDeleteParameter(changes, sourceFile, decl, checker, sourceFiles, isFixAll);
+            }
+            else {
+                changes.delete(sourceFile, decl);
+            }
+            return true;
+        }
+        function tryDeleteFullVariableStatement(sourceFile, token, changes) {
+            var declarationList = ts.tryCast(token.parent, ts.isVariableDeclarationList);
+            if (declarationList && declarationList.getChildren(sourceFile)[0] === token) {
+                changes.delete(sourceFile, declarationList.parent.kind === 219 /* VariableStatement */ ? declarationList.parent : declarationList);
+                return true;
+            }
+            return false;
+        }
+        function tryPrefixDeclaration(changes, errorCode, sourceFile, token) {
+            // Don't offer to prefix a property.
+            if (errorCode === ts.Diagnostics.Property_0_is_declared_but_its_value_is_never_read.code)
+                return;
+            if (token.kind === 127 /* InferKeyword */) {
+                token = ts.cast(token.parent, ts.isInferTypeNode).typeParameter.name;
+            }
+            if (ts.isIdentifier(token) && canPrefix(token)) {
+                changes.replaceNode(sourceFile, token, ts.createIdentifier("_" + token.text));
+            }
+        }
+        function canPrefix(token) {
+            switch (token.parent.kind) {
+                case 151 /* Parameter */:
+                case 150 /* TypeParameter */:
+                    return true;
+                case 237 /* VariableDeclaration */: {
+                    var varDecl = token.parent;
+                    switch (varDecl.parent.parent.kind) {
+                        case 227 /* ForOfStatement */:
+                        case 226 /* ForInStatement */:
+                            return true;
+                    }
+                }
+            }
+            return false;
+        }
+        function tryDeleteDeclaration(sourceFile, token, changes, checker, sourceFiles, isFixAll) {
+            tryDeleteDeclarationWorker(token, changes, sourceFile, checker, sourceFiles, isFixAll);
+            if (ts.isIdentifier(token))
+                deleteAssignments(changes, sourceFile, token, checker);
+        }
+        function deleteAssignments(changes, sourceFile, token, checker) {
+            ts.FindAllReferences.Core.eachSymbolReferenceInFile(token, checker, sourceFile, function (ref) {
+                if (ts.isPropertyAccessExpression(ref.parent) && ref.parent.name === ref)
+                    ref = ref.parent;
+                if (ts.isBinaryExpression(ref.parent) && ts.isExpressionStatement(ref.parent.parent) && ref.parent.left === ref) {
+                    changes.delete(sourceFile, ref.parent.parent);
+                }
+            });
+        }
+        function tryDeleteDeclarationWorker(token, changes, sourceFile, checker, sourceFiles, isFixAll) {
+            var parent = token.parent;
+            if (ts.isParameter(parent)) {
+                tryDeleteParameter(changes, sourceFile, parent, checker, sourceFiles, isFixAll);
+            }
+            else {
+                changes.delete(sourceFile, ts.isImportClause(parent) ? token : ts.isComputedPropertyName(parent) ? parent.parent : parent);
+            }
+        }
+        function tryDeleteParameter(changes, sourceFile, p, checker, sourceFiles, isFixAll) {
+            if (mayDeleteParameter(p, checker, isFixAll)) {
+                if (p.modifiers && p.modifiers.length > 0
+                    && (!ts.isIdentifier(p.name) || ts.FindAllReferences.Core.isSymbolReferencedInFile(p.name, checker, sourceFile))) {
+                    p.modifiers.forEach(function (modifier) {
+                        changes.deleteModifier(sourceFile, modifier);
+                    });
+                }
+                else {
+                    changes.delete(sourceFile, p);
+                    deleteUnusedArguments(changes, sourceFile, p, sourceFiles, checker);
+                }
+            }
+        }
+        function mayDeleteParameter(p, checker, isFixAll) {
+            var parent = p.parent;
+            switch (parent.kind) {
+                case 156 /* MethodDeclaration */:
+                    // Don't remove a parameter if this overrides something.
+                    var symbol = checker.getSymbolAtLocation(parent.name);
+                    if (ts.isMemberSymbolInBaseType(symbol, checker))
+                        return false;
+                // falls through
+                case 157 /* Constructor */:
+                case 239 /* FunctionDeclaration */:
+                    return true;
+                case 196 /* FunctionExpression */:
+                case 197 /* ArrowFunction */: {
+                    // Can't remove a non-last parameter in a callback. Can remove a parameter in code-fix-all if future parameters are also unused.
+                    var parameters = parent.parameters;
+                    var index = parameters.indexOf(p);
+                    ts.Debug.assert(index !== -1);
+                    return isFixAll
+                        ? parameters.slice(index + 1).every(function (p) { return p.name.kind === 72 /* Identifier */ && !p.symbol.isReferenced; })
+                        : index === parameters.length - 1;
+                }
+                case 159 /* SetAccessor */:
+                    // Setter must have a parameter
+                    return false;
+                default:
+                    return ts.Debug.failBadSyntaxKind(parent);
+            }
+        }
+        function deleteUnusedArguments(changes, sourceFile, deletedParameter, sourceFiles, checker) {
+            ts.FindAllReferences.Core.eachSignatureCall(deletedParameter.parent, sourceFiles, checker, function (call) {
+                var index = deletedParameter.parent.parameters.indexOf(deletedParameter);
+                if (call.arguments.length > index) { // Just in case the call didn't provide enough arguments.
+                    changes.delete(sourceFile, call.arguments[index]);
+                }
+            });
+        }
+    })(codefix = ts.codefix || (ts.codefix = {}));
+})(ts || (ts = {}));
+/* @internal */
+var ts;
+(function (ts) {
+    var codefix;
+    (function (codefix) {
+        var fixId = "fixUnreachableCode";
+        var errorCodes = [ts.Diagnostics.Unreachable_code_detected.code];
+        codefix.registerCodeFix({
+            errorCodes: errorCodes,
+            getCodeActions: function (context) {
+                var changes = ts.textChanges.ChangeTracker.with(context, function (t) { return doChange(t, context.sourceFile, context.span.start, context.span.length); });
+                return [codefix.createCodeFixAction(fixId, changes, ts.Diagnostics.Remove_unreachable_code, fixId, ts.Diagnostics.Remove_all_unreachable_code)];
+            },
+            fixIds: [fixId],
+            getAllCodeActions: function (context) { return codefix.codeFixAll(context, errorCodes, function (changes, diag) { return doChange(changes, diag.file, diag.start, diag.length); }); },
+        });
+        function doChange(changes, sourceFile, start, length) {
+            var token = ts.getTokenAtPosition(sourceFile, start);
+            var statement = ts.findAncestor(token, ts.isStatement);
+            ts.Debug.assert(statement.getStart(sourceFile) === token.getStart(sourceFile));
+            var container = (ts.isBlock(statement.parent) ? statement.parent : statement).parent;
+            if (!ts.isBlock(statement.parent) || statement === ts.first(statement.parent.statements)) {
+                switch (container.kind) {
+                    case 222 /* IfStatement */:
+                        if (container.elseStatement) {
+                            if (ts.isBlock(statement.parent)) {
+                                break;
+                            }
+                            else {
+                                changes.replaceNode(sourceFile, statement, ts.createBlock(ts.emptyArray));
+                            }
+                            return;
+                        }
+                    // falls through
+                    case 224 /* WhileStatement */:
+                    case 225 /* ForStatement */:
+                        changes.delete(sourceFile, container);
+                        return;
+                }
+            }
+            if (ts.isBlock(statement.parent)) {
+                var end_2 = start + length;
+                var lastStatement = ts.Debug.assertDefined(lastWhere(ts.sliceAfter(statement.parent.statements, statement), function (s) { return s.pos < end_2; }));
+                changes.deleteNodeRange(sourceFile, statement, lastStatement);
+            }
+            else {
+                changes.delete(sourceFile, statement);
+            }
+        }
+        function lastWhere(a, pred) {
+            var last;
+            for (var _i = 0, a_1 = a; _i < a_1.length; _i++) {
+                var value = a_1[_i];
+                if (!pred(value))
+                    break;
+                last = value;
+            }
+            return last;
+        }
+    })(codefix = ts.codefix || (ts.codefix = {}));
+})(ts || (ts = {}));
+/* @internal */
+var ts;
+(function (ts) {
+    var codefix;
+    (function (codefix) {
+        var fixId = "fixUnusedLabel";
+        var errorCodes = [ts.Diagnostics.Unused_label.code];
+        codefix.registerCodeFix({
+            errorCodes: errorCodes,
+            getCodeActions: function (context) {
+                var changes = ts.textChanges.ChangeTracker.with(context, function (t) { return doChange(t, context.sourceFile, context.span.start); });
+                return [codefix.createCodeFixAction(fixId, changes, ts.Diagnostics.Remove_unused_label, fixId, ts.Diagnostics.Remove_all_unused_labels)];
+            },
+            fixIds: [fixId],
+            getAllCodeActions: function (context) { return codefix.codeFixAll(context, errorCodes, function (changes, diag) { return doChange(changes, diag.file, diag.start); }); },
+        });
+        function doChange(changes, sourceFile, start) {
+            var token = ts.getTokenAtPosition(sourceFile, start);
+            var labeledStatement = ts.cast(token.parent, ts.isLabeledStatement);
+            var pos = token.getStart(sourceFile);
+            var statementPos = labeledStatement.statement.getStart(sourceFile);
+            // If label is on a separate line, just delete the rest of that line, but not the indentation of the labeled statement.
+            var end = ts.positionsAreOnSameLine(pos, statementPos, sourceFile) ? statementPos
+                : ts.skipTrivia(sourceFile.text, ts.findChildOfKind(labeledStatement, 57 /* ColonToken */, sourceFile).end, /*stopAfterLineBreak*/ true);
+            changes.deleteRange(sourceFile, { pos: pos, end: end });
+        }
+    })(codefix = ts.codefix || (ts.codefix = {}));
+})(ts || (ts = {}));
+/* @internal */
+var ts;
+(function (ts) {
+    var codefix;
+    (function (codefix) {
+        var fixIdPlain = "fixJSDocTypes_plain";
+        var fixIdNullable = "fixJSDocTypes_nullable";
+        var errorCodes = [ts.Diagnostics.JSDoc_types_can_only_be_used_inside_documentation_comments.code];
+        codefix.registerCodeFix({
+            errorCodes: errorCodes,
+            getCodeActions: function (context) {
+                var sourceFile = context.sourceFile;
+                var checker = context.program.getTypeChecker();
+                var info = getInfo(sourceFile, context.span.start, checker);
+                if (!info)
+                    return undefined;
+                var typeNode = info.typeNode, type = info.type;
+                var original = typeNode.getText(sourceFile);
+                var actions = [fix(type, fixIdPlain, ts.Diagnostics.Change_all_jsdoc_style_types_to_TypeScript)];
+                if (typeNode.kind === 286 /* JSDocNullableType */) {
+                    // for nullable types, suggest the flow-compatible `T | null | undefined`
+                    // in addition to the jsdoc/closure-compatible `T | null`
+                    actions.push(fix(checker.getNullableType(type, 32768 /* Undefined */), fixIdNullable, ts.Diagnostics.Change_all_jsdoc_style_types_to_TypeScript_and_add_undefined_to_nullable_types));
+                }
+                return actions;
+                function fix(type, fixId, fixAllDescription) {
+                    var changes = ts.textChanges.ChangeTracker.with(context, function (t) { return doChange(t, sourceFile, typeNode, type, checker); });
+                    return codefix.createCodeFixAction("jdocTypes", changes, [ts.Diagnostics.Change_0_to_1, original, checker.typeToString(type)], fixId, fixAllDescription);
+                }
+            },
+            fixIds: [fixIdPlain, fixIdNullable],
+            getAllCodeActions: function (context) {
+                var fixId = context.fixId, program = context.program, sourceFile = context.sourceFile;
+                var checker = program.getTypeChecker();
+                return codefix.codeFixAll(context, errorCodes, function (changes, err) {
+                    var info = getInfo(err.file, err.start, checker);
+                    if (!info)
+                        return;
+                    var typeNode = info.typeNode, type = info.type;
+                    var fixedType = typeNode.kind === 286 /* JSDocNullableType */ && fixId === fixIdNullable ? checker.getNullableType(type, 32768 /* Undefined */) : type;
+                    doChange(changes, sourceFile, typeNode, fixedType, checker);
+                });
+            }
+        });
+        function doChange(changes, sourceFile, oldTypeNode, newType, checker) {
+            changes.replaceNode(sourceFile, oldTypeNode, checker.typeToTypeNode(newType, /*enclosingDeclaration*/ oldTypeNode)); // TODO: GH#18217
+        }
+        function getInfo(sourceFile, pos, checker) {
+            var decl = ts.findAncestor(ts.getTokenAtPosition(sourceFile, pos), isTypeContainer);
+            var typeNode = decl && decl.type;
+            return typeNode && { typeNode: typeNode, type: checker.getTypeFromTypeNode(typeNode) };
+        }
+        function isTypeContainer(node) {
+            // NOTE: Some locations are not handled yet:
+            // MappedTypeNode.typeParameters and SignatureDeclaration.typeParameters, as well as CallExpression.typeArguments
+            switch (node.kind) {
+                case 212 /* AsExpression */:
+                case 160 /* CallSignature */:
+                case 161 /* ConstructSignature */:
+                case 239 /* FunctionDeclaration */:
+                case 158 /* GetAccessor */:
+                case 162 /* IndexSignature */:
+                case 181 /* MappedType */:
+                case 156 /* MethodDeclaration */:
+                case 155 /* MethodSignature */:
+                case 151 /* Parameter */:
+                case 154 /* PropertyDeclaration */:
+                case 153 /* PropertySignature */:
+                case 159 /* SetAccessor */:
+                case 242 /* TypeAliasDeclaration */:
+                case 194 /* TypeAssertionExpression */:
+                case 237 /* VariableDeclaration */:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    })(codefix = ts.codefix || (ts.codefix = {}));
+})(ts || (ts = {}));
+/* @internal */
+var ts;
+(function (ts) {
+    var codefix;
+    (function (codefix) {
+        var fixId = "fixAwaitInSyncFunction";
+        var errorCodes = [
+            ts.Diagnostics.await_expression_is_only_allowed_within_an_async_function.code,
+            ts.Diagnostics.A_for_await_of_statement_is_only_allowed_within_an_async_function_or_async_generator.code,
+        ];
+        codefix.registerCodeFix({
+            errorCodes: errorCodes,
+            getCodeActions: function (context) {
+                var sourceFile = context.sourceFile, span = context.span;
+                var nodes = getNodes(sourceFile, span.start);
+                if (!nodes)
+                    return undefined;
+                var changes = ts.textChanges.ChangeTracker.with(context, function (t) { return doChange(t, sourceFile, nodes); });
+                return [codefix.createCodeFixAction(fixId, changes, ts.Diagnostics.Add_async_modifier_to_containing_function, fixId, ts.Diagnostics.Add_all_missing_async_modifiers)];
+            },
+            fixIds: [fixId],
+            getAllCodeActions: function (context) { return codefix.codeFixAll(context, errorCodes, function (changes, diag) {
+                var nodes = getNodes(diag.file, diag.start);
+                if (!nodes)
+                    return;
+                doChange(changes, context.sourceFile, nodes);
+            }); },
+        });
+        function getReturnType(expr) {
+            if (expr.type) {
+                return expr.type;
+            }
+            if (ts.isVariableDeclaration(expr.parent) &&
+                expr.parent.type &&
+                ts.isFunctionTypeNode(expr.parent.type)) {
+                return expr.parent.type.type;
+            }
+        }
+        function getNodes(sourceFile, start) {
+            var token = ts.getTokenAtPosition(sourceFile, start);
+            var containingFunction = ts.getContainingFunction(token);
+            if (!containingFunction) {
+                return;
+            }
+            var insertBefore;
+            switch (containingFunction.kind) {
+                case 156 /* MethodDeclaration */:
+                    insertBefore = containingFunction.name;
+                    break;
+                case 239 /* FunctionDeclaration */:
+                case 196 /* FunctionExpression */:
+                    insertBefore = ts.findChildOfKind(containingFunction, 90 /* FunctionKeyword */, sourceFile);
+                    break;
+                case 197 /* ArrowFunction */:
+                    insertBefore = ts.findChildOfKind(containingFunction, 20 /* OpenParenToken */, sourceFile) || ts.first(containingFunction.parameters);
+                    break;
+                default:
+                    return;
+            }
+            return insertBefore && {
+                insertBefore: insertBefore,
+                returnType: getReturnType(containingFunction)
+            };
+        }
+        function doChange(changes, sourceFile, _a) {
+            var insertBefore = _a.insertBefore, returnType = _a.returnType;
+            if (returnType) {
+                var entityName = ts.getEntityNameFromTypeNode(returnType);
+                if (!entityName || entityName.kind !== 72 /* Identifier */ || entityName.text !== "Promise") {
+                    changes.replaceNode(sourceFile, returnType, ts.createTypeReferenceNode("Promise", ts.createNodeArray([returnType])));
+                }
+            }
+            changes.insertModifierBefore(sourceFile, 121 /* AsyncKeyword */, insertBefore);
+        }
+    })(codefix = ts.codefix || (ts.codefix = {}));
+})(ts || (ts = {}));
+/* @internal */
+var ts;
+(function (ts) {
+    var codefix;
+    (function (codefix) {
+        var fixName = "disableJsDiagnostics";
+        var fixId = "disableJsDiagnostics";
+        var errorCodes = ts.mapDefined(Object.keys(ts.Diagnostics), function (key) {
+            var diag = ts.Diagnostics[key];
+            return diag.category === ts.DiagnosticCategory.Error ? diag.code : undefined;
+        });
+        codefix.registerCodeFix({
+            errorCodes: errorCodes,
+            getCodeActions: function (context) {
+                var sourceFile = context.sourceFile, program = context.program, span = context.span, host = context.host, formatContext = context.formatContext;
+                if (!ts.isInJSFile(sourceFile) || !ts.isCheckJsEnabledForFile(sourceFile, program.getCompilerOptions())) {
+                    return undefined;
+                }
+                var fixes = [
+                    // fixId unnecessary because adding `// @ts-nocheck` even once will ignore every error in the file.
+                    codefix.createCodeFixActionNoFixId(fixName, [codefix.createFileTextChanges(sourceFile.fileName, [
+                            ts.createTextChange(sourceFile.checkJsDirective
+                                ? ts.createTextSpanFromBounds(sourceFile.checkJsDirective.pos, sourceFile.checkJsDirective.end)
+                                : ts.createTextSpan(0, 0), "// @ts-nocheck" + ts.getNewLineOrDefaultFromHost(host, formatContext.options)),
+                        ])], ts.Diagnostics.Disable_checking_for_this_file),
+                ];
+                if (ts.textChanges.isValidLocationToAddComment(sourceFile, span.start)) {
+                    fixes.unshift(codefix.createCodeFixAction(fixName, ts.textChanges.ChangeTracker.with(context, function (t) { return makeChange(t, sourceFile, span.start); }), ts.Diagnostics.Ignore_this_error_message, fixId, ts.Diagnostics.Add_ts_ignore_to_all_error_messages));
+                }
+                return fixes;
+            },
+            fixIds: [fixId],
+            getAllCodeActions: function (context) {
+                var seenLines = ts.createMap();
+                return codefix.codeFixAll(context, errorCodes, function (changes, diag) {
+                    if (ts.textChanges.isValidLocationToAddComment(diag.file, diag.start)) {
+                        makeChange(changes, diag.file, diag.start, seenLines);
+                    }
+                });
+            },
+        });
+        function makeChange(changes, sourceFile, position, seenLines) {
+            var lineNumber = ts.getLineAndCharacterOfPosition(sourceFile, position).line;
+            // Only need to add `// @ts-ignore` for a line once.
+            if (!seenLines || ts.addToSeen(seenLines, lineNumber)) {
+                changes.insertCommentBeforeLine(sourceFile, lineNumber, position, " @ts-ignore");
+            }
+        }
+    })(codefix = ts.codefix || (ts.codefix = {}));
+})(ts || (ts = {}));
+/* @internal */
+var ts;
+(function {"version":3,"file":"value-accessor.d.ts","sources":["value-accessor.d.ts"],"names":[],"mappings":"AAAA;AACA;;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;;;AACA;AACA","sourcesContent":["import { AfterViewInit, ElementRef, Injector, OnDestroy } from '@angular/core';\nimport { ControlValueAccessor } from '@angular/forms';\nexport declare class ValueAccessor implements ControlValueAccessor, AfterViewInit, OnDestroy {\n    protected injector: Injector;\n    protected el: ElementRef;\n    private onChange;\n    private onTouched;\n    protected lastValue: any;\n    private statusChanges?;\n    constructor(injector: Injector, el: ElementRef);\n    writeValue(value: any): void;\n    handleChangeEvent(el: HTMLElement, value: any): void;\n    _handleBlurEvent(el: any): void;\n    registerOnChange(fn: (value: any) => void): void;\n    registerOnTouched(fn: () => void): void;\n    setDisabledState(isDisabled: boolean): void;\n    ngOnDestroy(): void;\n    ngAfterViewInit(): void;\n}\nexport declare const setIonicClasses: (element: ElementRef<any>) => void;\n"]}                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  /**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,constantProperty,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/* tslint:disable */
+import { ChangeDetectionStrategy, Component, EventEmitter, Inject, Input, Optional, Output, ViewEncapsulation } from "@angular/core";
+import { createMissingDateImplError } from "./datetimepicker-errors";
+import { MatDatetimepickerCalendarCell } from "./calendar-body";
+import { slideCalendar } from "./datetimepicker-animations";
+import { MAT_DATETIME_FORMATS } from "../adapter/datetime-formats";
+import { DatetimeAdapter } from "../adapter/datetime-adapter";
+/**
+ * An internal component used to display a single year in the datepicker.
+ * \@docs-private
+ * @template D
+ */
+import * as …µngcc0 from '@angular/core';
+import * as …µngcc1 from './calendar-body';
+export class MatDatetimepickerYearView {
+    /**
+     * @param {?} _adapter
+     * @param {?} _dateFormats
+     */
+    constructor(_adapter, _dateFormats) {
+        this._adapter = _adapter;
+        this._dateFormats = _dateFormats;
+        this._userSelection = new EventEmitter();
+        this.type = "date";
+        /**
+         * Emits when a new month is selected.
+         */
+        this.selectedChange = new EventEmitter();
+        if (!this._adapter) {
+            throw createMissingDateImplError("DatetimeAdapter");
+        }
+        if (!this._dateFormats) {
+            throw createMissingDateImplError("MAT_DATETIME_FORMATS");
+        }
+        this._activeDate = this._adapter.today();
+    }
+    /**
+     * The date to display in this year view (everything other than the year is ignored).
+     * @return {?}
+     */
+    get activeDate() {
+        return this._activeDate;
+    }
+    /**
+     * @param {?} value
+     * @return {?}
+     */
+    set activeDate(value) {
+        /** @type {?} */
+        let oldActiveDate = this._activeDate;
+        this._activeDate = value || this._adapter.today();
+        if (oldActiveDate && this._activeDate &&
+            !this._adapter.sameYear(oldActiveDate, this._activeDate)) {
+            this._init();
+            // if (oldActiveDate < this._activeDate) {
+            //  this.calendarState('right');
+            // } else {
+            //  this.calendarState('left');
+            // }
+        }
+    }
+    /**
+     * The currently selected date.
+     * @return {?}
+     */
+    get selected() {
+        return this._selected;
+    }
+    /**
+     * @param {?} value
+     * @return {?}
+     */
+    set selected(value) {
+        this._selected = value;
+        this._selectedMonth = this._getMonthInCurrentYear(this.selected);
+    }
+    /**
+     * @return {?}
+     */
+    ngAfterContentInit() {
+        this._init();
+    }
+    /**
+     * Handles when a new month is selected.
+     * @param {?} month
+     * @return {?}
+     */
+    _monthSelected(month) {
+        /** @type {?} */
+        const normalizedDate = this._adapter.createDatetime(this._adapter.getYear(this.activeDate), month, 1, 0, 0);
+        this.selectedChange.emit(this._adapter.createDatetime(this._adapter.getYear(this.activeDate), month, Math.min(this._adapter.getDate(this.activeDate), this._adapter.getNumDaysInMonth(normalizedDate)), this._adapter.getHour(this.activeDate), this._adapter.getMinute(this.activeDate)));
+        if (this.type === "month") {
+            this._userSelection.emit();
+        }
+    }
+    /**
+     * Initializes this month view.
+     * @private
+     * @return {?}
+     */
+    _init() {
+        this._selectedMonth = this._getMonthInCurrentYear(this.selected);
+        this._todayMonth = this._getMonthInCurrentYear(this._adapter.today());
+        this._yearLabel = this._adapter.getYearName(this.activeDate);
+        /** @type {?} */
+        let monthNames = this._adapter.getMonthNames("short");
+        // First row of months only contains 5 elements so we can fit the year label on the same row.
+        this._months = [[0, 1, 2, 3, 4], [5, 6, 7, 8, 9, 10, 11]].map((/**
+         * @param {?} row
+         * @return {?}
+         */
+        row => row.map((/**
+         * @param {?} month
+         * @return {?}
+         */
+        month => this._createCellForMonth(month, monthNames[month])))));
+    }
+    /**
+     * Gets the month in this year that the given Date falls on.
+     * Returns null if the given Date is in another year.
+     * @private
+     * @param {?} date
+     * @return {?}
+     */
+    _getMonthInCurrentYear(date) {
+        return this._adapter.sameYear(date, this.activeDate) ?
+            this._adapter.getMonth(date) : null;
+    }
+    /**
+     * Creates an MdCalendarCell for the given month.
+     * @private
+     * @param {?} month
+     * @param {?} monthName
+     * @return {?}
+     */
+    _createCellForMonth(month, monthName) {
+        /** @type {?} */
+        let ariaLabel = this._adapter.format(this._adapter.createDatetime(this._adapter.getYear(this.activeDate), month, 1, this._adapter.getHour(this.activeDate), this._adapter.getMinute(this.activeDate)), this._dateFormats.display.monthYearA11yLabel);
+        return new MatDatetimepickerCalendarCell(month, monthName.toLocaleUpperCase(), ariaLabel, this._isMonthEnabled(month));
+    }
+    /**
+     * Whether the given month is enabled.
+     * @private
+     * @param {?} month
+     * @return {?}
+     */
+    _isMonthEnabled(month) {
+        if (!this.dateFilter) {
+            return true;
+        }
+        /** @type {?} */
+        let firstOfMonth = this._adapter.createDatetime(this._adapter.getYear(this.activeDate), month, 1, this._adapter.getHour(this.activeDate), this._adapter.getMinute(this.activeDate));
+        // If any date in the month is enabled count the month as enabled.
+        for (let date = firstOfMonth; this._adapter.getMonth(date) == month; date = this._adapter.addCalendarDays(date, 1)) {
+            if (this.dateFilter(date)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    // private calendarState(direction: string): void {
+    //   this._calendarState = direction;
+    // }
+    /**
+     * @return {?}
+     */
+    _calendarStateDone() {
+        this._calendarState = "";
+    }
+}
+MatDatetimepickerYearView.…µfac = function MatDatetimepickerYearView_Factory(t) { return new (t || MatDatetimepickerYearView)(…µngcc0.…µ…µdirectiveInject(DatetimeAdapter, 8), …µngcc0.…µ…µdirectiveInject(MAT_DATETIME_FORMATS, 8)); };
+MatDatetimepickerYearView.…µcmp = …µngcc0.…µ…µdefineComponent({ type: MatDatetimepickerYearView, selectors: [["mat-datetimepicker-year-view"]], inputs: { type: "type", activeDate: "activeDate", selected: "selected", dateFilter: "dateFilter" }, outputs: { _userSelection: "_userSelection", selectedChange: "selectedChange" }, decls: 3, vars: 7, consts: [[1, "mat-datetimepicker-calendar-table"], [1, "mat-datetimepicker-calendar-table-header"], ["mat-datetimepicker-calendar-body", "", "role", "grid", "allowDisabledSelection", "true", 3, "label", "rows", "todayValue", "selectedValue", "labelMinRequiredCells", "activeCell", "selectedValueChange"]], template: function MatDatetimepickerYearView_Template(rf, ctx) { if (rf & 1) {
+        …µngcc0.…µ…µelementStart(0, "table", 0);
+        …µngcc0.…µ…µelement(1, "thead", 1);
+        …µngcc0.…µ…µelementStart(2, "tbody", 2);
+        …µngcc0.…µ…µlistener("@slideCalendar.done", function MatDatetimepickerYearView_Template_tbody_animation_slideCalendar_done_2_listener() { return ctx._calendarStateDone(); })("selectedValueChange", function MatDatetimepickerYearView_Template_tbody_selectedValueChange_2_listener($event) { return ctx._monthSelected($event); });
+        …µngcc0.…µ…µelementEnd();
+        …µngcc0.…µ…µelementEnd();
+    } if (rf & 2) {
+        …µngcc0.…µ…µadvance(2);
+        …µngcc0.…µ…µproperty("@slideCalendar", ctx._calendarState)("label", ctx._yearLabel)("rows", ctx._months)("todayValue", ctx._todayMonth)("selectedValue", ctx._selectedMonth)("labelMinRequiredCells", 2)("activeCell", ctx._adapter.getMonth(ctx.activeDate));
+    } }, directives: […µngcc1.MatDatetimepickerCalendarBody], encapsulation: 2, data: { animation: [slideCalendar] }, changeDetection: 0 });
+/** @nocollapse */
+MatDatetimepickerYearView.ctorParameters = () => [
+    { type: DatetimeAdapter, decorators: [{ type: Optional }] },
+    { type: undefined, decorators: [{ type: Optional }, { type: Inject, args: [MAT_DATETIME_FORMATS,] }] }
+];
+MatDatetimepickerYearView.propDecorators = {
+    _userSelection: [{ type: Output }],
+    type: [{ type: Input }],
+    activeDate: [{ type: Input }],
+    selected: [{ type: Input }],
+    dateFilter: [{ type: Input }],
+    selectedChange: [{ type: Output }]
+};
+/*@__PURE__*/ (function () { …µngcc0.…µsetClassMetadata(MatDatetimepickerYearView, [{
+        type: Component,
+        args: [{
+                selector: "mat-datetimepicker-year-view",
+                template: "<table class=\"mat-datetimepicker-calendar-table\">\r\n  <thead class=\"mat-datetimepicker-calendar-table-header\"></thead>\r\n  <tbody [@slideCalendar]=\"_calendarState\"\r\n         (@slideCalendar.done)=\"_calendarStateDone()\"\r\n         mat-datetimepicker-calendar-body\r\n         role=\"grid\"\r\n         allowDisabledSelection=\"true\"\r\n         [label]=\"_yearLabel\"\r\n         [rows]=\"_months\"\r\n         [todayValue]=\"_todayMonth\"\r\n         [selectedValue]=\"_selectedMonth\"\r\n         [labelMinRequiredCells]=\"2\"\r\n         [activeCell]=\"_adapter.getMonth(activeDate)\"\r\n         (selectedValueChange)=\"_monthSelected($event)\"></tbody>\r\n</table>\r\n",
+                animations: [slideCalendar],
+                encapsulation: ViewEncapsulation.None,
+                changeDetection: ChangeDetectionStrategy.OnPush
+            }]
+    }], function () { return [{ type: DatetimeAdapter, decorators: [{
+                type: Optional
+            }] }, { type: undefined, decorators: [{
+                type: Optional
+            }, {
+                type: Inject,
+                args: [MAT_DATETIME_FORMATS]
+            }] }]; }, { _userSelection: [{
+            type: Output
+        }], type: [{
+            type: Input
+        }], selectedChange: [{
+            type: Output
+        }], activeDate: [{
+            type: Input
+        }], selected: [{
+            type: Input
+        }], dateFilter: [{
+            type: Input
+        }] }); })();
+if (false) {
+    /** @type {?} */
+    MatDatetimepickerYearView.prototype._userSelection;
+    /** @type {?} */
+    MatDatetimepickerYearView.prototype.type;
+    /**
+     * @type {?}
+     * @private
+     */
+    MatDatetimepickerYearView.prototype._activeDate;
+    /**
+     * @type {?}
+     * @private
+     */
+    MatDatetimepickerYearView.prototype._selected;
+    /**
+     * A function used to filter which dates are selectable.
+     * @type {?}
+     */
+    MatDatetimepickerYearView.prototype.dateFilter;
+    /**
+     * Emits when a new month is selected.
+     * @type {?}
+     */
+    MatDatetimepickerYearView.prototype.selectedChange;
+    /**
+     * Grid of calendar cells representing the months of the year.
+     * @type {?}
+     */
+    MatDatetimepickerYearView.prototype._months;
+    /**
+     * The label for this year (e.g. "2017").
+     * @type {?}
+     */
+    MatDatetimepickerYearView.prototype._yearLabel;
+    /**
+     * The month in this year that today falls on. Null if today is in a different year.
+     * @type {?}
+     */
+    MatDatetimepickerYearView.prototype._todayMonth;
+    /**
+     * The month in this year that the selected Date falls on.
+     * Null if the selected Date is in a different year.
+     * @type {?}
+     */
+    MatDatetimepickerYearView.prototype._selectedMonth;
+    /** @type {?} */
+    MatDatetimepickerYearView.prototype._calendarState;
+    /** @type {?} */
+    MatDatetimepickerYearView.prototype._adapter;
+    /**
+     * @type {?}
+     * @private
+     */
+    MatDatetimepickerYearView.prototype._dateFormats;
+}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoieWVhci12aWV3LmpzIiwic291cmNlcyI6WyJuZzovQG1hdC1kYXRldGltZXBpY2tlci9jb3JlL2RhdGV0aW1lcGlja2VyL3llYXItdmlldy50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7OztBQUNBLE9BQU8sRUFFTCx1QkFBdUIsRUFDdkIsU0FBUyxFQUNULFlBQVksRUFDWixNQUFNLEVBQ04sS0FBSyxFQUNMLFFBQVEsRUFDUixNQUFNLEVBQ04saUJBQWlCLEVBQ2xCLE1BQU0sZUFBZSxDQUFDO0FBQ3ZCLE9BQU8sRUFBRSwwQkFBMEIsRUFBRSxNQUFNLHlCQUF5QixDQUFDO0FBQ3JFLE9BQU8sRUFBRSw2QkFBNkIsRUFBRSxNQUFNLGlCQUFpQixDQUFDO0FBQ2hFLE9BQU8sRUFBRSxhQUFhLEVBQUUsTUFBTSw2QkFBNkIsQ0FBQztBQUM1RCxPQUFPLEVBQ0wsb0JBQW9CLEVBRXJCLE1BQU0sNkJBQTZCLENBQUM7QUFDckMsT0FBTyxFQUNMLGVBQWUsRUFDaEIsTUFBTSw2QkFBNkIsQ0FBQztBQUNyQztBQUNHO0FBQ3NFO0FBRXpFO0FBQ1c7OztBQU9YLE1BQU0sT0FBTyx5QkFBeUI7QUFBRztBQUFRO0FBRTlDO0FBQStCO0FBQVEsSUE4RHhDLFlBQStCLFFBQTRCLEVBQ0csWUFBZ0M7QUFDaEcsUUFGaUMsYUFBUSxHQUFSLFFBQVEsQ0FBb0I7QUFBQyxRQUNFLGlCQUFZLEdBQVosWUFBWSxDQUFvQjtBQUFDLFFBL0RyRixtQkFBYyxHQUFHLElBQUksWUFBWSxFQUFRLENBQUM7QUFDdEQsUUFDVyxTQUFJLEdBQTJDLE1BQU0sQ0FBQztBQUNqRTtBQUNXO0FBQStDO0FBQVksUUF1QzFELG1CQUFjLEdBQUcsSUFBSSxZQUFZLEVBQUssQ0FBQztBQUNuRCxRQW9CSSxJQUFJLENBQUMsSUFBSSxDQUFDLFFBQVEsRUFBRTtBQUN4QixZQUFNLE1BQU0sMEJBQTBCLENBQUMsaUJBQWlCLENBQUMsQ0FBQztBQUMxRCxTQUFLO0FBQ0wsUUFDSSxJQUFJLENBQUMs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QUEsQUEvREEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFFQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBeUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBcUJBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUVBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUVBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFwRUEsQUFDQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUVBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQ0EsQUFBQSxBQUNBLEFBQUEsQUFDQSxBQUFBLEFBQ0EsQUFBQSxBQUNBLEFBQ0EsQUFBQSxBQUtBLEFBQ0EsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFFQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQXdDQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUdBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFFQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQ0EsQUFBQSxBQUdBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBRUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBTUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBR0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFHQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUVBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBRUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUNBLEFBRUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBTUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQ0EsQUFBQSxBQWxLQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUNBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQUFBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFDQSxBQWJBLEFBQUEsQUE4RUEsQUFBQSxBQUNBLEFBQUEsQUFBQSxBQUFBLEFBQUEsQUFBQSxBQS9EQSxBQUFBLEFBRUEsQUFBQSxBQUdBLEFBQUEsQUFzQkEsQUFBQSxBQWFBLEFBQUEsQUFHQSxBQUFBLEFBM0NBLEFBQUEsQUFFQSxBQUFBLEFBc0JBLEFBQUEsQUFhQSxBQUFBLEFBR0EsQUFBQSxBQUdBLEFBQUEsQUFHQSxBQUFBLEFBR0EsQUFBQSxBQUdBLEFBQUEsQUFNQSxBQUFBLEFBRUEsQUFBQSxBQUVBLEFBQUEsQUFDQSxBQUFBIiwic291cmNlc0NvbnRlbnQiOlsiLyogdHNsaW50OmRpc2FibGUgKi9cclxuaW1wb3J0IHtcclxuICBBZnRlckNvbnRlbnRJbml0LFxyXG4gIENoYW5nZURldGVjdGlvblN0cmF0ZWd5LFxyXG4gIENvbXBvbmVudCxcclxuICBFdmVudEVtaXR0ZXIsXHJcbiAgSW5qZWN0LFxyXG4gIElucHV0LFxyXG4gIE9wdGlvbmFsLFxyXG4gIE91dHB1dCxcclxuICBWaWV3RW5jYXBzdWxhdGlvblxyXG59IGZyb20gXCJAYW5ndWxhci9jb3JlXCI7XHJcbmltcG9ydCB7IGNyZWF0ZU1pc3NpbmdEYXRlSW1wbEVycm9yIH0gZnJvbSBcIi4vZGF0ZXRpbWVwaWNrZXItZXJyb3JzXCI7XHJcbmltcG9ydCB7IE1hdERhdGV0aW1lcGlja2VyQ2FsZW5kYXJDZWxsIH0gZnJvbSBcIi4vY2FsZW5kYXItYm9keVwiO1xyXG5pbXBvcnQgeyBzbGlkZUNhbGVuZGFyIH0gZnJvbSBcIi4vZGF0ZXRpbWVwaWNrZXItYW5pbWF0aW9uc1wiO1xyXG5pbXBvcnQge1xyXG4gIE1BVF9EQVRFVElNRV9GT1JNQVRTLFxyXG4gIE1hdERhdGV0aW1lRm9ybWF0c1xyXG59IGZyb20gXCIuLi9hZGFwdGVyL2RhdGV0aW1lLWZvcm1hdHNcIjtcclxuaW1wb3J0IHtcclxuICBEYXRldGltZUFkYXB0ZXJcclxufSBmcm9tIFwiLi4vYWRhcHRlci9kYXRldGltZS1hZGFwdGVyXCI7XHJcblxyXG4vKipcclxuICogQW4gaW50ZXJuYWwgY29tcG9uZW50IHVzZWQgdG8gZGlzcGxheSBhIHNpbmdsZSB5ZWFyIGluIHRoZSBkYXRlcGlja2VyLlxyXG4gKiBAZG9jcy1wcml2YXRlXHJcbiAqL1xyXG5AQ29tcG9uZW50KHtcclxuICBzZWxlY3RvcjogXCJtYXQtZGF0ZXRpbWVwaWNrZXIteWVhci12aWV3XCIsXHJcbiAgdGVtcGxhdGVVcmw6IFwieWVhci12aWV3Lmh0bWxcIixcclxuICBhbmltYXRpb25zOiBbc2xpZGVDYWxlbmRhcl0sXHJcbiAgZW5jYXBzdWxhdGlvbjogVmlld0VuY2Fwc3VsYXRpb24uTm9uZSxcclxuICBjaGFuZ2VEZXRlY3Rpb246IENoYW5nZURldGVjdGlvblN0cmF0ZWd5Lk9uUHVzaFxyXG59KVxyXG5leHBvcnQgY2xhc3MgTWF0RGF0ZXRpbWVwaWNrZXJZZWFyVmlldzxEPiBpbXBsZW1lbnRzIEFmdGVyQ29udGVudEluaXQge1xyXG5cclxuICBAT3V0cHV0KCkgX3VzZXJTZWxlY3Rpb24gPSBuZXcgRXZlbnRFbWl0dGVyPHZvaWQ+KCk7XHJcblxyXG4gIEBJbnB1dCgpIHR5cGU6IFwiZGF0ZVwiIHwgXCJ0aW1lXCIgfCBcIm1vbnRoXCIgfCBcImRhdGV0aW1lXCIgPSBcImRhdGVcIjtcclxuXHJcbiAgLyoqIFRoZSBkYXRlIHRvIGRpc3BsYXkgaW4gdGhpcyB5ZWFyIHZpZXcgKGV2ZXJ5dGhpbmcgb3RoZXIgdGhhbiB0aGUgeWVhciBpcyBpZ25vcmVkKS4gKi9cclxuICBASW5wdXQoKVxyXG4gIGdldCBhY3RpdmVEYXRlKCk6IEQge1xyXG4gICAgcmV0dXJuIHRoaXMuX2FjdGl2ZURhdGU7XHJcbiAgfVxyXG5cclxuICBzZXQgYWN0aXZlRGF0ZSh2YWx1ZTogRCkge1xyXG4gICAgbGV0IG9sZEFjdGl2ZURhdGUgPSB0aGlzLl9hY3RpdmVEYXRlO1xyXG4gICAgdGhpcy5fYWN0aXZlRGF0ZSA9IHZhbHVlIHx8IHRoaXMuX2FkYXB0ZXIudG9kYXkoKTtcclxuICAgIGlmIChvbGRBY3RpdmVEYXRlICYmIHRoaXMuX2FjdGl2ZURhdGUgJiZcclxuICAgICAgIXRoaXMuX2FkYXB0ZXIuc2FtZVllYXIob2xkQWN0aXZlRGF0ZSwgdGhpcy5fYWN0aXZlRGF0ZSkpIHtcclxuICAgICAgdGhpcy5faW5pdCgpO1xyXG4gICAgICAvLyBpZiAob2xkQWN0aXZlRGF0ZSA8IHRoaXMuX2FjdGl2ZURhdGUpIHtcclxuICAgICAgLy8gIHRoaXMuY2FsZW5kYXJTdGF0ZSgncmlnaHQnKTtcclxuICAgICAgLy8gfSBlbHNlIHtcclxuICAgICAgLy8gIHRoaXMuY2FsZW5kYXJTdGF0ZSgnbGVmdCcpO1xyXG4gICAgICAvLyB9XHJcbiAgICB9XHJcbiAgfVxyXG5cclxuICBwcml2YXRlIF9hY3RpdmVEYXRlOiBEO1xyXG5cclxuICAvKiogVGhlIGN1cnJlbnRseSBzZWxlY3RlZCBkYXRlLiAqL1xyXG4gIEBJbnB1dCgpXHJcbiAgZ2V0IHNlbGVjdGVkKCk6IEQge1xyXG4gICAgcmV0dXJuIHRoaXMuX3NlbGVjdGVkO1xyXG4gIH1cclxuXHJcbiAgc2V0IHNlbGVjdGVkKHZhbHVlOiBEKSB7XHJcbiAgICB0aGlzLl9zZWxlY3RlZCA9IHZhbHVlO1xyXG4gICAgdGhpcy5fc2VsZWN0ZWRNb250aCA9IHRoaXMuX2dldE1vbnRoSW5DdXJyZW50WWVhcih0aGlzLnNlbGVjdGVkKTtcclxuICB9XHJcblxyXG4gIHByaXZhdGUgX3NlbGVjdGVkOiBEO1xyXG5cclxuICAvKiogQSBmdW5jdGlvbiB1c2VkIHRvIGZpbHRlciB3aGljaCBkYXRlcyBhcmUgc2VsZWN0YWJsZS4gKi9cclxuICBASW5wdXQoKSBkYXRlRmlsdGVyOiAoZGF0ZTogRCkgPT4gYm9vbGVhbjtcclxuXHJcbiAgLyoqIEVtaXRzIHdoZW4gYSBuZXcgbW9udGggaXMgc2VsZWN0ZWQuICovXHJcbiAgQE91dHB1dCgpIHNlbGVjdGVkQ2hhbmdlID0gbmV3IEV2ZW50RW1pdHRlcjxEPigpO1xyXG5cclxuICAvKiogR3JpZCBvZiBjYWxlbmRhciBjZWxscyByZXByZXNlbnRpbmcgdGhlIG1vbnRocyBvZiB0aGUgeWVhci4gKi9cclxuICBfbW9udGhzOiBNYXREYXRldGltZXBpY2tlckNhbGVuZGFyQ2VsbFtdW107XHJcblxyXG4gIC8qKiBUaGUgbGFiZWwgZm9yIHRoaXMgeWVhciAoZS5nLiBcIjIwMTdcIikuICovXHJcbiAgX3llYXJMYWJlbDogc3RyaW5nO1xyXG5cclxuICAvKiogVGhlIG1vbnRoIGluIHRoaXMgeWVhciB0aGF0IHRvZGF5IGZhbGxzIG9uLiBOdWxsIGlmIHRvZGF5IGlzIGluIGEgZGlmZmVyZW50IHllYXIuICovXHJcbiAgX3RvZGF5TW9udGg6IG51bWJlcjtcclxuXHJcbiAgLyoqXHJcbiAgICogVGhlIG1vbnRoIGluIHRoaXMgeWVhciB0aGF0IHRoZSBzZWxlY3RlZCBEYXRlIGZhbGxzIG9uLlxyXG4gICAqIE51bGwgaWYgdGhlIHNlbGVjdGVkIERhdGUgaXMgaW4gYSBkaWZmZXJlbnQgeWVhci5cclxuICAgKi9cclxuICBfc2VsZWN0ZWRNb250aDogbnVtYmVyO1xyXG5cclxuICBfY2FsZW5kYXJTdGF0ZTogc3RyaW5nO1xyXG5cclxuICBjb25zdHJ1Y3RvcihAT3B0aW9uYWwoKSBwdWJsaWMgX2FkYXB0ZXI6IERhdGV0aW1lQWRhcHRlcjxEPixcclxuICAgICAgICAgICAgICBAT3B0aW9uYWwoKSBASW5qZWN0KE1BVF9EQVRFVElNRV9GT1JNQVRTKSBwcml2YXRlIF9kYXRlRm9ybWF0czogTWF0RGF0ZXRpbWVGb3JtYXRzKSB7XHJcbiAgICBpZiAoIXRoaXMuX2FkYXB0ZXIpIHtcclxuICAgICAgdGhyb3cgY3JlYXRlTWlzc2luZ0RhdGVJbXBsRXJyb3IoXCJEYXRldGltZUFkYXB0ZXJcIik7XHJcbiAgICB9XHJcblxyXG4gICAgaWYgKCF0aGlzLl9kYXRlRm9ybWF0cykge1xyXG4gICAgICB0aHJvdyBjcmVhdGVNaXNzaW5nRGF0ZUltcGxFcnJvcihcIk1BVF9EQVRFVElNRV9GT1JNQVRTXCIpO1xyXG4gICAgfVxyXG5cclxuICAgIHRoaXMuX2FjdGl2ZURhdGUgPSB0aGlzLl9hZGFwdGVyLnRvZGF5KCk7XHJcbiAgfVxyXG5cclxuICBuZ0FmdGVyQ29udGVudEluaXQoKSB7XHJcbiAgICB0aGlzLl9pbml0KCk7XHJcbiAgfVxyXG5cclxuICAvKiogSGFuZGxlcyB3aGVuIGEgbmV3IG1vbnRoIGlzIHNlbGVjdGVkLiAqL1xyXG4gIF9tb250aFNlbGVjdGVkKG1vbnRoOiBudW1iZXIpIHtcclxuICAgIGNvbnN0IG5vcm1hbGl6ZWREYXRlID0gdGhpcy5fYWRhcHRlci5jcmVhdGVEYXRldGltZSh0aGlzLl9hZGFwdGVyLmdldFllYXIodGhpcy5hY3RpdmVEYXRlKSwgbW9udGgsIDEsIDAsIDApO1xyXG5cclxuICAgIHRoaXMuc2VsZWN0ZWRDaGFuZ2UuZW1pdCh0aGlzLl9hZGFwdGVyLmNyZWF0ZURhdGV0aW1lKFxyXG4gICAgICB0aGlzLl9hZGFwdGVyLmdldFllYXIodGhpcy5hY3RpdmVEYXRlKSwgbW9udGgsXHJcbiAgICAgIE1hdGgubWluKHRoaXMuX2FkYXB0ZXIuZ2V0RGF0ZSh0aGlzLmFjdGl2ZURhdGUpLCB0aGlzLl9hZGFwdGVyLmdldE51bURheXNJbk1vbnRoKG5vcm1hbGl6ZWREYXRlKSksXHJcbiAgICAgIHRoaXMuX2FkYXB0ZXIuZ2V0SG91cih0aGlzLmFjdGl2ZURhdGUpLFxyXG4gICAgICB0aGlzLl9hZGFwdGVyLmdldE1pbnV0ZSh0aGlzLmFjdGl2ZURhdGUpKSk7XHJcbiAgICBpZiAodGhpcy50eXBlID09PSBcIm1vbnRoXCIpIHtcclxuICAgICAgdGhpcy5fdXNlclNlbGVjdGlvbi5lbWl0KCk7XHJcbiAgICB9XHJcbiAgfVxyXG5cclxuICAvKiogSW5pdGlhbGl6ZXMgdGhpcyBtb250aCB2aWV3LiAqL1xyXG4gIHByaXZhdGUgX2luaXQoKSB7XHJcbiAgICB0aGlzLl9zZWxlY3RlZE1vbnRoID0gdGhpcy5fZ2V0TW9udGhJbkN1cnJlbnRZZWFyKHRoaXMuc2VsZWN0ZWQpO1xyXG4gICAgdGhpcy5fdG9kYXlNb250aCA9IHRoaXMuX2dldE1vbnRoSW5DdXJyZW50WWVhcih0aGlzLl9hZGFwdGVyLnRvZGF5KCkpO1xyXG4gICAgdGhpcy5feWVhckxhYmVsID0gdGhpcy5fYWRhcHRlci5nZXRZZWFyTmFtZSh0aGlzLmFjdGl2ZURhdGUpO1xyXG5cclxuICAgIGxldCBtb250aE5hbWVzID0gdGhpcy5fYWRhcHRlci5nZXRNb250aE5hbWVzKFwic2hvcnRcIik7XHJcbiAgICAvLyBGaXJzdCByb3cgb2YgbW9udGhzIG9ubHkgY29udGFpbnMgNSBlbGVtZW50cyBzbyB3ZSBjYW4gZml0IHRoZSB5ZWFyIGxhYmVsIG9uIHRoZSBzYW1lIHJvdy5cclxuICAgIHRoaXMuX21vbnRocyA9IFtbMCwgMSwgMiwgMywgNF0sIFs1LCA2LCA3LCA4LCA5LCAxMCwgMTFdXS5tYXAocm93ID0+IHJvdy5tYXAoXHJcbiAgICAgIG1vbnRoID0+IHRoaXMuX2NyZWF0ZUNlbGxGb3JNb250aChtb250aCwgbW9udGhOYW1lc1ttb250aF0pKSk7XHJcbiAgfVxyXG5cclxuICAvKipcclxuICAgKiBHZXRzIHRoZSBtb250aCBpbiB0aGlzIHllYXIgdGhhdCB0aGUgZ2l2ZW4gRGF0ZSBmYWxscyBvbi5cclxuICAgKiBSZXR1cm5zIG51bGwgaWYgdGhlIGdpdmVuIERhdGUgaXMgaW4gYW5vdGhlciB5ZWFyLlxyXG4gICAqL1xyXG4gIHByaXZhdGUgX2dldE1vbnRoSW5DdXJyZW50WWVhcihkYXRlOiBEKSB7XHJcbiAgICByZXR1cm4gdGhpcy5fYWRhcHRlci5zYW1lWWVhcihkYXRlLCB0aGlzLmFjdGl2ZURhdGUpID9cclxuICAgICAgdGhpcy5fYWRhcHRlci5nZXRNb250aChkYXRlKSA6IG51bGw7XHJcbiAgfVxyXG5cclxuICAvKiogQ3JlYXRlcyBhbiBNZENhbGVuZGFyQ2VsbCBmb3IgdGhlIGdpdmVuIG1vbnRoLiAqL1xyXG4gIHByaXZhdGUgX2NyZWF0ZUNlbGxGb3JNb250aChtb250aDogbnVtYmVyLCBtb250aE5hbWU6IHN0cmluZykge1xyXG4gICAgbGV0IGFyaWFMYWJlbCA9IHRoaXMuX2FkYXB0ZXIuZm9ybWF0KFxyXG4gICAgICB0aGlzLl9hZGFwdGVyLmNyZWF0ZURhdGV0aW1lKHRoaXMuX2FkYXB0ZXIuZ2V0WWVhcih0aGlzLmFjdGl2ZURhdGUpLCBtb250aCwgMSxcclxuICAgICAgICB0aGlzLl9hZGFwdGVyLmdldEhvdXIodGhpcy5hY3RpdmVEYXRlKSxcclxuICAgICAgICB0aGlzLl9hZGFwdGVyLmdldE1pbnV0ZSh0aGlzLmFjdGl2ZURhdGUpKSxcclxuICAgICAgdGhpcy5fZGF0ZUZvcm1hdHMuZGlzcGxheS5tb250aFllYXJBMTF5TGFiZWwpO1xyXG4gICAgcmV0dXJuIG5ldyBNYXREYXRldGltZXBpY2tlckNhbGVuZGFyQ2VsbChcclxuICAgICAgbW9udGgsIG1vbnRoTmFtZS50b0xvY2FsZVVwcGVyQ2FzZSgpLCBhcmlhTGFiZWwsIHRoaXMuX2lzTW9udGhFbmFibGVkKG1vbnRoKSk7XHJcbiAgfVxyXG5cclxuICAvKiogV2hldGhlciB0aGUgZ2l2ZW4gbW9udGggaXMgZW5hYmxlZC4gKi9cclxuICBwcml2YXRlIF9pc01vbnRoRW5hYmxlZChtb250aDogbnVtYmVyKSB7XHJcbiAgICBpZiAoIXRoaXMuZGF0ZUZpbHRlcikge1xyXG4gICAgICByZXR1cm4gdHJ1ZTtcclxuICAgIH1cclxuXHJcbiAgICBsZXQgZmlyc3RPZk1vbnRoID0gdGhpcy5fYWRhcHRlci5jcmVhdGVEYXRldGltZShcclxuICAgICAgdGhpcy5fYWRhcHRlci5nZXRZZWFyKHRoaXMuYWN0aXZlRGF0ZSksIG1vbnRoLCAxLFxyXG4gICAgICB0aGlzLl9hZGFwdGVyLmdldEhvdXIodGhpcy5hY3RpdmVEYXRlKSxcclxuICAgICAgdGhpcy5fYWRhcHRlci5nZXRNaW51dGUodGhpcy5hY3RpdmVEYXRlKSk7XHJcblxyXG4gICAgLy8gSWYgYW55IGRhdGUgaW4gdGhlIG1vbnRoIGlzIGVuYWJsZWQgY291bnQgdGhlIG1vbnRoIGFzIGVuYWJsZWQuXHJcbiAgICBmb3IgKGxldCBkYXRlID0gZmlyc3RPZk1vbnRoOyB0aGlzLl9hZGFwdGVyLmdldE1vbnRoKGRhdGUpID09IG1vbnRoO1xyXG4gICAgICAgICBkYXRlID0gdGhpcy5fYWRhcHRlci5hZGRDYWxlbmRhckRheXMoZGF0ZSwgMSkpIHtcclxuICAgICAgaWYgKHRoaXMuZGF0ZUZpbHRlcihkYXRlKSkge1xyXG4gICAgICAgIHJldHVybiB0cnVlO1xyXG4gICAgICB9XHJcbiAgICB9XHJcblxyXG4gICAgcmV0dXJuIGZhbHNlO1xyXG4gIH1cclxuXHJcbiAgLy8gcHJpdmF0ZSBjYWxlbmRhclN0YXRlKGRpcmVjdGlvbjogc3RyaW5nKTogdm9pZCB7XHJcbiAgLy8gICB0aGlzLl9jYWxlbmRhclN0YXRlID0gZGlyZWN0aW9uO1xyXG4gIC8vIH1cclxuXHJcbiAgX2NhbGVuZGFyU3RhdGVEb25lKCkge1xyXG4gICAgdGhpcy5fY2FsZW5kYXJTdGF0ZSA9IFwiXCI7XHJcbiAgfVxyXG59XHJcbiJdfQ==                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     INDX( 	 ‚úat          (   ∞  Ë           s   ÷÷         >4    p Z     “›3    #Æ†∞ò÷ ö8∫mØŸ4†∞ò÷∫†∞ò÷0       -               r e t r y W h e n . t s       >4    h X     “›3    #Æ†∞ò÷ ö8∫mØŸ4†∞ò÷∫†∞ò÷0       -               R E T R Y W ~ 1 . T S °4    h T     “›3    av†∞ò÷ ö8∫mØö†∞ò÷Ä¢†∞ò÷0       *               	s a m p l e . t s     '4    p \     “›3    ıÒ5†∞ò÷ ö8∫mØÛ8†∞ò÷–@7†∞ò÷0       .               s a m p l e T i m e . t s     '4    h X    “›3    ıÒ5†∞ò÷ ö8∫mØÛ8†∞ò÷–@7†∞ò÷0       .               S A M P L E ~ 1 . T S ´4    ` P     “›3    ÄìG†∞ò÷ ö8∫mØ≈™Q†∞ò÷êªG†∞ò÷(       (               s c a n . t s b!4    x b     “›3    Ûñ†∞ò÷ ö8∫mØ=Öù†∞ò÷Ìñ†∞ò÷8       1               s e q u e n c e E q u a l . t s       b!4    h X     “›3    Ûñ†∞ò÷ ö8∫mØ=Öù†∞ò÷Ìñ†∞ò÷8       1               S E Q U E N ~ 1 . T S Á!4    h R     “›3    Z¢†∞ò÷ ö8∫mØK_¶†∞ò÷¿Ö¢†∞ò÷0       )               s h a r e . t s      `"4    p ^     “›3    5ã°∞ò÷ ö8∫mØYÜ°∞ò÷ÄÄ°∞ò÷0       /               s h a r e R e p l a y . t s   `"4    h X     “›3    5ã°∞ò÷ ö8∫mØYÜ°∞ò÷ÄÄ°∞ò÷0       /               S H A R E R ~ 1 . T S Ô"4    h T     “›3    òIº°∞ò÷ ö8∫mØÏã”°∞ò÷ÄΩ°∞ò÷0       *               	s i n g l e . t s     [#4    ` P     “›3    BÈ¢∞ò÷ ö8∫mØƒ¢∞ò÷êÛ¢∞ò÷(       (               s k i p . t s $4    h X     “›3    ;m¢∞ò÷ ö8∫mØp2r¢∞ò÷ ln¢∞ò÷0       ,               s k i p L a  t . t s |$4    p Z     “›3    ‹:å¢∞ò÷ ö8∫mØçŸû¢∞ò÷@;ò¢∞ò÷0       -               s k i p U n t i l . t s       |$4    h X     “›3    ‹:å¢∞ò÷ ö8∫mØçŸû¢∞ò÷@;ò¢∞ò÷0       -               S K I P U N ~ 1 . T S 
+%4    p Z     “›3    ãäÿ¢∞ò÷ ö8∫mØ6v‚¢∞ò÷0R·¢∞ò÷0       -               s k i p W h i l e . t s       
+%4    h X     “›3    ãäÿ¢∞ò÷ ö8∫mØ6v‚¢∞ò÷0R·¢∞ò÷0       -               S K I P W H ~ 1 . T S               “›3    …£∞ò÷ ö8∫mØdß£∞ò÷0D£∞ò÷0       -              s t a r t W i t h . t s       ~%4    h X     “›3    …£∞ò÷ ö8∫mØdß£∞ò÷0D£∞ò÷0       -               S T A R T W ~ 1 . T S Å&4    p ^     “›3    ∆¡0£∞ò÷ ö8∫mØ[úH£∞ò÷F1£∞ò÷0       /               s u b s c r i b e O n . t s   Å&4    h X     “›3    ∆¡0£∞ò÷ ö8∫mØ[úH£∞ò÷F1£∞ò÷0       /               S U B S C R ~ 1 . T S ú)4    h T     “›3    fI§∞ò÷ ö8∫mØ‡Z§∞ò÷¬«§∞ò÷0       *               	s w i t c h . t s     0*4    p Z     “›3    ±ª§∞ò÷ ö8∫mØ§∞ò RÎ§∞ò÷0       -               s w i t c h M a p . t s       æ*4    p ^     “›3    §˝§∞ò÷ ö8∫mØ≠G§∞ò÷‡,§∞ò÷0       /               s w i t c h M a p T o . t s   0*4    h X     “›3    ±ª§∞ò÷ ö8∫mØ§∞ò÷RÎ§∞ò÷0       -               S W I T C H ~ 1 . T S æ*4    h X     “›3    §˝§∞ò÷ ö8∫mØ≠G§∞ò÷‡,§∞ò÷0       /               S W I T C H ~ 2 . T S K+4    ` P     “›3    s√&§∞ò÷ ö8∫mØÚ˚'§∞ò÷–ç'§∞ò÷(       (               t a k e . t s ¬+4    h X     “›3    Ê,§∞ò  ö8∫mØÕ4§∞ò÷`±2§∞ò÷0       ,               t a k e L a s t . t s 3,4    p Z     “›3    åo<§∞ò÷ ö8∫mØÛY=§∞ò÷~√<§∞ò÷0       -               t a k e U n t i l . t s       3,4    h X     “›3    åo<§∞ò÷ ö8∫mØÛY=§∞ò÷~√<§∞ò÷0       -               T A K E U
