@@ -84,6 +84,13 @@ export class CoordService {
     return `${bottomLeftCoordString},${topRightCoordString}`;
   }
 
+  public coordIs4326(coord) {
+    if (coord[0].slice(0, 3).includes('.')) {
+      return true;
+    }
+    return false;
+  }
+
 
 
 }

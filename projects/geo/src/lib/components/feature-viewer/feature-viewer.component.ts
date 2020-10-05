@@ -4,6 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MediaService, ConfigService, MessageService, Message } from '@igo2/core';
 import { AuthService } from '@igo2/auth';
 import { Context, ContextService } from '@igo2/context';
+import { transform } from 'ol/proj';
 import {
   DataSourceService,
   IgoMap,
@@ -24,6 +25,7 @@ import {
 } from '../../pages/portal/portal.animation';
 
 import { MapImageService } from '../../services/map-image.service';
+import { CoordService } from '../../services/coord.service';
 
 @Component({
   selector: 'app-feature-viewer',
@@ -64,7 +66,8 @@ export class FeatureViewerComponent implements OnChanges, OnInit {
     public contextService: ContextService,
     public cdRef: ChangeDetectorRef,
     public capabilitiesService: CapabilitiesService,
-    public messageService: MessageService
+    public messageService: MessageService,
+    public coordService: CoordService
   ) {
     this.dataSourceService
       .createAsyncDataSource({
@@ -87,6 +90,7 @@ export class FeatureViewerComponent implements OnChanges, OnInit {
           this.feature !== undefined &&
           this.feature !== null
         ) {
+          this.checkFeature(this.feature);
           this.addFeature(this.feature);
         }
       }
@@ -96,7 +100,14 @@ export class FeatureViewerComponent implements OnChanges, OnInit {
   ngOnInit() {
     if (this.feature !== undefined && this.feature !== null) {
       this.updateMap();
+      this.checkFeature(this.feature);
       this.addFeature(this.feature);
+    }
+  }
+
+  checkFeature(feature: any) {
+    if (!this.coordService.coordIs4326(feature.geometry.coordinates)) {
+      this.feature.geometry.coordinates = transform(this.feature.geometry.coordinates, 'EPSG:4326', 'EPSG:3857');
     }
   }
 

@@ -22,8 +22,7 @@ import {
   provideStoredQueriesSearchSource,
   provideOsrmDirectionsSource,
   provideStyleListOptions,
-  PrintService,
-  PrintIonicService
+  PrintService
 } from '@igo2/geo';
 
 import { environment } from '../environments/environment';
@@ -74,7 +73,6 @@ import { CoordService } from './services/coord.service';
     File,
     FileOpener,
     { provide: NetworkService, useExisting: NetworkIonicService },
-    { provide: PrintService, useExisting: PrintIonicService },
     provideNominatimSearchSource(),
     provideIChercheSearchSource(),
     provideIChercheReverseSearchSource(),

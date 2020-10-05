@@ -1,4 +1,4 @@
-@import './sidenav/sidenav.theming';
+@import './sidenav/sidenav.theming.scss';
 
 @mixin app-portal-theming($theme) {
   @include app-sidenav-theming($theme);
