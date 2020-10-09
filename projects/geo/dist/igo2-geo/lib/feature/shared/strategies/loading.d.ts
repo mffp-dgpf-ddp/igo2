@@ -1,5 +1,4 @@
 import { EntityStoreStrategy } from '@igo2/common';
-import { FeatureMotion } from '../feature.enums';
 import { FeatureStoreLoadingStrategyOptions } from '../feature.interfaces';
 import { FeatureStore } from '../store';
 /**
@@ -16,7 +15,6 @@ export declare class FeatureStoreLoadingStrategy extends EntityStoreStrategy {
      * Subscription to the store's features
      */
     private stores$$;
-    private motion;
     constructor(options: FeatureStoreLoadingStrategyOptions);
     /**
      * Bind this strategy to a store and start watching for entities changes
@@ -28,11 +26,6 @@ export declare class FeatureStoreLoadingStrategy extends EntityStoreStrategy {
      * @param store Feature store
      */
     unbindStore(store: FeatureStore): void;
-    /**
-     * Define the motion to apply on load
-     * @param motion Feature motion
-     */
-    setMotion(motion: FeatureMotion): void;
     /**
      * Start watching all stores already bound to that strategy at once.
      * @internal

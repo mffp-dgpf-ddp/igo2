@@ -7,7 +7,7 @@ import { MatIconRegistry, GestureConfig } from '@angular/material';
 import { HTTP_INTERCEPTORS, HttpClient, HttpErrorResponse, HttpClientModule, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Breakpoints, BreakpointObserver } from '@angular/cdk/layout';
-import { Injectable, Injector, Component, Input, NgModule, Optional, SkipSelf, APP_INITIALIZER, InjectionToken, Inject, EventEmitter, defineInjectable, inject, INJECTOR } from '@angular/core';
+import { Injectable, Injector, Component, Input, NgModule, APP_INITIALIZER, InjectionToken, Optional, SkipSelf, Inject, EventEmitter, defineInjectable, inject, INJECTOR } from '@angular/core';
 import { BehaviorSubject, throwError, of, combineLatest, fromEvent } from 'rxjs';
 import { finalize, catchError, map, tap, debounceTime, startWith } from 'rxjs/operators';
 import { Network } from '@ionic-native/network/ngx';
@@ -137,7 +137,7 @@ IgoActivityModule.decorators = [
  */
 /** @type {?} */
 const version = {
-    lib: '1.4.2'
+    lib: '1.4.1'
 };
 
 /**

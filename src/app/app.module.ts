@@ -9,6 +9,7 @@ import {
   IgoGestureModule,
   RouteService,
   NetworkService,
+  NetworkIonicService
 } from '@igo2/core';
 import { IgoSpinnerModule, IgoStopPropagationModule } from '@igo2/common';
 import { IgoAuthModule } from '@igo2/auth';
@@ -23,7 +24,9 @@ import {
   provideOptionsApi,
   provideCadastreSearchSource,
   provideStyleListOptions,
+  PrintIonicService,
   PrintService,
+  ExportIonicService,
   ExportService
 } from '@igo2/geo';
 
@@ -34,15 +37,9 @@ import { Network } from '@ionic-native/network/ngx';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
 import {
-  ContextExportService,
- } from '@igo2/context';
-
- import {
-  PrintIonicService,
-  ExportIonicService,
   ContextExportIonicService,
-  NetworkIonicService
- } from '@igo2/ionic';
+  ContextExportService
+ } from '@igo2/context';
 
 @NgModule({
   declarations: [AppComponent],

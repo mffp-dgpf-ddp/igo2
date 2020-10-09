@@ -36,7 +36,7 @@ export declare class DrawControl {
     private olDrawInteraction;
     private onDrawStartKey;
     private onDrawEndKey;
-    private onDrawKey;
+    private onChangesKey;
     private mousePosition;
     private keyDown$$;
     freehand$: BehaviorSubject<boolean>;

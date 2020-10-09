@@ -2,7 +2,6 @@ import { EntityStoreStrategy } from '@igo2/common';
 import { IgoMap } from '../../../map';
 import { FeatureStoreSelectionStrategyOptions } from '../feature.interfaces';
 import { FeatureStore } from '../store';
-import { FeatureMotion } from '../feature.enums';
 /**
  * This strategy synchronizes a store and a layer selected entities.
  * The store <-> layer binding is a two-way binding.
@@ -26,7 +25,6 @@ export declare class FeatureStoreSelectionStrategy extends EntityStoreStrategy {
      * Subscription to all stores selected entities
      */
     private stores$$;
-    private motion;
     /**
      * The map the layers belong to
      */
@@ -51,23 +49,10 @@ export declare class FeatureStoreSelectionStrategy extends EntityStoreStrategy {
      */
     unbindStore(store: FeatureStore): void;
     /**
-     * Define the motion to apply on select
-     * @param motion Feature motion
-     */
-    setMotion(motion: FeatureMotion): void;
-    /**
      * Unselect all entities, from all stores
      */
     unselectAll(): void;
-    /**
-     * Clear the overlay
-     */
     clear(): void;
-    /**
-     * Deactivate the selection without removing the selection
-     * overlay.
-     */
-    deactivateSelection(): void;
     /**
      * Add the overlay layer, setup the map click lsitener and
      * start watching for stores selection

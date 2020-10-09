@@ -44,7 +44,7 @@ import { MatDatetimepickerModule, MatNativeDatetimeModule } from '@mat-datetimep
 import 'ol/geom/GeometryType';
 import OlPoint from 'ol/geom/Point';
 import OlOverlay from 'ol/Overlay';
-import { createEmpty, extend, boundingExtent, buffer, getCenter, getSize, containsExtent, getArea } from 'ol/extent';
+import { createEmpty, extend, boundingExtent, buffer, getSize, containsExtent, getArea, getCenter } from 'ol/extent';
 import { getLength, getArea as getArea$1 } from 'ol/sphere';
 import OlStyle from 'ol/style/Style';
 import OlLineString from 'ol/geom/LineString';
@@ -66,7 +66,7 @@ import * as jsPDF from 'jspdf';
 import * as _html2canvas from 'html2canvas';
 import * as JSZip from 'jszip';
 import { pointerMove, click } from 'ol/events/condition';
-import { defaults, Select, Translate } from 'ol/interaction';
+import { Select, Translate, defaults } from 'ol/interaction';
 import { unByKey } from 'ol/Observable';
 import { AuthInterceptor, AuthService } from '@igo2/auth';
 import pointOnFeature from '@turf/point-on-feature';
@@ -74,8 +74,8 @@ import { FormsModule, FormControl, NgControl, ReactiveFormsModule, FormBuilder, 
 import OlFeature from 'ol/Feature';
 import { transform, get, transformExtent, fromLonLat, METERS_PER_UNIT } from 'ol/proj';
 import * as olstyle from 'ol/style';
-import { Style, RegularShape, Fill, Stroke, Text, Icon, Circle } from 'ol/style';
-import { Point, MultiLineString, MultiPolygon, LineString, Polygon } from 'ol/geom';
+import { Style, Circle, Stroke, Icon, Text, Fill, RegularShape } from 'ol/style';
+import { LineString, Point, MultiLineString, MultiPolygon, Polygon } from 'ol/geom';
 import OlGeoJSON from 'ol/format/GeoJSON';
 import { MatIconModule, MatButtonModule, MatTooltipModule, MatInputModule, MatFormFieldModule, MatListModule, MatSliderModule, MatBadgeModule, MatSelectModule, MatSlideToggleModule, MatDividerModule, MatMenuModule, MatCheckboxModule, MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatButtonToggleModule, MatSlider, DateAdapter, MatTreeNestedDataSource, MatAutocompleteModule, MatTableModule, MatTreeModule, MatOptionModule, MatDatepickerModule, MatNativeDateModule, MAT_DATE_LOCALE, MatTabsModule, MatRadioModule } from '@angular/material';
 import { CommonModule } from '@angular/common';
@@ -86,9 +86,9 @@ import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { map, debounce, debounceTime, skip, distinctUntilChanged, catchError, mergeMap, first, skipWhile, take } from 'rxjs/operators';
 import { uuid, ObjectUtils, Watcher, SubjectStatus, downloadContent, strEnum, Clipboard } from '@igo2/utils';
 import * as olformat from 'ol/format';
-import { GeoJSON, KML, GML, GPX, WMSCapabilities, WMTSCapabilities, WFS, WMSGetFeatureInfo, WKT, TopoJSON, EsriJSON } from 'ol/format';
-import { __extends, __read, __values, __decorate, __metadata, __spread, __assign } from 'tslib';
-import { Injectable, Component, Input, ChangeDetectionStrategy, Output, EventEmitter, Directive, Self, Pipe, ChangeDetectorRef, NgModule, Injector, Inject, Optional, ApplicationRef, InjectionToken, ViewChildren, Renderer2, ElementRef, ContentChild, HostListener, APP_INITIALIZER, ViewChild, defineInjectable, inject, INJECTOR } from '@angular/core';
+import { WMSCapabilities, WMTSCapabilities, GeoJSON, KML, GML, GPX, WMSGetFeatureInfo, WKT, WFS, TopoJSON, EsriJSON } from 'ol/format';
+import { __spread, __values, __decorate, __metadata, __extends, __read, __assign } from 'tslib';
+import { Injectable, Component, Input, Output, EventEmitter, ChangeDetectionStrategy, Optional, Directive, Self, ChangeDetectorRef, Pipe, ViewChild, NgModule, Injector, Renderer2, ElementRef, ViewChildren, ApplicationRef, Inject, ContentChild, HostListener, InjectionToken, APP_INITIALIZER, defineInjectable, inject, INJECTOR } from '@angular/core';
 import { Platform } from '@ionic/angular';
 import { File } from '@ionic-native/file/ngx';
 import { FileOpener } from '@ionic-native/file-opener/ngx';
@@ -614,16 +614,6 @@ Layer = /** @class */ (function () {
          */
         function () {
             return this.options.id || this.dataSource.id;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Layer.prototype, "alias", {
-        get: /**
-         * @return {?}
-         */
-        function () {
-            return this.options.alias;
         },
         enumerable: true,
         configurable: true
@@ -7809,7 +7799,7 @@ var LayerListBindingDirective = /** @class */ (function () {
     function () {
         var _this = this;
         // Override input layers
-        // this.component.layers = [];
+        this.component.layers = [];
         this.layersOrResolutionChange$$ = combineLatest([
             this.mapService.getMap().layers$,
             this.mapService.getMap().viewController.resolution$
@@ -8230,7 +8220,6 @@ FeatureStoreLoadingStrategy = /** @class */ (function (_super) {
          * Subscription to the store's features
          */
         _this.stores$$ = new Map();
-        _this.setMotion(options.motion);
         return _this;
     }
     /**
@@ -8272,23 +8261,6 @@ FeatureStoreLoadingStrategy = /** @class */ (function (_super) {
         if (this.active === true) {
             this.unwatchStore(store);
         }
-    };
-    /**
-     * Define the motion to apply on load
-     * @param motion Feature motion
-     */
-    /**
-     * Define the motion to apply on load
-     * @param {?} motion Feature motion
-     * @return {?}
-     */
-    FeatureStoreLoadingStrategy.prototype.setMotion = /**
-     * Define the motion to apply on load
-     * @param {?} motion Feature motion
-     * @return {?}
-     */
-    function (motion) {
-        this.motion = motion;
     };
     /**
      * Start watching all stores already bound to that strategy at once.
@@ -8464,8 +8436,8 @@ FeatureStoreLoadingStrategy = /** @class */ (function (_super) {
      * @return {?} The motion selected
      */
     function (store) {
-        if (this.motion !== undefined) {
-            return this.motion;
+        if (this.options.motion !== undefined) {
+            return this.options.motion;
         }
         if (store.pristine === true) {
             // If features have just been loaded into the store, move/zoom on them
@@ -8999,7 +8971,6 @@ FeatureStoreSelectionStrategy = /** @class */ (function (_super) {
     function FeatureStoreSelectionStrategy(options) {
         var _this = _super.call(this, options) || this;
         _this.options = options;
-        _this.setMotion(options.motion);
         _this._overlayStore = _this.createOverlayStore();
         return _this;
     }
@@ -9078,23 +9049,6 @@ FeatureStoreSelectionStrategy = /** @class */ (function (_super) {
         }
     };
     /**
-     * Define the motion to apply on select
-     * @param motion Feature motion
-     */
-    /**
-     * Define the motion to apply on select
-     * @param {?} motion Feature motion
-     * @return {?}
-     */
-    FeatureStoreSelectionStrategy.prototype.setMotion = /**
-     * Define the motion to apply on select
-     * @param {?} motion Feature motion
-     * @return {?}
-     */
-    function (motion) {
-        this.motion = motion;
-    };
-    /**
      * Unselect all entities, from all stores
      */
     /**
@@ -9115,38 +9069,14 @@ FeatureStoreSelectionStrategy = /** @class */ (function (_super) {
         }));
     };
     /**
-     * Clear the overlay
-     */
-    /**
-     * Clear the overlay
      * @return {?}
      */
     FeatureStoreSelectionStrategy.prototype.clear = /**
-     * Clear the overlay
      * @return {?}
      */
     function () {
         this.overlayStore.source.ol.clear();
         this.overlayStore.clear();
-    };
-    /**
-     * Deactivate the selection without removing the selection
-     * overlay.
-     */
-    /**
-     * Deactivate the selection without removing the selection
-     * overlay.
-     * @return {?}
-     */
-    FeatureStoreSelectionStrategy.prototype.deactivateSelection = /**
-     * Deactivate the selection without removing the selection
-     * overlay.
-     * @return {?}
-     */
-    function () {
-        this.unlistenToMapClick();
-        this.removeDragBoxInteraction();
-        this.unwatchAll();
     };
     /**
      * Add the overlay layer, setup the map click lsitener and
@@ -9195,7 +9125,9 @@ FeatureStoreSelectionStrategy = /** @class */ (function (_super) {
      * @return {?}
      */
     function () {
-        this.deactivateSelection();
+        this.unlistenToMapClick();
+        this.removeDragBoxInteraction();
+        this.unwatchAll();
         this.removeOverlayLayer();
     };
     /**
@@ -9501,7 +9433,7 @@ FeatureStoreSelectionStrategy = /** @class */ (function (_super) {
      */
     function (features) {
         /** @type {?} */
-        var motion = this.motion;
+        var motion = this.options ? this.options.motion : undefined;
         /** @type {?} */
         var olOverlayFeatures = this.overlayStore.layer.ol.getSource().getFeatures();
         /** @type {?} */
@@ -11743,21 +11675,6 @@ IgoMap = /** @class */ (function () {
         function (layer) { return layer.id && layer.id === id; }));
     };
     /**
-     * @param {?} alias
-     * @return {?}
-     */
-    IgoMap.prototype.getLayerByAlias = /**
-     * @param {?} alias
-     * @return {?}
-     */
-    function (alias) {
-        return this.layers.find((/**
-         * @param {?} layer
-         * @return {?}
-         */
-        function (layer) { return layer.alias && layer.alias === alias; }));
-    };
-    /**
      * Add a single layer
      * @param layer Layer to add
      * @param push DEPRECATED
@@ -11867,7 +11784,7 @@ IgoMap = /** @class */ (function () {
          */
         function (layer) {
             /** @type {?} */
-            var index = newLayers.indexOf(layer);
+            var index = _this.getLayerIndex(layer);
             if (index >= 0) {
                 layersToRemove.push(layer);
                 newLayers.splice(index, 1);
@@ -21334,10 +21251,6 @@ var GeometryFormFieldComponent = /** @class */ (function () {
          * Whether a measure tooltip should be displayed
          */
         this.measure = false;
-        /**
-         * Control options
-         */
-        this.controlOptions = {};
     }
     Object.defineProperty(GeometryFormFieldComponent.prototype, "geometryType", {
         get: /**
@@ -21414,7 +21327,7 @@ var GeometryFormFieldComponent = /** @class */ (function () {
     GeometryFormFieldComponent.decorators = [
         { type: Component, args: [{
                     selector: 'igo-geometry-form-field',
-                    template: "<igo-geometry-form-field-input\r\n  [formControl]=\"formControl\"\r\n  [map]=\"map\"\r\n  [geometryType]=\"geometryType$ | async\"\r\n  [drawGuide]=\"drawGuide$ | async\"\r\n  [measure]=\"measure\"\r\n  [drawControlIsActive]=\"drawControlIsActive\"\r\n  [freehandDrawIsActive]=\"freehandDrawIsActive\"\r\n  [controlOptions]=\"controlOptions\"\r\n  [drawStyle]=\"drawStyle\"\r\n  [overlayStyle]=\"overlayStyle\">\r\n</igo-geometry-form-field-input>\r\n\r\n<div *ngIf=\"geometryTypeField\" class=\"geometry-type-toggle\">\r\n  <mat-button-toggle-group\r\n    [disabled]=\"(value$ | async) !== undefined\"\r\n    [(ngModel)]=\"geometryType\">\r\n    <mat-button-toggle\r\n      value=\"Point\"\r\n      [disabled]=\"geometryTypes.indexOf('Point') < 0\">\r\n      {{'igo.geo.geometry.point' | translate}}\r\n    </mat-button-toggle>\r\n    <mat-button-toggle\r\n      value=\"LineString\"\r\n      [disabled]=\"geometryTypes.indexOf('LineString') < 0\">\r\n      {{'igo.geo.geometry.line' | translate}}\r\n    </mat-button-toggle>\r\n    <mat-button-toggle\r\n      value=\"Polygon\"\r\n      [disabled]=\"geometryTypes.indexOf('Polygon') < 0\">\r\n      {{'igo.geo.geometry.polygon' | translate}}\r\n    </mat-button-toggle>\r\n  </mat-button-toggle-group>\r\n</div>\r\n\r\n<mat-form-field *ngIf=\"drawGuideField\" class=\"draw-guide-field\">\r\n  <input\r\n    matInput\r\n    type=\"number\"\r\n    [placeholder]=\"drawGuidePlaceholder\"\r\n    [(ngModel)]=\"drawGuide\">\r\n  <mat-icon\r\n    matPrefix\r\n    [color]=\"'primary'\"\r\n    svgIcon=\"adjust\">    \r\n  </mat-icon>\r\n  <span matSuffix class=\"draw-guide-units\">{{'igo.geo.measure.meters' | translate}}</span>\r\n</mat-form-field>",
+                    template: "<igo-geometry-form-field-input\r\n  [formControl]=\"formControl\"\r\n  [map]=\"map\"\r\n  [geometryType]=\"geometryType$ | async\"\r\n  [drawGuide]=\"drawGuide$ | async\"\r\n  [measure]=\"measure\"\r\n  [drawControlIsActive]=\"drawControlIsActive\"\r\n  [freehandDrawIsActive]=\"freehandDrawIsActive\"\r\n  [drawStyle]=\"drawStyle\"\r\n  [overlayStyle]=\"overlayStyle\">\r\n</igo-geometry-form-field-input>\r\n\r\n<div *ngIf=\"geometryTypeField\" class=\"geometry-type-toggle\">\r\n  <mat-button-toggle-group\r\n    [disabled]=\"(value$ | async) !== undefined\"\r\n    [(ngModel)]=\"geometryType\">\r\n    <mat-button-toggle\r\n      value=\"Point\"\r\n      [disabled]=\"geometryTypes.indexOf('Point') < 0\">\r\n      {{'igo.geo.geometry.point' | translate}}\r\n    </mat-button-toggle>\r\n    <mat-button-toggle\r\n      value=\"LineString\"\r\n      [disabled]=\"geometryTypes.indexOf('LineString') < 0\">\r\n      {{'igo.geo.geometry.line' | translate}}\r\n    </mat-button-toggle>\r\n    <mat-button-toggle\r\n      value=\"Polygon\"\r\n      [disabled]=\"geometryTypes.indexOf('Polygon') < 0\">\r\n      {{'igo.geo.geometry.polygon' | translate}}\r\n    </mat-button-toggle>\r\n  </mat-button-toggle-group>\r\n</div>\r\n\r\n<mat-form-field *ngIf=\"drawGuideField\" class=\"draw-guide-field\">\r\n  <input\r\n    matInput\r\n    type=\"number\"\r\n    [placeholder]=\"drawGuidePlaceholder\"\r\n    [(ngModel)]=\"drawGuide\">\r\n  <mat-icon\r\n    matPrefix\r\n    [color]=\"'primary'\"\r\n    svgIcon=\"adjust\">    \r\n  </mat-icon>\r\n  <span matSuffix class=\"draw-guide-units\">{{'igo.geo.measure.meters' | translate}}</span>\r\n</mat-form-field>",
                     changeDetection: ChangeDetectionStrategy.OnPush,
                     styles: [":host{display:block;width:100%}.draw-guide-field,.geometry-type-toggle{width:100%}.geometry-type-toggle{padding:10px;text-align:center}.draw-guide-field mat-icon{margin:0 10px}.draw-guide-units{padding:10px}"]
                 }] }
@@ -21433,7 +21346,6 @@ var GeometryFormFieldComponent = /** @class */ (function () {
         drawGuide: [{ type: Input }],
         drawGuidePlaceholder: [{ type: Input }],
         measure: [{ type: Input }],
-        controlOptions: [{ type: Input }],
         drawStyle: [{ type: Input }],
         overlayStyle: [{ type: Input }]
     };
@@ -22406,7 +22318,7 @@ DrawControl = /** @class */ (function () {
      */
     function () {
         if (this.options.layer === undefined && this.options.source === undefined) {
-            this.olOverlaySource.clear(true);
+            this.olOverlaySource.clear();
         }
     };
     /**
@@ -22489,11 +22401,8 @@ DrawControl = /** @class */ (function () {
             return;
         }
         this.unsubscribeToKeyDown();
-        unByKey([
-            this.onDrawStartKey,
-            this.onDrawEndKey,
-            this.onDrawKey
-        ]);
+        unByKey(this.onDrawStartKey);
+        unByKey(this.onDrawEndKey);
         if (this.olMap !== undefined) {
             this.olMap.removeInteraction(this.olDrawInteraction);
         }
@@ -22521,7 +22430,7 @@ DrawControl = /** @class */ (function () {
         var olGeometry = event.feature.getGeometry();
         this.start$.next(olGeometry);
         this.clearOlInnerOverlaySource();
-        this.onDrawKey = olGeometry.on('change', (/**
+        this.onChangesKey = olGeometry.on('change', (/**
          * @param {?} olGeometryEvent
          * @return {?}
          */
@@ -22549,7 +22458,9 @@ DrawControl = /** @class */ (function () {
      */
     function (event) {
         this.unsubscribeToKeyDown();
-        unByKey(this.onDrawKey);
+        if (this.onChangesKey !== undefined) {
+            unByKey(this.onChangesKey);
+        }
         this.end$.next(event.feature.getGeometry());
     };
     /**
@@ -22639,20 +22550,6 @@ ModifyControl = /** @class */ (function () {
         this.olTranslateInteractionIsActive = false;
         this.olDrawInteractionIsActive = false;
         this.removedOlInteractions = [];
-        /**
-         * Whether a modify control should be available
-         */
-        this.modify = true;
-        /**
-         * Whether a translate control should be available
-         */
-        this.translate = true;
-        if (options.modify !== undefined) {
-            this.modify = options.modify;
-        }
-        if (options.translate !== undefined) {
-            this.translate = options.translate;
-        }
         if (options.layer !== undefined) {
             this.olOverlayLayer = options.layer;
         }
@@ -22733,19 +22630,11 @@ ModifyControl = /** @class */ (function () {
         }
         this.olMap = olMap$$1;
         this.addOlInnerOverlayLayer();
-        // The order in which these interactions
-        // are added is important
-        if (this.modify === true) {
-            this.addOlDrawInteraction();
-        }
-        if (this.translate === true) {
-            this.addOlTranslateInteraction();
-            this.activateTranslateInteraction();
-        }
-        if (this.modify === true) {
-            this.addOlModifyInteraction();
-            this.activateModifyInteraction();
-        }
+        this.addOlDrawInteraction();
+        this.addOlTranslateInteraction();
+        this.activateTranslateInteraction();
+        this.addOlModifyInteraction();
+        this.activateModifyInteraction();
     };
     /**
      * Return the overlay source
@@ -22852,7 +22741,7 @@ ModifyControl = /** @class */ (function () {
      */
     function () {
         if (this.options.layer === undefined && this.options.source === undefined) {
-            this.olOverlaySource.clear(true);
+            this.olOverlaySource.clear();
         }
     };
     /**
@@ -23000,11 +22889,8 @@ ModifyControl = /** @class */ (function () {
             return;
         }
         this.olModifyInteractionIsActive = false;
-        unByKey([
-            this.onModifyStartKey,
-            this.onModifyEndKey,
-            this.onModifyKey
-        ]);
+        unByKey(this.onModifyStartKey);
+        unByKey(this.onModifyEndKey);
         if (this.olMap !== undefined) {
             this.olMap.removeInteraction(this.olModifyInteraction);
         }
@@ -23057,20 +22943,22 @@ ModifyControl = /** @class */ (function () {
      * @return {?}
      */
     function (event) {
-        unByKey(this.onModifyKey);
+        if (this.onModifyKey !== undefined) {
+            unByKey(this.onModifyKey);
+        }
         this.end$.next(event.features.item(0).getGeometry());
         this.unsubscribeToKeyDown();
     };
     /**
-     * Subscribe to space key down to pan the map
+     * Subscribe to CTRL key down to activate the draw control
      */
     /**
-     * Subscribe to space key down to pan the map
+     * Subscribe to CTRL key down to activate the draw control
      * @private
      * @return {?}
      */
     ModifyControl.prototype.subscribeToKeyDown = /**
-     * Subscribe to space key down to pan the map
+     * Subscribe to CTRL key down to activate the draw control
      * @private
      * @return {?}
      */
@@ -23190,11 +23078,8 @@ ModifyControl = /** @class */ (function () {
             return;
         }
         this.olTranslateInteractionIsActive = false;
-        unByKey([
-            this.onTranslateStartKey,
-            this.onTranslateEndKey,
-            this.onTranslateKey
-        ]);
+        unByKey(this.onTranslateStartKey);
+        unByKey(this.onTranslateEndKey);
         if (this.olMap !== undefined) {
             this.olMap.removeInteraction(this.olTranslateInteraction);
         }
@@ -23245,7 +23130,9 @@ ModifyControl = /** @class */ (function () {
      * @return {?}
      */
     function (event) {
-        unByKey(this.onTranslateKey);
+        if (this.onTranslateKey !== undefined) {
+            unByKey(this.onTranslateKey);
+        }
         this.end$.next(event.features.item(0).getGeometry());
     };
     /**
@@ -23276,9 +23163,7 @@ ModifyControl = /** @class */ (function () {
             function (event) {
                 /** @type {?} */
                 var olOuterGeometry = _this.olOuterGeometry || _this.getOlGeometry();
-                /** @type {?} */
-                var intersects$$1 = olOuterGeometry.intersectsCoordinate(event.coordinate);
-                return intersects$$1;
+                return olOuterGeometry.intersectsCoordinate(event.coordinate);
             })
         });
         this.olDrawInteraction = olDrawInteraction;
@@ -23347,12 +23232,8 @@ ModifyControl = /** @class */ (function () {
             _this.unsubscribeToKeyDown();
             _this.deactivateDrawInteraction();
             _this.activateModifyInteraction();
-            if (_this.translate === true) {
-                _this.activateTranslateInteraction();
-            }
+            _this.activateTranslateInteraction();
             _this.subscribeToDrawKeyDown();
-            _this.olOuterGeometry = undefined;
-            _this.clearOlLinearRingsSource();
             _this.end$.next(_this.getOlGeometry());
         }));
     };
@@ -23413,7 +23294,6 @@ ModifyControl = /** @class */ (function () {
         this.unsubscribeToDrawKeyUp();
         this.unsubscribeToDrawKeyDown();
         this.deactivateDrawInteraction();
-        this.clearOlLinearRingsSource();
         this.olDrawInteraction = undefined;
     };
     /**
@@ -23487,13 +23367,9 @@ ModifyControl = /** @class */ (function () {
         function (olInteraction) {
             _this.olMap.addInteraction(olInteraction);
         }));
-        this.removedOlInteractions = [];
         this.olDrawInteractionIsActive = false;
-        unByKey([
-            this.onDrawStartKey,
-            this.onDrawEndKey,
-            this.onDrawKey
-        ]);
+        unByKey(this.onDrawStartKey);
+        unByKey(this.onDrawEndKey);
         if (this.olMap !== undefined) {
             this.olMap.removeInteraction(this.olDrawInteraction);
         }
@@ -23528,7 +23404,6 @@ ModifyControl = /** @class */ (function () {
          * @return {?}
          */
         function (olGeometryEvent) {
-            _this.mousePosition = getMousePositionFromOlGeometryEvent(olGeometryEvent);
             /** @type {?} */
             var _linearRingCoordinates = olGeometryEvent.target.getLinearRing().getCoordinates();
             _this.updateLinearRingOfOlGeometry(_linearRingCoordinates);
@@ -23553,7 +23428,9 @@ ModifyControl = /** @class */ (function () {
      * @return {?}
      */
     function (event) {
-        unByKey(this.onDrawKey);
+        if (this.onDrawKey !== undefined) {
+            unByKey(this.onDrawKey);
+        }
         this.olOuterGeometry = undefined;
         /** @type {?} */
         var linearRingCoordinates = event.feature.getGeometry().getLinearRing().getCoordinates();
@@ -23755,7 +23632,7 @@ SliceControl = /** @class */ (function () {
     function (olGeometry) {
         /** @type {?} */
         var olFeature = new OlFeature({ geometry: olGeometry });
-        this.olOverlaySource.clear(true);
+        this.olOverlaySource.clear();
         this.olOverlaySource.addFeature(olFeature);
     };
     /**
@@ -23829,7 +23706,7 @@ SliceControl = /** @class */ (function () {
      */
     function () {
         if (this.options.layer === undefined && this.options.source === undefined) {
-            this.olOverlaySource.clear(true);
+            this.olOverlaySource.clear();
         }
     };
     /**
@@ -23885,7 +23762,7 @@ SliceControl = /** @class */ (function () {
         }
         this.drawLineStart$$.unsubscribe();
         this.drawLineEnd$$.unsubscribe();
-        this.drawLineControl.getSource().clear(true);
+        this.drawLineControl.getSource().clear();
         this.drawLineControl.setOlMap(undefined);
     };
     /**
@@ -23905,7 +23782,7 @@ SliceControl = /** @class */ (function () {
      * @return {?}
      */
     function (olLine) {
-        this.drawLineControl.getSource().clear(true);
+        this.drawLineControl.getSource().clear();
     };
     /**
      * Slice the first geometry encountered with the drawn line
@@ -23956,7 +23833,7 @@ SliceControl = /** @class */ (function () {
                 throw e;
             }
         }
-        this.drawLineControl.getSource().clear(true);
+        this.drawLineControl.getSource().clear();
         this.olOverlaySource.addFeatures(olSlicedGeometries.map((/**
          * @param {?} olGeometry
          * @return {?}
@@ -25440,10 +25317,6 @@ var GeometryFormFieldInputComponent = /** @class */ (function () {
          */
         this.measure = false;
         this._drawControlIsActive = true;
-        /**
-         * Control options
-         */
-        this.controlOptions = {};
         this.onChange = (/**
          * @return {?}
          */
@@ -25561,10 +25434,8 @@ var GeometryFormFieldInputComponent = /** @class */ (function () {
                 value = createDrawInteractionStyle();
             }
             this._drawStyle = value;
-            /** @type {?} */
-            var olGuideStyle = this.getGuideStyleFromDrawStyle(value);
-            if (olGuideStyle !== undefined) {
-                this.defaultDrawStyleRadius = olGuideStyle.getImage().getRadius();
+            if (value && this.isStyleWithRadius(value)) {
+                this.defaultDrawStyleRadius = value.getImage().getRadius();
             }
             else {
                 this.defaultDrawStyleRadius = null;
@@ -25621,7 +25492,7 @@ var GeometryFormFieldInputComponent = /** @class */ (function () {
                 this.addGeoJSONToOverlay(value);
             }
             else {
-                this.olOverlaySource.clear(true);
+                this.olOverlaySource.clear();
             }
             this.onChange(value);
             this.toggleControl();
@@ -25826,8 +25697,7 @@ var GeometryFormFieldInputComponent = /** @class */ (function () {
      */
     function () {
         var _this = this;
-        /** @type {?} */
-        var controlOptions = Object.assign({}, this.controlOptions, {
+        this.drawControl = new DrawControl({
             geometryType: this.geometryType || 'Point',
             layer: this.olOverlayLayer,
             drawStyle: typeof this.drawStyle === 'function' ? this.drawStyle : (/**
@@ -25842,7 +25712,6 @@ var GeometryFormFieldInputComponent = /** @class */ (function () {
                 return style$$1;
             })
         });
-        this.drawControl = new DrawControl(controlOptions);
     };
     /**
      * Create a modify control and subscribe to it's geometry
@@ -25859,8 +25728,7 @@ var GeometryFormFieldInputComponent = /** @class */ (function () {
      */
     function () {
         var _this = this;
-        /** @type {?} */
-        var controlOptions = Object.assign({}, this.controlOptions, {
+        this.modifyControl = new ModifyControl({
             layer: this.olOverlayLayer,
             drawStyle: typeof this.drawStyle === 'function' ? this.drawStyle : (/**
              * @param {?} olFeature
@@ -25874,7 +25742,6 @@ var GeometryFormFieldInputComponent = /** @class */ (function () {
                 return style$$1;
             })
         });
-        this.modifyControl = new ModifyControl(controlOptions);
     };
     /**
      * Toggle the proper control (draw or modify)
@@ -25890,21 +25757,15 @@ var GeometryFormFieldInputComponent = /** @class */ (function () {
      * @return {?}
      */
     function () {
-        /** @type {?} */
-        var activate;
+        this.deactivateControl();
+        if (!this.drawControlIsActive) {
+            return;
+        }
         if (!this.value && this.geometryType) {
-            activate = this.drawControl;
+            this.activateControl(this.drawControl);
         }
         else {
-            activate = this.modifyControl;
-        }
-        // If the control that should be activated
-        // is not the same as the current active control,
-        // deactivate the current control and activate the new one
-        // Otherwise, do nothing and keep the current control active
-        if (activate !== this.activeControl) {
-            this.deactivateControl();
-            this.activateControl(activate);
+            this.activateControl(this.modifyControl);
         }
     };
     /**
@@ -26208,22 +26069,19 @@ var GeometryFormFieldInputComponent = /** @class */ (function () {
      * @return {?}
      */
     function (olStyle, resolution) {
-        /** @type {?} */
-        var olGuideStyle = this.getGuideStyleFromDrawStyle(olStyle);
-        if (olGuideStyle === undefined) {
-            return;
+        if (this.isStyleWithRadius(olStyle)) {
+            /** @type {?} */
+            var drawGuide = this.drawGuide;
+            /** @type {?} */
+            var radius = void 0;
+            if (!drawGuide || drawGuide < 0) {
+                radius = this.defaultDrawStyleRadius;
+            }
+            else {
+                radius = drawGuide > 0 ? drawGuide / resolution : drawGuide;
+            }
+            olStyle.getImage().setRadius(radius);
         }
-        /** @type {?} */
-        var drawGuide = this.drawGuide;
-        /** @type {?} */
-        var radius;
-        if (!drawGuide || drawGuide < 0) {
-            radius = this.defaultDrawStyleRadius;
-        }
-        else {
-            radius = drawGuide > 0 ? drawGuide / resolution : drawGuide;
-        }
-        olGuideStyle.getImage().setRadius(radius);
     };
     /**
      * Returns wether a given Open Layers style has a radius property that can be set (used to set draw guide)
@@ -26244,31 +26102,6 @@ var GeometryFormFieldInputComponent = /** @class */ (function () {
     function (olStyle) {
         return typeof olStyle !== 'function' && olStyle.getImage && olStyle.getImage().setRadius;
     };
-    /**
-     * Returns wether a given Open Layers style has a radius property that can be set (used to set draw guide)
-     * @param olStyle The style on which to perform the check
-     */
-    /**
-     * Returns wether a given Open Layers style has a radius property that can be set (used to set draw guide)
-     * @private
-     * @param {?} olStyle The style on which to perform the check
-     * @return {?}
-     */
-    GeometryFormFieldInputComponent.prototype.getGuideStyleFromDrawStyle = /**
-     * Returns wether a given Open Layers style has a radius property that can be set (used to set draw guide)
-     * @private
-     * @param {?} olStyle The style on which to perform the check
-     * @return {?}
-     */
-    function (olStyle) {
-        if (Array.isArray(olStyle)) {
-            olStyle = olStyle[0];
-        }
-        if (this.isStyleWithRadius(olStyle)) {
-            return olStyle;
-        }
-        return undefined;
-    };
     GeometryFormFieldInputComponent.decorators = [
         { type: Component, args: [{
                     selector: 'igo-geometry-form-field-input',
@@ -26288,7 +26121,6 @@ var GeometryFormFieldInputComponent = /** @class */ (function () {
         measure: [{ type: Input }],
         drawControlIsActive: [{ type: Input }],
         freehandDrawIsActive: [{ type: Input }],
-        controlOptions: [{ type: Input }],
         drawStyle: [{ type: Input }],
         overlayStyle: [{ type: Input }],
         value: [{ type: Input }],
@@ -44158,7 +43990,6 @@ var ExportIonicService = /** @class */ (function (_super) {
             var fileName_1 = title + "." + format.toLowerCase();
             /** @type {?} */
             var directory_1 = this.file.externalRootDirectory + 'Download';
-            console.log(directory_1);
             this.file.writeFile(directory_1, fileName_1, featuresText, { replace: true }).then((/**
              * @param {?} success
              * @return {?}

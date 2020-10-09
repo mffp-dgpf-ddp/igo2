@@ -57,12 +57,6 @@ export declare class GeometryFormFieldInputComponent implements OnInit, OnDestro
     freehandDrawIsActive: boolean;
     private _freehandDrawIsActive;
     /**
-     * Control options
-     */
-    controlOptions: {
-        [key: string]: any;
-    };
-    /**
      * Style for the draw control (applies while the geometry is being drawn)
      */
     drawStyle: OlStyle;
@@ -182,9 +176,4 @@ export declare class GeometryFormFieldInputComponent implements OnInit, OnDestro
      * @param olStyle The style on which to perform the check
      */
     private isStyleWithRadius;
-    /**
-     * Returns wether a given Open Layers style has a radius property that can be set (used to set draw guide)
-     * @param olStyle The style on which to perform the check
-     */
-    private getGuideStyleFromDrawStyle;
 }

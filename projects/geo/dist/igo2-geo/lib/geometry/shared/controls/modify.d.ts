@@ -11,8 +11,6 @@ export interface ModifyControlOptions {
     layer?: OlVectorLayer;
     layerStyle?: OlStyle | ((olfeature: OlFeature) => OlStyle);
     drawStyle?: OlStyle | ((olfeature: OlFeature) => OlStyle);
-    modify?: boolean;
-    translate?: boolean;
 }
 /**
  * Control to modify geometries
@@ -69,14 +67,6 @@ export declare class ModifyControl {
      * @internal
      */
     readonly olLinearRingsSource: OlVectorSource;
-    /**
-     * Whether a modify control should be available
-     */
-    private modify;
-    /**
-     * Whether a translate control should be available
-     */
-    private translate;
     constructor(options: ModifyControlOptions);
     /**
      * Add or remove this control to/from a map.
@@ -142,7 +132,7 @@ export declare class ModifyControl {
      */
     private onModifyEnd;
     /**
-     * Subscribe to space key down to pan the map
+     * Subscribe to CTRL key down to activate the draw control
      */
     private subscribeToKeyDown;
     /**

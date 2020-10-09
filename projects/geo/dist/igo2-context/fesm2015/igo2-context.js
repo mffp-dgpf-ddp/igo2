@@ -14,7 +14,7 @@ import { Title } from '@angular/platform-browser';
 import { IgoSpinnerModule, ActionStore, ActionbarMode, ConfirmDialogService, IgoConfirmDialogModule, IgoStopPropagationModule, IgoListModule, IgoKeyValueModule, IgoCollapsibleModule, IgoActionbarModule, getEntityTitle, IgoPanelModule, IgoFlexibleModule } from '@igo2/common';
 import { FeatureDataSource, VectorLayer, ClusterDataSource, MapBrowserComponent, LayerService, StyleListService, StyleService, MapService, FeatureMotion, moveToOlFeatures, IgoFeatureModule } from '@igo2/geo';
 import GeoJSON from 'ol/format/GeoJSON';
-import { Injectable, Optional, Component, Input, Output, EventEmitter, ChangeDetectorRef, Directive, ChangeDetectionStrategy, Self, HostListener, NgModule, defineInjectable, inject } from '@angular/core';
+import { Injectable, Optional, Component, Input, Output, EventEmitter, ChangeDetectorRef, Directive, Self, HostListener, ChangeDetectionStrategy, NgModule, defineInjectable, inject } from '@angular/core';
 import { ConfigService, RouteService, MessageService, LanguageService, StorageService, IgoLanguageModule } from '@igo2/core';
 import { uuid, ObjectUtils, downloadContent, Clipboard } from '@igo2/utils';
 import { BehaviorSubject, of, Observable, merge, ReplaySubject, EMPTY, timer } from 'rxjs';

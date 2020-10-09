@@ -18,7 +18,6 @@ export declare abstract class Layer {
     status$: Subject<SubjectStatus>;
     private resolution$$;
     readonly id: string;
-    readonly alias: string;
     title: string;
     zIndex: number;
     baseLayer: boolean;

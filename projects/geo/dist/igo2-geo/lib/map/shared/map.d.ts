@@ -54,7 +54,6 @@ export declare class IgoMap {
     changeBaseLayer(baseLayer: Layer): void;
     getBaseLayers(): Layer[];
     getLayerById(id: string): Layer;
-    getLayerByAlias(alias: string): Layer;
     /**
      * Add a single layer
      * @param layer Layer to add
