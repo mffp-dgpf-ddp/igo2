@@ -13,3 +13,4 @@ export * from './lib/components/zone-selection/zone-selection.module';
 export * from './lib/services/bbox.service';
 export * from './lib/services/map-image.service';
 export * from './lib/services/feature-layer.service';
+export * from './lib/services/coord.service';
