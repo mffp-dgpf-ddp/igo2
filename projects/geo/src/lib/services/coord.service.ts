@@ -85,7 +85,7 @@ export class CoordService {
   }
 
   public coordIs4326(coord) {
-    if (coord[0].slice(0, 3).includes('.')) {
+    if (coord[0].toString().slice(0, 3).includes('.')) {
       return true;
     }
     return false;
