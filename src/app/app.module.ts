@@ -7,10 +7,16 @@ import {
   provideConfigOptions,
   IgoMessageModule,
   IgoGestureModule,
-  RouteService
+  RouteService,
+  NetworkService,
+  NetworkIonicService
 } from '@igo2/core';
 import { IgoSpinnerModule, IgoStopPropagationModule } from '@igo2/common';
 import { IgoAuthModule } from '@igo2/auth';
+import {
+  ContextExportIonicService,
+  ContextExportService
+ } from '@igo2/context';
 import {
   provideIChercheSearchSource,
   provideIChercheReverseSearchSource,
@@ -20,12 +26,20 @@ import {
   provideStoredQueriesSearchSource,
   provideOsrmDirectionsSource,
   provideOptionsApi,
-  provideCadastreSearchSource
+  provideCadastreSearchSource,
+  provideStyleListOptions,
+  PrintIonicService,
+  PrintService,
+  ExportIonicService,
+  ExportService
 } from '@igo2/geo';
 
 import { environment } from '../environments/environment';
 import { PortalModule } from './pages';
 import { AppComponent } from './app.component';
+import { Network } from '@ionic-native/network/ngx';
+import { File } from '@ionic-native/file/ngx';
+import { FileOpener } from '@ionic-native/file-opener/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -46,7 +60,18 @@ import { AppComponent } from './app.component';
       default: environment.igo,
       path: './config/config.json'
     }),
+    provideStyleListOptions({
+      default: environment.igo,
+      path: './config/style-list.json'
+    }),
     RouteService,
+    Network,
+    File,
+    FileOpener,
+    { provide: NetworkService, useExisting: NetworkIonicService },
+    { provide: PrintService, useExisting: PrintIonicService },
+    { provide: ExportService, useExisting: ExportIonicService },
+    { provide: ContextExportService, useExisting: ContextExportIonicService },
     provideNominatimSearchSource(),
     provideIChercheSearchSource(),
     provideIChercheReverseSearchSource(),
