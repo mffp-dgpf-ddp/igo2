@@ -1,5 +1,5 @@
-@import 'style/reset.scss';
-@import 'style/theme.scss';
+@import './style/reset.scss';
+@import './style/theme.scss';
 
 .shepherd-element[data-popper-reference-hidden]:not(.shepherd-centered) {
   opacity: 1;
