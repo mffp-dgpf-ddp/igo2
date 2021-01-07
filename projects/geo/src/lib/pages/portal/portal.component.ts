@@ -257,6 +257,8 @@ export class PortalComponent implements OnInit, OnDestroy {
   get workspace(): Workspace {
     return this.workspaceState.workspace$.value;
   }
+  
+  public _routerSubscription: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -301,6 +303,11 @@ export class PortalComponent implements OnInit, OnDestroy {
         'menuButtonReverseColor'
       );
     }
+    this._routerSubscription = this.route.url.subscribe(url => {
+      setTimeout(() => {
+        this.map.ol.updateSize();
+      }, 1000);
+    });
   }
 
   ngOnInit() {

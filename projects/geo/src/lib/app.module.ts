@@ -35,7 +35,7 @@ import {
 } from '@igo2/geo';
 
 import { environment } from '../environments/environment';
-import { PortalModule } from './pages';
+import { PortalModule } from './pages/portal/portal.module';
 import { AppComponent } from './app.component';
 import { Network } from '@ionic-native/network/ngx';
 import { File } from '@ionic-native/file/ngx';
