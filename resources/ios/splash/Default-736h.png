@@ -1,0 +1,967 @@
+mber, clientXArg: number, clientYArg: number, ctrlKeyArg: boolean, altKeyArg: boolean, shiftKeyArg: boolean, metaKeyArg: boolean, buttonArg: number, relatedTargetArg: EventTarget, dataTransferArg: DataTransfer): void;
+    msConvertURL(file: File, targetType: string, targetURL?: string): void;
+}
+
+declare var DragEvent: {
+    prototype: DragEvent;
+    new(): DragEvent;
+}
+
+interface DynamicsCompressorNode extends AudioNode {
+    readonly attack: AudioParam;
+    readonly knee: AudioParam;
+    readonly ratio: AudioParam;
+    readonly reduction: AudioParam;
+    readonly release: AudioParam;
+    readonly threshold: AudioParam;
+}
+
+declare var DynamicsCompressorNode: {
+    prototype: DynamicsCompressorNode;
+    new(): DynamicsCompressorNode;
+}
+
+interface EXT_frag_depth {
+}
+
+declare var EXT_frag_depth: {
+    prototype: EXT_frag_depth;
+    new(): EXT_frag_depth;
+}
+
+interface EXT_texture_filter_anisotropic {
+    readonly MAX_TEXTURE_MAX_ANISOTROPY_EXT: number;
+    readonly TEXTURE_MAX_ANISOTROPY_EXT: number;
+}
+
+declare var EXT_texture_filter_anisotropic: {
+    prototype: EXT_texture_filter_anisotropic;
+    new(): EXT_texture_filter_anisotropic;
+    readonly MAX_TEXTURE_MAX_ANISOTROPY_EXT: number;
+    readonly TEXTURE_MAX_ANISOTROPY_EXT: number;
+}
+
+interface ElementEventMap extends GlobalEventHandlersEventMap {
+    "ariarequest": AriaRequestEvent;
+    "command": CommandEvent;
+    "gotpointercapture": PointerEvent;
+    "lostpointercapture": PointerEvent;
+    "MSGestureChange": MSGestureEvent;
+    "MSGestureDoubleTap": MSGestureEvent;
+    "MSGestureEnd": MSGestureEvent;
+    "MSGestureHold": MSGestureEvent;
+    "MSGestureStart": MSGestureEvent;
+    "MSGestureTap": MSGestureEvent;
+    "MSGotPointerCapture": MSPointerEvent;
+    "MSInertiaStart": MSGestureEvent;
+    "MSLostPointerCapture": MSPointerEvent;
+    "MSPointerCancel": MSPointerEvent;
+    "MSPointerDown": MSPointerEvent;
+    "MSPointerEnter": MSPointerEvent;
+    "MSPointerLeave": MSPointerEvent;
+    "MSPointerMove": MSPointerEvent;
+    "MSPointerOut": MSPointerEvent;
+    "MSPointerOver": MSPointerEvent;
+    "MSPointerUp": MSPointerEvent;
+    "touchcancel": TouchEvent;
+    "touchend": TouchEvent;
+    "touchmove": TouchEvent;
+    "touchstart": TouchEvent;
+    "webkitfullscreenchange": Event;
+    "webkitfullscreenerror": Event;
+}
+
+interface Element extends Node, GlobalEventHandlers, ElementTraversal, NodeSelector, ChildNode, ParentNode {
+    readonly classList: DOMTokenList;
+    className: string;
+    readonly clientHeight: number;
+    readonly clientLeft: number;
+    readonly clientTop: number;
+    readonly clientWidth: number;
+    id: string;
+    msContentZoomFactor: number;
+    readonly msRegionOverflow: string;
+    onariarequest: (this: Element, ev: AriaRequestEvent) => any;
+    oncommand: (this: Element, ev: CommandEvent) => any;
+    ongotpointercapture: (this: Element, ev: PointerEvent) => any;
+    onlostpointercapture: (this: Element, ev: PointerEvent) => any;
+    onmsgesturechange: (this: Element, ev: MSGestureEvent) => any;
+    onmsgesturedoubletap: (this: Element, ev: MSGestureEvent) => any;
+    onmsgestureend: (this: Element, ev: MSGestureEvent) => any;
+    onmsgesturehold: (this: Element, ev: MSGestureEvent) => any;
+    onmsgesturestart: (this: Element, ev: MSGestureEvent) => any;
+    onmsgesturetap: (this: Element, ev: MSGestureEvent) => any;
+    onmsgotpointercapture: (this: Element, ev: MSPointerEvent) => any;
+    onmsinertiastart: (this: Element, ev: MSGestureEvent) => any;
+    onmslostpointercapture: (this: Element, ev: MSPointerEvent) => any;
+    onmspointercancel: (this: Element, ev: MSPointerEvent) => any;
+    onmspointerdown: (this: Element, ev: MSPointerEvent) => any;
+    onmspointerenter: (this: Element, ev: MSPointerEvent) => any;
+    onmspointerleave: (this: Element, ev: MSPointerEvent) => any;
+    onmspointermove: (this: Element, ev: MSPointerEvent) => any;
+    onmspointerout: (this: Element, ev: MSPointerEvent) => any;
+    onmspointerover: (this: Element, ev: MSPointerEvent) => any;
+    onmspointerup: (this: Element, ev: MSPointerEvent) => any;
+    ontouchcancel: (ev: TouchEvent) => any;
+    ontouchend: (ev: TouchEvent) => any;
+    ontouchmove: (ev: TouchEvent) => any;
+    ontouchstart: (ev: TouchEvent) => any;
+    onwebkitfullscreenchange: (this: Element, ev: Event) => any;
+    onwebkitfullscreenerror: (this: Element, ev: Event) => any;
+    readonly prefix: string | null;
+    readonly scrollHeight: number;
+    scrollLeft: number;
+    scrollTop: number;
+    readonly scrollWidth: number;
+    readonly tagName: string;
+    innerHTML: string;
+    readonly assignedSlot: HTMLSlotElement | null;
+    slot: string;
+    readonly shadowRoot: ShadowRoot | null;
+    getAttribute(name: string): string | null;
+    getAttributeNS(namespaceURI: string, localName: string): string;
+    getAttributeNode(name: string): Attr;
+    getAttributeNodeNS(namespaceURI: string, localName: string): Attr;
+    getBoundingClientRect(): ClientRect;
+    getClientRects(): ClientRectList;
+    getElementsByTagName<K extends keyof ElementListTagNameMap>(name: K): ElementListTagNameMap[K];
+    getElementsByTagName(name: string): NodeListOf<Element>;
+    getElementsByTagNameNS(namespaceURI: "http://www.w3.org/1999/xhtml", localName: string): HTMLCollectionOf<HTMLElement>;
+    getElementsByTagNameNS(namespaceURI: "http://www.w3.org/2000/svg", localName: string): HTMLCollectionOf<SVGElement>;
+    getElementsByTagNameNS(namespaceURI: string, localName: string): HTMLCollectionOf<Element>;
+    hasAttribute(name: string): boolean;
+    hasAttributeNS(namespaceURI: string, localName: string): boolean;
+    msGetRegionContent(): MSRangeCollection;
+    msGetUntransformedBounds(): ClientRect;
+    msMatchesSelector(selectors: string): boolean;
+    msReleasePointerCapture(pointerId: number): void;
+    msSetPointerCapture(pointerId: number): void;
+    msZoomTo(args: MsZoomToOptions): void;
+    releasePointerCapture(pointerId: number): void;
+    removeAttribute(name?: string): void;
+    removeAttributeNS(namespaceURI: string, localName: string): void;
+    removeAttributeNode(oldAttr: Attr): Attr;
+    requestFullscreen(): void;
+    requestPointerLock(): void;
+    setAttribute(name: string, value: string): void;
+    setAttributeNS(namespaceURI: string, qualifiedName: string, value: string): void;
+    setAttributeNode(newAttr: Attr): Attr;
+    setAttributeNodeNS(newAttr: Attr): Attr;
+    setPointerCapture(pointerId: number): void;
+    webkitMatchesSelector(selectors: string): boolean;
+    webkitRequestFullScreen(): void;
+    webkitRequestFullscreen(): void;
+    getElementsByClassName(classNames: string): NodeListOf<Element>;
+    matches(selector: string): boolean;
+    closest(selector: string): Element | null;
+    scrollIntoView(arg?: boolean | ScrollIntoViewOptions): void;
+    scroll(options?: ScrollToOptions): void;
+    scroll(x: number, y: number): void;
+    scrollTo(options?: ScrollToOptions): void;
+    scrollTo(x: number, y: number): void;
+    scrollBy(options?: ScrollToOptions): void;
+    scrollBy(x: number, y: number): void;
+    insertAdjacentElement(position: string, insertedElement: Element): Element | null;
+    insertAdjacentHTML(where: string, html: string): void;
+    insertAdjacentText(where: string, text: string): void;
+    attachShadow(shadowRootInitDict: ShadowRootInit): ShadowRoot;
+    addEventListener<K extends keyof ElementEventMap>(type: K, listener: (this: Element, ev: ElementEventMap[K]) => any, useCapture?: boolean): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
+declare var Element: {
+    prototype: Element;
+    new(): Element;
+}
+
+interface ErrorEvent extends Event {
+    readonly colno: number;
+    readonly error: any;
+    readonly filename: string;
+    readonly lineno: number;
+    readonly message: string;
+    initErrorEvent(typeArg: string, canBubbleArg: boolean, cancelableArg: boolean, messageArg: string, filenameArg: string, linenoArg: number): void;
+}
+
+declare var ErrorEvent: {
+    prototype: ErrorEvent;
+    new(): ErrorEvent;
+}
+
+interface Event {
+    readonly bubbles: boolean;
+    cancelBubble: boolean;
+    readonly cancelable: boolean;
+    readonly currentTarget: EventTarget;
+    readonly defaultPrevented: boolean;
+    readonly eventPhase: number;
+    readonly isTrusted: boolean;
+    returnValue: boolean;
+    readonly srcElement: Element | null;
+    readonly target: EventTarget;
+    readonly timeStamp: number;
+    readonly type: string;
+    readonly scoped: boolean;
+    initEvent(eventTypeArg: string, canBubbleArg: boolean, cancelableArg: boolean): void;
+    preventDefault(): void;
+    stopImmediatePropagation(): void;
+    stopPropagation(): void;
+    deepPath(): EventTarget[];
+    readonly AT_TARGET: number;
+    readonly BUBBLING_PHASE: number;
+    readonly CAPTURING_PHASE: number;
+}
+
+declare var Event: {
+    prototype: Event;
+    new(type: string, eventInitDict?: EventInit): Event;
+    readonly AT_TARGET: number;
+    readonly BUBBLING_PHASE: number;
+    readonly CAPTURING_PHASE: number;
+}
+
+interface EventTarget {
+    addEventListener(type: string, listener?: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+    dispatchEvent(evt: Event): boolean;
+    removeEventListener(type: string, listener?: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
+declare var EventTarget: {
+    prototype: EventTarget;
+    new(): EventTarget;
+}
+
+interface External {
+}
+
+declare var External: {
+    prototype: External;
+    new(): External;
+}
+
+interface File extends Blob {
+    readonly lastModifiedDate: any;
+    readonly name: string;
+    readonly webkitRelativePath: string;
+}
+
+declare var File: {
+    prototype: File;
+    new (parts: (ArrayBuffer | ArrayBufferView | Blob | string)[], filename: string, properties?: FilePropertyBag): File;
+}
+
+interface FileList {
+    readonly length: number;
+    item(index: number): File;
+    [index: number]: File;
+}
+
+declare var FileList: {
+    prototype: FileList;
+    new(): FileList;
+}
+
+interface FileReader extends EventTarget, MSBaseReader {
+    readonly error: DOMError;
+    readAsArrayBuffer(blob: Blob): void;
+    readAsBinaryString(blob: Blob): void;
+    readAsDataURL(blob: Blob): void;
+    readAsText(blob: Blob, encoding?: string): void;
+    addEventListener<K extends keyof MSBaseReaderEventMap>(type: K, listener: (this: MSBaseReader, ev: MSBaseReaderEventMap[K]) => any, useCapture?: boolean): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
+declare var FileReader: {
+    prototype: FileReader;
+    new(): FileReader;
+}
+
+interface FocusEvent extends UIEvent {
+    readonly relatedTarget: EventTarget;
+    initFocusEvent(typeArg: string, canBubbleArg: boolean, cancelableArg: boolean, viewArg: Window, detailArg: number, relatedTargetArg: EventTarget): void;
+}
+
+declare var FocusEvent: {
+    prototype: FocusEvent;
+    new(typeArg: string, eventInitDict?: FocusEventInit): FocusEvent;
+}
+
+interface FormData {
+    append(name: any, value: any, blobName?: string): void;
+}
+
+declare var FormData: {
+    prototype: FormData;
+    new (form?: HTMLFormElement): FormData;
+}
+
+interface GainNode extends AudioNode {
+    readonly gain: AudioParam;
+}
+
+declare var GainNode: {
+    prototype: GainNode;
+    new(): GainNode;
+}
+
+interface Gamepad {
+    readonly axes: number[];
+    readonly buttons: GamepadButton[];
+    readonly connected: boolean;
+    readonly id: string;
+    readonly index: number;
+    readonly mapping: string;
+    readonly timestamp: number;
+}
+
+declare var Gamepad: {
+    prototype: Gamepad;
+    new(): Gamepad;
+}
+
+interface GamepadButton {
+    readonly pressed: boolean;
+    readonly value: number;
+}
+
+declare var GamepadButton: {
+    prototype: GamepadButton;
+    new(): GamepadButton;
+}
+
+interface GamepadEvent extends Event {
+    readonly gamepad: Gamepad;
+}
+
+declare var GamepadEvent: {
+    prototype: GamepadEvent;
+    new(): GamepadEvent;
+}
+
+interface Geolocation {
+    clearWatch(watchId: number): void;
+    getCurrentPosition(successCallback: PositionCallback, errorCallback?: PositionErrorCallback, options?: PositionOptions): void;
+    watchPosition(successCallback: PositionCallback, errorCallback?: PositionErrorCallback, options?: PositionOptions): number;
+}
+
+declare var Geolocation: {
+    prototype: Geolocation;
+    new(): Geolocation;
+}
+
+interface HTMLAllCollection extends HTMLCollection {
+    namedItem(name: string): Element;
+}
+
+declare var HTMLAllCollection: {
+    prototype: HTMLAllCollection;
+    new(): HTMLAllCollection;
+}
+
+interface HTMLAnchorElement extends HTMLElement {
+    Methods: string;
+    /**
+      * Sets or retrieves the character set used to encode the object.
+      */
+    charset: string;
+    /**
+      * Sets or retrieves the coordinates of the object.
+      */
+    coords: string;
+    download: string;
+    /**
+      * Contains the anchor portion of the URL including the hash sign (#).
+      */
+    hash: string;
+    /**
+      * Contains the hostname and port values of the URL.
+      */
+    host: string;
+    /**
+      * Contains the hostname of a URL.
+      */
+    hostname: string;
+    /**
+      * Sets or retrieves a destination URL or an anchor point.
+      */
+    href: string;
+    /**
+      * Sets or retrieves the language code of the object.
+      */
+    hreflang: string;
+    readonly mimeType: string;
+    /**
+      * Sets or retrieves the shape of the object.
+      */
+    name: string;
+    readonly nameProp: string;
+    /**
+      * Contains the pathname of the URL.
+      */
+    pathname: string;
+    /**
+      * Sets or retrieves the port number associated with a URL.
+      */
+    port: string;
+    /**
+      * Contains the protocol of the URL.
+      */
+    protocol: string;
+    readonly protocolLong: string;
+    /**
+      * Sets or retrieves the relationship between the object and the destination of the link.
+      */
+    rel: string;
+    /**
+      * Sets or retrieves the relationship between the object and the destination of the link.
+      */
+    rev: string;
+    /**
+      * Sets or retrieves the substring of the href property that follows the question mark.
+      */
+    search: string;
+    /**
+      * Sets or retrieves the shape of the object.
+      */
+    shape: string;
+    /**
+      * Sets or retrieves the window or frame at which to target content.
+      */
+    target: string;
+    /**
+      * Retrieves or sets the text of the object as a string. 
+      */
+    text: string;
+    type: string;
+    urn: string;
+    /** 
+      * Returns a string representation of an object.
+      */
+    toString(): string;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
+declare var HTMLAnchorElement: {
+    prototype: HTMLAnchorElement;
+    new(): HTMLAnchorElement;
+}
+
+interface HTMLAppletElement extends HTMLElement {
+    /**
+      * Retrieves a string of the URL where the object tag can be found. This is often the href of the document that the object is in, or the value set by a base element.
+      */
+    readonly BaseHref: string;
+    align: string;
+    /**
+      * Sets or retrieves a text alternative to the graphic.
+      */
+    alt: string;
+    /**
+      * Gets or sets the optional alternative HTML script to execute if the object fails to load.
+      */
+    altHtml: string;
+    /**
+      * Sets or retrieves a character string that can be used to implement your own archive functionality for the object.
+      */
+    archive: string;
+    border: string;
+    code: string;
+    /**
+      * Sets or retrieves the URL of the component.
+      */
+    codeBase: string;
+    /**
+      * Sets or retrieves the Internet media type for the code associated with the object.
+      */
+    codeType: string;
+    /**
+      * Address of a pointer to the document this page or frame contains. If there is no document, then null will be returned.
+      */
+    readonly contentDocument: Document;
+    /**
+      * Sets or retrieves the URL that references the data of the object.
+      */
+    data: string;
+    /**
+      * Sets or retrieves a character string that can be used to implement your own declare functionality for the object.
+      */
+    declare: boolean;
+    readonly form: HTMLFormElement;
+    /**
+      * Sets or retrieves the height of the object.
+      */
+    height: string;
+    hspace: number;
+    /**
+      * Sets or retrieves the shape of the object.
+      */
+    name: string;
+    object: string | null;
+    /**
+      * Sets or retrieves a message to be displayed while an object is loading.
+      */
+    standby: string;
+    /**
+      * Returns the content type of the object.
+      */
+    type: string;
+    /**
+      * Sets or retrieves the URL, often with a bookmark extension (#name), to use as a client-side image map.
+      */
+    useMap: string;
+    vspace: number;
+    width: number;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
+declare var HTMLAppletElement: {
+    prototype: HTMLAppletElement;
+    new(): HTMLAppletElement;
+}
+
+interface HTMLAreaElement extends HTMLElement {
+    /**
+      * Sets or retrieves a text alternative to the graphic.
+      */
+    alt: string;
+    /**
+      * Sets or retrieves the coordinates of the object.
+      */
+    coords: string;
+    download: string;
+    /**
+      * Sets or retrieves the subsection of the href property that follows the number sign (#).
+      */
+    hash: string;
+    /**
+      * Sets or retrieves the hostname and port number of the location or URL.
+      */
+    host: string;
+    /**
+      * Sets or retrieves the host name part of the location or URL. 
+      */
+    hostname: string;
+    /**
+      * Sets or retrieves a destination URL or an anchor point.
+      */
+    href: string;
+    /**
+      * Sets or gets whether clicks in this region cause action.
+      */
+    noHref: boolean;
+    /**
+      * Sets or retrieves the file name or path specified by the object.
+      */
+    pathname: string;
+    /**
+      * Sets or retrieves the port number associated with a URL.
+      */
+    port: string;
+    /**
+      * Sets or retrieves the protocol portion of a URL.
+      */
+    protocol: string;
+    rel: string;
+    /**
+      * Sets or retrieves the substring of the href property that follows the question mark.
+      */
+    search: string;
+    /**
+      * Sets or retrieves the shape of the object.
+      */
+    shape: string;
+    /**
+      * Sets or retrieves the window or frame at which to target content.
+      */
+    target: string;
+    /** 
+      * Returns a string representation of an object.
+      */
+    toString(): string;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
+declare var HTMLAreaElement: {
+    prototype: HTMLAreaElement;
+    new(): HTMLAreaElement;
+}
+
+interface HTMLAreasCollection extends HTMLCollection {
+    /**
+      * Adds an element to the areas, controlRange, or options collection.
+      */
+    add(element: HTMLElement, before?: HTMLElement | number): void;
+    /**
+      * Removes an element from the collection.
+      */
+    remove(index?: number): void;
+}
+
+declare var HTMLAreasCollection: {
+    prototype: HTMLAreasCollection;
+    new(): HTMLAreasCollection;
+}
+
+interface HTMLAudioElement extends HTMLMediaElement {
+    addEventListener<K extends keyof HTMLMediaElementEventMap>(type: K, listener: (this: HTMLMediaElement, ev: HTMLMediaElementEventMap[K]) => any, useCapture?: boolean): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
+declare var HTMLAudioElement: {
+    prototype: HTMLAudioElement;
+    new(): HTMLAudioElement;
+}
+
+interface HTMLBRElement extends HTMLElement {
+    /**
+      * Sets or retrieves the side on which floating objects are not to be positioned when any IHTMLBlockElement is inserted into the document.
+      */
+    clear: string;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
+declare var HTMLBRElement: {
+    prototype: HTMLBRElement;
+    new(): HTMLBRElement;
+}
+
+interface HTMLBaseElement extends HTMLElement {
+    /**
+      * Gets or sets the baseline URL on which relative links are based.
+      */
+    href: string;
+    /**
+      * Sets or retrieves the window or frame at which to target content.
+      */
+    target: string;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
+declare var HTMLBaseElement: {
+    prototype: HTMLBaseElement;
+    new(): HTMLBaseElement;
+}
+
+interface HTMLBaseFontElement extends HTMLElement, DOML2DeprecatedColorProperty {
+    /**
+      * Sets or retrieves the current typeface family.
+      */
+    face: string;
+    /**
+      * Sets or retrieves the font size of the object.
+      */
+    size: number;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
+declare var HTMLBaseFontElement: {
+    prototype: HTMLBaseFontElement;
+    new(): HTMLBaseFontElement;
+}
+
+interface HTMLBodyElementEventMap extends HTMLElementEventMap {
+    "afterprint": Event;
+    "beforeprint": Event;
+    "beforeunload": BeforeUnloadEvent;
+    "blur": FocusEvent;
+    "error": ErrorEvent;
+    "focus": FocusEvent;
+    "hashchange": HashChangeEvent;
+    "load": Event;
+    "message": MessageEvent;
+    "offline": Event;
+    "online": Event;
+    "orientationchange": Event;
+    "pagehide": PageTransitionEvent;
+    "pageshow": PageTransitionEvent;
+    "popstate": PopStateEvent;
+    "resize": UIEvent;
+    "storage": StorageEvent;
+    "unload": Event;
+}
+
+interface HTMLBodyElement extends HTMLElement {
+    aLink: any;
+    background: string;
+    bgColor: any;
+    bgProperties: string;
+    link: any;
+    noWrap: boolean;
+    onafterprint: (this: HTMLBodyElement, ev: Event) => any;
+    onbeforeprint: (this: HTMLBodyElement, ev: Event) => any;
+    onbeforeunload: (this: HTMLBodyElement, ev: BeforeUnloadEvent) => any;
+    onblur: (this: HTMLBodyElement, ev: FocusEvent) => any;
+    onerror: (this: HTMLBodyElement, ev: ErrorEvent) => any;
+    onfocus: (this: HTMLBodyElement, ev: FocusEvent) => any;
+    onhashchange: (this: HTMLBodyElement, ev: HashChangeEvent) => any;
+    onload: (this: HTMLBodyElement, ev: Event) => any;
+    onmessage: (this: HTMLBodyElement, ev: MessageEvent) => any;
+    onoffline: (this: HTMLBodyElement, ev: Event) => any;
+    ononline: (this: HTMLBodyElement, ev: Event) => any;
+    onorientationchange: (this: HTMLBodyElement, ev: Event) => any;
+    onpagehide: (this: HTMLBodyElement, ev: PageTransitionEvent) => any;
+    onpageshow: (this: HTMLBodyElement, ev: PageTransitionEvent) => any;
+    onpopstate: (this: HTMLBodyElement, ev: PopStateEvent) => any;
+    onresize: (this: HTMLBodyElement, ev: UIEvent) => any;
+    onstorage: (this: HTMLBodyElement, ev: StorageEvent) => any;
+    onunload: (this: HTMLBodyElement, ev: Event) => any;
+    text: any;
+    vLink: any;
+    addEventListener<K extends keyof HTMLBodyElementEventMap>(type: K, listener: (this: HTMLBodyElement, ev: HTMLBodyElementEventMap[K]) => any, useCapture?: boolean): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
+declare var HTMLBodyElement: {
+    prototype: HTMLBodyElement;
+    new(): HTMLBodyElement;
+}
+
+interface HTMLButtonElement extends HTMLElement {
+    /**
+      * Provides a way to direct a user to a specific field when a document loads. This can provide both direction and convenience for a user, reducing the need to click or tab to a field when a page opens. This attribute is true when present on an element, and false when missing.
+      */
+    autofocus: boolean;
+    disabled: boolean;
+    /**
+      * Retrieves a reference to the form that the object is embedded in.
+      */
+    readonly form: HTMLFormElement;
+    /**
+      * Overrides the action attribute (where the data on a form is sent) on the parent form element.
+      */
+    formAction: string;
+    /**
+      * Used to override the encoding (formEnctype attribute) specified on the form element.
+      */
+    formEnctype: string;
+    /**
+      * Overrides the submit method attribute previously specified on a form element.
+      */
+    formMethod: string;
+    /**
+      * Overrides any validation or required attributes on a form or form elements to allow it to be submitted without validation. This can be used to create a "save draft"-type submit option.
+      */
+    formNoValidate: string;
+    /**
+      * Overrides the target attribute on a form element.
+      */
+    formTarget: string;
+    /** 
+      * Sets or retrieves the name of the object.
+      */
+    name: string;
+    status: any;
+    /**
+      * Gets the classification and default behavior of the button.
+      */
+    type: string;
+    /**
+      * Returns the error message that would be displayed if the user submits the form, or an empty string if no error message. It also triggers the standard error message, such as "this is a required field". The result is that the user sees validation messages without actually submitting.
+      */
+    readonly validationMessage: string;
+    /**
+      * Returns a  ValidityState object that represents the validity states of an element.
+      */
+    readonly validity: ValidityState;
+    /** 
+      * Sets or retrieves the default or selected value of the control.
+      */
+    value: string;
+    /**
+      * Returns whether an element will successfully validate based on forms validation rules and constraints.
+      */
+    readonly willValidate: boolean;
+    /**
+      * Returns whether a form will validate when it is submitted, without having to submit it.
+      */
+    checkValidity(): boolean;
+    /**
+      * Sets a custom error message that is displayed when a form is submitted.
+      * @param error Sets a custom error message that is displayed when a form is submitted.
+      */
+    setCustomValidity(error: string): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
+declare var HTMLButtonElement: {
+    prototype: HTMLButtonElement;
+    new(): HTMLButtonElement;
+}
+
+interface HTMLCanvasElement extends HTMLElement {
+    /**
+      * Gets or sets the height of a canvas element on a document.
+      */
+    height: number;
+    /**
+      * Gets or sets the width of a canvas element on a document.
+      */
+    width: number;
+    /**
+      * Returns an object that provides methods and properties for drawing and manipulating images and graphics on a canvas element in a document. A context object includes information about colors, line widths, fonts, and other graphic parameters that can be drawn on a canvas.
+      * @param contextId The identifier (ID) of the type of canvas to create. Internet Explorer 9 and Internet Explorer 10 support only a 2-D context using canvas.getContext("2d"); IE11 Preview also supports 3-D or WebGL context using canvas.getContext("experimental-webgl");
+      */
+    getContext(contextId: "2d", contextAttributes?: Canvas2DContextAttributes): CanvasRenderingContext2D | null;
+    getContext(contextId: "webgl" | "experimental-webgl", contextAttributes?: WebGLContextAttributes): WebGLRenderingContext | null;
+    getContext(contextId: string, contextAttributes?: {}): CanvasRenderingContext2D | WebGLRenderingContext | null;
+    /**
+      * Returns a blob object encoded as a Portable Network Graphics (PNG) format from a canvas image or drawing.
+      */
+    msToBlob(): Blob;
+    /**
+      * Returns the content of the current canvas as an image that you can use as a source for another canvas or an HTML element.
+      * @param type The standard MIME type for the image format to return. If you do not specify this parameter, the default value is a PNG format image.
+      */
+    toDataURL(type?: string, ...args: any[]): string;
+    toBlob(callback: (result: Blob | null) => void, type?: string, ...arguments: any[]): void;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
+declare var HTMLCanvasElement: {
+    prototype: HTMLCanvasElement;
+    new(): HTMLCanvasElement;
+}
+
+interface HTMLCollection {
+    /**
+      * Sets or retrieves the number of objects in a collection.
+      */
+    readonly length: number;
+    /**
+      * Retrieves an object from various collections.
+      */
+    item(index: number): Element;
+    /**
+      * Retrieves a select object or an object from an options collection.
+      */
+    namedItem(name: string): Element;
+    [index: number]: Element;
+}
+
+declare var HTMLCollection: {
+    prototype: HTMLCollection;
+    new(): HTMLCollection;
+}
+
+interface HTMLDListElement extends HTMLElement {
+    compact: boolean;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
+declare var HTMLDListElement: {
+    prototype: HTMLDListElement;
+    new(): HTMLDListElement;
+}
+
+interface HTMLDataListElement extends HTMLElement {
+    options: HTMLCollectionOf<HTMLOptionElement>;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
+declare var HTMLDataListElement: {
+    prototype: HTMLDataListElement;
+    new(): HTMLDataListElement;
+}
+
+interface HTMLDirectoryElement extends HTMLElement {
+    compact: boolean;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
+declare var HTMLDirectoryElement: {
+    prototype: HTMLDirectoryElement;
+    new(): HTMLDirectoryElement;
+}
+
+interface HTMLDivElement extends HTMLElement {
+    /**
+      * Sets or retrieves how the object is aligned with adjacent text. 
+      */
+    align: string;
+    /**
+      * Sets or retrieves whether the browser automatically performs wordwrap.
+      */
+    noWrap: boolean;
+    addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, useCapture?: boolean): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
+declare var HTMLDivElement: {
+    prototype: HTMLDivElement;
+    new(): HTMLDivElement;
+}
+
+interface HTMLDocument extends Document {
+    addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, useCapture?: boolean): void;
+    addEventListener(type: string, listener: EventListenerOrEventListenerObject, useCapture?: boolean): void;
+}
+
+declare var HTMLDocument: {
+    prototype: HTMLDocument;
+    new(): HTMLDocument;
+}
+
+interface HTMLElementEventMap extends ElementEventMap {
+    "abort": UIEvent;
+    "activate": UIEvent;
+    "beforeactivate": UIEvent;
+    "beforecopy": ClipboardEvent;
+    "beforecut": ClipboardEvent;
+    "beforedeactivate": UIEvent;
+    "beforepaste": ClipboardEvent;
+    "blur": FocusEvent;
+    "canplay": Event;
+    "canplaythrouimport { Subscriber } from '../Subscriber';
+import { observable as Symbol_observable } from '../symbol/observable';
+
+/**
+ * Subscribes to an object that implements Symbol.observable with the given
+ * Subscriber.
+ * @param obj An object that implements Symbol.observable
+ */
+export const subscribeToObservable = <T>(obj: any) => (subscriber: Subscriber<T>) => {
+  const obs = obj[Symbol_observable]();
+  if (typeof obs.subscribe !== 'function') {
+    // Should be caught by observable subscribe function error handling.
+    throw new TypeError('Provided object does not correctly implement Symbol.observable');
+  } else {
+    return obs.subscribe(subscriber);
+  }
+};
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      import { Injector } from '@angular/core';
+import { HttpInterceptor, HttpHandler, HttpRequest, HttpEvent } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { MessageService } from '../message/shared/message.service';
+import * as ɵngcc0 from '@angular/core';
+export declare class ErrorInterceptor implements HttpInterceptor {
+    private messageService;
+    private injector;
+    constructor(messageService: MessageService, injector: Injector);
+    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>;
+    private handleError;
+    private handleCaughtError;
+    private handleUncaughtError;
+    static ɵfac: ɵngcc0.ɵɵFactoryDef<ErrorInterceptor, never>;
+    static ɵprov: ɵngcc0.ɵɵInjectableDef<ErrorInterceptor>;
+}
+
+//# sourceMappingURL=error.interceptor.d.ts.map                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           sitPlaceholder = function (ph, mapper) {
+        return new i18n.Placeholder(ph.value, mapper.toPublicName(ph.name), ph.sourceSpan);
+    };
+    MapPlaceholderNames.prototype.visitIcuPlaceholder = function (ph, mapper) {
+        return new i18n.IcuPlaceholder(ph.value, mapper.toPublicName(ph.name), ph.sourceSpan);
+    };
+    return MapPlaceholderNames;
+}(i18n.CloneVisitor));
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibWVzc2FnZV9idW5kbGUuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi8uLi8uLi8uLi8uLi8uLi8uLi8uLi9wYWNrYWdlcy9jb21waWxlci9zcmMvaTE4bi9tZXNzYWdlX2J1bmRsZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7Ozs7O0dBTUc7O0FBTUgsT0FBTyxFQUFDLGVBQWUsRUFBQyxNQUFNLG9CQUFvQixDQUFDO0FBQ25ELE9BQU8sS0FBSyxJQUFJLE1BQU0sWUFBWSxDQUFDO0FBSW5DOztHQUVHO0FBQ0g7SUFHRSx1QkFDWSxXQUF1QixFQUFVLGFBQXVCLEVBQ3hELGNBQXVDLEVBQVUsT0FBMkI7UUFBM0Isd0JBQUEsRUFBQSxjQUEyQjtRQUQ1RSxnQkFBVyxHQUFYLFdBQVcsQ0FBWTtRQUFVLGtCQUFhLEdBQWIsYUFBYSxDQUFVO1FBQ3hELG1CQUFjLEdBQWQsY0FBYyxDQUF5QjtRQUFVLFlBQU8sR0FBUCxPQUFPLENBQW9CO1FBSmhGLGNBQVMsR0FBbUIsRUFBRSxDQUFDO0lBSW9ELENBQUM7SUFFNUYsMENBQWtCLEdBQWxCLFVBQW1CLElBQVksRUFBRSxHQUFXLEVBQUUsbUJBQXdDOztRQUVwRixJQUFNLGdCQUFnQixHQUNsQixJQUFJLENBQUMsV0FBVyxDQUFDLEtBQUssQ0FBQyxJQUFJLEVBQUUsR0FBRyxFQUFFLEVBQUMsc0JBQXNCLEVBQUUsSUFBSSxFQUFFLG1CQUFtQixxQkFBQSxFQUFDLENBQUMsQ0FBQztRQUUzRixJQUFJLGdCQUFnQixDQUFDLE1BQU0sQ0FBQyxNQUFNLEVBQUU7WUFDbEMsT0FBTyxnQkFBZ0IsQ0FBQyxNQUFNLENBQUM7U0FDaEM7UUFFRCxJQUFNLGdCQUFnQixHQUFHLGVBQWUsQ0FDcEMsZ0JBQWdCLENBQUMsU0FBUyxFQUFFLG1CQUFtQixFQUFFLElBQUksQ0FBQyxhQUFhLEVBQUUsSUFBSSxDQUFDLGNBQWMsQ0FBQyxDQUFDO1FBRTlGLElBQUksZ0JBQWdCLENBQUMsTUFB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

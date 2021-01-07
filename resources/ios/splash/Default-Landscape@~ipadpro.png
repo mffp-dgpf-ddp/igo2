@@ -1,0 +1,1401 @@
+].push(diag);
+                        constantErrorsPerScope[i].push(diag);
+                    }
+                };
+                for (var i = 0; i < scopes.length; i++) {
+                    _loop_13(i);
+                }
+                return { target: target, usagesPerScope: usagesPerScope, functionErrorsPerScope: functionErrorsPerScope, constantErrorsPerScope: constantErrorsPerScope, exposedVariableDeclarations: exposedVariableDeclarations };
+                function isInGenericContext(node) {
+                    return !!ts.findAncestor(node, function (n) { return ts.isDeclarationWithTypeParameters(n) && ts.getEffectiveTypeParameterDeclarations(n).length !== 0; });
+                }
+                function recordTypeParameterUsages(type) {
+                    // PERF: This is potentially very expensive.  `type` could be a library type with
+                    // a lot of properties, each of which the walker will visit.  Unfortunately, the
+                    // solution isn't as trivial as filtering to user types because of (e.g.) Array.
+                    var symbolWalker = checker.getSymbolWalker(function () { return (cancellationToken.throwIfCancellationRequested(), true); });
+                    var visitedTypes = symbolWalker.walkType(type).visitedTypes;
+                    for (var _i = 0, visitedTypes_1 = visitedTypes; _i < visitedTypes_1.length; _i++) {
+                        var visitedType = visitedTypes_1[_i];
+                        if (visitedType.isTypeParameter()) {
+                            allTypeParameterUsages.set(visitedType.id.toString(), visitedType);
+                        }
+                    }
+                }
+                function collectUsages(node, valueUsage) {
+                    if (valueUsage === void 0) { valueUsage = 1 /* Read */; }
+                    if (inGenericContext) {
+                        var type = checker.getTypeAtLocation(node);
+                        recordTypeParameterUsages(type);
+                    }
+                    if (ts.isDeclaration(node) && node.symbol) {
+                        visibleDeclarationsInExtractedRange.push(node);
+                    }
+                    if (ts.isAssignmentExpression(node)) {
+                        // use 'write' as default usage for values
+                        collectUsages(node.left, 2 /* Write */);
+                        collectUsages(node.right);
+                    }
+                    else if (ts.isUnaryExpressionWithWrite(node)) {
+                        collectUsages(node.operand, 2 /* Write */);
+                    }
+                    else if (ts.isPropertyAccessExpression(node) || ts.isElementAccessExpression(node)) {
+                        // use 'write' as default usage for values
+                        ts.forEachChild(node, collectUsages);
+                    }
+                    else if (ts.isIdentifier(node)) {
+                        if (!node.parent) {
+                            return;
+                        }
+                        if (ts.isQualifiedName(node.parent) && node !== node.parent.left) {
+                            return;
+                        }
+                        if (ts.isPropertyAccessExpression(node.parent) && node !== node.parent.expression) {
+                            return;
+                        }
+                        recordUsage(node, valueUsage, /*isTypeNode*/ ts.isPartOfTypeNode(node));
+                    }
+                    else {
+                        ts.forEachChild(node, collectUsages);
+                    }
+                }
+                function recordUsage(n, usage, isTypeNode) {
+                    var symbolId = recordUsagebySymbol(n, usage, isTypeNode);
+                    if (symbolId) {
+                        for (var i = 0; i < scopes.length; i++) {
+                            // push substitution from map<symbolId, subst> to map<nodeId, subst> to simplify rewriting
+                            var substitution = substitutionsPerScope[i].get(symbolId);
+                            if (substitution) {
+                                usagesPerScope[i].substitutions.set(ts.getNodeId(n).toString(), substitution);
+                            }
+                        }
+                    }
+                }
+                function recordUsagebySymbol(identifier, usage, isTypeName) {
+                    var symbol = getSymbolReferencedByIdentifier(identifier);
+                    if (!symbol) {
+                        // cannot find symbol - do nothing
+                        return undefined;
+                    }
+                    var symbolId = ts.getSymbolId(symbol).toString();
+                    var lastUsage = seenUsages.get(symbolId);
+                    // there are two kinds of value usages
+                    // - reads - if range contains a read from the value located outside of the range then value should be passed as a parameter
+                    // - writes - if range contains a write to a value located outside the range the value should be passed as a parameter and
+                    //   returned as a return value
+                    // 'write' case is a superset of 'read' so if we already have processed 'write' of some symbol there is not need to handle 'read'
+                    // since all information is already recorded
+                    if (lastUsage && lastUsage >= usage) {
+                        return symbolId;
+                    }
+                    seenUsages.set(symbolId, usage);
+                    if (lastUsage) {
+                        // if we get here this means that we are trying to handle 'write' and 'read' was already processed
+                        // walk scopes and update existing records.
+                        for (var _i = 0, usagesPerScope_1 = usagesPerScope; _i < usagesPerScope_1.length; _i++) {
+                            var perScope = usagesPerScope_1[_i];
+                            var prevEntry = perScope.usages.get(identifier.text);
+                            if (prevEntry) {
+                                perScope.usages.set(identifier.text, { usage: usage, symbol: symbol, node: identifier });
+                            }
+                        }
+                        return symbolId;
+                    }
+                    // find first declaration in this file
+                    var decls = symbol.getDeclarations();
+                    var declInFile = decls && ts.find(decls, function (d) { return d.getSourceFile() === sourceFile; });
+                    if (!declInFile) {
+                        return undefined;
+                    }
+                    if (ts.rangeContainsStartEnd(enclosingTextRange, declInFile.getStart(), declInFile.end)) {
+                        // declaration is located in range to be extracted - do nothing
+                        return undefined;
+                    }
+                    if (targetRange.facts & RangeFacts.IsGenerator && usage === 2 /* Write */) {
+                        // this is write to a reference located outside of the target scope and range is extracted into generator
+                        // currently this is unsupported scenario
+                        var diag = ts.createDiagnosticForNode(identifier, Messages.cannotExtractRangeThatContainsWritesToReferencesLocatedOutsideOfTheTargetRangeInGenerators);
+                        for (var _a = 0, functionErrorsPerScope_1 = functionErrorsPerScope; _a < functionErrorsPerScope_1.length; _a++) {
+                            var errors = functionErrorsPerScope_1[_a];
+                            errors.push(diag);
+                        }
+                        for (var _b = 0, constantErrorsPerScope_1 = constantErrorsPerScope; _b < constantErrorsPerScope_1.length; _b++) {
+                            var errors = constantErrorsPerScope_1[_b];
+                            errors.push(diag);
+                        }
+                    }
+                    for (var i = 0; i < scopes.length; i++) {
+                        var scope = scopes[i];
+                        var resolvedSymbol = checker.resolveName(symbol.name, scope, symbol.flags, /*excludeGlobals*/ false);
+                        if (resolvedSymbol === symbol) {
+                            continue;
+                        }
+                        if (!substitutionsPerScope[i].has(symbolId)) {
+                            var substitution = tryReplaceWithQualifiedNameOrPropertyAccess(symbol.exportSymbol || symbol, scope, isTypeName);
+                            if (substitution) {
+                                substitutionsPerScope[i].set(symbolId, substitution);
+                            }
+                            else if (isTypeName) {
+                                // If the symbol is a type parameter that won't be in scope, we'll pass it as a type argument
+                                // so there's no problem.
+                                if (!(symbol.flags & 262144 /* TypeParameter */)) {
+                                    var diag = ts.createDiagnosticForNode(identifier, Messages.typeWillNotBeVisibleInTheNewScope);
+                                    functionErrorsPerScope[i].push(diag);
+                                    constantErrorsPerScope[i].push(diag);
+                                }
+                            }
+                            else {
+                                usagesPerScope[i].usages.set(identifier.text, { usage: usage, symbol: symbol, node: identifier });
+                            }
+                        }
+                    }
+                    return symbolId;
+                }
+                function checkForUsedDeclarations(node) {
+                    // If this node is entirely within the original extraction range, we don't need to do anything.
+                    if (node === targetRange.range || (isReadonlyArray(targetRange.range) && targetRange.range.indexOf(node) >= 0)) {
+                        return;
+                    }
+                    // Otherwise check and recurse.
+                    var sym = ts.isIdentifier(node)
+                        ? getSymbolReferencedByIdentifier(node)
+                        : checker.getSymbolAtLocation(node);
+                    if (sym) {
+                        var decl = ts.find(visibleDeclarationsInExtractedRange, function (d) { return d.symbol === sym; });
+                        if (decl) {
+                            if (ts.isVariableDeclaration(decl)) {
+                                var idString = decl.symbol.id.toString();
+                                if (!exposedVariableSymbolSet.has(idString)) {
+                                    exposedVariableDeclarations.push(decl);
+                                    exposedVariableSymbolSet.set(idString, true);
+                                }
+                            }
+                            else {
+                                // CONSIDER: this includes binding elements, which we could
+                                // expose in the same way as variables.
+                                firstExposedNonVariableDeclaration = firstExposedNonVariableDeclaration || decl;
+                            }
+                        }
+                    }
+                    ts.forEachChild(node, checkForUsedDeclarations);
+                }
+                /**
+                 * Return the symbol referenced by an identifier (even if it declares a different symbol).
+                 */
+                function getSymbolReferencedByIdentifier(identifier) {
+                    // If the identifier is both a property name and its value, we're only interested in its value
+                    // (since the name is a declaration and will be included in the extracted range).
+                    return identifier.parent && ts.isShorthandPropertyAssignment(identifier.parent) && identifier.parent.name === identifier
+                        ? checker.getShorthandAssignmentValueSymbol(identifier.parent)
+                        : checker.getSymbolAtLocation(identifier);
+                }
+                function tryReplaceWithQualifiedNameOrPropertyAccess(symbol, scopeDecl, isTypeNode) {
+                    if (!symbol) {
+                        return undefined;
+                    }
+                    var decls = symbol.getDeclarations();
+                    if (decls && decls.some(function (d) { return d.parent === scopeDecl; })) {
+                        return ts.createIdentifier(symbol.name);
+                    }
+                    var prefix = tryReplaceWithQualifiedNameOrPropertyAccess(symbol.parent, scopeDecl, isTypeNode);
+                    if (prefix === undefined) {
+                        return undefined;
+                    }
+                    return isTypeNode
+                        ? ts.createQualifiedName(prefix, ts.createIdentifier(symbol.name))
+                        : ts.createPropertyAccess(prefix, symbol.name);
+                }
+            }
+            /**
+             * Computes whether or not a node represents an expression in a position where it could
+             * be extracted.
+             * The isExpression() in utilities.ts returns some false positives we need to handle,
+             * such as `import x from 'y'` -- the 'y' is a StringLiteral but is *not* an expression
+             * in the sense of something that you could extract on
+             */
+            function isExtractableExpression(node) {
+                var parent = node.parent;
+                switch (parent.kind) {
+                    case 278 /* EnumMember */:
+                        return false;
+                }
+                switch (node.kind) {
+                    case 10 /* StringLiteral */:
+                        return parent.kind !== 249 /* ImportDeclaration */ &&
+                            parent.kind !== 253 /* ImportSpecifier */;
+                    case 208 /* SpreadElement */:
+                    case 184 /* ObjectBindingPattern */:
+                    case 186 /* BindingElement */:
+                        return false;
+                    case 72 /* Identifier */:
+                        return parent.kind !== 186 /* BindingElement */ &&
+                            parent.kind !== 253 /* ImportSpecifier */ &&
+                            parent.kind !== 257 /* ExportSpecifier */;
+                }
+                return true;
+            }
+            function isBlockLike(node) {
+                switch (node.kind) {
+                    case 218 /* Block */:
+                    case 279 /* SourceFile */:
+                    case 245 /* ModuleBlock */:
+                    case 271 /* CaseClause */:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+        })(extractSymbol = refactor.extractSymbol || (refactor.extractSymbol = {}));
+    })(refactor = ts.refactor || (ts.refactor = {}));
+})(ts || (ts = {}));
+/* @internal */
+var ts;
+(function (ts) {
+    var refactor;
+    (function (refactor) {
+        var generateGetAccessorAndSetAccessor;
+        (function (generateGetAccessorAndSetAccessor) {
+            var actionName = "Generate 'get' and 'set' accessors";
+            var actionDescription = ts.Diagnostics.Generate_get_and_set_accessors.message;
+            refactor.registerRefactor(actionName, { getEditsForAction: getEditsForAction, getAvailableActions: getAvailableActions });
+            function getAvailableActions(context) {
+                if (!getConvertibleFieldAtPosition(context))
+                    return ts.emptyArray;
+                return [{
+                        name: actionName,
+                        description: actionDescription,
+                        actions: [
+                            {
+                                name: actionName,
+                                description: actionDescription
+                            }
+                        ]
+                    }];
+            }
+            function getEditsForAction(context, _actionName) {
+                var file = context.file;
+                var fieldInfo = getConvertibleFieldAtPosition(context);
+                if (!fieldInfo)
+                    return undefined;
+                var isJS = ts.isSourceFileJS(file);
+                var changeTracker = ts.textChanges.ChangeTracker.fromContext(context);
+                var isStatic = fieldInfo.isStatic, isReadonly = fieldInfo.isReadonly, fieldName = fieldInfo.fieldName, accessorName = fieldInfo.accessorName, originalName = fieldInfo.originalName, type = fieldInfo.type, container = fieldInfo.container, declaration = fieldInfo.declaration, renameAccessor = fieldInfo.renameAccessor;
+                ts.suppressLeadingAndTrailingTrivia(fieldName);
+                ts.suppressLeadingAndTrailingTrivia(declaration);
+                ts.suppressLeadingAndTrailingTrivia(container);
+                var isInClassLike = ts.isClassLike(container);
+                // avoid Readonly modifier because it will convert to get accessor
+                var modifierFlags = ts.getModifierFlags(declaration) & ~64 /* Readonly */;
+                var accessorModifiers = isInClassLike
+                    ? !modifierFlags || modifierFlags & 8 /* Private */
+                        ? getModifiers(isJS, isStatic, 115 /* PublicKeyword */)
+                        : ts.createNodeArray(ts.createModifiersFromModifierFlags(modifierFlags))
+                    : undefined;
+                var fieldModifiers = isInClassLike ? getModifiers(isJS, isStatic, 113 /* PrivateKeyword */) : undefined;
+                updateFieldDeclaration(changeTracker, file, declaration, fieldName, fieldModifiers);
+                var getAccessor = generateGetAccessor(fieldName, accessorName, type, accessorModifiers, isStatic, container);
+                ts.suppressLeadingAndTrailingTrivia(getAccessor);
+                insertAccessor(changeTracker, file, getAccessor, declaration, container);
+                if (isReadonly) {
+                    // readonly modifier only existed in classLikeDeclaration
+                    var constructor = ts.getFirstConstructorWithBody(container);
+                    if (constructor) {
+                        updateReadonlyPropertyInitializerStatementConstructor(changeTracker, file, constructor, fieldName.text, originalName);
+                    }
+                }
+                else {
+                    var setAccessor = generateSetAccessor(fieldName, accessorName, type, accessorModifiers, isStatic, container);
+                    ts.suppressLeadingAndTrailingTrivia(setAccessor);
+                    insertAccessor(changeTracker, file, setAccessor, declaration, container);
+                }
+                var edits = changeTracker.getChanges();
+                var renameFilename = file.fileName;
+                var nameNeedRename = renameAccessor ? accessorName : fieldName;
+                var renameLocationOffset = ts.isIdentifier(nameNeedRename) ? 0 : -1;
+                var renameLocation = renameLocationOffset + ts.getRenameLocation(edits, renameFilename, nameNeedRename.text, /*preferLastLocation*/ ts.isParameter(declaration));
+                return { renameFilename: renameFilename, renameLocation: renameLocation, edits: edits };
+            }
+            function isConvertibleName(name) {
+                return ts.isIdentifier(name) || ts.isStringLiteral(name);
+            }
+            function isAcceptedDeclaration(node) {
+                return ts.isParameterPropertyDeclaration(node) || ts.isPropertyDeclaration(node) || ts.isPropertyAssignment(node);
+            }
+            function createPropertyName(name, originalName) {
+                return ts.isIdentifier(originalName) ? ts.createIdentifier(name) : ts.createLiteral(name);
+            }
+            function createAccessorAccessExpression(fieldName, isStatic, container) {
+                var leftHead = isStatic ? container.name : ts.createThis(); // TODO: GH#18217
+                return ts.isIdentifier(fieldName) ? ts.createPropertyAccess(leftHead, fieldName) : ts.createElementAccess(leftHead, ts.createLiteral(fieldName));
+            }
+            function getModifiers(isJS, isStatic, accessModifier) {
+                var modifiers = ts.append(!isJS ? [ts.createToken(accessModifier)] : undefined, isStatic ? ts.createToken(116 /* StaticKeyword */) : undefined);
+                return modifiers && ts.createNodeArray(modifiers);
+            }
+            function startsWithUnderscore(name) {
+                return name.charCodeAt(0) === 95 /* _ */;
+            }
+            function getConvertibleFieldAtPosition(context) {
+                var file = context.file, startPosition = context.startPosition, endPosition = context.endPosition;
+                var node = ts.getTokenAtPosition(file, startPosition);
+                var declaration = ts.findAncestor(node.parent, isAcceptedDeclaration);
+                // make sure declaration have AccessibilityModifier or Static Modifier or Readonly Modifier
+                var meaning = 28 /* AccessibilityModifier */ | 32 /* Static */ | 64 /* Readonly */;
+                if (!declaration || !ts.nodeOverlapsWithStartEnd(declaration.name, file, startPosition, endPosition) // TODO: GH#18217
+                    || !isConvertibleName(declaration.name) || (ts.getModifierFlags(declaration) | meaning) !== meaning)
+                    return undefined;
+                var name = declaration.name.text;
+                var startWithUnderscore = startsWithUnderscore(name);
+                var fieldName = createPropertyName(startWithUnderscore ? name : ts.getUniqueName("_" + name, file), declaration.name);
+                var accessorName = createPropertyName(startWithUnderscore ? ts.getUniqueName(name.substring(1), file) : name, declaration.name);
+                return {
+                    isStatic: ts.hasStaticModifier(declaration),
+                    isReadonly: ts.hasReadonlyModifier(declaration),
+                    type: ts.getTypeAnnotationNode(declaration),
+                    container: declaration.kind === 151 /* Parameter */ ? declaration.parent.parent : declaration.parent,
+                    originalName: declaration.name.text,
+                    declaration: declaration,
+                    fieldName: fieldName,
+                    accessorName: accessorName,
+                    renameAccessor: startWithUnderscore
+                };
+            }
+            function generateGetAccessor(fieldName, accessorName, type, modifiers, isStatic, container) {
+                return ts.createGetAccessor(
+                /*decorators*/ undefined, modifiers, accessorName, 
+                /*parameters*/ undefined, // TODO: GH#18217
+                type, ts.createBlock([
+                    ts.createReturn(createAccessorAccessExpression(fieldName, isStatic, container))
+                ], /*multiLine*/ true));
+            }
+            function generateSetAccessor(fieldName, accessorName, type, modifiers, isStatic, container) {
+                return ts.createSetAccessor(
+                /*decorators*/ undefined, modifiers, accessorName, [ts.createParameter(
+                    /*decorators*/ undefined, 
+                    /*modifiers*/ undefined, 
+                    /*dotDotDotToken*/ undefined, ts.createIdentifier("value"), 
+                    /*questionToken*/ undefined, type)], ts.createBlock([
+                    ts.createStatement(ts.createAssignment(createAccessorAccessExpression(fieldName, isStatic, container), ts.createIdentifier("value")))
+                ], /*multiLine*/ true));
+            }
+            function updatePropertyDeclaration(changeTracker, file, declaration, fieldName, modifiers) {
+                var property = ts.updateProperty(declaration, declaration.decorators, modifiers, fieldName, declaration.questionToken || declaration.exclamationToken, declaration.type, declaration.initializer);
+                changeTracker.replaceNode(file, declaration, property);
+            }
+            function updatePropertyAssignmentDeclaration(changeTracker, file, declaration, fieldName) {
+                var assignment = ts.updatePropertyAssignment(declaration, fieldName, declaration.initializer);
+                changeTracker.replacePropertyAssignment(file, declaration, assignment);
+            }
+            function updateFieldDeclaration(changeTracker, file, declaration, fieldName, modifiers) {
+                if (ts.isPropertyDeclaration(declaration)) {
+                    updatePropertyDeclaration(changeTracker, file, declaration, fieldName, modifiers);
+                }
+                else if (ts.isPropertyAssignment(declaration)) {
+                    updatePropertyAssignmentDeclaration(changeTracker, file, declaration, fieldName);
+                }
+                else {
+                    changeTracker.replaceNode(file, declaration, ts.updateParameter(declaration, declaration.decorators, modifiers, declaration.dotDotDotToken, ts.cast(fieldName, ts.isIdentifier), declaration.questionToken, declaration.type, declaration.initializer));
+                }
+            }
+            function insertAccessor(changeTracker, file, accessor, declaration, container) {
+                ts.isParameterPropertyDeclaration(declaration)
+                    ? changeTracker.insertNodeAtClassStart(file, container, accessor)
+                    : ts.isPropertyAssignment(declaration)
+                        ? changeTracker.insertNodeAfterComma(file, declaration, accessor)
+                        : changeTracker.insertNodeAfter(file, declaration, accessor);
+            }
+            function updateReadonlyPropertyInitializerStatementConstructor(changeTracker, file, constructor, fieldName, originalName) {
+                if (!constructor.body)
+                    return;
+                constructor.body.forEachChild(function recur(node) {
+                    if (ts.isElementAccessExpression(node) &&
+                        node.expression.kind === 100 /* ThisKeyword */ &&
+                        ts.isStringLiteral(node.argumentExpression) &&
+                        node.argumentExpression.text === originalName &&
+                        ts.isWriteAccess(node)) {
+                        changeTracker.replaceNode(file, node.argumentExpression, ts.createStringLiteral(fieldName));
+                    }
+                    if (ts.isPropertyAccessExpression(node) && node.expression.kind === 100 /* ThisKeyword */ && node.name.text === originalName && ts.isWriteAccess(node)) {
+                        changeTracker.replaceNode(file, node.name, ts.createIdentifier(fieldName));
+                    }
+                    if (!ts.isFunctionLike(node) && !ts.isClassLike(node)) {
+                        node.forEachChild(recur);
+                    }
+                });
+            }
+        })(generateGetAccessorAndSetAccessor = refactor.generateGetAccessorAndSetAccessor || (refactor.generateGetAccessorAndSetAccessor = {}));
+    })(refactor = ts.refactor || (ts.refactor = {}));
+})(ts || (ts = {}));
+/* @internal */
+var ts;
+(function (ts) {
+    var refactor;
+    (function (refactor) {
+        var refactorName = "Move to a new file";
+        refactor.registerRefactor(refactorName, {
+            getAvailableActions: function (context) {
+                if (!context.preferences.allowTextChangesInNewFiles || getStatementsToMove(context) === undefined)
+                    return ts.emptyArray;
+                var description = ts.getLocaleSpecificMessage(ts.Diagnostics.Move_to_a_new_file);
+                return [{ name: refactorName, description: description, actions: [{ name: refactorName, description: description }] }];
+            },
+            getEditsForAction: function (context, actionName) {
+                ts.Debug.assert(actionName === refactorName);
+                var statements = ts.Debug.assertDefined(getStatementsToMove(context));
+                var edits = ts.textChanges.ChangeTracker.with(context, function (t) { return doChange(context.file, context.program, statements, t, context.host, context.preferences); });
+                return { edits: edits, renameFilename: undefined, renameLocation: undefined };
+            }
+        });
+        function getRangeToMove(context) {
+            var file = context.file;
+            var range = ts.createTextRangeFromSpan(ts.getRefactorContextSpan(context));
+            var statements = file.statements;
+            var startNodeIndex = ts.findIndex(statements, function (s) { return s.end > range.pos; });
+            if (startNodeIndex === -1)
+                return undefined;
+            var startStatement = statements[startNodeIndex];
+            if (ts.isNamedDeclaration(startStatement) && startStatement.name && ts.rangeContainsRange(startStatement.name, range)) {
+                return { toMove: [statements[startNodeIndex]], afterLast: statements[startNodeIndex + 1] };
+            }
+            // Can't only partially include the start node or be partially into the next node
+            if (range.pos > startStatement.getStart(file))
+                return undefined;
+            var afterEndNodeIndex = ts.findIndex(statements, function (s) { return s.end > range.end; }, startNodeIndex);
+            // Can't be partially into the next node
+            if (afterEndNodeIndex !== -1 && (afterEndNodeIndex === 0 || statements[afterEndNodeIndex].getStart(file) < range.end))
+                return undefined;
+            return {
+                toMove: statements.slice(startNodeIndex, afterEndNodeIndex === -1 ? statements.length : afterEndNodeIndex),
+                afterLast: afterEndNodeIndex === -1 ? undefined : statements[afterEndNodeIndex],
+            };
+        }
+        function doChange(oldFile, program, toMove, changes, host, preferences) {
+            var checker = program.getTypeChecker();
+            var usage = getUsageInfo(oldFile, toMove.all, checker);
+            var currentDirectory = ts.getDirectoryPath(oldFile.fileName);
+            var extension = ts.extensionFromPath(oldFile.fileName);
+            var newModuleName = makeUniqueModuleName(getNewModuleName(usage.movedSymbols), extension, currentDirectory, host);
+            var newFileNameWithExtension = newModuleName + extension;
+            // If previous file was global, this is easy.
+            changes.createNewFile(oldFile, ts.combinePaths(currentDirectory, newFileNameWithExtension), getNewStatementsAndRemoveFromOldFile(oldFile, usage, changes, toMove, program, newModuleName, preferences));
+            addNewFileToTsconfig(program, changes, oldFile.fileName, newFileNameWithExtension, ts.hostGetCanonicalFileName(host));
+        }
+        // Filters imports out of the range of statements to move. Imports will be copied to the new file anyway, and may still be needed in the old file.
+        function getStatementsToMove(context) {
+            var rangeToMove = getRangeToMove(context);
+            if (rangeToMove === undefined)
+                return undefined;
+            var all = [];
+            var ranges = [];
+            var toMove = rangeToMove.toMove, afterLast = rangeToMove.afterLast;
+            ts.getRangesWhere(toMove, function (s) { return !isPureImport(s); }, function (start, afterEndIndex) {
+                for (var i = start; i < afterEndIndex; i++)
+                    all.push(toMove[i]);
+                ranges.push({ first: toMove[start], afterLast: afterLast });
+            });
+            return all.length === 0 ? undefined : { all: all, ranges: ranges };
+        }
+        function isPureImport(node) {
+            switch (node.kind) {
+                case 249 /* ImportDeclaration */:
+                    return true;
+                case 248 /* ImportEqualsDeclaration */:
+                    return !ts.hasModifier(node, 1 /* Export */);
+                case 219 /* VariableStatement */:
+                    return node.declarationList.declarations.every(function (d) { return !!d.initializer && ts.isRequireCall(d.initializer, /*checkArgumentIsStringLiteralLike*/ true); });
+                default:
+                    return false;
+            }
+        }
+        function addNewFileToTsconfig(program, changes, oldFileName, newFileNameWithExtension, getCanonicalFileName) {
+            var cfg = program.getCompilerOptions().configFile;
+            if (!cfg)
+                return;
+            var newFileAbsolutePath = ts.normalizePath(ts.combinePaths(oldFileName, "..", newFileNameWithExtension));
+            var newFilePath = ts.getRelativePathFromFile(cfg.fileName, newFileAbsolutePath, getCanonicalFileName);
+            var cfgObject = cfg.statements[0] && ts.tryCast(cfg.statements[0].expression, ts.isObjectLiteralExpression);
+            var filesProp = cfgObject && ts.find(cfgObject.properties, function (prop) {
+                return ts.isPropertyAssignment(prop) && ts.isStringLiteral(prop.name) && prop.name.text === "files";
+            });
+            if (filesProp && ts.isArrayLiteralExpression(filesProp.initializer)) {
+                changes.insertNodeInListAfter(cfg, ts.last(filesProp.initializer.elements), ts.createLiteral(newFilePath), filesProp.initializer.elements);
+            }
+        }
+        function getNewStatementsAndRemoveFromOldFile(oldFile, usage, changes, toMove, program, newModuleName, preferences) {
+            var checker = program.getTypeChecker();
+            if (!oldFile.externalModuleIndicator && !oldFile.commonJsModuleIndicator) {
+                deleteMovedStatements(oldFile, toMove.ranges, changes);
+                return toMove.all;
+            }
+            var useEs6ModuleSyntax = !!oldFile.externalModuleIndicator;
+            var quotePreference = ts.getQuotePreference(oldFile, preferences);
+            var importsFromNewFile = createOldFileImportsFromNewFile(usage.oldFileImportsFromNewFile, newModuleName, useEs6ModuleSyntax, quotePreference);
+            if (importsFromNewFile) {
+                ts.insertImport(changes, oldFile, importsFromNewFile);
+            }
+            deleteUnusedOldImports(oldFile, toMove.all, changes, usage.unusedImportsFromOldFile, checker);
+            deleteMovedStatements(oldFile, toMove.ranges, changes);
+            updateImportsInOtherFiles(changes, program, oldFile, usage.movedSymbols, newModuleName);
+            return getNewFileImportsAndAddExportInOldFile(oldFile, usage.oldImportsNeededByNewFile, usage.newFileImportsFromOldFile, changes, checker, useEs6ModuleSyntax, quotePreference).concat(addExports(oldFile, toMove.all, usage.oldFileImportsFromNewFile, useEs6ModuleSyntax));
+        }
+        function deleteMovedStatements(sourceFile, moved, changes) {
+            for (var _i = 0, moved_1 = moved; _i < moved_1.length; _i++) {
+                var _a = moved_1[_i], first_1 = _a.first, afterLast = _a.afterLast;
+                changes.deleteNodeRangeExcludingEnd(sourceFile, first_1, afterLast);
+            }
+        }
+        function deleteUnusedOldImports(oldFile, toMove, changes, toDelete, checker) {
+            for (var _i = 0, _a = oldFile.statements; _i < _a.length; _i++) {
+                var statement = _a[_i];
+                if (ts.contains(toMove, statement))
+                    continue;
+                forEachImportInStatement(statement, function (i) { return deleteUnusedImports(oldFile, i, changes, function (name) { return toDelete.has(checker.getSymbolAtLocation(name)); }); });
+            }
+        }
+        function updateImportsInOtherFiles(changes, program, oldFile, movedSymbols, newModuleName) {
+            var checker = program.getTypeChecker();
+            var _loop_14 = function (sourceFile) {
+                if (sourceFile === oldFile)
+                    return "continue";
+                var _loop_15 = function (statement) {
+                    forEachImportInStatement(statement, function (importNode) {
+                        if (checker.getSymbolAtLocation(moduleSpecifierFromImport(importNode)) !== oldFile.symbol)
+                            return;
+                        var shouldMove = function (name) {
+                            var symbol = ts.isBindingElement(name.parent)
+                                ? ts.getPropertySymbolFromBindingElement(checker, name.parent)
+                                : ts.skipAlias(checker.getSymbolAtLocation(name), checker); // TODO: GH#18217
+                            return !!symbol && movedSymbols.has(symbol);
+                        };
+                        deleteUnusedImports(sourceFile, importNode, changes, shouldMove); // These will be changed to imports from the new file
+                        var newModuleSpecifier = ts.combinePaths(ts.getDirectoryPath(moduleSpecifierFromImport(importNode).text), newModuleName);
+                        var newImportDeclaration = filterImport(importNode, ts.createLiteral(newModuleSpecifier), shouldMove);
+                        if (newImportDeclaration)
+                            changes.insertNodeAfter(sourceFile, statement, newImportDeclaration);
+                        var ns = getNamespaceLikeImport(importNode);
+                        if (ns)
+                            updateNamespaceLikeImport(changes, sourceFile, checker, movedSymbols, newModuleName, newModuleSpecifier, ns, importNode);
+                    });
+                };
+                for (var _i = 0, _a = sourceFile.statements; _i < _a.length; _i++) {
+                    var statement = _a[_i];
+                    _loop_15(statement);
+                }
+            };
+            for (var _i = 0, _a = program.getSourceFiles(); _i < _a.length; _i++) {
+                var sourceFile = _a[_i];
+                _loop_14(sourceFile);
+            }
+        }
+        function getNamespaceLikeImport(node) {
+            switch (node.kind) {
+                case 249 /* ImportDeclaration */:
+                    return node.importClause && node.importClause.namedBindings && node.importClause.namedBindings.kind === 251 /* NamespaceImport */ ?
+                        node.importClause.namedBindings.name : undefined;
+                case 248 /* ImportEqualsDeclaration */:
+                    return node.name;
+                case 237 /* VariableDeclaration */:
+                    return ts.tryCast(node.name, ts.isIdentifier);
+                default:
+                    return ts.Debug.assertNever(node);
+            }
+        }
+        function updateNamespaceLikeImport(changes, sourceFile, checker, movedSymbols, newModuleName, newModuleSpecifier, oldImportId, oldImportNode) {
+            var preferredNewNamespaceName = ts.codefix.moduleSpecifierToValidIdentifier(newModuleName, 6 /* ESNext */);
+            var needUniqueName = false;
+            var toChange = [];
+            ts.FindAllReferences.Core.eachSymbolReferenceInFile(oldImportId, checker, sourceFile, function (ref) {
+                if (!ts.isPropertyAccessExpression(ref.parent))
+                    return;
+                needUniqueName = needUniqueName || !!checker.resolveName(preferredNewNamespaceName, ref, 67108863 /* All */, /*excludeGlobals*/ true);
+                if (movedSymbols.has(checker.getSymbolAtLocation(ref.parent.name))) {
+                    toChange.push(ref);
+                }
+            });
+            if (toChange.length) {
+                var newNamespaceName = needUniqueName ? ts.getUniqueName(preferredNewNamespaceName, sourceFile) : preferredNewNamespaceName;
+                for (var _i = 0, toChange_1 = toChange; _i < toChange_1.length; _i++) {
+                    var ref = toChange_1[_i];
+                    changes.replaceNode(sourceFile, ref, ts.createIdentifier(newNamespaceName));
+                }
+                changes.insertNodeAfter(sourceFile, oldImportNode, updateNamespaceLikeImportNode(oldImportNode, newModuleName, newModuleSpecifier));
+            }
+        }
+        function updateNamespaceLikeImportNode(node, newNamespaceName, newModuleSpecifier) {
+            var newNamespaceId = ts.createIdentifier(newNamespaceName);
+            var newModuleString = ts.createLiteral(newModuleSpecifier);
+            switch (node.kind) {
+                case 249 /* ImportDeclaration */:
+                    return ts.createImportDeclaration(
+                    /*decorators*/ undefined, /*modifiers*/ undefined, ts.createImportClause(/*name*/ undefined, ts.createNamespaceImport(newNamespaceId)), newModuleString);
+                case 248 /* ImportEqualsDeclaration */:
+                    return ts.createImportEqualsDeclaration(/*decorators*/ undefined, /*modifiers*/ undefined, newNamespaceId, ts.createExternalModuleReference(newModuleString));
+                case 237 /* VariableDeclaration */:
+                    return ts.createVariableDeclaration(newNamespaceId, /*type*/ undefined, createRequireCall(newModuleString));
+                default:
+                    return ts.Debug.assertNever(node);
+            }
+        }
+        function moduleSpecifierFromImport(i) {
+            return (i.kind === 249 /* ImportDeclaration */ ? i.moduleSpecifier
+                : i.kind === 248 /* ImportEqualsDeclaration */ ? i.moduleReference.expression
+                    : i.initializer.arguments[0]);
+        }
+        function forEachImportInStatement(statement, cb) {
+            if (ts.isImportDeclaration(statement)) {
+                if (ts.isStringLiteral(statement.moduleSpecifier))
+                    cb(statement);
+            }
+            else if (ts.isImportEqualsDeclaration(statement)) {
+                if (ts.isExternalModuleReference(statement.moduleReference) && ts.isStringLiteralLike(statement.moduleReference.expression)) {
+                    cb(statement);
+                }
+            }
+            else if (ts.isVariableStatement(statement)) {
+                for (var _i = 0, _a = statement.declarationList.declarations; _i < _a.length; _i++) {
+                    var decl = _a[_i];
+                    if (decl.initializer && ts.isRequireCall(decl.initializer, /*checkArgumentIsStringLiteralLike*/ true)) {
+                        cb(decl);
+                    }
+                }
+            }
+        }
+        function createOldFileImportsFromNewFile(newFileNeedExport, newFileNameWithExtension, useEs6Imports, quotePreference) {
+            var defaultImport;
+            var imports = [];
+            newFileNeedExport.forEach(function (symbol) {
+                if (symbol.escapedName === "default" /* Default */) {
+                    defaultImport = ts.createIdentifier(ts.symbolNameNoDefault(symbol)); // TODO: GH#18217
+                }
+                else {
+                    imports.push(symbol.name);
+                }
+            });
+            return makeImportOrRequire(defaultImport, imports, newFileNameWithExtension, useEs6Imports, quotePreference);
+        }
+        function makeImportOrRequire(defaultImport, imports, path, useEs6Imports, quotePreference) {
+            path = ts.ensurePathIsNonModuleName(path);
+            if (useEs6Imports) {
+                var specifiers = imports.map(function (i) { return ts.createImportSpecifier(/*propertyName*/ undefined, ts.createIdentifier(i)); });
+                return ts.makeImportIfNecessary(defaultImport, specifiers, path, quotePreference);
+            }
+            else {
+                ts.Debug.assert(!defaultImport); // If there's a default export, it should have been an es6 module.
+                var bindingElements = imports.map(function (i) { return ts.createBindingElement(/*dotDotDotToken*/ undefined, /*propertyName*/ undefined, i); });
+                return bindingElements.length
+                    ? makeVariableStatement(ts.createObjectBindingPattern(bindingElements), /*type*/ undefined, createRequireCall(ts.createLiteral(path)))
+                    : undefined;
+            }
+        }
+        function makeVariableStatement(name, type, initializer, flags) {
+            if (flags === void 0) { flags = 2 /* Const */; }
+            return ts.createVariableStatement(/*modifiers*/ undefined, ts.createVariableDeclarationList([ts.createVariableDeclaration(name, type, initializer)], flags));
+        }
+        function createRequireCall(moduleSpecifier) {
+            return ts.createCall(ts.createIdentifier("require"), /*typeArguments*/ undefined, [moduleSpecifier]);
+        }
+        function addExports(sourceFile, toMove, needExport, useEs6Exports) {
+            return ts.flatMap(toMove, function (statement) {
+                if (isTopLevelDeclarationStatement(statement) &&
+                    !isExported(sourceFile, statement, useEs6Exports) &&
+                    forEachTopLevelDeclaration(statement, function (d) { return needExport.has(ts.Debug.assertDefined(d.symbol)); })) {
+                    var exports_1 = addExport(statement, useEs6Exports);
+                    if (exports_1)
+                        return exports_1;
+                }
+                return statement;
+            });
+        }
+        function deleteUnusedImports(sourceFile, importDecl, changes, isUnused) {
+            swiissues.apache.org/jira/browse/CB-12621) reverted elementtree dep to 0.1.6
+
+### 6.2.0 (Mar 28, 2017)
+* [CB-12614](https://issues.apache.org/jira/browse/CB-12614) Adding headers to tests
+* [CB-8978](https://issues.apache.org/jira/browse/CB-8978) Prepare copy `resource-files` from `config.xml`
+* [CB-12605](https://issues.apache.org/jira/browse/CB-12605) Fix a requirements check failure on **Windows**
+* [CB-12595](https://issues.apache.org/jira/browse/CB-12595) This should find an **Android Studio** installation and use the sweet gradle center found inside
+* [CB-12546](https://issues.apache.org/jira/browse/CB-12546) leverage `avdmanager` if `android` warns it is no longer useful, which happens in **Android SDK Tools 25.3.1**. Explicitly set the `CWD` of the spawned emulator process to workaround a recent google android sdk bug. Rename `android_sdk_version.js` to `android_sdk.js`, to better reflect its contents. Have `create.js` copy over the `android_sdk_version` batch file.
+* [CB-12524](https://issues.apache.org/jira/browse/CB-12524) Fix for missing gradle template error. This now fetches the template from inside of the **Android Studio** directory, and falls back to a locally installed Gradle instance
+* [CB-12465](https://issues.apache.org/jira/browse/CB-12465) Writing new JUnit Test Instrumentation to replace tests and retire problmatic tests
+
+### 6.1.2 (Jan 26, 2017)
+* **Security** Change to `https` by default
+* [CB-12018](https://issues.apache.org/jira/browse/CB-12018): updated tests to work with jasmine (promise matcher tests commented out for now)
+* created directories and corresponding images for `xxhdpi` and `xxxhdpi`, both drawables and `mipmaps`
+
+### 6.1.1 (Jan 03, 2017)
+* [CB-12159](https://issues.apache.org/jira/browse/CB-12159) **Android** Keystore password prompt won't show up
+* [CB-12169](https://issues.apache.org/jira/browse/CB-12169) Check for build directory before running a clean
+* Fixed `AndroidStudio` tests to actually run, removed `app/src/main/assets/` as a requirement and added `app/src/main/res` instead, added placeholder for `build/` folder, Removed dupe `gitignore`
+
+### 6.1.0 (Nov 02, 2016)
+* [CB-12108](https://issues.apache.org/jira/browse/CB-12108) Updating gradle files to work with the latest version of Android Studio
+* [CB-12102](https://issues.apache.org/jira/browse/CB-12102) Bump travis to build to API 25
+* Bumping up the version
+* [CB-12101](https://issues.apache.org/jira/browse/CB-12101) Fix so that CLI builds don't conflict with Android Studio builds
+* [CB-12077](https://issues.apache.org/jira/browse/CB-12077) Fix paths for Android icons/splashscreens
+* added framework/build to .ratignore
+* Fix for broken testUrl test
+* Last minute change of test targets
+* Update JS snapshot to version 6.1.0-dev (via coho)
+* Set VERSION to 6.1.0-dev (via coho)
+
+### 6.0.0 (Oct 20, 2016)
+
+This release adds significant functionality, and also introduces a number
+of breaking changes.  Some of the changes to the code base will be of
+particular interest to third party webview plugin developers.
+
+#### Major Changes ####
+* Primary bridge is the EVAL_BRIDGE, which tells the WebView to execute JS directly.  This is more stable than the ONLINE_EVENT bridge
+* Full Support for Android Nougat (API 24)
+* Ice Cream Sandwich Support has been deprecated.  Minimum Supported Android Version is Jellybean (API 16/ Android 4.1)
+* Plugin Installation now CLEANS the build directory, this speeds up gradle build times and allows for CLI develoment to be more predictable
+
+Changes For Third-Party WebView Developers:
+* executeJavascript method added and is an abstract method that must be implemented
+* the EVAL_BRIDGE must be added to the WebView
+
+
+#### Curated Changes from the Git Commit Logs ####
+* Updating the gradle build for test to use the latest
+* [CB-11083](https://issues.apache.org/jira/browse/CB-11083) Fixing syncronous file check and future-proofing the JS for Travis
+* [CB-11083](https://issues.apache.org/jira/browse/CB-11083) Reading files to check for CordovaLib dependency, if so, we exclude CordovaLib to be safe
+* [CB-11083](https://issues.apache.org/jira/browse/CB-11083) Plugin build script for dependencies without a gradle file
+* [CB-11083](https://issues.apache.org/jira/browse/CB-11083) The GradleBuidler can tell the difference between a Cordova Plugin Framework and a regular framework based on the name
+* [CB-11083](https://issues.apache.org/jira/browse/CB-11083) Fix to deal with custom frameworks with their own Gradle configuration
+* [CB-12003](https://issues.apache.org/jira/browse/CB-12003) updated node_modules
+* [CB-11771](https://issues.apache.org/jira/browse/CB-11771) Deep symlink directories to target project instead of linking the directory itself
+* [CB-11880](https://issues.apache.org/jira/browse/CB-11880) android: Fail-safe for cordova.exec()
+* [CB-11999](https://issues.apache.org/jira/browse/CB-11999) add message, catch exception if require fails
+* fix issue with app_name containing apostrophes
+* [CB-8722](https://issues.apache.org/jira/browse/CB-8722) - Move icons from drawable to mipmap
+* [CB-11964](https://issues.apache.org/jira/browse/CB-11964) Call clean after plugin install and mock it in tests
+* Did a try/catch to deal with the unit tests vs actual project environment, code duplication is needed because of builderEnv
+* [CB-11964](https://issues.apache.org/jira/browse/CB-11964) Do a clean when installing a plugin to et around the bug
+* [CB-11921](https://issues.apache.org/jira/browse/CB-11921) - Add github pull request template
+* [CB-11935](https://issues.apache.org/jira/browse/CB-11935) Does a best-effort attempt to pause any processing that can be paused safely, such as animations and geolocation.
+* [CB-11640](https://issues.apache.org/jira/browse/CB-11640) Fixing check_reqs.js so it actually works
+* [CB-11640](https://issues.apache.org/jira/browse/CB-11640) Changing requirements check to ask for Java 8
+* [CB-11869](https://issues.apache.org/jira/browse/CB-11869) Fix cordova-js android exec tests
+* [CB-11907](https://issues.apache.org/jira/browse/CB-11907) Bumping Gradle to work with Android Studio 2.2 and the Android Gradle Plugin
+* Enable background start of Cordova Android apps
+* fixing jshint issues
+* replace Integer.parseInt with BigInteger so that you can use longer Android version codes
+* [CB-11828](https://issues.apache.org/jira/browse/CB-11828) Adding dirty userAgent checking to see if we're running Jellybean or not for bridge modes
+* [CB-11828](https://issues.apache.org/jira/browse/CB-11828) Switching default bridge back to ONLINE_BRIDGE
+* Add gradle build flag to enable dex in process for large projects
+* added ability for cordova activity to be viewed in a real full screen regardless of android version (as was the case in previous cordova versions)
+* Updating travis
+* Adding Static Method to CoreAndroid Plugin so we can get the BuildConfig data from other plugins
+* Bump Target and Min API levels
+* Make evaluateJavaScript brige default
+* Creating an evaluateJavascript branch
+* [CB-11727](https://issues.apache.org/jira/browse/CB-11727) - travis ci setup is still using 0.10.32 node
+* [CB-11726](https://issues.apache.org/jira/browse/CB-11726) - Update appveyor node versions to 4 and 6, so they will always use the latest versions
+* Close invalid PRs
+* [CB-11683](https://issues.apache.org/jira/browse/CB-11683) Fixed linking to directories during plugin installation.
+* fixed [CB-11078](https://issues.apache.org/jira/browse/CB-11078) Empty string for BackgroundColor preference crashes application This closes #316
+* Update JS snapshot to version 5.3.0-dev (via coho)
+* Set VERSION to 5.3.0-dev (via coho)
+* [CB-11626](https://issues.apache.org/jira/browse/CB-11626) Updated RELEASENOTES and Version for release 5.2.2
+* updated cordoova-common to 1.4.0
+* This closes #195
+* Updaing the gradle for the tests to the latest
+* [CB-11550](https://issues.apache.org/jira/browse/CB-11550) Updated RELEASENOTES for release 5.2.1
+* [CB-9489](https://issues.apache.org/jira/browse/CB-9489) Fixed "endless waiting for emulator" issue
+* Update JS snapshot to version 5.3.0-dev (via coho)
+* Set VERSION to 5.3.0-dev (via coho)
+* [CB-11444](https://issues.apache.org/jira/browse/CB-11444) Updated RELEASENOTES and Version for release 5.2.0
+* [CB-11481](https://issues.apache.org/jira/browse/CB-11481) android-library is deprecated use com.android.library instead
+
+### 5.2.2 (Jul 26, 2016)
+* [CB-11615](https://issues.apache.org/jira/browse/CB-11615) updated `cordoova-common` to `1.4.0`
+
+### 5.2.1 (Jul 11, 2016)
+* [CB-9489](https://issues.apache.org/jira/browse/CB-9489) Fixed "endless waiting for emulator" issue
+* [CB-11481](https://issues.apache.org/jira/browse/CB-11481) android-library is deprecated use com.android.library instead
+
+### 5.2.0 (Jun 29, 2016)
+* [CB-11383](https://issues.apache.org/jira/browse/CB-11383) Update to gradle for using `jcenter` and correct Application plugin
+* [CB-11365](https://issues.apache.org/jira/browse/CB-11365) fixed plugin rm issue with emit being `undefined`
+* [CB-11117](https://issues.apache.org/jira/browse/CB-11117) Use `FileUpdater` to optimize prepare for **android** platform
+* [CB-10096](https://issues.apache.org/jira/browse/CB-10096) Upgrade test project to `Gradle Plugin 2.1.0`
+* [CB-11292](https://issues.apache.org/jira/browse/CB-11292) fix broken `MessageChannel` after plugins are recreated
+* [CB-11259](https://issues.apache.org/jira/browse/CB-11259) Improving build output
+* [CB-10096](https://issues.apache.org/jira/browse/CB-10096) Upgrading to `Gradle Plugin 2.1.0`
+* [CB-11198](https://issues.apache.org/jira/browse/CB-11198) Skip **android** target sdk check. This closes #303.
+* [CB-11138](https://issues.apache.org/jira/browse/CB-11138) Reuse `PluginManager` from `common` to add/rm plugins
+* [CB-11133](https://issues.apache.org/jira/browse/CB-11133) Handle **android** emulator start failure
+* [CB-11132](https://issues.apache.org/jira/browse/CB-11132) Fix Error: Cannot read property `match` of undefined in `cordova-android` `emulator.js`
+* Add simple log for package name being deployed
+* [CB-11015](https://issues.apache.org/jira/browse/CB-11015) Error adding plugin with gradle extras
+* [CB-11095](https://issues.apache.org/jira/browse/CB-11095) Fix plugin add/removal when running on `Node v.010`
+* [CB-11022](https://issues.apache.org/jira/browse/CB-11022) Duplicate www files to both destinations on plugin operations
+* [CB-10964](https://issues.apache.org/jira/browse/CB-10964) Handle `build.json` file starting with a BOM.
+* [CB-10963](https://issues.apache.org/jira/browse/CB-10963) Handle overlapping permission requests from plugins
+* [CB-8582](https://issues.apache.org/jira/browse/CB-8582) Obscure `INSTALL_FAILED_VERSION_DOWNGRADE` error when installing app
+* [CB-10862](https://issues.apache.org/jira/browse/CB-10862) Cannot set `minsdkversion`
+* [CB-10896](https://issues.apache.org/jira/browse/CB-10896) We never enabled cookies on the `WebView` proper
+* [CB-10837](https://issues.apache.org/jira/browse/CB-10837) Support platform-specific orientation on **Android**
+* [CB-10600](https://issues.apache.org/jira/browse/CB-10600) `cordova run android --release` does not use signed and zip-aligned version of `APK`
+* [CB-9710](https://issues.apache.org/jira/browse/CB-9710) Fixing issues parsing `android avd list` output for certain AVDs which resulted in them not being included in the selection process even if they are the best match.
+* [CB-10888](https://issues.apache.org/jira/browse/CB-10888) Enable coverage reports collection via codecov
+* [CB-10846](https://issues.apache.org/jira/browse/CB-10846) Add Travis and AppVeyor badges to readme
+* [CB-10846](https://issues.apache.org/jira/browse/CB-10846) Add AppVeyor configuration
+* [CB-10749](https://issues.apache.org/jira/browse/CB-10749) Use `cordova-common.CordovaLogger` in `cordova-android`
+* [CB-10673](https://issues.apache.org/jira/browse/CB-10673) fixed conflicting plugin install issue with overlapped `<source-file>` tag. Add `--force` flag.
+* [CB-8976](https://issues.apache.org/jira/browse/CB-8976) Removing the auto-version for non-Crosswalk applications
+* [CB-10768](https://issues.apache.org/jira/browse/CB-10768) Use `cordova-common.superspawn` in `GradleBuilder`
+* [CB-10729](https://issues.apache.org/jira/browse/CB-10729) Move plugin handlers tests for into platform's repo
+* [CB-10669](https://issues.apache.org/jira/browse/CB-10669) `cordova run --list` cannot find `adb`
+* [CB-10660](https://issues.apache.org/jira/browse/CB-10660) fixed the exception when removing a non-existing directory.
+
+### 5.1.1 (Feb 24, 2016)
+* updated `cordova-common` dependnecy to `1.1.0`
+* [CB-10628](https://issues.apache.org/jira/browse/CB-10628) Fix `emulate android --target`
+* [CB-10618](https://issues.apache.org/jira/browse/CB-10618) Handle gradle frameworks on plugin installation/uninstallation
+* [CB-10510](https://issues.apache.org/jira/browse/CB-10510) Add an optional timeout to `emu` start script
+* [CB-10498](https://issues.apache.org/jira/browse/CB-10498) Resume event should be sticky if it has a plugin result
+* fix `HtmlNotFoundTest` so that it passes when file not found is handled correctly
+* [CB-10472](https://issues.apache.org/jira/browse/CB-10472) `NullPointerException`: `org.apache.cordova.PluginManager.onSaveInstanceState` check if `pluginManager` is `null` before using it
+* [CB-10138](https://issues.apache.org/jira/browse/CB-10138) Adds missing plugin metadata to `plugin_list` module.
+* [CB-10443](https://issues.apache.org/jira/browse/CB-10443) Pass original options instead of remaining
+* [CB-10443](https://issues.apache.org/jira/browse/CB-10443) Fix `this.root` null reference
+* [CB-10421](https://issues.apache.org/jira/browse/CB-10421) Fixes exception when calling run script with `--help` option
+* updated `.gitignore`
+* [CB-10406](https://issues.apache.org/jira/browse/CB-10406) Fixes an exception, thrown when building using Ant.
+* [CB-10157](https://issues.apache.org/jira/browse/CB-10157) Uninstall app from device/emulator only when signed apk is already installed
+
+### 5.1.0 (Jan 19, 2016)
+* [CB-10386](https://issues.apache.org/jira/browse/CB-10386) Add `android.useDeprecatedNdk=true` to support `NDK` in `gradle`
+* [CB-8864](https://issues.apache.org/jira/browse/CB-8864) Fixing this to mitigate [CB-8685](https://issues.apache.org/jira/browse/CB-8685) and [CB-10104](https://issues.apache.org/jira/browse/CB-10104)
+* [CB-10105](https://issues.apache.org/jira/browse/CB-10105) Spot fix for tilde errors on paths.
+* Update theme to `Theme.DeviceDefault.NoActionBar`
+* [CB-10014](https://issues.apache.org/jira/browse/CB-10014) Set gradle `applicationId` to `package name`.
+* [CB-9949](https://issues.apache.org/jira/browse/CB-9949) Fixing menu button event not fired in **Android**
+* [CB-9479](https://issues.apache.org/jira/browse/CB-9479) Fixing the conditionals again, we should
+* [CB-8917](https://issues.apache.org/jira/browse/CB-8917) New Plugin API for passing results on resume after Activity destruction
+* [CB-9971](https://issues.apache.org/jira/browse/CB-9971) Suppress `gradlew _JAVA_OPTIONS` output during build
+* [CB-9836](https://issues.apache.org/jira/browse/CB-9836) Add `.gitattributes` to prevent `CRLF` line endings in repos
+* added node_modules back into `.gitignore`
+
+### 5.0.0 (Nov 01, 2015)
+* Update CordovaWebViewEngine.java
+* [CB-9909](https://issues.apache.org/jira/browse/CB-9909) Shouldn't escape spaces in paths on Windows.
+* [CB-9870](https://issues.apache.org/jira/browse/CB-9870) updated hello world template
+* [CB-9880](https://issues.apache.org/jira/browse/CB-9880) Fixes platform update failure when upgrading from android@<4.1.0
+* [CB-9844](https://issues.apache.org/jira/browse/CB-9844) Remove old .java after renaming activity
+* [CB-9800](https://issues.apache.org/jira/browse/CB-9800) Fixing contribute link.
+* [CB-9782](https://issues.apache.org/jira/browse/CB-9782) Check in `cordova-common` dependency
+* Adds licence header to Adb to pass rat audit
+* [CB-9835](https://issues.apache.org/jira/browse/CB-9835) Downgrade `properties-parser` to prevent failures in Node < 4.x
+* [CB-9782](https://issues.apache.org/jira/browse/CB-9782) Implements PlatformApi contract for Android platform.
+* [CB-9826](https://issues.apache.org/jira/browse/CB-9826) Fixed `test-build` script on windows.
+* Refactor of the Cordova Plugin/Permissions API
+* Manually updating version to 5.0.0-dev for engine tags
+* Bump up to API level 23
+* Commiting code to handle permissions, and the special case of the Geolocation Plugin
+* [CB-9608](https://issues.apache.org/jira/browse/CB-9608) cordova-android no longer builds on Node 0.10 or below
+* [CB-9080](https://issues.apache.org/jira/browse/CB-9080) Cordova CLI run for Android versions 4.1.1 and lower throws error
+* [CB-9557](https://issues.apache.org/jira/browse/CB-9557) Fixes apk install failure when switching from debug to release build
+* [CB-9496](https://issues.apache.org/jira/browse/CB-9496) removed permissions added for crosswalk
+* [CB-9402](https://issues.apache.org/jira/browse/CB-9402) Allow to set gradle distubutionUrl via env variable CORDOVA_ANDROID_GRADLE_DISTRIBUTION_URL
+* [CB-9428](https://issues.apache.org/jira/browse/CB-9428) update script now bumps up minSdkVersion to 14 if it is less than that.
+* [CB-9430](https://issues.apache.org/jira/browse/CB-9430) Fixes check_reqs failure when javac returns an extra line
+* [CB-9172](https://issues.apache.org/jira/browse/CB-9172) Improved emulator deploy stability. This closes #188.
+* [CB-9404](https://issues.apache.org/jira/browse/CB-9404) Fixed an exception when path contained -debug or -release
+* [CB-8320](https://issues.apache.org/jira/browse/CB-8320) Setting up gradle so we can use CordovaLib as a standard Android Library
+* [CB-9185](https://issues.apache.org/jira/browse/CB-9185) Fixed an issue when unsigned apks couldn't be found.
+* [CB-9397](https://issues.apache.org/jira/browse/CB-9397) Fixes minor issues with `cordova requirements android`
+* [CB-9389](https://issues.apache.org/jira/browse/CB-9389) Fixes build/check_reqs hang
+
+### Release 4.1.1 (Aug 2015) ###
+
+* [CB-9428](https://issues.apache.org/jira/browse/CB-9428) update script now bumps up minSdkVersion to 14 if it is less than that
+* [CB-9430](https://issues.apache.org/jira/browse/CB-9430) Fixes check_reqs failure when javac returns an extra line
+
+### Release 4.1.0 (Jul 2015) ###
+* [CB-9392](https://issues.apache.org/jira/browse/CB-9392) Fixed printing flavored versions. This closes #184.
+* [CB-9382](https://issues.apache.org/jira/browse/CB-9382) [Android] Fix KeepRunning setting when Plugin activity is showed. This closes #200
+* [CB-9391](https://issues.apache.org/jira/browse/CB-9391) Fixes cdvBuildMultipleApks option casting
+* [CB-9343](https://issues.apache.org/jira/browse/CB-9343) Split the Content-Type to obtain a clean mimetype
+* [CB-9255](https://issues.apache.org/jira/browse/CB-9255) Make getUriType case insensitive.
+* [CB-9149](https://issues.apache.org/jira/browse/CB-9149) Fixes JSHint issue introduced by 899daa9
+* [CB-9372](https://issues.apache.org/jira/browse/CB-9372) Remove unused files: 'main.js' & 'master.css'. This closes #198
+* [CB-9149](https://issues.apache.org/jira/browse/CB-9149) Make gradle alias subprojects in order to handle libs that depend on libs. This closes #182
+* Update min SDK version to 14
+* Update licenses. This closes #190
+* [CB-9185](https://issues.apache.org/jira/browse/CB-9185) Fix signed release build exception. This closes #193.
+* [CB-9286](https://issues.apache.org/jira/browse/CB-9286) Fixes build failure when ANDROID_HOME is not set.
+* [CB-9284](https://issues.apache.org/jira/browse/CB-9284) Fix for handling absolute path for keystore in build.json
+* [CB-9260](https://issues.apache.org/jira/browse/CB-9260) Install Android-22 on Travis-CI
+* Adding .ratignore file.
+* [CB-9119](https://issues.apache.org/jira/browse/CB-9119) Adding lib/retry.js for retrying promise-returning functions. Retrying 'adb install' in emulator.js because it sometimes hangs.
+* [CB-9115](https://issues.apache.org/jira/browse/CB-9115) android: Grant Lollipop permission req
+* Remove extra console message
+* [CB-8898](https://issues.apache.org/jira/browse/CB-8898) Report expected gradle location properly
+* [CB-8898](https://issues.apache.org/jira/browse/CB-8898) Fixes gradle check failure due to missing quotes
+* [CB-9080](https://issues.apache.org/jira/browse/CB-9080) -d option is not supported on Android 4.1.1 and lower, removing
+* [CB-8954](https://issues.apache.org/jira/browse/CB-8954) Adds `requirements` command support to check_reqs module
+* Update JS snapshot to version 4.1.0-dev (via coho)
+* [CB-8417](https://issues.apache.org/jira/browse/CB-8417) updated platform specific files from cordova.js repo
+* Adding tests to confirm that preferences aren't changed by Intents
+* Forgot to remove the method that copied over the intent data
+* Getting around to removing this old Intent code
+* Update JS snapshot to version 4.1.0-dev (via coho)
+* Fix CordovaPluginTest on KitKat (start-up events seem to change)
+* [CB-3360](https://issues.apache.org/jira/browse/CB-3360) Allow setting a custom User-Agent (close #162)
+* [CB-8902](https://issues.apache.org/jira/browse/CB-8902) Use immersive mode when available when going fullscreen (close #175)
+* Make BridgeMode methods public (they were always supposed to be)
+* Simplify: EncodingUtils.getBytes(str) -> str.getBytes()
+* Don't show warning when gradlew file is read-only
+* Don't show warning when prepEnv copies gradlew and it's read-only
+* Make gradle wrapper prepEnv code work even when android-sdk is read-only
+* [CB-8897](https://issues.apache.org/jira/browse/CB-8897) Delete drawable/icon.png since it duplicates drawable-mdpi/icon.png
+* Updating the template to target mininumSdkTarget=14
+* [CB-8894](https://issues.apache.org/jira/browse/CB-8894) Updating the template to target mininumSdkTarget=14
+* [CB-8891](https://issues.apache.org/jira/browse/CB-8891) Add a note about when the gradle helpers were added
+* [CB-8891](https://issues.apache.org/jira/browse/CB-8891) Add a gradle helper for retrieving config.xml preference values
+* [CB-8884](https://issues.apache.org/jira/browse/CB-8884) Delete Eclipse tweaks from create script
+* [CB-8834](https://issues.apache.org/jira/browse/CB-8834) Don't fail to install on VERSION_DOWNGRADE
+* Automated tools fail, and you have to remember all four places where this is set.
+* Update the package.json
+* [CB-9042](https://issues.apache.org/jira/browse/CB-9042) coho failed to update version, so here we are
+* CB9042 - Updating Release Notes
+* Adding tests to confirm that preferences aren't changed by Intents
+* updating existing test code
+* Forgot to remove the method that copied over the intent data
+* Getting around to removing this old Intent code
+* [CB-8834](https://issues.apache.org/jira/browse/CB-8834) Don't fail to install on VERSION_DOWNGRADE
+
+### Release 4.0.2 (May 2015) ###
+
+* Removed Intent Functionality from Preferences - Preferences can no longer be set by intents
+
+### Release 4.0.1 (April 2015) ###
+
+* Bug fixed where platform failed to install on a version downgrade
+
+### Release 4.0.0 (March 2015) ###
+
+This release adds significant functionality, and also introduces a number
+of breaking changes.  Some of the changes to the code base will be of
+particular interest to plugin developers.
+
+#### Major Changes ####
+* Support for pluggable WebViews
+  * The system WebView can be replaced in your app, via a plugin
+  * Core WebView functionality is encapsulated, with extension points exposed
+    via interfaces
+* Support for Crosswalk to bring the modern Chromium WebView to older devices
+  * Uses the pluggable WebView framework
+  * You will need to add the new [cordova-crosswalk-engine](https://github.com/MobileChromeApps/cordova-crosswalk-engine) plugin
+* Splash screen functionality is now provided via plugin
+  * You will need to add the new [cordova-plugin-splashscreen](https://github.com/apache/cordova-plugin-splashscreen) plugin to continue using a splash screen
+* Whitelist functionality is now provided via plugin (CB-7747)
+  * The whitelist has been enhanced to be more secure and configurable
+  * Setting of Content-Security-Policy is now supported by the framework (see details in plugin readme)
+  * You will need to add the new [cordova-plugin-whitelist](https://github.com/apache/cordova-plugin-whitelist) plugin
+  * Legacy whitelist behaviour is still available via plugin (although not recommended).
+
+Changes For Plugin Developers:
+
+* Develop in Android Studio
+  * Android Studio is now fully supported, and recommended over Eclipse
+* Build using Gradle
+  * All builds [use Gradle by default](Android%20Shell%20Tool%20Guide_building_with_gradle), instead of Ant
+  * Plugins can add their own gradle build steps!
+  * Plugins can depend on Maven libraries using `<framework>` tags
+* New APIs: `onStart`, `onStop`, `onConfigurationChanged`
+* `"onScrollChanged"` message removed. Use `view.getViewTreeObserver().addOnScrollChangedListener(...)` instead
+* [CB-8702](https://issues.apache.org/jira/browse/CB-8702) New API for plugins to override `shouldInterceptRequest` with a stream
+
+#### Other Changes ####
+* [CB-8378](https://issues.apache.org/jira/browse/CB-8378) Removed `hidekeyboard` and `showkeyboard` events (apps should use a plugin instead)
+* [CB-8735](https://issues.apache.org/jira/browse/CB-8735) `bin/create` regex relaxed / better support for numbers
+* [CB-8699](https://issues.apache.org/jira/browse/CB-8699) Fix CordovaResourceApi `copyResource` creating zero-length files when src=uncompressed asset
+* [CB-8693](https://issues.apache.org/jira/browse/CB-8693) CordovaLib should not contain icons / splashscreens
+* [CB-8592](https://issues.apache.org/jira/browse/CB-8592) Fix NPE if lifecycle events reach CordovaWebView before `init()` has been called
+* [CB-8588](https://issues.apache.org/jira/browse/CB-8588) Add CATEGORY_BROWSABLE to intents from showWebPage openExternal=true
+* [CB-8587](https://issues.apache.org/jira/browse/CB-8587) Don't allow WebView navigations within showWebPage that are not whitelisted
+* [CB-7827](https://issues.apache.org/jira/browse/CB-7827) Add `--activity-name` for `bin/create`
+* [CB-8548](https://issues.apache.org/jira/browse/CB-8548) Use debug-signing.properties and release-signing.properties when they exist
+* [CB-8545](https://issues.apache.org/jira/browse/CB-8545) Don't add a layout as a parent of the WebView
+* [CB-7159](https://issues.apache.org/jira/browse/CB-7159) BackgroundColor not used when `<html style="opacity:0">`, nor during screen rotation
+* [CB-6630](https://issues.apache.org/jira/browse/CB-6630) Removed OkHttp from core library. It's now available as a plugin: [cordova-plugin-okhttp](https://www.npmjs.com/package/cordova-plugin-okhttp)
+
+### Release 3.7.1 (January 2015) ###
+* [CB-8411](https://issues.apache.org/jira/browse/CB-8411) Initialize plugins only after `createViews()` is called (regression in 3.7.0)
+
+### Release 3.7.0 (January 2015) ###
+
+* [CB-8328](https://issues.apache.org/jira/browse/CB-8328) Allow plugins to handle certificate challenges (close #150)
+* [CB-8201](https://issues.apache.org/jira/browse/CB-8201) Add support for auth dialogs into Cordova Android
+* [CB-8017](https://issues.apache.org/jira/browse/CB-8017) Add support for `<input type=file>` for Lollipop
+* [CB-8143](https://issues.apache.org/jira/browse/CB-8143) Loads of gradle improvements (try it with cordova/build --gradle)
+* [CB-8329](https://issues.apache.org/jira/browse/CB-8329) Cancel outstanding ActivityResult requests when a new startActivityForResult occurs
+* [CB-8026](https://issues.apache.org/jira/browse/CB-8026) Bumping up Android Version and setting it up to allow third-party cookies.  This might change later.
+* [CB-8210](https://issues.apache.org/jira/browse/CB-8210) Use PluginResult for various events from native so that content-security-policy <meta> can be used
+* [CB-8168](https://issues.apache.org/jira/browse/CB-8168) Add support for `cordova/run --list` (closes #139)
+* [CB-8176](https://issues.apache.org/jira/browse/CB-8176) Vastly better auto-detection of SDK & JDK locations
+* [CB-8079](https://issues.apache.org/jira/browse/CB-8079) Use activity class package name, but fallback to application package name when looking for splash screen drawable
+* [CB-8147](https://issues.apache.org/jira/browse/CB-8147) Have corodva/build warn about unrecognized flags rather than fail
+* [CB-7881](https://issues.apache.org/jira/browse/CB-7881) Android tooling shouldn't lock application directory
+* [CB-8112](https://issues.apache.org/jira/browse/CB-8112) Turn off mediaPlaybackRequiresUserGesture
+* [CB-6153](https://issues.apache.org/jira/browse/CB-6153) Add a preference for controlling hardware button audio stream (DefaultVolumeStream)
+* [CB-8031](https://issues.apache.org/jira/browse/CB-8031) Fix race condition that shows as ConcurrentModificationException
+* [CB-7974](https://issues.apache.org/jira/browse/CB-7974) Cancel timeout timer if view is destroyed
+* [CB-7940](https://issues.apache.org/jira/browse/CB-7940) Disable exec bridge if bridgeSecret is wrong
+* [CB-7758](https://issues.apache.org/jira/browse/CB-7758) Allow content-url-hosted pages to access the bridge
+* [CB-6511](https://issues.apache.org/jira/browse/CB-6511) Fixes build for android when app name contains unicode characters.
+* [CB-7707](https://issues.apache.org/jira/browse/CB-7707) Added multipart PluginResult
+* [CB-6837](https://issues.apache.org/jira/browse/CB-6837) Fix leaked window when hitting back button while alert being rendered
+* [CB-7674](https://issues.apache.org/jira/browse/CB-7674) Move preference activation back into onCreate()
+* [CB-7499](https://issues.apache.org/jira/browse/CB-7499) Support RTL text direction
+* [CB-7330](https://issues.apache.org/jira/browse/CB-7330) Don't run check_reqs for bin/create.
+
+### 3.6.4 (Sept 30, 2014) ###
+
+* Set VERSION to 3.6.4 (via coho)
+* Update JS snapshot to version 3.6.4 (via coho)
+* [CB-7634](https://issues.apache.org/jira/browse/CB-7634) Detect JAVA_HOME properly on Ubuntu
+* [CB-7579](https://issues.apache.org/jira/browse/CB-7579) Fix run script's ability to use non-arch-specific APKs
+* [CB-6511](https://issues.apache.org/jira/browse/CB-6511) Fixes build for android when app name contains unicode characters.
+* [CB-7463](https://issues.apache.org/jira/browse/CB-7463) Adding licences.  I don't know what the gradle syntax is for comments, that still needs to be done.
+* [CB-7463](https://issues.apache.org/jira/browse/CB-7463) Looked at the Apache BigTop git, gradle uses C-style comments
+* [CB-7460](https://issues.apache.org/jira/browse/CB-7460) Fixing bug with KitKat where the background colour would override the CSS colours on the application
+
+### 3.6.0 (Sept 2014) ###
+
+* Set VERSION to 3.6.0 (via coho)
+* [CB-7410](https://issues.apache.org/jira/browse/CB-7410) fix the menu test
+* [CB-7410](https://issues.apache.org/jira/browse/CB-7410) Fix the errorUrl test
+* [CB-7410](https://issues.apache.org/jira/browse/CB-7410) Fix Basic Authentication test
+* [CB-3445](https://issues.apache.org/jira/browse/CB-3445) Allow build and run scripts to select APK by architecture
+* [CB-3445](https://issues.apache.org/jira/browse/CB-3445) Add environment variable 'BUILD_MULTIPLE_APKS' for splitting APKs based on architecture
+* [CB-3445](https://issues.apache.org/jira/browse/CB-3445) Ensure that JAR files in libs directory are included
+* [CB-7267](https://issues.apache.org/jira/browse/CB-7267) update RELEASENOTES for 3.5.1
+* [CB-7410](https://issues.apache.org/jira/browse/CB-7410) clarify the title
+* [CB-7385](https://issues.apache.org/jira/browse/CB-7385) update cordova.js for testing prior to branch/tag
+* [CB-7410](https://issues.apache.org/jira/browse/CB-7410) add whitelist entries to get iframe/GoogleMaps working
+* [CB-7291](https://issues.apache.org/jira/browse/CB-7291) propogate change in method signature to the native tests
+* [CB-7291](https://issues.apache.org/jira/browse/CB-7291) Restrict meaning of "\*" in internal whitelist to just http and https
+* [CB-7291](https://issues.apache.org/jira/browse/CB-7291) Only add file, content and data URLs to internal whitelist
+* [CB-7291](https://issues.apache.org/jira/browse/CB-7291) Add defaults to external whitelist
+* [CB-7291](https://issues.apache.org/jira/browse/CB-7291) Add external-launch-whitelist and use it for filtering intent launches
+* [CB-3445](https://issues.apache.org/jira/browse/CB-3445) Read project.properties to configure gradle libraries
+* [CB-7325](https://issues.apache.org/jira/browse/CB-7325) Fix error message in android_sdk_version.js when missing SDK on windows
+* [CB-7335](https://issues.apache.org/jira/browse/CB-7335) Add a .gitignore to android project template
+* [CB-7330](https://issues.apache.org/jira/browse/CB-7330) Fix dangling function call in last commit (broke gradle builds)
+* [CB-7330](https://issues.apache.org/jira/browse/CB-7330) Don't run "android update" during creation
+* [CB-3445](https://issues.apache.org/jira/browse/CB-3445) Add gradle support clean command (plus some code cleanup)
+* [CB-7044](https://issues.apache.org/jira/browse/CB-7044) Fix typo in prev commit causing check_reqs to always fail.
+* [CB-3445](https://issues.apache.org/jira/browse/CB-3445) Copy gradle wrapper in build instead of create
+* [CB-3445](https://issues.apache.org/jira/browse/CB-3445) Add .gradle template files for "update" as well as "create"
+* [CB-7044](https://issues.apache.org/jira/browse/CB-7044) Add JAVA_HOME when not set. Be stricter about ANDROID_HOME
+* [CB-3445](https://issues.apache.org/jira/browse/CB-3445) Speed up gradle building (incremental builds go from 10s -> 1.5s for me)
+* [CB-3445](https://issues.apache.org/jira/browse/CB-3445) android: Copy Gradle wrapper from Android SDK rather than bundling a JAR
+* [CB-3445](https://issues.apache.org/jira/browse/CB-3445) Add which to checked-in node_modules
+* [CB-3445](https://issues.apache.org/jira/browse/CB-3445) Add option to build and install with gradle
+* [CB-3445](https://issues.apache.org/jira/browse/CB-3445) Add an initial set of Gradle build scripts
+* [CB-7321](https://issues.apache.org/jira/browse/CB-7321) Don't require ant for create script
+* CB-7044, [CB-7299](https://issues.apache.org/jira/browse/CB-7299) Fix up PATH problems when possible.
+* Change in test's AndroidManifest.xml needed for the test to run properly. Forgot the manifest.
+* Change in test's AndroidManifest.xml needed for the test to run properly
+* Adding tests related to 3.5.1
+* [CB-7261](https://issues.apache.org/jira/browse/CB-7261) Fix setNativeToJsBridgeMode sometimes crashing when switching to ONLINE_EVENT
+* [CB-7265](https://issues.apache.org/jira/browse/CB-7265) Fix crash when navigating to custom protocol (introduced in 3.5.1)
+* Filter out non-launchable intents
+* Handle unsupported protocol errors in webview better
+* [CB-7238](https://issues.apache.org/jira/browse/CB-7238) I should have collapsed this, but Config.init() must go before the creation of CordovaWebView
+* [CB-7238](https://issues.apache.org/jira/browse/CB-7238) Minor band-aid to get tests running again, this has to go away before 3.6.0 is released, since this is an API change.
+* Extend whitelist to handle URLs without // chars
+* [CB-7172](https://issues.apache.org/jira/browse/CB-7172) Force window to have focus after resume
+* [CB-7159](https://issues.apache.org/jira/browse/CB-7159) Set background color of webView as well as its parent
+* [CB-7018](https://issues.apache.org/jira/browse/CB-7018) Fix setButtonPlumbedToJs never un-listening
+* Undeprecate some just-deprecated symbols in PluginManager.
+* @Deprecate methods of PluginManager that were never meant to be public
+* Move plugin instantiation and instance storing logic PluginEntry->PluginManager
+* Fix broken unit test due to missing Config.init() call
+* Update to check for Google Glass APIs
+* Fix for `android` not being in PATH check on Windows
+* Displaying error when regex does not match.
+* Fix broken compile due to previous commit :(
+* Tweak CordovaPlugin.initialize method to be less deprecated.
+* Un-deprecate CordovaActivity.init() - it's needed to tweak prefs in onCreate
+* Tweak log messages in CordovaBridge with bridgeSecret is wrong
+* Backport CordovaBridge from 4.0.x -> master
+* Update unit tests to not use most deprecated things (e.g. DroidGap)
+* Add non-String overloades for CordovaPreferences.set()
+* Make CordovaWebview resilient to init() not being called (for backwards-compatibility)
+* Add node_module licenses to LICENSE
+* Update cordova.js snapshot to work with bridge changes
+* Provide CordovaPlugin with CordovaPreferences. Add new Plugin.initialize()
+* Convert usages of Config.\* to use the non-static versions
+* Change getProperty -/* @preserve
+ * The MIT License (MIT)
+ * 
+ * Copyright (c) 2013-2017 Petka Antonov
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ * 
+ */
+/**
+ * bluebird build version 3.5.0
+ * Features enabled: core
+ * Features disabled: race, call_get, generators, map, nodeify, promisify, props, reduce, settle, some, using, timers, filter, any, each
+*/
+!function(t){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=t();else if("function"==typeof define&&define.amd)define([],t);else{var e;"undefined"!=typeof window?e=window:"undefined"!=typeof global?e=global:"undefined"!=typeof self&&(e=self),e.Promise=t()}}(function(){var t,e,n;return function r(t,e,n){function i(a,s){if(!e[a]){if(!t[a]){var c="function"==typeof _dereq_&&_dereq_;if(!s&&c)return c(a,!0);if(o)return o(a,!0);var l=new Error("Cannot find module '"+a+"'");throw l.code="MODULE_NOT_FOUND",l}var u=e[a]={exports:{}};t[a][0].call(u.exports,function(e){var n=t[a][1][e];return i(n?n:e)},u,u.exports,r,t,e,n)}return e[a].exports}for(var o="function"==typeof _dereq_&&_dereq_,a=0;a<n.length;a++)i(n[a]);return i}({1:[function(t,e,n){"use strict";function r(){this._customScheduler=!1,this._isTickUsed=!1,this._lateQueue=new u(16),this._normalQueue=new u(16),this._haveDrainedQueues=!1,this._trampolineEnabled=!0;var t=this;this.drainQueues=function(){t._drainQueues()},this._schedule=l}function i(t,e,n){this._lateQueue.push(t,e,n),this._queueTick()}function o(t,e,n){this._normalQueue.push(t,e,n),this._queueTick()}function a(t){this._normalQueue._pushOne(t),this._queueTick()}var s;try{throw new Error}catch(c){s=c}var l=t("./schedule"),u=t("./queue"),p=t("./util");r.prototype.setScheduler=function(t){var e=this._schedule;return this._schedule=t,this._customScheduler=!0,e},r.prototype.hasCustomScheduler=function(){return this._customScheduler},r.prototype.enableTrampoline=function(){this._trampolineEnabled=!0},r.prototype.disableTrampolineIfNecessary=function(){p.hasDevTools&&(this._trampolineEnabled=!1)},r.prototype.haveItemsQueued=function(){return this._isTickUsed||this._haveDrainedQueues},r.prototype.fatalError=function(t,e){e?(process.stderr.write("Fatal "+(t instanceof Error?t.stack:t)+"\n"),process.exit(2)):this.throwLater(t)},r.prototype.throwLater=function(t,e){if(1===arguments.length&&(e=t,t=function(){throw e}),"undefined"!=typeof setTimeout)setTimeout(function(){t(e)},0);else try{this._schedule(function(){t(e)})}catch(n){throw new Error("No async scheduler available\n\n    See http://goo.gl/MqrFmX\n")}},p.hasDevTools?(r.prototype.invokeLater=function(t,e,n){this._trampolineEnabled?i.call(this,t,e,n):this._schedule(function(){setTimeout(function(){t.call(e,n)},100)})},r.prototype.invoke=function(t,e,n){this._trampolineEnabled?o.call(this,t,e,n):this._schedule(function(){t.call(e,n)})},r.prototype.settlePromises=function(t){this._trampolineEnabled?a.call(this,t):this._schedule(function(){t._settlePromises()})}):(r.prototype.invokeLater=i,r.prototype.invoke=o,r.prototype.settlePromises=a),r.prototype._drainQueue=function(t){for(;t.length()>0;){var e=t.shift();if("function"==typeof e){var n=t.shift(),r=t.shift();e.call(n,r)}else e._settlePromises()}},r.prototype._drainQueues=function(){this._drainQueue(this._normalQueue),this._reset(),this._haveDrainedQueues=!0,this._drainQueue(this._lateQueue)},r.prototype._queueTick=function(){this._isTickUsed||(this._isTickUsed=!0,this._schedule(this.drainQueues))},r.prototype._reset=function(){this._isTickUsed=!1},e.exports=r,e.exports.firstLineError=s},{"./queue":17,"./schedule":18,"./util":21}],2:[function(t,e,n){"use strict";e.exports=function(t,e,n,r){var i=!1,o=function(t,e){this._reject(e)},a=function(t,e){e.promiseRejectionQueued=!0,e.bindingPromise._then(o,o,null,this,t)},s=function(t,e){0===(50397184&this._bitField)&&this._resolveCallback(e.target)},c=function(t,e){e.promiseRejectionQueued||this._reject(t)};t.prototype.bind=function(o){i||(i=!0,t.prototype._propagateFrom=r.propagateFromFunction(),t.prototype._boundValue=r.boundValueFunction());var l=n(o),u=new t(e);u._propagateFrom(this,1);var p=this._target();if(u._setBoundTo(l),l instanceof t){var f={promiseRejectionQueued:!1,promise:u,target:p,bindingPromise:l};p._then(e,a,void 0,u,f),l._then(s,c,void 0,u,f),u._setOnCancel(l)}else u._resolveCallback(p);return u},t.prototype._setBoundTo=function(t){void 0!==t?(this._bitField=2097152|this._bitField,this._boundTo=t):this._bitField=-2097153&this._bitField},t.prototype._isBound=function(){return 2097152===(2097152&this._bitField)},t.bind=function(e,n){return t.resolve(n).bind(e)}}},{}],3:[function(t,e,n){"use strict";function r(){try{Promise===o&&(Promise=i)}catch(t){}return o}var i;"undefined"!=typeof Promise&&(i=Promise);var o=t("./promise")();o.noConflict=r,e.exports=o},{"./promise":15}],4:[function(t,e,n){"use strict";e.exports=function(e,n,r,i){var o=t("./util"),a=o.tryCatch,s=o.errorObj,c=e._async;e.prototype["break"]=e.prototype.cancel=function(){if(!i.cancellation())return this._warn("cancellation is disabled");for(var t=this,e=t;t._isCancellable();){if(!t._cancelBy(e)){e._isFollowing()?e._followee().cancel():e._cancelBranched();break}var n=t._cancellationParent;if(null==n||!n._isCancellable()){t._isFollowing()?t._followee().cancel():t._cancelBranched();break}t._isFollowing()&&t._followee().cancel(),t._setWillBeCancelled(),e=t,t=n}},e.prototype._branchHasCancelled=function(){this._branchesRemainingToCancel--},e.prototype._enoughBranchesHaveCancelled=function(){return void 0===this._branchesRemainingToCancel||this._branchesRemainingToCancel<=0},e.prototype._cancelBy=function(t){return t===this?(this._branchesRemainingToCancel=0,this._invokeOnCancel(),!0):(this._branchHasCancelled(),this._enoughBranchesHaveCancelled()?(this._invokeOnCancel(),!0):!1)},e.prototype._cancelBranched=function(){this._enoughBranchesHaveCancelled()&&this._cancel()},e.prototype._cancel=function(){this._isCancellable()&&(this._setCancelled(),c.invoke(this._cancelPromises,this,void 0))},e.prototype._cancelPromises=function(){this._length()>0&&this._settlePromises()},e.prototype._unsetOnCancel=function(){this._onCancelField=void 0},e.prototype._isCancellable=function(){return this.isPending()&&!this._isCancelled()},e.prototype.isCancellable=function(){return this.isPending()&&!this.isCancelled()},e.prototype._doInvokeOnCancel=function(t,e){if(o.isArray(t))for(var n=0;n<t.length;++n)this._doInvokeOnCancel(t[n],e);else if(void 0!==t)if("function"==typeof t){if(!e){var r=a(t).call(this._boundValue());r===s&&(this._attachExtraTrace(r.e),c.throwLater(r.e))}}else t._resultCancelled(this)},e.prototype._invokeOnCancel=function(){var t=this._onCancel();this._unsetOnCancel(),c.invoke(this._doInvokeOnCancel,this,t)},e.prototype._invokeInternalOnCancel=function(){this._isCancellable()&&(this._doInvokeOnCancel(this._onCancel(),!0),this._unsetOnCancel())},e.prototype._resultCancelled=function(){this.cancel()}}},{"./util":21}],5:[function(t,e,n){"use strict";e.exports=function(e){function n(t,n,s){return function(c){var l=s._boundValue();t:for(var u=0;u<t.length;++u){var p=t[u];if(p===Error||null!=p&&p.prototype instanceof Error){if(c instanceof p)return o(n).call(l,c)}else if("function"==typeof p){var f=o(p).call(l,c);if(f===a)return f;if(f)return o(n).call(l,c)}else if(r.isObject(c)){for(var h=i(p),_=0;_<h.length;++_){var d=h[_];if(p[d]!=c[d])continue t}return o(n).call(l,c)}}return e}}var r=t("./util"),i=t("./es5").keys,o=r.tryCatch,a=r.errorObj;return n}},{"./es5":10,"./util":21}],6:[function(t,e,n){"use strict";e.exports=function(t){function e(){this._trace=new e.CapturedTrace(r())}function n(){return i?new e:void 0}function r(){var t=o.length-1;return t>=0?o[t]:void 0}var i=!1,o=[];return t.prototype._promiseCreated=function(){},t.prototype._pushContext=function(){},t.prototype._popContext=function(){return null},t._peekContext=t.prototype._peekContext=function(){},e.prototype._pushContext=function(){void 0!==this._trace&&(this._trace._promiseCreated=null,o.push(this._trace))},e.prototype._popContext=function(){if(void 0!==this._trace){var t=o.pop(),e=t._promiseCreated;return t._promiseCreated=null,e}return null},e.CapturedTrace=null,e.create=n,e.deactivateLongStackTraces=function(){},e.activateLongStackTraces=function(){var n=t.prototype._pushContext,o=t.prototype._popContext,a=t._peekContext,s=t.prototype._peekContext,c=t.prototype._promiseCreated;e.deactivateLongStackTraces=function(){t.prototype._pushContext=n,t.prototype._popContext=o,t._peekContext=a,t.prototype._peekContext=s,t.prototype._promiseCreated=c,i=!1},i=!0,t.prototype._pushContext=e.prototype._pushContext,t.prototype._popContext=e.prototype._popContext,t._peekContext=t.prototype._peekContext=r,t.prototype._promiseCreated=function(){var t=this._peekContext();t&&null==t._promiseCreated&&(t._promiseCreated=this)}},e}},{}],7:[function(t,e,n){"use strict";e.exports=function(e,n){function r(t,e){return{promise:e}}function i(){return!1}function o(t,e,n){var r=this;try{t(e,n,function(t){if("function"!=typeof t)throw new TypeError("onCancel must be a function, got: "+I.toString(t));r._attachCancellationCallback(t)})}catch(i){return i}}function a(t){if(!this._isCancellable())return this;var e=this._onCancel();void 0!==e?I.isArray(e)?e.push(t):this._setOnCancel([e,t]):this._setOnCancel(t)}function s(){return this._onCancelField}function c(t){this._onCancelField=t}function l(){this._cancellationParent=void 0,this._onCancelField=void 0}function u(t,e){if(0!==(1&e)){this._cancellationParent=t;var n=t._branchesRemainingToCancel;void 0===n&&(n=0),t._branchesRemainingToCancel=n+1}0!==(2&e)&&t._isBound()&&this._setBoundTo(t._boundTo)}function p(t,e){0!==(2&e)&&t._isBound()&&this._setBoundTo(t._boundTo)}function f(){var t=this._boundTo;return void 0!==t&&t instanceof e?t.isFulfilled()?t.value():void 0:t}function h(){this._trace=new x(this._peekContext())}function _(t,e){if(H(t)){var n=this._trace;if(void 0!==n&&e&&(n=n._parent),void 0!==n)n.attachExtraTrace(t);else if(!t.__stackCleaned__){var r=E(t);I.notEnumerableProp(t,"stack",r.message+"\n"+r.stack.join("\n")),I.notEnumerableProp(t,"__stackCleaned__",!0)}}}function d(t,e,n,r,i){if(void 0===t&&null!==e&&X){if(void 0!==i&&i._returnedNonUndefined())return;if(0===(65535&r._bitField))return;n&&(n+=" ");var o="",a="";if(e._trace){for(var s=e._trace.stack.split("\n"),c=C(s),l=c.length-1;l>=0;--l){var u=c[l];if(!V.test(u)){var p=u.match(Q);p&&(o="at "+p[1]+":"+p[2]+":"+p[3]+" ");break}}if(c.length>0)for(var f=c[0],l=0;l<s.length;++l)if(s[l]===f){l>0&&(a="\n"+s[l-1]);break}}var h="a promise was created in a "+n+"handler "+o+"but was not returned from it, see http://goo.gl/rRqMUw"+a;r._warn(h,!0,e)}}function v(t,e){var n=t+" is deprecated and will be removed in a future version.";return e&&(n+=" Use "+e+" instead."),y(n)}function y(t,n,r){if(ot.warnings){var i,o=new U(t);if(n)r._attachExtraTrace(o);else if(ot.longStackTraces&&(i=e._peekContext()))i.attachExtraTrace(o);else{var a=E(o);o.stack=a.message+"\n"+a.stack.join("\n")}tt("warning",o)||k(o,"",!0)}}function g(t,e){for(var n=0;n<e.length-1;++n)e[n].push("From previous event:"),e[n]=e[n].join("\n");return n<e.length&&(e[n]=e[n].join("\n")),t+"\n"+e.join("\n")}function m(t){for(var e=0;e<t.length;++e)(0===t[e].length||e+1<t.length&&t[e][0]===t[e+1][0])&&(t.splice(e,1),e--)}function b(t){for(var e=t[0],n=1;n<t.length;++n){for(var r=t[n],i=e.length-1,o=e[i],a=-1,s=r.length-1;s>=0;--s)if(r[s]===o){a=s;break}for(var s=a;s>=0;--s){var c=r[s];if(e[i]!==c)break;e.pop(),i--}e=r}}function C(t){for(var e=[],n=0;n<t.length;++n){var r=t[n],i="    (No stack trace)"===r||q.test(r),o=i&&nt(r);i&&!o&&(M&&" "!==r.charAt(0)&&(r="    "+r),e.push(r))}return e}function w(t){for(var e=t.stack.replace(/\s+$/g,"").split("\n"),n=0;n<e.length;++n){var r=e[n];if("    (No stack trace)"===r||q.test(r))break}return n>0&&"SyntaxError"!=t.name&&(e=e.slice(n)),e}function E(t){var e=t.stack,n=t.toString();return e="string"==typeof e&&e.length>0?w(t):["    (No stack trace)"],{message:n,stack:"SyntaxError"==t.name?e:C(e)}}function k(t,e,n){if("undefined"!=typeof console){var r;if(I.isObject(t)){var i=t.stack;r=e+G(i,t)}else r=e+String(t);"function"==typeof L?L(r,n):("function"==typeof console.log||"object"==typeof console.log)&&console.log(r)}}function j(t,e,n,r){var i=!1;try{"function"==typeof e&&(i=!0,"rejectionHandled"===t?e(r):e(n,r))}catch(o){B.throwLater(o)}"unhandledRejection"===t?tt(t,n,r)||i||k(n,"Unhandled rejection "):tt(t,r)}function F(t){var e;if("function"==typeof t)e="[function "+(t.name||"anonymous")+"]";else{e=t&&"function"==typeof t.toString?t.toString():I.toString(t);var n=/\[object [a-zA-Z0-9$_]+\]/;if(n.test(e))try{var r=JSON.stringify(t);e=r}catch(i){}0===e.length&&(e="(empty array)")}return"(<"+T(e)+">, no stack trace)"}function T(t){var e=41;return t.length<e?t:t.substr(0,e-3)+"..."}function P(){return"function"==typeof it}function R(t){var e=t.match(rt);return e?{fileName:e[1],line:parseInt(e[2],10)}:void 0}function S(t,e){if(P()){for(var n,r,i=t.stack.split("\n"),o=e.stack.split("\n"),a=-1,s=-1,c=0;c<i.length;++c){var l=R(i[c]);if(l){n=l.fileName,a=l.line;break}}for(var c=0;c<o.length;++c){var l=R(o[c]);if(l){r=l.fileName,s=l.line;break}}0>a||0>s||!n||!r||n!==r||a>=s||(nt=function(t){if(D.test(t))return!0;var e=R(t);return e&&e.fileName===n&&a<=e.line&&e.line<=s?!0:!1})}}function x(t){this._parent=t,this._promisesCreated=0;var e=this._length=1+(void 0===t?0:t._length);it(this,x),e>32&&this.uncycle()}var O,A,L,N=e._getDomain,B=e._async,U=t("./errors").Warning,I=t("./util"),H=I.canAttachTrace,D=/[\\\/]bluebird[\\\/]js[\\\/](release|debug|instrumented)/,V=/\((?:timers\.js):\d+:\d+\)/,Q=/[\/<\(](.+?):(\d+):(\d+)\)?\s*$/,q=null,G=null,M=!1,W=!(0==I.env("BLUEBIRD_DEBUG")||!I.env("BLUEBIRD_DEBUG")&&"development"!==I.env("NODE_ENV")),$=!(0==I.env("BLUEBIRD_WARNINGS")||!W&&!I.env("BLUEBIRD_WARNINGS")),z=!(0==I.env("BLUEBIRD_LONG_STACK_TRACES")||!W&&!I.env("BLUEBIRD_LONG_STACK_TRACES")),X=0!=I.env("BLUEBIRD_W_FORGOTTEN_RETURN")&&($||!!I.env("BLUEBIRD_W_FORGOTTEN_RETURN"));e.prototype.suppressUnhandledRejections=function(){var t=this._target();t._bitField=-1048577&t._bitField|524288},e.prototype._ensurePossibleRejectionHandled=function(){0===(524288&this._bitField)&&(this._setRejectionIsUnhandled(),B.invokeLater(this._notifyUnhandledRejection,this,void 0))},e.prototype._notifyUnhandledRejectionIsHandled=function(){j("rejectionHandled",O,void 0,this)},e.prototype._setReturnedNonUndefined=function(){this._bitField=268435456|this._bitField},e.prototype._returnedNonUndefined=function(){return 0!==(268435456&this._bitField)},e.prototype._notifyUnhandledRejection=function(){if(this._isRejectionUnhandled()){var t=this._settledValue();this._setUnhandledRejectionIsNotified(),j("unhandledRejection",A,t,this)}},e.prototype._setUnhandledRejectionIsNotified=function(){this._bitField=262144|this._bitField},e.prototype._unsetUnhandledRejectionIsNotified=function(){this._bitField=-262145&this._bitField},e.prototype._isUnhandledRejectionNotified=function(){return(262144&this._bitField)>0},e.prototype._setRejectionIsUnhandled=function(){this._bitField=1048576|this._bitField},e.prototype._unsetRejectionIsUnhandled=function(){this._bitField=-1048577&this._bitField,this._isUnhandledRejectionNotified()&&(this._unsetUnhandledRejectionIsNotified(),this._notifyUnhandledRejectionIsHandled())},e.prototype._isRejectionUnhandled=function(){return(1048576&this._bitField)>0},e.prototype._warn=function(t,e,n){return y(t,e,n||this)},e.onPossiblyUnhandledRejection=function(t){var e=N();A="function"==typeof t?null===e?t:I.domainBind(e,t):void 0},e.onUnhandledRejectionHandled=function(t){var e=N();O="function"==typeof t?null===e?t:I.domainBind(e,t):void 0};var K=function(){};e.longStackTraces=function(){if(B.haveItemsQueued()&&!ot.longStackTraces)throw new Error("cannot enable long stack traces after promises have been created\n\n    See http://goo.gl/MqrFmX\n");if(!ot.longStackTraces&&P()){var t=e.prototype._captureStackTrace,r=e.prototype._attachExtraTrace;ot.longStackTraces=!0,K=function(){if(B.haveItemsQueued()&&!ot.longStackTraces)throw new Error("cannot enable long stack traces after promises have been created\n\n    See http://goo.gl/MqrFmX\n");e.prototype._captureStackTrace=t,e.prototype._attachExtraTrace=r,n.deactivateLongStackTraces(),B.enableTrampoline(),ot.longStackTraces=!1},e.prototype._captureStackTrace=h,e.prototype._attachExtraTrace=_,n.activateLongStackTraces(),B.disableTrampolineIfNecessary()}},e.hasLongStackTraces=function(){return ot.longStackTraces&&P()};var J=function(){try{if("function"==typeof CustomEvent){var t=new CustomEvent("CustomEvent");return I.global.dispatchEvent(t),function(t,e){var n=new CustomEvent(t.toLowerCase(),{detail:e,cancelable:!0});return!I.global.dispatchEvent(n)}}if("function"==typeof Event){var t=new Event("CustomEvent");return I.global.dispatchEvent(t),function(t,e){var n=new Event(t.toLowerCase(),{cancelable:!0});return n.detail=e,!I.global.dispatchEvent(n)}}var t=document.createEvent("CustomEvent");return t.initCustomEvent("testingtheevent",!1,!0,{}),I.global.dispatchEvent(t),function(t,e){var n=document.createEvent("CustomEvent");return n.initCustomEvent(t.toLowerCase(),!1,!0,e),!I.global.dispatchEvent(n)}}catch(e){}return function(){return!1}}(),Y=function(){return I.isNode?function(){return process.emit.apply(process,arguments)}:I.global?function(t){var e="on"+t.toLowerCase(),n=I.global[e];return n?(n.apply(I.global,[].slice.call(arguments,1)),!0):!1}:function(){return!1}}(),Z={promiseCreated:r,promiseFulfilled:r,promiseRejected:r,promiseResolved:r,promiseCancelled:r,promiseChained:function(t,e,n){return{promise:e,child:n}},warning:function(t,e){return{warning:e}},unhandledRejection:function(t,e,n){return{reason:e,promise:n}},rejectionHandled:r},tt=function(t){var e=!1;try{e=Y.apply(null,arguments)}catch(n){B.throwLater(n),e=!0}var r=!1;try{r=J(t,Z[t].apply(null,arguments))}catch(n){B.throwLater(n),r=!0}return r||e};e.config=function(t){if(t=Object(t),"longStackTraces"in t&&(t.longStackTraces?e.longStackTraces():!t.longStackTraces&&e.hasLongStackTraces()&&K()),"warnings"in t){var n=t.warnings;ot.warnings=!!n,X=ot.warnings,I.isObject(n)&&"wForgottenReturn"in n&&(X=!!n.wForgottenReturn)}if("cancellation"in t&&t.cancellation&&!ot.cancellation){if(B.haveItemsQueued())throw new Error("cannot enable cancellation after promises are in use");e.prototype._clearCancellationData=l,e.prototype._propagateFrom=u,e.prototype._onCancel=s,e.prototype._setOnCancel=c,e.prototype._attachCancellationCallback=a,e.prototype._execute=o,et=u,ot.cancellation=!0}return"monitoring"in t&&(t.monitoring&&!ot.monitoring?(ot.monitoring=!0,e.prototype._fireEvent=tt):!t.monitoring&&ot.monitoring&&(ot.monitoring=!1,e.prototype._fireEvent=i)),e},e.prototype._fireEvent=i,e.prototype._execute=function(t,e,n){try{t(e,n)}catch(r){return r}},e.prototype._onCancel=function(){},e.prototype._setOnCancel=function(t){},e.prototype._attachCancellationCallback=function(t){},e.prototype._captureStackTrace=function(){},e.prototype._attachExtraTrace=function(){},e.prototype._clearCancellationData=function(){},e.prototype._propagateFrom=function(t,e){};var et=p,nt=function(){return!1},rt=/[\/<\(]([^:\/]+):(\d+):(?:\d+)\)?\s*$/;I.inherits(x,Error),n.CapturedTrace=x,x.prototype.uncycle=function(){var t=this._length;if(!(2>t)){for(var e=[],n={},r=0,i=this;void 0!==i;++r)e.push(i),i=i._parent;t=this._length=r;for(var rimport { Observable } from 'rxjs';
+import { TooltipType } from '../../layer';
+import { TimeFilterOptions } from '../../filter';
+import { QueryFormat, QueryHtmlTarget } from '../../query';
+import { ICatalog, ICompositeCatalog, CatalogItem, CatalogItemGroup } from './catalog.interface';
+import { CatalogService } from './catalog.service';
+import { TypeCatalogStrings } from './catalog.enum';
+export declare abstract class Catalog implements ICatalog {
+    id: string;
+    title: string;
+    url: string;
+    items?: CatalogItem[];
+    type?: TypeCatalogStrings;
+    version?: string;
+    matrixSet?: string;
+    requestEncoding?: string;
+    regFilters?: string[];
+    groupImpose?: CatalogItemGroup;
+    timeFilter?: TimeFilterOptions;
+    queryFormat?: QueryFormat;
+    queryHtmlTarget?: QueryHtmlTarget;
+    queryParams?: {
+        [key: string]: string;
+    };
+    sourceOptions?: {
+        [key: string]: any;
+    };
+    count?: number;
+    tooltipType?: TooltipType.ABSTRACT | TooltipType.TITLE;
+    sortDirection?: 'asc' | 'desc';
+    setCrossOriginAnonymous?: boolean;
+    showLegend?: boolean;
+    protected catalogService: CatalogService;
+    constructor(options: Catalog, service: CatalogService);
+    abstract collectCatalogItems(): Observable<CatalogItem[]>;
+}
+export declare class CompositeCatalog extends Catalog implements ICompositeCatalog {
+    composite: ICatalog[];
+    constructor(options: Catalog, service: CatalogService);
+    collectCatalogItems(): Observable<CatalogItem[]>;
+}
+export declare class CatalogFactory {
+    static createInstanceCatalog(options: Catalog, service: CatalogService): Catalog;
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     /*!
+ * negotiator
+ * Copyright(c) 2012 Federico Romero
+ * Copyright(c) 2012-2014 Isaac Z. Schlueter
+ * Copyright(c) 2015 Douglas Christopher Wilson
+ * MIT Licensed
+ */
+
+'use strict';
+
+/**
+ * Cached loaded submodules.
+ * @private
+ */
+
+var modules = Object.create(null);
+
+/**
+ * Module exports.
+ * @public
+ */
+
+module.exports = Negotiator;
+module.exports.Negotiator = Negotiator;
+
+/**
+ * Create a Negotiator instance from a request.
+ * @param {object} request
+ * @public
+ */
+
+function Negotiator(request) {
+  if (!(this instanceof Negotiator)) {
+    return new Negotiator(request);
+  }
+
+  this.request = request;
+}
+
+Negotiator.prototype.charset = function charset(available) {
+  var set = this.charsets(available);
+  return set && set[0];
+};
+
+Negotiator.prototype.charsets = function charsets(available) {
+  var preferredCharsets = loadModule('charset').preferredCharsets;
+  return preferredCharsets(this.request.headers['accept-charset'], available);
+};
+
+Negotiator.prototype.encoding = function encoding(available) {
+  var set = this.encodings(available);
+  return set && set[0];
+};
+
+Negotiator.prototype.encodings = function encodings(available) {
+  var preferredEncodings = loadModule('encoding').preferredEncodings;
+  return preferredEncodings(this.request.headers['accept-encoding'], available);
+};
+
+Negotiator.prototype.language = function language(available) {
+  var set = this.languages(available);
+  return set && set[0];
+};
+
+Negotiator.prototype.languages = function languages(available) {
+  var preferredLanguages = loadModule('language').preferredLanguages;
+  return preferredLanguages(this.request.headers['accept-language'], available);
+};
+
+Negotiator.prototype.mediaType = function mediaType(available) {
+  var set = this.mediaTypes(available);
+  return set && set[0];
+};
+
+Negotiator.prototype.mediaTypes = function mediaTypes(available) {
+  var preferredMediaTypes = loadModule('mediaType').preferredMediaTypes;
+  return preferredMediaTypes(this.request.headers.accept, available);
+};
+
+// Backwards compatibility
+Negotiator.prototype.preferredCharset = Negotiator.prototype.charset;
+Negotiator.prototype.preferredCharsets = Negotiator.prototype.charsets;
+Negotiator.prototype.preferredEncoding = Negotiator.prototype.encoding;
+Negotiator.prototype.preferredEncodings = Negotiator.prototype.encodings;
+Negotiator.prototype.preferredLanguage = Negotiator.prototype.language;
+Negotiator.prototype.preferredLanguages = Negotiator.prototype.languages;
+Negotiator.prototype.preferredMediaType = Negotiator.prototype.mediaType;
+Negotiator.prototype.preferredMediaTypes = Negotiator.prototype.mediaTypes;
+
+/**
+ * Load the given module.
+ * @private
+ */
+
+function loadModule(moduleName) {
+  var module = modules[moduleName];
+
+  if (module !== undefined) {
+    return module;
+  }
+
+  // This uses a switch for static require analysis
+  switch (moduleName) {
+    case 'charset':
+      module = require('./lib/charset');
+      break;
+    case 'encoding':
+      module = require('./lib/encoding');
+      break;
+    case 'language':
+      module = require('./lib/language');
+      break;
+    case 'mediaType':
+      module = require('./lib/mediaType');
+      break;
+    default:
+      throw new Error('Cannot find module \'' + moduleName + '\'');
+  }
+
+  // Store to prevent invoking require()
+  modules[moduleName] = module;
+
+  return module;
+}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                var $ = require('../internals/export');
+var fails = require('../internals/fails');
+var toIndexedObject = require('../internals/to-indexed-object');
+var nativeGetOwnPropertyDescriptor = require('../internals/object-get-own-property-descriptor').f;
+var DESCRIPTORS = require('../internals/descriptors');
+
+var FAILS_ON_PRIMITIVES = fails(function () { nativeGetOwnPropertyDescriptor(1); });
+var FORCED = !DESCRIPTORS || FAILS_ON_PRIMITIVES;
+
+// `Object.getOwnPropertyDescriptor` method
+// https://tc39.github.io/ecma262/#sec-object.getownpropertydescriptor
+$({ target: 'Object', stat: true, forced: FORCED, sham: !DESCRIPTORS }, {
+  getOwnPropertyDescriptor: function getOwnPropertyDescriptor(it, key) {
+    return nativeGetOwnPropertyDescriptor(toIndexedObject(it), key);
+  }
+});
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      {"version":3,"file":"shareReplay.js","sources":["../../../src/internal/operators/shareReplay.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,aAAa,EAAE,MAAM,kBAAkB,CAAC;AA+CjD,MAAM,UAAU,WAAW,CACzB,UAA6C,EAC7C,UAA6C,EAC7C,SAAyB;IAFzB,2BAAA,EAAA,aAAqB,MAAM,CAAC,iBAAiB;IAC7C,2BAAA,EAAA,aAAqB,MAAM,CAAC,iBAAiB;IAG7C,OAAO,UAAC,MAAqB,IAAK,OAAA,MAAM,CAAC,IAAI,CAAC,mBAAmB,CAAC,UAAU,EAAE,UAAU,EAAE,SAAS,CAAC,CAAC,EAAnE,CAAmE,CAAC;AACxG,CAAC;AAED,SAAS,mBAAmB,CAAI,UAAmB,EAAE,UAAmB,EAAE,SAAyB;IACjG,IAAI,OAAyB,CAAC;IAC9B,IAAI,QAAQ,GAAG,CAAC,CAAC;IACjB,IAAI,YAA0B,CAAC;IAC/B,IAAI,QAAQ,GAAG,KAAK,CAAC;IACrB,IAAI,UAAU,GAAG,KAAK,CAAC;IAEvB,OAAO,SAAS,oBAAoB,CAAsB,MAAqB;QAC7E,QAAQ,EAAE,CAAC;QACX,IAAI,CAAC,OAAO,IAAI,QAAQ,EAAE;YACxB,QAAQ,GAAG,KAAK,CAAC;YACjB,OAAO,GAAG,IAAI,aAAa,CAAI,UAAU,EAAE,UAAU,EAAE,SAAS,CAAC,CAAC;YAClE,YAAY,GAAG,MAAM,CAAC,SAAS,CAAC;gBAC9B,IAAI,YAAC,KAAK,IAAI,OAAO,CAAC,IAAI,CAAC,KAAK,CAAC,CAAC,CAAC,CAAC;gBACpC,KAAK,YAAC,GAAG;oBACP,QAAQ,GAAG,IAAI,CAAC;oBAChB,OAAO,CAAC,KAAK,CAAC,GAAG,CAAC,CAAC;gBACrB,CAAC;gBACD,QAAQ;oBACN,UAAU,GAAG,IAAI,CAAC;oBAClB,OAAO,CAAC,QAAQ,EAAE,CAAC;gBACrB,CAAC;aACF,CAAC,CAAC;SACJ;QAED,IAAM,QAAQ,GAAG,OAAO,CAAC,SAAS,CAAC,IAAI,CAAC,CAAC;QAEzC,OAAO;YACL,QAAQ,EAAE,CAAC;YACX,QAAQ,CAAC,WAAW,EAAE,CAAC;YACvB,IAAI,YAAY,IAAI,QAAQ,KAAK,CAAC,IAAI,UAAU,EAAE;gBAChD,YAAY,CAAC,WAAW,EAAE,CAAC;aAC5B;QACH,CAAC,CAAC;IACJ,CAAC,CAAC;AACJ,CAAC"}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    /*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved. 
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0  
+ 
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE, 
+MERCHANTABLITY OR NON-INFRINGEMENT. 
+ 
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+
+
+
+/// <reference no-default-lib="true"/>
+
+
+/// <reference path="lib.es2015.core.d.ts" />
+/// <reference path="lib.es2015.collection.d.ts" />
+/// <reference path="lib.es2015.generator.d.ts" />
+/// <reference path="lib.es2015.iterable.d.ts" />
+/// <reference path="lib.es2015.promise.d.ts" />
+/// <reference path="lib.es2015.proxy.d.ts" />
+/// <reference path="lib.es2015.reflect.d.ts" />
+/// <reference path="lib.es2015.symbol.d.ts" />
+/// <reference path="lib.es2015.symbol.wellknown.d.ts" />
+/// <reference path="lib.es5.d.ts" />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           =t-1;r>=0;--r){var o=e[r].stack;void 0===n[o]&&(n[o]=r)}for(var r=0;t>r;++r){var a=e[r].stack,s=n[a];if(void 0!==s&&s!==r){s>0&&(e[s-1]._parent=void 0,e[s-1]._length=1),e[r]._parent=void 0,e[r]._length=1;var c=r>0?e[r-1]:this;t-1>s?(c._parent=e[s+1],c._parent.uncycle(),c._length=c._parent._length+1):(c._parent=void 0,c._length=1);for(var l=c._length+1,u=r-2;u>=0;--u)e[u]._length=l,l++;return}}}},x.prototype.attachExtraTrace=function(t){if(!t.__stackCleaned__){this.uncycle();for(var e=E(t),n=e.message,r=[e.stack],i=this;void 0!==i;)r.push(C(i.stack.split("\n"))),i=i._parent;b(r),m(r),I.notEnumerableProp(t,"stack",g(n,r)),I.notEnumerableProp(t,"__stackCleaned__",!0)}};var it=function(){var t=/^\s*at\s*/,e=function(t,e){return"string"==typeof t?t:void 0!==e.name&&void 0!==e.message?e.toString():F(e)};if("number"==typeof Error.stackTraceLimit&&"function"==typeof Error.captureStackTrace){Error.stackTraceLimit+=6,q=t,G=e;var n=Error.captureStackTrace;return nt=function(t){return D.test(t)},function(t,e){Error.stackTraceLimit+=6,n(t,e),Error.stackTraceLimit-=6}}var r=new Error;if("string"==typeof r.stack&&r.stack.split("\n")[0].indexOf("stackDetection@")>=0)return q=/@/,G=e,M=!0,function(t){t.stack=(new Error).stack};var i;try{throw new Error}catch(o){i="stack"in o}return"stack"in r||!i||"number"!=typeof Error.stackTraceLimit?(G=function(t,e){return"string"==typeof t?t:"object"!=typeof e&&"function"!=typeof e||void 0===e.name||void 0===e.message?F(e):e.toString()},null):(q=t,G=e,function(t){Error.stackTraceLimit+=6;try{throw new Error}catch(e){t.stack=e.stack}Error.stackTraceLimit-=6})}([]);"undefined"!=typeof console&&"undefined"!=typeof console.warn&&(L=function(t){console.warn(t)},I.isNode&&process.stderr.isTTY?L=function(t,e){var n=e?"[33m":"[31m";console.warn(n+t+"[0m\n")}:I.isNode||"string"!=typeof(new Error).stack||(L=function(t,e){console.warn("%c"+t,e?"color: darkorange":"color: red")}));var ot={warnings:$,longStackTraces:!1,cancellation:!1,monitoring:!1};return z&&e.longStackTraces(),{longStackTraces:function(){return ot.longStackTraces},warnings:function(){return ot.warnings},cancellation:function(){return ot.cancellation},monitoring:function(){return ot.monitoring},propagateFromFunction:function(){return et},boundValueFunction:function(){return f},checkForgottenReturns:d,setBounds:S,warn:y,deprecated:v,CapturedTrace:x,fireDomEvent:J,fireGlobalEvent:Y}}},{"./errors":9,"./util":21}],8:[function(t,e,n){"use strict";e.exports=function(t){function e(){return this.value}function n(){throw this.reason}t.prototype["return"]=t.prototype.thenReturn=function(n){return n instanceof t&&n.suppressUnhandledRejections(),this._then(e,void 0,void 0,{value:n},void 0)},t.prototype["throw"]=t.prototype.thenThrow=function(t){return this._then(n,void 0,void 0,{reason:t},void 0)},t.prototype.catchThrow=function(t){if(arguments.length<=1)return this._then(void 0,n,void 0,{reason:t},void 0);var e=arguments[1],r=function(){throw e};return this.caught(t,r)},t.prototype.catchReturn=function(n){if(arguments.length<=1)return n instanceof t&&n.suppressUnhandledRejections(),this._then(void 0,e,void 0,{value:n},void 0);var r=arguments[1];r instanceof t&&r.suppressUnhandledRejections();var i=function(){return r};return this.caught(n,i)}}},{}],9:[function(t,e,n){"use strict";function r(t,e){function n(r){return this instanceof n?(p(this,"message","string"==typeof r?r:e),p(this,"name",t),void(Error.captureStackTrace?Error.captureStackTrace(this,this.constructor):Error.call(this))):new n(r)}return u(n,Error),n}function i(t){return this instanceof i?(p(this,"name","OperationalError"),p(this,"message",t),this.cause=t,this.isOperational=!0,void(t instanceof Error?(p(this,"message",t.message),p(this,"stack",t.stack)):Error.captureStackTrace&&Error.captureStackTrace(this,this.constructor))):new i(t)}var o,a,s=t("./es5"),c=s.freeze,l=t("./util"),u=l.inherits,p=l.notEnumerableProp,f=r("Warning","warning"),h=r("CancellationError","cancellation error"),_=r("TimeoutError","timeout error"),d=r("AggregateError","aggregate error");try{o=TypeError,a=RangeError}catch(v){o=r("TypeError","type error"),a=r("RangeError","range error")}for(var y="join pop push shift unshift slice filter forEach some every map indexOf lastIndexOf reduce reduceRight sort reverse".split(" "),g=0;g<y.length;++g)"function"==typeof Array.prototype[y[g]]&&(d.prototype[y[g]]=Array.prototype[y[g]]);s.defineProperty(d.prototype,"length",{value:0,configurable:!1,writable:!0,enumerable:!0}),d.prototype.isOperational=!0;var m=0;d.prototype.toString=function(){var t=Array(4*m+1).join(" "),e="\n"+t+"AggregateError of:\n";m++,t=Array(4*m+1).join(" ");for(var n=0;n<this.length;++n){for(var r=this[n]===this?"[Circular AggregateError]":this[n]+"",i=r.split("\n"),o=0;o<i.length;++o)i[o]=t+i[o];r=i.join("\n"),e+=r+"\n"}return m--,e},u(i,Error);var b=Error.__BluebirdErrorTypes__;b||(b=c({CancellationError:h,TimeoutError:_,OperationalError:i,RejectionError:i,AggregateError:d}),s.defineProperty(Error,"__BluebirdErrorTypes__",{value:b,writable:!1,enumerable:!1,configurable:!1})),e.exports={Error:Error,TypeError:o,RangeError:a,CancellationError:b.CancellationError,OperationalError:b.OperationalError,TimeoutError:b.TimeoutError,AggregateError:b.AggregateError,Warning:f}},{"./es5":10,"./util":21}],10:[function(t,e,n){var r=function(){"use strict";return void 0===this}();if(r)e.exports={freeze:Object.freeze,defineProperty:Object.defineProperty,getDescriptor:Object.getOwnPropertyDescriptor,keys:Object.keys,names:Object.getOwnPropertyNames,getPrototypeOf:Object.getPrototypeOf,isArray:Array.isArray,isES5:r,propertyIsWritable:function(t,e){var n=Object.getOwnPropertyDescriptor(t,e);return!(n&&!n.writable&&!n.set)}};else{var i={}.hasOwnProperty,o={}.toString,a={}.constructor.prototype,s=function(t){var e=[];for(var n in t)i.call(t,n)&&e.push(n);return e},c=function(t,e){return{value:t[e]}},l=function(t,e,n){return t[e]=n.value,t},u=function(t){return t},p=function(t){try{return Object(t).constructor.prototype}catch(e){return a}},f=function(t){try{return"[object Array]"===o.call(t)}catch(e){return!1}};e.exports={isArray:f,keys:s,names:s,defineProperty:l,getDescriptor:c,freeze:u,getPrototypeOf:p,isES5:r,propertyIsWritable:function(){return!0}}}},{}],11:[function(t,e,n){"use strict";e.exports=function(e,n,r){function i(t,e,n){this.promise=t,this.type=e,this.handler=n,this.called=!1,this.cancelPromise=null}function o(t){this.finallyHandler=t}function a(t,e){return null!=t.cancelPromise?(arguments.length>1?t.cancelPromise._reject(e):t.cancelPromise._cancel(),t.cancelPromise=null,!0):!1}function s(){return l.call(this,this.promise._target()._settledValue())}function c(t){return a(this,t)?void 0:(f.e=t,f)}function l(t){var i=this.promise,l=this.handler;if(!this.called){this.called=!0;var u=this.isFinallyHandler()?l.call(i._boundValue()):l.call(i._boundValue(),t);if(u===r)return u;if(void 0!==u){i._setReturnedNonUndefined();var h=n(u,i);if(h instanceof e){if(null!=this.cancelPromise){if(h._isCancelled()){var _=new p("late cancellation observer");return i._attachExtraTrace(_),f.e=_,f}h.isPending()&&h._attachCancellationCallback(new o(this))}return h._then(s,c,void 0,this,void 0)}}}return i.isRejected()?(a(this),f.e=t,f):(a(this),t)}var u=t("./util"),p=e.CancellationError,f=u.errorObj,h=t("./catch_filter")(r);return i.prototype.isFinallyHandler=function(){return 0===this.type},o.prototype._resultCancelled=function(){a(this.finallyHandler)},e.prototype._passThrough=function(t,e,n,r){return"function"!=typeof t?this.then():this._then(n,r,void 0,new i(this,e,t),void 0)},e.prototype.lastly=e.prototype["finally"]=function(t){return this._passThrough(t,0,l,l)},e.prototype.tap=function(t){return this._passThrough(t,1,l)},e.prototype.tapCatch=function(t){var n=arguments.length;if(1===n)return this._passThrough(t,1,void 0,l);var r,i=new Array(n-1),o=0;for(r=0;n-1>r;++r){var a=arguments[r];if(!u.isObject(a))return e.reject(new TypeError("tapCatch statement predicate: expecting an object but got "+u.classString(a)));i[o++]=a}i.length=o;var s=arguments[r];return this._passThrough(h(i,s,this),1,void 0,l)},i}},{"./catch_filter":5,"./util":21}],12:[function(t,e,n){"use strict";e.exports=function(e,n,r,i,o,a){var s=t("./util");s.canEvaluate,s.tryCatch,s.errorObj;e.join=function(){var t,e=arguments.length-1;if(e>0&&"function"==typeof arguments[e]){t=arguments[e];var r}var i=[].slice.call(arguments);t&&i.pop();var r=new n(i).promise();return void 0!==t?r.spread(t):r}}},{"./util":21}],13:[function(t,e,n){"use strict";e.exports=function(e,n,r,i,o){var a=t("./util"),s=a.tryCatch;e.method=function(t){if("function"!=typeof t)throw new e.TypeError("expecting a function but got "+a.classString(t));return function(){var r=new e(n);r._captureStackTrace(),r._pushContext();var i=s(t).apply(this,arguments),a=r._popContext();return o.checkForgottenReturns(i,a,"Promise.method",r),r._resolveFromSyncValue(i),r}},e.attempt=e["try"]=function(t){if("function"!=typeof t)return i("expecting a function but got "+a.classString(t));var r=new e(n);r._captureStackTrace(),r._pushContext();var c;if(arguments.length>1){o.deprecated("calling Promise.try with more than 1 argument");var l=arguments[1],u=arguments[2];c=a.isArray(l)?s(t).apply(u,l):s(t).call(u,l)}else c=s(t)();var p=r._popContext();return o.checkForgottenReturns(c,p,"Promise.try",r),r._resolveFromSyncValue(c),r},e.prototype._resolveFromSyncValue=function(t){t===a.errorObj?this._rejectCallback(t.e,!1):this._resolveCallback(t,!0)}}},{"./util":21}],14:[function(t,e,n){"use strict";function r(t){return t instanceof Error&&u.getPrototypeOf(t)===Error.prototype}function i(t){var e;if(r(t)){e=new l(t),e.name=t.name,e.message=t.message,e.stack=t.stack;for(var n=u.keys(t),i=0;i<n.length;++i){var o=n[i];p.test(o)||(e[o]=t[o])}return e}return a.markAsOriginatingFromRejection(t),t}function o(t,e){return function(n,r){if(null!==t){if(n){var o=i(s(n));t._attachExtraTrace(o),t._reject(o)}else if(e){var a=[].slice.call(arguments,1);t._fulfill(a)}else t._fulfill(r);t=null}}}var a=t("./util"),s=a.maybeWrapAsError,c=t("./errors"),l=c.OperationalError,u=t("./es5"),p=/^(?:name|message|stack|cause)$/;e.exports=o},{"./errors":9,"./es5":10,"./util":21}],15:[function(t,e,n){"use strict";e.exports=function(){function n(){}function r(t,e){if(null==t||t.constructor!==i)throw new g("the promise constructor cannot be invoked directly\n\n    See http://goo.gl/MqrFmX\n");if("function"!=typeof e)throw new g("expecting a function but got "+h.classString(e))}function i(t){t!==b&&r(this,t),this._bitField=0,this._fulfillmentHandler0=void 0,this._rejectionHandler0=void 0,this._promise0=void 0,this._receiver0=void 0,this._resolveFromExecutor(t),this._promiseCreated(),this._fireEvent("promiseCreated",this)}function o(t){this.promise._resolveCallback(t)}function a(t){this.promise._rejectCallback(t,!1)}function s(t){var e=new i(b);e._fulfillmentHandler0=t,e._rejectionHandler0=t,e._promise0=t,e._receiver0=t}var c,l=function(){return new g("circular promise resolution chain\n\n    See http://goo.gl/MqrFmX\n")},u=function(){return new i.PromiseInspection(this._target())},p=function(t){return i.reject(new g(t))},f={},h=t("./util");c=h.isNode?function(){var t=process.domain;return void 0===t&&(t=null),t}:function(){return null},h.notEnumerableProp(i,"_getDomain",c);var _=t("./es5"),d=t("./async"),v=new d;_.defineProperty(i,"_async",{value:v});var y=t("./errors"),g=i.TypeError=y.TypeError;i.RangeError=y.RangeError;var m=i.CancellationError=y.CancellationError;i.TimeoutError=y.TimeoutError,i.OperationalError=y.OperationalError,i.RejectionError=y.OperationalError,i.AggregateError=y.AggregateError;var b=function(){},C={},w={},E=t("./thenables")(i,b),k=t("./promise_array")(i,b,E,p,n),j=t("./context")(i),F=(j.create,t("./debuggability")(i,j)),T=(F.CapturedTrace,t("./finally")(i,E,w)),P=t("./catch_filter")(w),R=t("./nodeback"),S=h.errorObj,x=h.tryCatch;return i.prototype.toString=function(){return"[object Promise]"},i.prototype.caught=i.prototype["catch"]=function(t){var e=arguments.length;if(e>1){var n,r=new Array(e-1),i=0;for(n=0;e-1>n;++n){var o=arguments[n];if(!h.isObject(o))return p("Catch statement predicate: expecting an object but got "+h.classString(o));r[i++]=o}return r.length=i,t=arguments[n],this.then(void 0,P(r,t,this))}return this.then(void 0,t)},i.prototype.reflect=function(){return this._then(u,u,void 0,this,void 0)},i.prototype.then=function(t,e){if(F.warnings()&&arguments.length>0&&"function"!=typeof t&&"function"!=typeof e){var n=".then() only accepts functions but was passed: "+h.classString(t);arguments.length>1&&(n+=", "+h.classString(e)),this._warn(n)}return this._then(t,e,void 0,void 0,void 0)},i.prototype.done=function(t,e){var n=this._then(t,e,void 0,void 0,void 0);n._setIsFinal()},i.prototype.spread=function(t){return"function"!=typeof t?p("expecting a function but got "+h.classString(t)):this.all()._then(t,void 0,void 0,C,void 0);
+},i.prototype.toJSON=function(){var t={isFulfilled:!1,isRejected:!1,fulfillmentValue:void 0,rejectionReason:void 0};return this.isFulfilled()?(t.fulfillmentValue=this.value(),t.isFulfilled=!0):this.isRejected()&&(t.rejectionReason=this.reason(),t.isRejected=!0),t},i.prototype.all=function(){return arguments.length>0&&this._warn(".all() was passed arguments but it does not take any"),new k(this).promise()},i.prototype.error=function(t){return this.caught(h.originatesFromRejection,t)},i.getNewLibraryCopy=e.exports,i.is=function(t){return t instanceof i},i.fromNode=i.fromCallback=function(t){var e=new i(b);e._captureStackTrace();var n=arguments.length>1?!!Object(arguments[1]).multiArgs:!1,r=x(t)(R(e,n));return r===S&&e._rejectCallback(r.e,!0),e._isFateSealed()||e._setAsyncGuaranteed(),e},i.all=function(t){return new k(t).promise()},i.cast=function(t){var e=E(t);return e instanceof i||(e=new i(b),e._captureStackTrace(),e._setFulfilled(),e._rejectionHandler0=t),e},i.resolve=i.fulfilled=i.cast,i.reject=i.rejected=function(t){var e=new i(b);return e._captureStackTrace(),e._rejectCallback(t,!0),e},i.setScheduler=function(t){if("function"!=typeof t)throw new g("expecting a function but got "+h.classString(t));return v.setScheduler(t)},i.prototype._then=function(t,e,n,r,o){var a=void 0!==o,s=a?o:new i(b),l=this._target(),u=l._bitField;a||(s._propagateFrom(this,3),s._captureStackTrace(),void 0===r&&0!==(2097152&this._bitField)&&(r=0!==(50397184&u)?this._boundValue():l===this?void 0:this._boundTo),this._fireEvent("promiseChained",this,s));var p=c();if(0!==(50397184&u)){var f,_,d=l._settlePromiseCtx;0!==(33554432&u)?(_=l._rejectionHandler0,f=t):0!==(16777216&u)?(_=l._fulfillmentHandler0,f=e,l._unsetRejectionIsUnhandled()):(d=l._settlePromiseLateCancellationObserver,_=new m("late cancellation observer"),l._attachExtraTrace(_),f=e),v.invoke(d,l,{handler:null===p?f:"function"==typeof f&&h.domainBind(p,f),promise:s,receiver:r,value:_})}else l._addCallbacks(t,e,s,r,p);return s},i.prototype._length=function(){return 65535&this._bitField},i.prototype._isFateSealed=function(){return 0!==(117506048&this._bitField)},i.prototype._isFollowing=function(){return 67108864===(67108864&this._bitField)},i.prototype._setLength=function(t){this._bitField=-65536&this._bitField|65535&t},i.prototype._setFulfilled=function(){this._bitField=33554432|this._bitField,this._fireEvent("promiseFulfilled",this)},i.prototype._setRejected=function(){this._bitField=16777216|this._bitField,this._fireEvent("promiseRejected",this)},i.prototype._setFollowing=function(){this._bitField=67108864|this._bitField,this._fireEvent("promiseResolved",this)},i.prototype._setIsFinal=function(){this._bitField=4194304|this._bitField},i.prototype._isFinal=function(){return(4194304&this._bitField)>0},i.prototype._unsetCancelled=function(){this._bitField=-65537&this._bitField},i.prototype._setCancelled=function(){this._bitField=65536|this._bitField,this._fireEvent("promiseCancelled",this)},i.prototype._setWillBeCancelled=function(){this._bitField=8388608|this._bitField},i.prototype._setAsyncGuaranteed=function(){v.hasCustomScheduler()||(this._bitField=134217728|this._bitField)},i.prototype._receiverAt=function(t){var e=0===t?this._receiver0:this[4*t-4+3];return e===f?void 0:void 0===e&&this._isBound()?this._boundValue():e},i.prototype._promiseAt=function(t){return this[4*t-4+2]},i.prototype._fulfillmentHandlerAt=function(t){return this[4*t-4+0]},i.prototype._rejectionHandlerAt=function(t){return this[4*t-4+1]},i.prototype._boundValue=function(){},i.prototype._migrateCallback0=function(t){var e=(t._bitField,t._fulfillmentHandler0),n=t._rejectionHandler0,r=t._promise0,i=t._receiverAt(0);void 0===i&&(i=f),this._addCallbacks(e,n,r,i,null)},i.prototype._migrateCallbackAt=function(t,e){var n=t._fulfillmentHandlerAt(e),r=t._rejectionHandlerAt(e),i=t._promiseAt(e),o=t._receiverAt(e);void 0===o&&(o=f),this._addCallbacks(n,r,i,o,null)},i.prototype._addCallbacks=function(t,e,n,r,i){var o=this._length();if(o>=65531&&(o=0,this._setLength(0)),0===o)this._promise0=n,this._receiver0=r,"function"==typeof t&&(this._fulfillmentHandler0=null===i?t:h.domainBind(i,t)),"function"==typeof e&&(this._rejectionHandler0=null===i?e:h.domainBind(i,e));else{var a=4*o-4;this[a+2]=n,this[a+3]=r,"function"==typeof t&&(this[a+0]=null===i?t:h.domainBind(i,t)),"function"==typeof e&&(this[a+1]=null===i?e:h.domainBind(i,e))}return this._setLength(o+1),o},i.prototype._proxy=function(t,e){this._addCallbacks(void 0,void 0,e,t,null)},i.prototype._resolveCallback=function(t,e){if(0===(117506048&this._bitField)){if(t===this)return this._rejectCallback(l(),!1);var n=E(t,this);if(!(n instanceof i))return this._fulfill(t);e&&this._propagateFrom(n,2);var r=n._target();if(r===this)return void this._reject(l());var o=r._bitField;if(0===(50397184&o)){var a=this._length();a>0&&r._migrateCallback0(this);for(var s=1;a>s;++s)r._migrateCallbackAt(this,s);this._setFollowing(),this._setLength(0),this._setFollowee(r)}else if(0!==(33554432&o))this._fulfill(r._value());else if(0!==(16777216&o))this._reject(r._reason());else{var c=new m("late cancellation observer");r._attachExtraTrace(c),this._reject(c)}}},i.prototype._rejectCallback=function(t,e,n){var r=h.ensureErrorObject(t),i=r===t;if(!i&&!n&&F.warnings()){var o="a promise was rejected with a non-error: "+h.classString(t);this._warn(o,!0)}this._attachExtraTrace(r,e?i:!1),this._reject(t)},i.prototype._resolveFromExecutor=function(t){if(t!==b){var e=this;this._captureStackTrace(),this._pushContext();var n=!0,r=this._execute(t,function(t){e._resolveCallback(t)},function(t){e._rejectCallback(t,n)});n=!1,this._popContext(),void 0!==r&&e._rejectCallback(r,!0)}},i.prototype._settlePromiseFromHandler=function(t,e,n,r){var i=r._bitField;if(0===(65536&i)){r._pushContext();var o;e===C?n&&"number"==typeof n.length?o=x(t).apply(this._boundValue(),n):(o=S,o.e=new g("cannot .spread() a non-array: "+h.classString(n))):o=x(t).call(e,n);var a=r._popContext();i=r._bitField,0===(65536&i)&&(o===w?r._reject(n):o===S?r._rejectCallback(o.e,!1):(F.checkForgottenReturns(o,a,"",r,this),r._resolveCallback(o)))}},i.prototype._target=function(){for(var t=this;t._isFollowing();)t=t._followee();return t},i.prototype._followee=function(){return this._rejectionHandler0},i.prototype._setFollowee=function(t){this._rejectionHandler0=t},i.prototype._settlePromise=function(t,e,r,o){var a=t instanceof i,s=this._bitField,c=0!==(134217728&s);0!==(65536&s)?(a&&t._invokeInternalOnCancel(),r instanceof T&&r.isFinallyHandler()?(r.cancelPromise=t,x(e).call(r,o)===S&&t._reject(S.e)):e===u?t._fulfill(u.call(r)):r instanceof n?r._promiseCancelled(t):a||t instanceof k?t._cancel():r.cancel()):"function"==typeof e?a?(c&&t._setAsyncGuaranteed(),this._settlePromiseFromHandler(e,r,o,t)):e.call(r,o,t):r instanceof n?r._isResolved()||(0!==(33554432&s)?r._promiseFulfilled(o,t):r._promiseRejected(o,t)):a&&(c&&t._setAsyncGuaranteed(),0!==(33554432&s)?t._fulfill(o):t._reject(o))},i.prototype._settlePromiseLateCancellationObserver=function(t){var e=t.handler,n=t.promise,r=t.receiver,o=t.value;"function"==typeof e?n instanceof i?this._settlePromiseFromHandler(e,r,o,n):e.call(r,o,n):n instanceof i&&n._reject(o)},i.prototype._settlePromiseCtx=function(t){this._settlePromise(t.promise,t.handler,t.receiver,t.value)},i.prototype._settlePromise0=function(t,e,n){var r=this._promise0,i=this._receiverAt(0);this._promise0=void 0,this._receiver0=void 0,this._settlePromise(r,t,i,e)},i.prototype._clearCallbackDataAtIndex=function(t){var e=4*t-4;this[e+2]=this[e+3]=this[e+0]=this[e+1]=void 0},i.prototype._fulfill=function(t){var e=this._bitField;if(!((117506048&e)>>>16)){if(t===this){var n=l();return this._attachExtraTrace(n),this._reject(n)}this._setFulfilled(),this._rejectionHandler0=t,(65535&e)>0&&(0!==(134217728&e)?this._settlePromises():v.settlePromises(this))}},i.prototype._reject=function(t){var e=this._bitField;if(!((117506048&e)>>>16))return this._setRejected(),this._fulfillmentHandler0=t,this._isFinal()?v.fatalError(t,h.isNode):void((65535&e)>0?v.settlePromises(this):this._ensurePossibleRejectionHandled())},i.prototype._fulfillPromises=function(t,e){for(var n=1;t>n;n++){var r=this._fulfillmentHandlerAt(n),i=this._promiseAt(n),o=this._receiverAt(n);this._clearCallbackDataAtIndex(n),this._settlePromise(i,r,o,e)}},i.prototype._rejectPromises=function(t,e){for(var n=1;t>n;n++){var r=this._rejectionHandlerAt(n),i=this._promiseAt(n),o=this._receiverAt(n);this._clearCallbackDataAtIndex(n),this._settlePromise(i,r,o,e)}},i.prototype._settlePromises=function(){var t=this._bitField,e=65535&t;if(e>0){if(0!==(16842752&t)){var n=this._fulfillmentHandler0;this._settlePromise0(this._rejectionHandler0,n,t),this._rejectPromises(e,n)}else{var r=this._rejectionHandler0;this._settlePromise0(this._fulfillmentHandler0,r,t),this._fulfillPromises(e,r)}this._setLength(0)}this._clearCancellationData()},i.prototype._settledValue=function(){var t=this._bitField;return 0!==(33554432&t)?this._rejectionHandler0:0!==(16777216&t)?this._fulfillmentHandler0:void 0},i.defer=i.pending=function(){F.deprecated("Promise.defer","new Promise");var t=new i(b);return{promise:t,resolve:o,reject:a}},h.notEnumerableProp(i,"_makeSelfResolutionError",l),t("./method")(i,b,E,p,F),t("./bind")(i,b,E,F),t("./cancel")(i,k,p,F),t("./direct_resolve")(i),t("./synchronous_inspection")(i),t("./join")(i,k,E,b,v,c),i.Promise=i,i.version="3.5.0",h.toFastProperties(i),h.toFastProperties(i.prototype),s({a:1}),s({b:2}),s({c:3}),s(1),s(function(){}),s(void 0),s(!1),s(new i(b)),F.setBounds(d.firstLineError,h.lastLineError),i}},{"./async":1,"./bind":2,"./cancel":4,"./catch_filter":5,"./context":6,"./debuggability":7,"./direct_resolve":8,"./errors":9,"./es5":10,"./finally":11,"./join":12,"./method":13,"./nodeback":14,"./promise_array":16,"./synchronous_inspection":19,"./thenables":20,"./util":21}],16:[function(t,e,n){"use strict";e.exports=function(e,n,r,i,o){function a(t){switch(t){case-2:return[];case-3:return{};case-6:return new Map}}function s(t){var r=this._promise=new e(n);t instanceof e&&r._propagateFrom(t,3),r._setOnCancel(this),this._values=t,this._length=0,this._totalResolved=0,this._init(void 0,-2)}var c=t("./util");c.isArray;return c.inherits(s,o),s.prototype.length=function(){return this._length},s.prototype.promise=function(){return this._promise},s.prototype._init=function l(t,n){var o=r(this._values,this._promise);if(o instanceof e){o=o._target();var s=o._bitField;if(this._values=o,0===(50397184&s))return this._promise._setAsyncGuaranteed(),o._then(l,this._reject,void 0,this,n);if(0===(33554432&s))return 0!==(16777216&s)?this._reject(o._reason()):this._cancel();o=o._value()}if(o=c.asArray(o),null===o){var u=i("expecting an array or an iterable object but got "+c.classString(o)).reason();return void this._promise._rejectCallback(u,!1)}return 0===o.length?void(-5===n?this._resolveEmptyArray():this._resolve(a(n))):void this._iterate(o)},s.prototype._iterate=function(t){var n=this.getActualLength(t.length);this._length=n,this._values=this.shouldCopyValues()?new Array(n):this._values;for(var i=this._promise,o=!1,a=null,s=0;n>s;++s){var c=r(t[s],i);c instanceof e?(c=c._target(),a=c._bitField):a=null,o?null!==a&&c.suppressUnhandledRejections():null!==a?0===(50397184&a)?(c._proxy(this,s),this._values[s]=c):o=0!==(33554432&a)?this._promiseFulfilled(c._value(),s):0!==(16777216&a)?this._promiseRejected(c._reason(),s):this._promiseCancelled(s):o=this._promiseFulfilled(c,s)}o||i._setAsyncGuaranteed()},s.prototype._isResolved=function(){return null===this._values},s.prototype._resolve=function(t){this._values=null,this._promise._fulfill(t)},s.prototype._cancel=function(){!this._isResolved()&&this._promise._isCancellable()&&(this._values=null,this._promise._cancel())},s.prototype._reject=function(t){this._values=null,this._promise._rejectCallback(t,!1)},s.prototype._promiseFulfilled=function(t,e){this._values[e]=t;var n=++this._totalResolved;return n>=this._length?(this._resolve(this._values),!0):!1},s.prototype._promiseCancelled=function(){return this._cancel(),!0},s.prototype._promiseRejected=function(t){return this._totalResolved++,this._reject(t),!0},s.prototype._resultCancelled=function(){if(!this._isResolved()){var t=this._values;if(this._cancel(),t instanceof e)t.cancel();else for(var n=0;n<t.length;++n)t[n]instanceof e&&t[n].cancel()}},s.prototype.shouldCopyValues=function(){return!0},s.prototype.getActualLength=function(t){return t},s}},{"./util":21}],17:[function(t,e,n){"use strict";function r(t,e,n,r,i){for(var o=0;i>o;++o)n[o+r]=t[o+e],t[o+e]=void 0}function i(t){this._capacity=t,this._length=0,this._front=0}i.prototype._willBeOverCapacity=function(t){return this._capacity<t},i.prototype._pushOne=function(t){var e=this.length();this._checkCapacity(e+1);var n=this._front+e&this._capacity-1;this[n]=t,this._length=e+1},i.prototype.push=function(t,e,n){var r=this.length()+3;if(this._willBeOverCapacity(r))return this._pushOne(t),this._pushOne(e),void this._pushOne(n);var i=this._front+r-3;this._checkCapacity(r);var o=this._capacity-1;this[i+0&o]=t,this[i+1&o]=e,this[i+2&o]=n,this._length=r},i.prototype.shift=function(){var t=this._front,e=this[t];return this[t]=void 0,this._front=t+1&this._capacity-1,this._length--,e},i.prototype.length=function(){return this._length},i.prototype._checkCapacity=function(t){this._capacity<t&&this._resizeTo(this._capacity<<1)},i.prototype._resizeTo=function(t){var e=this._capacity;this._capacity=t;var n=this._front,i=this._length,o=n+i&e-1;r(this,0,this,e,o)},e.exports=i},{}],18:[function(t,e,n){"use strict";var r,i=t("./util"),o=function(){throw new Error("No async scheduler available\n\n    See http://goo.gl/MqrFmX\n")},a=i.getNativePromise();if(i.isNode&&"undefined"==typeof MutationObserver){var s=global.setImmediate,c=process.nextTick;r=i.isRecentNode?function(t){s.call(global,t)}:function(t){c.call(process,t)}}else if("function"==typeof a&&"function"==typeof a.resolve){var l=a.resolve();r=function(t){l.then(t)}}else r="undefined"==typeof MutationObserver||"undefined"!=typeof window&&window.navigator&&(window.navigator.standalone||window.cordova)?"undefined"!=typeof setImmediate?function(t){setImmediate(t)}:"undefined"!=typeof setTimeout?function(t){setTimeout(t,0)}:o:function(){var t=document.createElement("div"),e={attributes:!0},n=!1,r=document.createElement("div"),i=new MutationObserver(function(){t.classList.toggle("foo"),n=!1});i.observe(r,e);var o=function(){n||(n=!0,r.classList.toggle("foo"))};return function(n){var r=new MutationObserver(function(){r.disconnect(),n()});r.observe(t,e),o()}}();e.exports=r},{"./util":21}],19:[function(t,e,n){"use strict";e.exports=function(t){function e(t){void 0!==t?(t=t._target(),this._bitField=t._bitField,this._settledValueField=t._isFateSealed()?t._settledValue():void 0):(this._bitField=0,this._settledValueField=void 0)}e.prototype._settledValue=function(){return this._settledValueField};var n=e.prototype.value=function(){if(!this.isFulfilled())throw new TypeError("cannot get fulfillment value of a non-fulfilled promise\n\n    See http://goo.gl/MqrFmX\n");return this._settledValue()},r=e.prototype.error=e.prototype.reason=function(){if(!this.isRejected())throw new TypeError("cannot get rejection reason of a non-rejected promise\n\n    See http://goo.gl/MqrFmX\n");return this._settledValue()},i=e.prototype.isFulfilled=function(){return 0!==(33554432&this._bitField)},o=e.prototype.isRejected=function(){return 0!==(16777216&this._bitField)},a=e.prototype.isPending=function(){return 0===(50397184&this._bitField)},s=e.prototype.isResolved=function(){return 0!==(50331648&this._bitField)};e.prototype.isCancelled=function(){return 0!==(8454144&this._bitField)},t.prototype.__isCancelled=function(){return 65536===(65536&this._bitField)},t.prototype._isCancelled=function(){return this._target().__isCancelled()},t.prototype.isCancelled=function(){return 0!==(8454144&this._target()._bitField)},t.prototype.isPending=function(){return a.call(this._target())},t.prototype.isRejected=function(){return o.call(this._target())},t.prototype.isFulfilled=function(){return i.call(this._target())},t.prototype.isResolved=function(){return s.call(this._target())},t.prototype.value=function(){return n.call(this._target())},t.prototype.reason=function(){var t=this._target();return t._unsetRejectionIsUnhandled(),r.call(t)},t.prototype._value=function(){return this._settledValue()},t.prototype._reason=function(){return this._unsetRejectionIsUnhandled(),this._settledValue()},t.PromiseInspection=e}},{}],20:[function(t,e,n){"use strict";e.exports=function(e,n){function r(t,r){if(u(t)){if(t instanceof e)return t;var i=o(t);if(i===l){r&&r._pushContext();var c=e.reject(i.e);return r&&r._popContext(),c}if("function"==typeof i){if(a(t)){var c=new e(n);return t._then(c._fulfill,c._reject,void 0,c,null),c}return s(t,i,r)}}return t}function i(t){return t.then}function o(t){try{return i(t)}catch(e){return l.e=e,l}}function a(t){try{return p.call(t,"_promise0")}catch(e){return!1}}function s(t,r,i){function o(t){s&&(s._resolveCallback(t),s=null)}function a(t){s&&(s._rejectCallback(t,p,!0),s=null)}var s=new e(n),u=s;i&&i._pushContext(),s._captureStackTrace(),i&&i._popContext();var p=!0,f=c.tryCatch(r).call(t,o,a);return p=!1,s&&f===l&&(s._rejectCallback(f.e,!0,!0),s=null),u}var c=t("./util"),l=c.errorObj,u=c.isObject,p={}.hasOwnProperty;return r}},{"./util":21}],21:[function(t,e,n){"use strict";function r(){try{var t=R;return R=null,t.apply(this,arguments)}catch(e){return P.e=e,P}}function i(t){return R=t,r}function o(t){return null==t||t===!0||t===!1||"string"==typeof t||"number"==typeof t}function a(t){return"function"==typeof t||"object"==typeof t&&null!==t}function s(t){return o(t)?new Error(v(t)):t}function c(t,e){var n,r=t.length,i=new Array(r+1);for(n=0;r>n;++n)i[n]=t[n];return i[n]=e,i}function l(t,e,n){if(!F.isES5)return{}.hasOwnProperty.call(t,e)?t[e]:void 0;var r=Object.getOwnPropertyDescriptor(t,e);return null!=r?null==r.get&&null==r.set?r.value:n:void 0}function u(t,e,n){if(o(t))return t;var r={value:n,configurable:!0,enumerable:!1,writable:!0};return F.defineProperty(t,e,r),t}function p(t){throw t}function f(t){try{if("function"==typeof t){var e=F.names(t.prototype),n=F.isES5&&e.length>1,r=e.length>0&&!(1===e.length&&"constructor"===e[0]),i=A.test(t+"")&&F.names(t).length>0;if(n||r||i)return!0}return!1}catch(o){return!1}}function h(t){function e(){}e.prototype=t;for(var n=8;n--;)new e;return t}function _(t){return L.test(t)}function d(t,e,n){for(var r=new Array(t),i=0;t>i;++i)r[i]=e+i+n;return r}function v(t){try{return t+""}catch(e){return"[no string representation]"}}function y(t){return null!==t&&"object"==typeof t&&"string"==typeof t.message&&"string"==typeof t.name}function g(t){try{u(t,"isOperational",!0)}catch(e){}}function m(t){return null==t?!1:t instanceof Error.__BluebirdErrorTypes__.OperationalError||t.isOperational===!0}function b(t){return y(t)&&F.propertyIsWritable(t,"stack")}function C(t){return{}.toString.call(t)}function w(t,e,n){for(var r=F.names(t),i=0;i<r.length;++i){var o=r[i];if(n(o))try{F.defineProperty(e,o,F.getDescriptor(t,o))}catch(a){}}}function E(t){return H?process.env[t]:void 0}function k(){if("function"==typeof Promise)try{var t=new Promise(function(){});if("[object Promise]"==={}.toString.call(t))return Promise}catch(e){}}function j(t,e){return t.bind(e)}var F=t("./es5"),T="undefined"==typeof navigator,P={e:{}},R,S="undefined"!=typeof self?self:"undefined"!=typeof window?window:"undefined"!=typeof global?global:void 0!==this?this:null,x=function(t,e){function n(){this.constructor=t,this.constructor$=e;for(var n in e.prototype)r.call(e.prototype,n)&&"$"!==n.charAt(n.length-1)&&(this[n+"$"]=e.prototype[n])}var r={}.hasOwnProperty;return n.prototype=e.prototype,t.prototype=new n,t.prototype},O=function(){var t=[Array.prototype,Object.prototype,Function.prototype],e=function(e){for(var n=0;n<t.length;++n)if(t[n]===e)return!0;return!1};if(F.isES5){var n=Object.getOwnPropertyNames;return function(t){for(var r=[],i=Object.create(null);null!=t&&!e(t);){var o;try{o=n(t)}catch(a){return r}for(var s=0;s<o.length;++s){var c=o[s];if(!i[c]){i[c]=!0;var l=Object.getOwnPropertyDescriptor(t,c);null!=l&&null==l.get&&null==l.set&&r.push(c)}}t=F.getPrototypeOf(t)}return r}}var r={}.hasOwnProperty;return function(n){if(e(n))return[];var i=[];t:for(var o in n)if(r.call(n,o))i.push(o);else{for(var a=0;a<t.length;++a)if(r.call(t[a],o))continue t;i.push(o)}return i}}(),A=/this\s*\.\s*\S+\s*=/,L=/^[a-z$_][a-z$_0-9]*$/i,N=function(){return"stack"in new Error?function(t){return b(t)?t:new Error(v(t))}:function(t){if(b(t))return t;try{throw new Error(v(t))}catch(e){return e}}}(),B=function(t){return F.isArray(t)?t:null};if("undefined"!=typeof Symbol&&Symbol.iterator){var U="function"==typeof Array.from?function(t){return Array.from(t)}:function(t){for(var e,n=[],r=t[Symbol.iterator]();!(e=r.next()).done;)n.push(e.value);return n};B=function(t){return F.isArray(t)?t:null!=t&&"function"==typeof t[Symbol.iterator]?U(t):null}}var I="undefined"!=typeof process&&"[object process]"===C(process).toLowerCase(),H="undefined"!=typeof process&&"undefined"!=typeof process.env,D={isClass:f,isIdentifier:_,inheritedDataKeys:O,getDataPropertyOrDefault:l,thrower:p,isArray:F.isArray,asArray:B,notEnumerableProp:u,isPrimitive:o,isObject:a,isError:y,canEvaluate:T,errorObj:P,tryCatch:i,inherits:x,withAppended:c,maybeWrapAsError:s,toFastProperties:h,filledRange:d,toString:v,canAttachTrace:b,ensureErrorObject:N,originatesFromRejection:m,markAsOriginatingFromRejection:g,classString:C,copyDescriptors:w,hasDevTools:"undefined"!=typeof chrome&&chrome&&"function"==typeof chrome.loadTimes,isNode:I,hasEnvVariables:H,env:E,global:S,getNativePromise:k,domainBind:j};D.isRecentNode=D.isNode&&function(){var t=process.versions.node.split(".").map(Number);return 0===t[0]&&t[1]>10||t[0]>0}(),D.isNode&&D.toFastProperties(process);try{throw new Error}catch(V){D.lastLineError=V}e.exports=D},{"./es5":10}]},{},[3])(3)}),"undefined"!=typeof window&&null!==window?window.P=window.Promise:"undefined"!=typeof self&&null!==self&&(self.P=self.Promise);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             /** PURE_IMPORTS_START tslib,_Subscriber PURE_IMPORTS_END */
+import * as tslib_1 from "tslib";
+import { Subscriber } from './Subscriber';
+var OuterSubscriber = /*@__PURE__*/ (function (_super) {
+    tslib_1.__extends(OuterSubscriber, _super);
+    function OuterSubscriber() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    OuterSubscriber.prototype.notifyNext = function (outerValue, innerValue, outerIndex, innerIndex, innerSub) {
+        this.destination.next(innerValue);
+    };
+    OuterSubscriber.prototype.notifyError = function (error, innerSub) {
+        this.destination.error(error);
+    };
+    OuterSubscriber.prototype.notifyComplete = function (innerSub) {
+        this.destination.complete();
+    };
+    return OuterSubscriber;
+}(Subscriber));
+export { OuterSubscriber };
+//# sourceMappingURL=OuterSubscriber.js.map
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
