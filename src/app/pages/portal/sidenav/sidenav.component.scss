@@ -21,6 +21,7 @@ mat-sidenav {
 
   @include mobile {
     width: $app-sidenav-width-mobile;
+    max-width: 400px;
   }
 }
 
@@ -41,19 +42,23 @@ igo-panel ::ng-deep .igo-panel-content {
 }
 
 
-div.toolActived > igo-panel ::ng-deep > div.igo-panel-header {
-  left: 48px;
+div.toolActivated > igo-panel ::ng-deep > div.igo-panel-header {
+  margin-left: 50px;
   position: relative;
-  width: 350px;
 }
 
 #homeButton {
   position: absolute;
   top: 50px;
-  left: 3px;
-  background-color: #1976d2;
+  left: 0px;
   color: white;
   border-radius: 0;
   height: 46px;
-  width: 44px;
+  width: 48px;
+}
+
+igo-toolbox {
+  @include mobile {
+    overflow: auto;
+  }
 }

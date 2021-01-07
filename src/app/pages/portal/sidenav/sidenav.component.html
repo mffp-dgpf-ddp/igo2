@@ -5,7 +5,7 @@
 
   <div class="app-sidenav-content">
 
-      <div class="app-content" [ngClass]="{toolActived: toolbox.activeTool$ | async}">
+      <div #content class="app-content" [ngClass]="{toolActivated: toolbox.activeTool$ | async}">
 
         <button *ngIf="toolbox.activeTool$ | async"
           id="homeButton"
@@ -28,6 +28,11 @@
             <mat-icon svgIcon="arrow-left"></mat-icon>
           </button>
 
+          <igo-interactive-tour
+            panelRightButton
+            styleButton = 'icon'>
+          </igo-interactive-tour>
+
           <!-- <button *ngIf="toolbox.activeTool$ | async"
             mat-icon-button
             panelRightButton
@@ -39,11 +44,13 @@
           </button> -->
 
           <igo-toolbox
+            class="igo-toolbox"
+            color="primary"
             [animate]="true"
             [toolbox]="toolbox">
           </igo-toolbox>
 
         </igo-panel>
-      </div>
+    </div>
   </div>
 </mat-sidenav>

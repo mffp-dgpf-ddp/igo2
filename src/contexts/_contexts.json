@@ -1,14 +1,38 @@
 [
   {
     "uri": "_default",
-    "title": "Default Context"
-  },
-{
-    "uri": "qc911",
-    "title": "Qc-911"
+    "title": "Simple"
   },
   {
-    "uri": "embacle",
-    "title": "Embâcle (analyse temporelle)"
+    "uri": "simple2",
+    "title": "Simple 2"
+  },
+  {
+    "uri": "timeFilter",
+    "title": "Filtre temporel (Time filter)"
+  },
+  {
+    "uri": "ogcFilters",
+    "title": "Filtre attributaire (Attribute filter)"
+  },  
+  {
+    "uri": "layerSync",
+    "title": "Synchronisation de layers"
+  },
+  {
+    "uri": "workspace",
+    "title": "Workspace (vue tabulaire)"
+  },
+  {
+    "uri": "mapOverlay",
+    "title": "Superposition de carte (Map overlay)"
+  },
+  {
+    "uri": "testExport",
+    "title": "Test export"
+  },
+  {
+    "uri": "variousFormats",
+    "title": "Divers format à titre d'exemple"
   }
 ]
