@@ -15,6 +15,12 @@
     },
     {
       "path": "./e2e/tsconfig.e2e.json"
+    },
+    {
+      "path": "./projects/geo/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/geo/tsconfig.spec.json"
     }
   ]
 }

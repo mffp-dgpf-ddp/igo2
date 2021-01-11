@@ -3,6 +3,8 @@ const gulp = require('gulp');
 const jeditor = require('gulp-json-editor');
 const babel = require('gulp-babel');
 const clean = require('gulp-clean');
+const deletelines = require('gulp-delete-lines');
+const { doesIntersect } = require('tslint');
 
 gulp.task('geo:fixOL', done => {
   gulp
@@ -47,6 +49,28 @@ gulp.task('geo:copyStyle', done => {
   done();
 });
 
+gulp.task('geo:addTheming', done => {
+  gulp
+  .src('./projects/geo/src/lib/app.theming.scss')
+    .pipe(gulp.dest('./dist/geo/lib'));
+    
+  gulp
+  .src('./projects/geo/src/lib/pages/portal/portal.theming.scss')
+    .pipe(gulp.dest('./dist/geo/lib/pages/portal'));
+
+  gulp
+  .src('./projects/geo/src/lib/pages/portal/sidenav/sidenav.theming.scss')
+    .pipe(gulp.dest('./dist/geo/lib/pages/portal/sidenav'));
+    
+  gulp
+  .src('./projects/geo/src/lib/pages/portal/welcome-window/welcome-window.theming.scss')
+    .pipe(gulp.dest('./dist/geo/lib/pages/portal/welcome-window'));
+  
+  
+
+  done();
+});
+
 gulp.task('geo:addStyle', done => {
   gulp
     .src('./projects/geo/src/style/**/*')
@@ -59,6 +83,19 @@ gulp.task('geo:addAssets', done => {
   gulp
     .src('./projects/geo/src/assets/**/*')
     .pipe(gulp.dest('./dist/geo/assets'));
+
+  done();
+})
+
+gulp.task('geo:removePrepublish', done => {
+  gulp
+    .src('./dist/geo/package.json')
+    .pipe(deletelines({
+      'filters': [
+        /['"]prepublishOnly['"]/i      ]
+    })).pipe(gulp.dest('./dist/geo', {
+      overwrite: true
+    }));
 
   done();
 })
@@ -117,6 +154,6 @@ gulp.task(
 gulp.task(
   'geo',
   gulp.series(
-    gulp.parallel(['geo:addStyle', 'geo:addAssets']),
+    gulp.parallel(['geo:addStyle', 'geo:addAssets', 'geo:addTheming']),
   )
 );

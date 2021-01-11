@@ -1,11 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  MatTooltipModule,
-  MatIconModule,
-  MatButtonModule,
-  MatSidenavModule
-} from '@angular/material';
 
 import { IgoCoreModule } from '@igo2/core';
 import {
@@ -38,6 +32,10 @@ import { MapOverlayModule } from '../../pages/portal/map-overlay/map-overlay.mod
 import { ZoneSelectionComponent } from './zone-selection.component';
 import { AppToastPanelModule } from '../../pages/portal/toast-panel/toast-panel.module';
 import { AppExpansionPanelModule } from '../../pages/portal/expansion-panel/expansion-panel.module';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
   imports: [

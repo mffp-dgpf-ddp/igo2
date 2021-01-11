@@ -105,7 +105,7 @@
   [@expansionPanelSize]="getExpansionPanelStatus()"
   [@toastOffsetY]="(isMobile() && !toastPanelOpened && queryState.store.entities$.value.length > 0 && !expansionPanelExpanded) ? 'true' : 'false'">
 
-  <ng-container expansionPanelHeader>
+  <!--ng-container expansionPanelHeader>
     <igo-workspace-selector
       igoWorkspaceSelector
       (toolToActivate)="toolToActivateFromWorkspace($event)"
@@ -164,7 +164,7 @@
       [template]="workspace.meta.tableTemplate">
     </igo-entity-table>
     <span class="mat-typography">{{workspaceNotAvailableMessage | translate}}</span>
-  </ng-container>
+  </ng-container>-->
 
 </app-expansion-panel>
 

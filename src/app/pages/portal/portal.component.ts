@@ -270,7 +270,7 @@ export class PortalComponent implements OnInit, OnDestroy {
     private contextState: ContextState,
     private mapState: MapState,
     private searchState: SearchState,
-    private queryState: QueryState,
+    public queryState: QueryState,
     private toolState: ToolState,
     private searchSourceService: SearchSourceService,
     private configService: ConfigService,

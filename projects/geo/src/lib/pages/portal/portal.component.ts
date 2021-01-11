@@ -257,8 +257,6 @@ export class PortalComponent implements OnInit, OnDestroy {
   get workspace(): Workspace {
     return this.workspaceState.workspace$.value;
   }
-  
-  public _routerSubscription: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -272,7 +270,7 @@ export class PortalComponent implements OnInit, OnDestroy {
     private contextState: ContextState,
     private mapState: MapState,
     private searchState: SearchState,
-    private queryState: QueryState,
+    public queryState: QueryState,
     private toolState: ToolState,
     private searchSourceService: SearchSourceService,
     private configService: ConfigService,
@@ -303,11 +301,6 @@ export class PortalComponent implements OnInit, OnDestroy {
         'menuButtonReverseColor'
       );
     }
-    this._routerSubscription = this.route.url.subscribe(url => {
-      setTimeout(() => {
-        this.map.ol.updateSize();
-      }, 1000);
-    });
   }
 
   ngOnInit() {

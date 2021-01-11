@@ -1,4 +1,4 @@
-@import './pages/portal/portal.theming';
+@import './pages/portal/portal.theming.scss';
 
 @mixin app-theming($theme) {
   @include app-portal-theming($theme);

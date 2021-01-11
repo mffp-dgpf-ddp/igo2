@@ -29,7 +29,6 @@ import { MapState, ContextState, SearchState, ToolState, QueryState } from '@igo
 import olCircle from 'ol/geom/Circle';
 import olFeature from 'ol/Feature';
 import { CoordService } from '../../services/coord.service';
-import { projection } from '@angular/core/src/render3';
 
 
 @Component({

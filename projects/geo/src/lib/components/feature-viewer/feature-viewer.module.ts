@@ -1,11 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  MatTooltipModule,
-  MatIconModule,
-  MatButtonModule,
-  MatSidenavModule
-} from '@angular/material';
 
 import { IgoCoreModule } from '@igo2/core';
 import {
@@ -36,6 +30,10 @@ import {
 import { IgoIntegrationModule } from '@igo2/integration';
 
 import { FeatureViewerComponent } from './feature-viewer.component';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
   imports: [
