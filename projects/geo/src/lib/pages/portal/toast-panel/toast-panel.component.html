@@ -62,7 +62,8 @@
 
         <igo-feature-details
           *ngIf="resultSelected$.value"
-          [feature]="resultSelected$.value.data">
+          [feature]="resultSelected$.value.data"
+          [map]="map">
         </igo-feature-details>
 
         <igo-search-results
