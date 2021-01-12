@@ -258,6 +258,8 @@ export class PortalComponent implements OnInit, OnDestroy {
     return this.workspaceState.workspace$.value;
   }
 
+  public _routerSubscription: any;
+
   constructor(
     private route: ActivatedRoute,
     public workspaceState: WorkspaceState,
@@ -283,6 +285,12 @@ export class PortalComponent implements OnInit, OnDestroy {
     private queryService: QueryService,
     private storageService: StorageService
   ) {
+    this._routerSubscription = this.route.url.subscribe(url => {
+      setTimeout(() => {
+        this.map.ol.updateSize();
+      }, 1000);
+    });
+    
     this.hasExpansionPanel = this.configService.getConfig('hasExpansionPanel');
     this.hasGeolocateButton =
     this.configService.getConfig('hasGeolocateButton') === undefined ? true : this.configService.getConfig('hasGeolocateButton') ;
