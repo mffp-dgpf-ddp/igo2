@@ -1,9 +1,0 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-export {} from './language.interface';
-export { LanguageLoader } from './language.loader';
-export { LanguageService } from './language.service';
-export { IgoMissingTranslationHandler } from './missing-translation.guard';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9AaWdvMi9jb3JlLyIsInNvdXJjZXMiOlsibGliL2xhbmd1YWdlL3NoYXJlZC9pbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQUEsZUFBYyxzQkFBc0IsQ0FBQztBQUNyQywrQkFBYyxtQkFBbUIsQ0FBQztBQUNsQyxnQ0FBYyxvQkFBb0IsQ0FBQztBQUNuQyw2Q0FBYyw2QkFBNkIsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCAqIGZyb20gJy4vbGFuZ3VhZ2UuaW50ZXJmYWNlJztcclxuZXhwb3J0ICogZnJvbSAnLi9sYW5ndWFnZS5sb2FkZXInO1xyXG5leHBvcnQgKiBmcm9tICcuL2xhbmd1YWdlLnNlcnZpY2UnO1xyXG5leHBvcnQgKiBmcm9tICcuL21pc3NpbmctdHJhbnNsYXRpb24uZ3VhcmQnO1xyXG4iXX0=

@@ -1,7 +1,0 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-export { BookmarkButtonComponent } from './bookmark-button.component';
-export { BookmarkDialogComponent } from './bookmark-dialog.component';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9AaWdvMi9jb250ZXh0LyIsInNvdXJjZXMiOlsibGliL2NvbnRleHQtbWFwLWJ1dHRvbi9ib29rbWFyay1idXR0b24vaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLHdDQUFjLDZCQUE2QixDQUFDO0FBQzVDLHdDQUFjLDZCQUE2QixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0ICogZnJvbSAnLi9ib29rbWFyay1idXR0b24uY29tcG9uZW50JztcclxuZXhwb3J0ICogZnJvbSAnLi9ib29rbWFyay1kaWFsb2cuY29tcG9uZW50JztcclxuIl19

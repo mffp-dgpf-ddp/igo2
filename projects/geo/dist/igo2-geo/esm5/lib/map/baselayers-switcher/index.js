@@ -1,7 +1,0 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-export { BaseLayersSwitcherComponent } from './baselayers-switcher.component';
-export { MiniBaseMapComponent } from './mini-basemap.component';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9AaWdvMi9nZW8vIiwic291cmNlcyI6WyJsaWIvbWFwL2Jhc2VsYXllcnMtc3dpdGNoZXIvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLDRDQUFjLGlDQUFpQyxDQUFDO0FBQ2hELHFDQUFjLDBCQUEwQixDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0ICogZnJvbSAnLi9iYXNlbGF5ZXJzLXN3aXRjaGVyLmNvbXBvbmVudCc7XHJcbmV4cG9ydCAqIGZyb20gJy4vbWluaS1iYXNlbWFwLmNvbXBvbmVudCc7XHJcbiJdfQ==

@@ -1,8 +1,0 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-export { MEASURE_UNIT_AUTO, MeasureType, MeasureLengthUnit, MeasureLengthUnitAbbreviation, MeasureAreaUnit, MeasureAreaUnitAbbreviation, metersToKilometers, metersToFeet, metersToMiles, squareMetersToSquareKilometers, squareMetersToSquareMiles, squareMetersToSquareFeet, squareMetersToHectares, squareMetersToAcres, metersToUnit, squareMetersToUnit, formatMeasure, computeBestLengthUnit, computeBestAreaUnit, createMeasureInteractionStyle, createMeasureLayerStyle, measureOlGeometryLength, measureOlGeometryArea, measureOlGeometry, updateOlGeometryMidpoints, clearOlGeometryMidpoints, updateOlTooltipsAtMidpoints, getOlTooltipsAtMidpoints, updateOlGeometryCenter, updateOlTooltipAtCenter, getOlTooltipAtCenter, getTooltipsOfOlGeometry, createOlTooltipAtPoint } from './shared';
-export { MeasurerComponent } from './measurer/measurer.component';
-export { MeasureFormatPipe } from './measurer/measure-format.pipe';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9AaWdvMi9nZW8vIiwic291cmNlcyI6WyJsaWIvbWVhc3VyZS9pbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQUEsOHZCQUFjLFVBQVUsQ0FBQztBQUN6QixrQ0FBYywrQkFBK0IsQ0FBQztBQUM5QyxrQ0FBYyxnQ0FBZ0MsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCAqIGZyb20gJy4vc2hhcmVkJztcclxuZXhwb3J0ICogZnJvbSAnLi9tZWFzdXJlci9tZWFzdXJlci5jb21wb25lbnQnO1xyXG5leHBvcnQgKiBmcm9tICcuL21lYXN1cmVyL21lYXN1cmUtZm9ybWF0LnBpcGUnO1xyXG4iXX0=

@@ -1,8 +1,0 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-export { DirectionsSource } from './directions-source';
-export {} from './directions-source.interface';
-export { OsrmDirectionsSource } from './osrm-directions-source';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9AaWdvMi9nZW8vIiwic291cmNlcyI6WyJsaWIvZGlyZWN0aW9ucy9kaXJlY3Rpb25zLXNvdXJjZXMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLGlDQUFjLHFCQUFxQixDQUFDO0FBQ3BDLGVBQWMsK0JBQStCLENBQUM7QUFDOUMscUNBQWMsMEJBQTBCLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgKiBmcm9tICcuL2RpcmVjdGlvbnMtc291cmNlJztcclxuZXhwb3J0ICogZnJvbSAnLi9kaXJlY3Rpb25zLXNvdXJjZS5pbnRlcmZhY2UnO1xyXG5leHBvcnQgKiBmcm9tICcuL29zcm0tZGlyZWN0aW9ucy1zb3VyY2UnO1xyXG4iXX0=

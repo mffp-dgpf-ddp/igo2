@@ -1,7 +1,0 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-export { ContextPermissionsComponent } from './context-permissions.component';
-export { ContextPermissionsBindingDirective } from './context-permissions-binding.directive';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9AaWdvMi9jb250ZXh0LyIsInNvdXJjZXMiOlsibGliL2NvbnRleHQtbWFuYWdlci9jb250ZXh0LXBlcm1pc3Npb25zL2luZGV4LnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7Ozs7QUFBQSw0Q0FBYyxpQ0FBaUMsQ0FBQztBQUNoRCxtREFBYyx5Q0FBeUMsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbImV4cG9ydCAqIGZyb20gJy4vY29udGV4dC1wZXJtaXNzaW9ucy5jb21wb25lbnQnO1xyXG5leHBvcnQgKiBmcm9tICcuL2NvbnRleHQtcGVybWlzc2lvbnMtYmluZGluZy5kaXJlY3RpdmUnO1xyXG4iXX0=

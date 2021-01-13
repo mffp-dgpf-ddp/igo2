@@ -1,7 +1,0 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-export { ContextEditComponent } from './context-edit.component';
-export { ContextEditBindingDirective } from './context-edit-binding.directive';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9AaWdvMi9jb250ZXh0LyIsInNvdXJjZXMiOlsibGliL2NvbnRleHQtbWFuYWdlci9jb250ZXh0LWVkaXQvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLHFDQUFjLDBCQUEwQixDQUFDO0FBQ3pDLDRDQUFjLGtDQUFrQyxDQUFDIiwic291cmNlc0NvbnRlbnQiOlsiZXhwb3J0ICogZnJvbSAnLi9jb250ZXh0LWVkaXQuY29tcG9uZW50JztcclxuZXhwb3J0ICogZnJvbSAnLi9jb250ZXh0LWVkaXQtYmluZGluZy5kaXJlY3RpdmUnO1xyXG4iXX0=

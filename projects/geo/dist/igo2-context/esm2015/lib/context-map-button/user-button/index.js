@@ -1,7 +1,0 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-export { UserButtonComponent } from './user-button.component';
-export { UserDialogComponent } from './user-dialog.component';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9AaWdvMi9jb250ZXh0LyIsInNvdXJjZXMiOlsibGliL2NvbnRleHQtbWFwLWJ1dHRvbi91c2VyLWJ1dHRvbi9pbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOzs7O0FBQUEsb0NBQWMseUJBQXlCLENBQUM7QUFDeEMsb0NBQWMseUJBQXlCLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgKiBmcm9tICcuL3VzZXItYnV0dG9uLmNvbXBvbmVudCc7XHJcbmV4cG9ydCAqIGZyb20gJy4vdXNlci1kaWFsb2cuY29tcG9uZW50JztcclxuIl19

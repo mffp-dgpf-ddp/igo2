@@ -1,8 +1,0 @@
-/**
- * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
- */
-export { DirectionsService } from './directions.service';
-export { DirectionsFormat, SourceDirectionsType } from './directions.enum';
-export {} from './directions.interface';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290Ijoibmc6Ly9AaWdvMi9nZW8vIiwic291cmNlcyI6WyJsaWIvZGlyZWN0aW9ucy9zaGFyZWQvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7OztBQUFBLGtDQUFjLHNCQUFzQixDQUFDO0FBQ3JDLHVEQUFjLG1CQUFtQixDQUFDO0FBQ2xDLGVBQWMsd0JBQXdCLENBQUMiLCJzb3VyY2VzQ29udGVudCI6WyJleHBvcnQgKiBmcm9tICcuL2RpcmVjdGlvbnMuc2VydmljZSc7XHJcbmV4cG9ydCAqIGZyb20gJy4vZGlyZWN0aW9ucy5lbnVtJztcclxuZXhwb3J0ICogZnJvbSAnLi9kaXJlY3Rpb25zLmludGVyZmFjZSc7XHJcbiJdfQ==
