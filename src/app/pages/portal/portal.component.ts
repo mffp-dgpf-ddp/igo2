@@ -290,6 +290,7 @@ export class PortalComponent implements OnInit, OnDestroy {
         this.map.ol.updateSize();
       }, 1000);
     });
+    console.log(this.map)
     
     this.hasExpansionPanel = this.configService.getConfig('hasExpansionPanel');
     this.hasGeolocateButton =

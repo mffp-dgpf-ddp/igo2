@@ -25,6 +25,7 @@
 
 /*** Map browser ***/
 igo-map-browser {
+  touch-action: none !important;
   width: 100%;
   height: 100%;
 }
