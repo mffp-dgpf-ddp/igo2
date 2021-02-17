@@ -68,16 +68,16 @@
       <igo-zoom-button [map]="map" color="primary"
         [@controlsOffsetY]="getControlsOffsetY()">
       </igo-zoom-button>
-      <igo-offline-button [map]="map" color="primary"
-        [@controlsOffsetY]="getControlsOffsetY()"
-        [@mobileOffsetY]="getToastPanelStatus()">
-      </igo-offline-button>
       <igo-geolocate-button 
         *ngIf="hasGeolocateButton"
         [map]="map" color="primary"
         [@controlsOffsetY]="getControlsOffsetY()"
         [@mobileOffsetY]="getToastPanelStatus()">
       </igo-geolocate-button>
+      <igo-offline-button [map]="map" color="primary"
+        [@controlsOffsetY]="getControlsOffsetY()"
+        [@mobileOffsetY]="getToastPanelStatus()">
+      </igo-offline-button>
       <igo-rotation-button [showIfNoRotation]="false" [map]="map" color="primary"></igo-rotation-button>
       <igo-user-button [map]="map" color="primary"
         [@controlsOffsetY]="getControlsOffsetY()"

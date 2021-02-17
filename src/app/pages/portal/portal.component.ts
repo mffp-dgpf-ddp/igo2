@@ -62,7 +62,8 @@ import {
   featureFromOl,
   QueryService,
   WfsWorkspace,
-  FeatureWorkspace
+  FeatureWorkspace,
+  MapViewOptions
 } from '@igo2/geo';
 
 import {
@@ -88,6 +89,7 @@ import { HttpClient } from '@angular/common/http';
 import { WelcomeWindowComponent } from './welcome-window/welcome-window.component';
 import { WelcomeWindowService } from './welcome-window/welcome-window.service';
 import { MatPaginator } from '@angular/material/paginator';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-portal',
@@ -283,18 +285,25 @@ export class PortalComponent implements OnInit, OnDestroy {
     private welcomeWindowService: WelcomeWindowService,
     public dialogWindow: MatDialog,
     private queryService: QueryService,
-    private storageService: StorageService
+    private storageService: StorageService,
+    private platform: Platform,
   ) {
     this._routerSubscription = this.route.url.subscribe(url => {
       setTimeout(() => {
         this.map.ol.updateSize();
       }, 1000);
     });
-    console.log(this.map)
     
     this.hasExpansionPanel = this.configService.getConfig('hasExpansionPanel');
     this.hasGeolocateButton =
     this.configService.getConfig('hasGeolocateButton') === undefined ? true : this.configService.getConfig('hasGeolocateButton') ;
+    if (!this.platform.is('cordova')) {
+      this .hasGeolocateButton = false;
+      this.map.updateView({
+        geolocate: false
+      } as MapViewOptions);
+      this.map.unsubscribeGeolocate();
+    }
     this.forceCoordsNA = this.configService.getConfig('app.forceCoordsNA');
     this.hasFeatureEmphasisOnSelection = this.configService.getConfig(
       'hasFeatureEmphasisOnSelection'

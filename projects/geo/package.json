@@ -1,6 +1,6 @@
 {
   "name": "@mffp.dgpf.ddp.techno/igo2",
-  "version": "1.5.303",
+  "version": "1.5.304",
   "peerDependencies": {
     "@angular/common": "^10.0.3",
     "@angular/core": "^10.0.3",
