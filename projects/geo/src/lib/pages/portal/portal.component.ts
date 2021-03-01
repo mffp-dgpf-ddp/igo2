@@ -4,7 +4,8 @@ import {
   OnDestroy,
   ChangeDetectorRef,
   ViewChild,
-  ElementRef
+  ElementRef,
+  AfterViewChecked
 } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { Subscription, of, BehaviorSubject, combineLatest } from 'rxjs';
@@ -105,7 +106,7 @@ import { Platform } from '@ionic/angular';
     mapSlideY()
   ]
 })
-export class PortalComponent implements OnInit, OnDestroy {
+export class PortalComponent implements OnInit, OnDestroy, AfterViewChecked {
   public minSearchTermLength = 2;
   public hasExpansionPanel = false;
   public hasGeolocateButton = true;
@@ -288,12 +289,6 @@ export class PortalComponent implements OnInit, OnDestroy {
     private storageService: StorageService,
     private platform: Platform,
   ) {
-    this._routerSubscription = this.route.url.subscribe(url => {
-      setTimeout(() => {
-        this.map.ol.updateSize();
-      }, 1000);
-    });
-
     this.hasExpansionPanel = this.configService.getConfig('hasExpansionPanel');
     this.hasGeolocateButton =
     this.configService.getConfig('hasGeolocateButton') === undefined ? true : this.configService.getConfig('hasGeolocateButton') ;
@@ -429,6 +424,10 @@ export class PortalComponent implements OnInit, OnDestroy {
         }
       }
     );
+  }
+  
+  ngAfterViewChecked() {
+    this.map.ol.updateSize();
   }
 
   getClassMenuButton() {

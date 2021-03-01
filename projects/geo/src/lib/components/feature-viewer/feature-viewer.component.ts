@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, Input, OnChanges, AfterViewInit, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, Input, OnChanges, AfterViewInit, SimpleChanges, AfterViewChecked } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { MediaService, ConfigService, MessageService, Message } from '@igo2/core';
@@ -31,7 +31,7 @@ import { MapImageService } from '../../services/map-image.service';
   styleUrls: ['./feature-viewer.component.scss'],
   animations: [controlSlideX(), controlSlideY(), mapSlideX(), mapSlideY()]
 })
-export class FeatureViewerComponent implements OnChanges, OnInit {
+export class FeatureViewerComponent implements OnChanges, OnInit, AfterViewChecked {
 
 
   @Input() feature: any;
@@ -98,6 +98,10 @@ export class FeatureViewerComponent implements OnChanges, OnInit {
       this.updateMap();
       this.addFeature(this.feature);
     }
+  }
+
+  ngAfterViewChecked() {
+    this.map.ol.updateSize();
   }
 
   updateMap() {

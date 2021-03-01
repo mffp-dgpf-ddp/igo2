@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, AfterViewChecked } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { transform } from 'ol/proj';
@@ -37,7 +37,7 @@ import { CoordService } from '../../services/coord.service';
   styleUrls: ['./zone-selection.component.scss'],
   animations: [controlSlideX(), controlSlideY(), mapSlideX(), mapSlideY()]
 })
-export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/ {
+export class ZoneSelectionComponent implements OnInit, AfterViewChecked/*extends PortalComponent*/ {
 
   @Input() public zoneSelectionMode: string;
   private bbox;
@@ -103,6 +103,10 @@ export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/
       }
     }, 1000);
     this.updateMap();
+  }
+  
+  ngAfterViewChecked() {
+    this.map_.ol.updateSize();
   }
 
   private listenToMapClick() {
