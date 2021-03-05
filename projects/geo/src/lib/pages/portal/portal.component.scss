@@ -66,6 +66,7 @@ igo-map-browser {
 }
 
 igo-map-browser ::ng-deep .ol-attribution {
+  touch-action: none !important;
   left: 50px;
   bottom: $igo-margin;
   text-align: left;
@@ -94,14 +95,17 @@ igo-map-browser ::ng-deep .ol-attribution {
 }
 
 igo-map-browser.has-expansion-panel igo-baselayers-switcher {
+  touch-action: none !important;
   bottom: 47px;
 }
 
 igo-map-browser.sidenav-offset-baselayers igo-baselayers-switcher {
+  touch-action: none !important;
   left: 405px;
 }
 
 igo-map-browser ::ng-deep .ol-overlaycontainer-stopevent {
+  touch-action: none !important;
   position: absolute;
   width: 100%;
   left: 0;
@@ -109,6 +113,7 @@ igo-map-browser ::ng-deep .ol-overlaycontainer-stopevent {
 }
 
 igo-map-browser.sidenav-offset ::ng-deep .ol-overlaycontainer-stopevent {
+  touch-action: none !important;
   left: 400px;
   width: calc(100% - 380px);
 
@@ -122,10 +127,12 @@ igo-map-browser.sidenav-offset ::ng-deep .ol-overlaycontainer-stopevent {
 }
 
 igo-map-browser.expansion-offset ::ng-deep .ol-overlaycontainer-stopevent {
+  touch-action: none !important;
   bottom: $app-expansion-panel-height;
 }
 
 igo-map-browser.expansion-offset-maximized ::ng-deep .ol-overlaycontainer-stopevent {
+  touch-action: none !important;
   bottom: $app-expansion-panel-height-maximized;
 }
 
@@ -134,6 +141,7 @@ igo-map-browser.toast-offset-scale-line
   .ol-overlaycontainer-stopevent
   ::ng-deep
   .ol-scale-line {
+    touch-action: none !important;
   bottom: 50px;
 }
 
@@ -142,6 +150,7 @@ igo-map-browser.toast-offset-attribution
   .ol-overlaycontainer-stopevent
   ::ng-deep
   .ol-attribution {
+    touch-action: none !important;
   @include mobile {
     bottom: 50px;
   }

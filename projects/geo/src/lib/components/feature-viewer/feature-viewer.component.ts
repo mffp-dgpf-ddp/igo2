@@ -31,7 +31,7 @@ import { MapImageService } from '../../services/map-image.service';
   styleUrls: ['./feature-viewer.component.scss'],
   animations: [controlSlideX(), controlSlideY(), mapSlideX(), mapSlideY()]
 })
-export class FeatureViewerComponent implements OnChanges, OnInit, AfterViewChecked {
+export class FeatureViewerComponent implements OnChanges, OnInit {
 
 
   @Input() feature: any;
@@ -98,10 +98,6 @@ export class FeatureViewerComponent implements OnChanges, OnInit, AfterViewCheck
       this.updateMap();
       this.addFeature(this.feature);
     }
-  }
-
-  ngAfterViewChecked() {
-    this.map.ol.updateSize();
   }
 
   updateMap() {

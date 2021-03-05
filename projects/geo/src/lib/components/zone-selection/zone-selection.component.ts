@@ -37,7 +37,7 @@ import { CoordService } from '../../services/coord.service';
   styleUrls: ['./zone-selection.component.scss'],
   animations: [controlSlideX(), controlSlideY(), mapSlideX(), mapSlideY()]
 })
-export class ZoneSelectionComponent implements OnInit, AfterViewChecked/*extends PortalComponent*/ {
+export class ZoneSelectionComponent implements OnInit/*extends PortalComponent*/ {
 
   @Input() public zoneSelectionMode: string;
   private bbox;
@@ -103,10 +103,6 @@ export class ZoneSelectionComponent implements OnInit, AfterViewChecked/*extends
       }
     }, 1000);
     this.updateMap();
-  }
-  
-  ngAfterViewChecked() {
-    this.map_.ol.updateSize();
   }
 
   private listenToMapClick() {
